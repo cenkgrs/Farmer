@@ -1,6 +1,6 @@
 # Motor kararı
 
-Tarih: 6 Ekim 2026. **Teknik yön: Unity 6.3 LTS + C# + Universal Render Pipeline (URP).** Tam editör yaması henüz sabitlenmedi, Unity projesi henüz oluşturulmadı.
+Tarih: 6 Ekim 2026. **Teknik yön: Unity 6.3 LTS + C# + Universal Render Pipeline (URP).** Tam sürüm **6000.3.25f1 (e1dba0a9aba4)** olarak sabitlendi. Linux editörü kuruldu; URP şablon kaynakları depoya alındı. Aktif lisans eksikliği nedeniyle editör importu ve build doğrulaması henüz tamamlanmadı.
 
 ## Gerekçe
 
@@ -13,7 +13,7 @@ Resmi destek sayfası Unity 6.3 LTS için Aralık 2027'ye kadar destek belirtiyo
 ## Linux ve Windows düzeni
 
 - İki makinede Unity Hub üzerinden aynı tam editör yaması ve gerekli build modülleri kullanılacak.
-- Proje oluşturulduğunda `ProjectSettings/ProjectVersion.txt`, `Packages/manifest.json` ve `Packages/packages-lock.json` Git'te tutulacak.
+- `ProjectSettings/ProjectVersion.txt`, `Packages/manifest.json` ve `Packages/packages-lock.json` Git'te tutulur. Kilit dosyası ilk başarılı importta üretilip doğrulanacak; şu anda henüz yok.
 - `Assets/`, `Packages/`, `ProjectSettings/` ve `.meta` dosyaları paylaşılacak. `Library/`, `Temp/`, `Logs/` ve `UserSettings/` yerel kalacak.
 - Visible Meta Files ve Force Text ayarları kontrol edilecek. Assetler `.meta` dosyalarıyla birlikte taşınacak; GUID değerleri korunacak.
 - Unity'nin ürettiği IDE `.csproj`/`.sln` dosyaları yeniden üretilebilir. Haricen elle oluşturulmuş bağımsız .NET test projesi olursa ayrıca sürümlenecek.

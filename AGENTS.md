@@ -15,7 +15,7 @@
 - Sabit açılı izometrik kamera, stilize 3D, huzurlu çiftlik ve dışarıda basit düşmanlar temel kararlardır.
 - Çiftçilik ve oyuncunun parça parça inşa ettiği üs eşit derecede önemlidir.
 - İlk hedef 0.1'dir; 0.5 ilk demo. Sonraki sürümlerin özelliklerini mevcut kapsamın içine sessizce ekleme.
-- Teknik yön Unity 6.3 LTS + C# + URP. Tam editör yaması henüz sabitlenmedi; `docs/MOTOR_KARARI.md` durumunu kontrol et.
+- Teknik yön Unity **6000.3.25f1 LTS** + C# + URP. Sürüm sabitlendi; kurulum için `docs/KURULUM.md` ve güncel doğrulama durumu için `YAZILIMCI.md` oku.
 - Kullanıcı 3D modelleri harici AI aracıyla üretebilir. Gereken asset için ölçü, stil, çıktı ve kontrol listesiyle prompt hazırla. Teslim edilen modeli doğrulamadan oyun için hazır sayma.
 
 ## Uygulama ve doğrulama
@@ -23,7 +23,7 @@
 - Küçük, oynanabilir adımlar üret. Yeni ürün veya tarif eklemek için mevcut kodu kopyalamak yerine veri tanımları kullan.
 - Ürün, envanter ve üretim kurallarını kamera/görsel sunum kodundan ayır; başlangıçta gereksiz framework kurma.
 - Makineye özel mutlak yolları, motor önbelleğini, kişisel ayarları ve sırları sürüm kontrolüne alma.
-- Unity editör yamasını `ProjectSettings/ProjectVersion.txt`, paketleri `Packages/manifest.json` ve `Packages/packages-lock.json` ile sabitle; bir makinede kendiliğinden yükseltme. Bunlar proje oluşturulunca üretilecek.
+- Unity editör yamasını `ProjectSettings/ProjectVersion.txt`, paketleri `Packages/manifest.json` ve `Packages/packages-lock.json` ile sabitle; bir makinede kendiliğinden yükseltme. İlk şablon kilidi manifestle tutarsızdı ve kaldırıldı. İlk başarılı editör açılışında packages-lock.json üretilip doğrulanmalı ve commit edilmeli.
 - Unity `.meta` dosyalarını assetleriyle birlikte sürümle; GUID değerlerini koru. Sahne/prefab serileştirmesi Force Text, sürüm kontrol modu Visible Meta Files olmalı.
 - Anlamlı mantık değişikliklerini uygun testlerle; kamera, yerleşim ve görselleri oyun içinde doğrula. Çalıştırılmamış bir kontrolü geçti diye yazma.
 - Mevcut kullanıcı değişikliklerini koru. Yıkıcı Git komutları ve force push kullanma.

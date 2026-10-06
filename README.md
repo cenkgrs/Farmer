@@ -2,9 +2,11 @@
 
 Çalışma adı: **Farmer**. Sabit açılı izometrik kamerayla oynanan, stilize 3D çiftçilik, üs kurma ve hafif keşif/savaş oyunu.
 
-Henüz çalıştırılabilir oyun yok. Bu depo, kabul edilen tasarımı ve iki bilgisayardan sürdürülecek geliştirme sürecini içerir. Teknik yön: **Unity 6.3 LTS + C# + URP**; tam editör yaması kurulumda sabitlenecek.
+**Unity 6000.3.25f1 LTS + C# + URP** proje iskeleti hazırlandı. Editör bu Linux makinesine kuruldu; ilk import, sahne üretimi ve build kontrolü aktif Unity lisansını bekliyor. Henüz oynanabilir oyun yok.
 
 ## Başlangıç
+
+- [Unity kurulumu ve açılış adımları](docs/KURULUM.md)
 
 - [Yazılımcı ve oturum devir notu](YAZILIMCI.md)
 - [Oturum çalışma talimatları](AGENTS.md)
@@ -25,6 +27,6 @@ Diğer bilgisayarda [cenkgrs/Farmer](https://github.com/cenkgrs/Farmer) deposunu
 
 Normal devirde kodla birlikte devir notları da commit/push edilir. **İlk push 6 Ekim 2026 tarihinde kullanıcının isteğiyle tamamlandı; `main` dalı `origin/main` izliyor.** Diğer bilgisayar yalnızca uzak depoya gönderilmiş dosya ve commitleri alır; yerel sohbet, kurulu motor ve kaydedilmemiş işler Git ile aktarılmaz.
 
-`origin`: `https://github.com/cenkgrs/Farmer.git`. Remote erişimi doğrulandı; özel `cenkgrs/Farmer` deposu ilk push öncesinde boştu. Yalnızca bu depoda Git kimliği `Cenk Gürses <cenkgrs@gmail.com>` olarak ayarlandı. Unity projesi oluşturulunca çalıştırma adımları eklenecek.
+`origin`: `https://github.com/cenkgrs/Farmer.git`. Remote erişimi doğrulandı; özel `cenkgrs/Farmer` deposu ilk push öncesinde boştu. Yalnızca bu depoda Git kimliği `Cenk Gürses <cenkgrs@gmail.com>` olarak ayarlandı. Proje açılış ve lisans sonrası doğrulama adımları kurulum rehberinde.
 
 [AGENTS.md talimatlarının keşfi — resmi belge](https://learn.chatgpt.com/docs/agent-configuration/agents-md)
