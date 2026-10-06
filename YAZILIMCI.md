@@ -8,6 +8,12 @@ Son güncelleme: **6 Ekim 2026 — Europe/Istanbul**.
 
 Kullanıcı tek başına geliştirecek, Linux ve Windows bilgisayarlar arasında çalışacak. Python, C# ve Java deneyimi yüksek; oyun motoru deneyimi sınırlı ancak Unity'de Godot'tan daha deneyimli. Modelleri harici AI araçlarıyla üretebilir; biz prompt ve entegrasyon gereksinimlerini hazırlayacağız.
 
+## Son devir: diğer bilgisayarda devam
+
+Kullanıcı, Linux Hub girişinin **Signing in** aşamasında takılması üzerine bu makinedeki sorun giderme çalışmasını durdurup diğer bilgisayarda devam etmeyi istedi. Giriş sorununun kök nedeni doğrulanmadı; çözülmüş sayılmamalı. Linux kurulumunu yeniden denemek bir sonraki oturumun önceliği değildir.
+
+Diğer bilgisayarda depoyu klonla veya temiz çalışma ağacında `git pull --ff-only` yap; önce bu dosyayı ve `docs/KURULUM.md` dosyasını oku. Unity Hub hesabı/lisansı ve **6000.3.25f1** editörü hazır olduktan sonra mevcut depo kökünü aç. İlk import ve C# derlemesini doğrula, üretilen `Packages/packages-lock.json` dosyasını kaydet. Ardından Farm sahnesini üret ve Play modunda kontrol et. `BuildLinux` yardımcısı Linux hedeflidir; Windows doğrulaması için Windows build hedefini kullan. Henüz oynanabilir oyun, başarılı import veya doğrulanmış build yok.
+
 ## Kesinleşen kararlar
 
 - Sabit açılı izometrik kamera ve stilize 3D görsel dil.
@@ -56,12 +62,14 @@ Kullanıcı tek başına geliştirecek, Linux ve Windows bilgisayarlar arasında
 
 ## Sıradaki somut işler
 
-1. Unity hesabı girişini ve hesaba uygun lisansı tamamla. Hub'ın doğru x86_64 sürümünü çalıştır; CLI girişi için `unity auth login` yeniden açılabilir.
+1. Kullanıcının seçtiği diğer bilgisayarda devam et: depoyu eşitle, Unity Hub hesabı girişini ve hesaba uygun lisansı tamamla; tam editör sürümü 6000.3.25f1 olmalı.
 2. Depo kökünü Unity 6000.3.25f1 ile aç; Package Manager çözümlemesini ve Console hatalarını kontrol et. `packages-lock.json` değişikliklerini gerçek importtan sonra kaydet.
 3. `Farmer.Editor.ProjectSetup.CreateInitialScene` aracını bir kez çalıştır; `Farm.unity` mevcutsa üzerine yazmadan `ValidateProject` kullan.
-4. Gerçek editör açılışı, Linux build ve sahnenin görsel kontrolünü tamamla. Şimdiye kadar bunların geçtiği iddia edilmedi.
-5. Ardından 0.1 hareket/kare seçimi ve tek ürün döngüsüne geç. Windows'ta aynı sürümü kurup proje açılışını ayrıca doğrula.
+4. Devam edilen bilgisayarda gerçek editör açılışı, o platformun masaüstü build'i ve sahnenin görsel kontrolünü tamamla. Şimdiye kadar bunların geçtiği iddia edilmedi.
+5. Ardından 0.1 hareket/kare seçimi ve tek ürün döngüsüne geç. Diğer platformdaki doğrulamayı ayrı bir açık iş olarak tut.
 
 ## Son oturum kaydı
 
 **2026-10-06:** İlk push sonrası kullanıcı kuruluma başlama talimatı verdi. Unity CLI ve 6000.3.25f1 editörü kuruldu; resmi şablon kaynakları alındı, sürüm sabitlendi ve başlangıç sahnesi için editör aracı yazıldı. Hesap/lisans eksikliği nedeniyle ilk import ve çalıştırma bekliyor. Git devir belgeleri ve Linux/Windows kurulum rehberi güncellendi.
+
+**2026-10-06 — bilgisayar değişimi:** Linux Hub penceresi açıldı ancak kullanıcı Signing in ekranında takıldığını bildirdi. Sorun giderme kullanıcı isteğiyle durduruldu. Proje kaynakları `c34317d` commitinde mevcut; bu devir notu sonraki committe kaydedilir. Giriş bilgileri ve yerel Hub günlükleri depoya eklenmedi. Diğer bilgisayarda ilk import/derleme/sahne doğrulamasıyla devam edilecek.

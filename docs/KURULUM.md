@@ -12,6 +12,8 @@
 
 [Resmi editör sürüm sayfası](https://unity.com/releases/editor/whats-new/6000.3.25f1)
 
+Linux Hub girişinde **Signing in** ekranı takılı kaldı; neden ve çözüm doğrulanmadı. Kullanıcı diğer bilgisayarda devam etmeyi seçti. Sonraki oturumda aşağıdaki Windows adımları ve `YAZILIMCI.md` devir notu esas alınmalı.
+
 ## Windows
 
 1. [Unity Hub](https://unity.com/download) kur, hesabınla giriş yap ve hesabına uygun lisansı etkinleştir.
