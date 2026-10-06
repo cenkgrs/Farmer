@@ -1,0 +1,41 @@
+# Local credentials and machine-specific agent state
+.env
+.env.*
+!.env.example
+/.aws/
+/.codex/
+/.agents/
+
+# Editor / OS local files
+.DS_Store
+Thumbs.db
+/.idea/
+/.vs/
+*.user
+*.suo
+*.log
+
+# Generated output
+/build/
+/builds/
+/dist/
+/tmp/
+
+# .NET build artifacts
+**/bin/
+**/obj/
+
+# Unity generated caches
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+
+# Unity-generated IDE project files at repository root
+/*.csproj
+/*.sln
+/*.slnx
+/*.pidb
+/*.unityproj

@@ -1,0 +1,13 @@
+# Same source line endings on Linux and Windows.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.glb binary
+*.fbx binary
+*.blend binary
+*.wav binary
+*.ogg binary
+
+# Add LFS rules only after both machines and the remote are ready.
