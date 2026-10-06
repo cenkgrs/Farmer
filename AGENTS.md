@@ -31,7 +31,7 @@
 ## İki bilgisayar arasında devir
 
 - Remote varsa ve çalışma ağacı temizse oturum başında fetch yap; ilgili upstream'den yalnızca fast-forward ile güncelle. Ayrışma varsa değişiklikleri inceleyip koruyarak çöz.
-- Tamamlanmış, incelenmiş işleri küçük commitlere kaydet. Kullanıcı bu aşamada yalnızca yerel hazırlık istedi: origin tanımlı olsa da push yapma. Sonraki açık senkronizasyon talebinde hedef dala gönder ve sonucu raporla.
+- Tamamlanmış, incelenmiş işleri küçük commitlere kaydet. Kullanıcı 6 Ekim 2026 tarihinde ilk push'u istedi; ilk yerel hazırlık kısıtı bu adım için kalktı. Yetkili eşitleme işlerinde `origin` ve hedef dalı doğrula, push sonucunu raporla. İki bilgisayardaki devirde çalışma ağacı ve upstream durumunu kontrol et.
 - Bu depoya özel Git kimliği: `Cenk Gürses <cenkgrs@gmail.com>`. Global Git ayarlarını değiştirme.
 - Remote adresi olmadan yayınlanmış/eşitlenmiş olduğunu söyleme. Eşzamanlı iki oturum varsa ayrı görev dalları ve ayrı dosya sorumlulukları kullan; ortak bir dosyada paralel yazma.
 - Oturum sonunda `YAZILIMCI.md` içindeki durum, kontroller, eksikler ve sonraki somut işi güncelle. Tasarım değiştiyse ilgili dokümanı da aynı committe güncelle.
