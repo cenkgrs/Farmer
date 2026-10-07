@@ -67,7 +67,7 @@ Kullanıcı 7 Ekim 2026'da diğer bilgisayarda değişiklik yapmadığını beli
 - Geliştirme build'ine özel `--farmer-smoke-capture` seçeneği, PNG çıktısı ve çalıştırma kontrolü eklendi. Normal açılışı değiştirmez. Screen Capture ve Audio yerleşik modülleri manifestte açıkça tanımlandı.
 - İlk build denemesinin oturumu kesildi; başarı kabul edilmedi. Kalıcı `Logs/setup-build.log` ile yeniden çalıştırılan build başarıyla tamamlandı.
 - Build sonrası Unity kapanışında `.NET SDK/build-server` bulunamadı mesajı görüldü; build raporu ve çıkış kodu başarılı. Player'da ekran DPI bilgisi alınamadı uyarıları ve kapanışta motorun allocation raporu mevcut; sahne çalışmasını engellemedi. Uzun süreli performans/bellek testi yapılmadı.
-- Windows açılışı/build'i ve editör Play modu henüz ayrıca denenmedi. Konsept kalitesinde görseller veya oynanış hazır değil.
+- GUI editörü açılırken ilk kullanımın `Unity Editor Software Terms` penceresi görüldü; kullanıcıya ekrandan tamamlaması için bilgi verildi. Bu onay gelene kadar editör arayüzü/sahne açılışı doğrulanmış sayılmaz. Windows açılışı/build'i ve editör Play modu ayrıca denenmedi. Konsept kalitesinde görseller veya oynanış hazır değil.
 
 ## Sıradaki somut işler
 
