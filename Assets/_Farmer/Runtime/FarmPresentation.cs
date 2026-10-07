@@ -26,6 +26,8 @@ namespace Farmer
         private readonly GameObject[] heldItems = new GameObject[3];
         private readonly Material[] toolMaterials = new Material[3];
 
+        public float WateringIntensity => wateringAudio != null && wateringAudio.isPlaying ? Mathf.Clamp01(wateringAudio.volume / WateringVolume) : 0;
+
         public void Configure(FarmGame source, Renderer[] cells) { game = source; soil = cells; }
         private void Start()
         {
@@ -136,6 +138,8 @@ namespace Farmer
             Part(0, PrimitiveType.Sphere, new Vector3(0, -.16f, .09f), Vector3.one * .1f, 2);
             heldItems[1] = Instantiate(wateringCanPrefab, heldItemSocket, false);
             heldItems[2] = Instantiate(sicklePrefab, heldItemSocket, false);
+            // The supplied model's spout points backwards in its rest prefab. Face it toward the working target.
+            heldItems[1].transform.localRotation = Quaternion.Euler(0, 180, 0);
             heldItems[1].name = "Held WateringCan";
             heldItems[2].name = "Held Sickle";
         }

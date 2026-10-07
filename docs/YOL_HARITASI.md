@@ -27,7 +27,9 @@ Kabul:
 - [x] Dört ayrı model eskizi ve teslim rehberi hazır: `references/model_sketches_v01/README.md`.
 - [x] Kullanıcının dört GLB'si ve iki Mixamo FBX'i alındı; FBX'ler iskeletli karakteri de içeriyor.
 - [x] Ölçek, geometri, dokular, Humanoid Idle/Walk ve temel alet tutuşu sahneye bağlandı; kaynak kusuru/teknik sınırlar `../ArtSource/tripo_v01/README.md` içinde.
-- [x] Linux player görselleri incelendi; 103 kontrol geçti. Önceki açık üç kontrol ayrı grafik oturumunda geçti. Kullanıcı görsel hissi değerlendirecek; Windows ayrıca açık.
+- [x] Linux player görselleri incelendi; 103 kontrol geçti. Önceki açık üç kontrol ayrı grafik oturumunda geçti. Kullanıcı görselleri beğendi; Windows player çalıştırma kontrolü ayrıca açık.
+
+- Sulama kabını eğme/su akışı ve kısa orak savurma prosedürel olarak eklendi; nihai kontrol kaydı `../YAZILIMCI.md` içinde.
 
 ## 0.2 — İlk evim
 

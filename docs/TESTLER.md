@@ -107,3 +107,29 @@ Windows'ta gerçek çalıştırma henüz denenmedi. ZIP tamamen çıkarılıp EX
 manuel deneme listesindeki hareket, pazar, ekim/sulama/hasat ve kayıt döngüsü
 Windows'ta tekrarlanmalı. Hata varsa `BENI_OKU.txt` içindeki Player.log konumu
 kullanılmalı. Bu paketleme işi için oyun mantık testleri tekrar çalıştırılmadı.
+
+
+## Prosedürel alet hareketleri ve el tutuşu — 7 Ekim
+
+Son Linux build `Logs/tool-animation-final-build.log`; gerçek player tekrarında
+`Logs/tool-animation-delivery-retry.log`, çıkış 0 ve **121 kontrol başarılı**.
+Önceki 103 kontrole `--farmer-check-tool-animation` ile 18 kontrol eklenir.
+İlk tam son-build açılışında native/Mono SIGSEGV oluştu, testler başlamadı;
+aynı build'in temiz tekrarında üremedi. Kök neden çözülmüş sayılmaz.
+
+```bash
+python3 tools/art/run_player_checks.py --name tool-animation-unique
+# Yalnızca alet hareketleri:
+python3 tools/art/run_player_checks.py --name tool-animation-only-unique --checks tool-animation
+```
+
+Xvfb PATH üzerinde değilse `--xvfb <Xvfb-executable>` ekle. Başarı için
+18 `FARMER_TOOL_ANIMATION_CHECK_OK`, `FARMER_TOOL_ANIMATION_CHECKS_FINISHED`
+ve `FARMER_PLAYER_SMOKE_OK` gerekir. Yeni grup sadece izole QA kaydında çalışır;
+normal kullanıcı çiftliğini değiştirmez. Yakın çekim kamera konumu test sonunda
+eski haline döner. `docs/screenshots/tool-*.png` son görsel kontrol sonuçlarıdır.
+
+Manuel: 2 ile kabı kuşan; basılı sularken WASD ile yürü ve hedefi değiştir.
+Kabın ağzı suyla birlikte hedefe yönelmeli, parmaklar sapı kavramalı. Bırakınca
+0,7 saniyede normale dönmeli. 3 ile olgun ürüne tıkla; kısa savurma bir kez olmalı.
+Eşya değişimi ve F9 eski hareketi taşımamalı. Gerçek Alt-Tab da ayrıca denenmeli.

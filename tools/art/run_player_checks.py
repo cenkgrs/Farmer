@@ -1,7 +1,7 @@
 """Isolated Linux graphics test; requires Xvfb and xwininfo. No desktop focus changes."""
-import argparse, ctypes as c, os, re, subprocess, time
+import argparse, ctypes as c, os, re, signal, subprocess, time
 from pathlib import Path
-p=argparse.ArgumentParser();p.add_argument('--xvfb',default='Xvfb');p.add_argument('--name',required=True);args=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--xvfb',default='Xvfb');p.add_argument('--name',required=True);p.add_argument('--checks',nargs='+',choices=['controls','farming','watering','art','tool-animation'],default=['controls','farming','watering','art','tool-animation']);args=p.parse_args()
 root=Path(__file__).resolve().parents[2];os.chdir(root)
 read,write=os.pipe()
 server=subprocess.Popen([args.xvfb,'-displayfd',str(write),'-screen','0','1280x720x24','-nolisten','tcp'],pass_fds=(write,),stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
@@ -10,8 +10,8 @@ player=None
 try:
  display=':'+os.read(read,32).decode().strip();os.close(read)
  env=dict(os.environ,DISPLAY=display,LIBGL_ALWAYS_SOFTWARE='1',__GLX_VENDOR_LIBRARY_NAME='mesa')
- cmd=['./builds/Linux/Farmer.x86_64','-force-glcore','-screen-fullscreen','0','-screen-width','1280','-screen-height','720','--farmer-smoke-capture',f'builds/QA/{args.name}.png','--farmer-check-controls','--farmer-check-farming','--farmer-check-watering','--farmer-check-art','-logFile',str(root/'Logs'/f'{args.name}.log')]
- player=subprocess.Popen(cmd,env=env,stdout=subprocess.DEVNULL)
+ cmd=['./builds/Linux/Farmer.x86_64','-force-glcore','-screen-fullscreen','0','-screen-width','1280','-screen-height','720','--farmer-smoke-capture',f'builds/QA/{args.name}.png',*['--farmer-check-'+check for check in args.checks],'-logFile',str(root/'Logs'/f'{args.name}.log')]
+ player=subprocess.Popen(cmd,env=env,stdout=subprocess.DEVNULL,start_new_session=True)
  x=c.CDLL('libX11.so.6');x.XOpenDisplay.argtypes=[c.c_char_p];x.XOpenDisplay.restype=c.c_void_p
  x.XSetInputFocus.argtypes=[c.c_void_p,c.c_ulong,c.c_int,c.c_ulong];x.XFlush.argtypes=[c.c_void_p];x.XCloseDisplay.argtypes=[c.c_void_p]
  connection=x.XOpenDisplay(display.encode());deadline=time.monotonic()+150
@@ -26,5 +26,11 @@ try:
  print('PLAYER_EXIT',player.returncode,flush=True)
  raise SystemExit(player.returncode)
 finally:
- if player is not None and player.poll() is None:player.terminate();player.wait(timeout=10)
- server.terminate();server.wait(timeout=10)
+ try:
+  if player is not None and player.poll() is None:
+   os.killpg(player.pid, signal.SIGTERM)
+   try: player.wait(timeout=5)
+   except subprocess.TimeoutExpired:
+    os.killpg(player.pid, signal.SIGKILL);player.wait(timeout=5)
+ finally:
+  server.terminate();server.wait(timeout=10)

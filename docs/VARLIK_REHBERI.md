@@ -82,3 +82,12 @@ Bu makinede Git LFS henüz kurulu değil; LFS attribute filtreleri etkin değil.
 ## Teslim edilen ilk set — entegrasyon
 
 7 Ekim: dört GLB ve iki Mixamo FBX sahneye bağlandı. [Kaynak, ölçü, dönüşüm ve teknik notlar](../ArtSource/tripo_v01/README.md). Karakter şapka dahil 1,85 m, sulama kabı 0,42 m, orak 0,50 m, pazar 2,40 m yüksekliğinde. Alet sapları import edilmiş geometri üzerinden hizalandı; Idle/Walk aynı Humanoid Avatar'ı kullanıyor. Kaynak GLB/FBX'ler korunur. Model seti ilk aşamada normal Git'te; LFS iki makine hazırlanmadan etkinleştirilmedi.
+
+
+## İlk alet hareketleri
+
+Sulama ve hasat mevcut Humanoid iskelet üzerinde `FarmerAnimator` ile prosedürel olarak hazırlanır; ek Mixamo FBX veya ücretli model üretimi kullanılmadı. Sağ el IK hedefi kolu, avatardan örneklenen parmak kemik dönüşleri kavramayı yönetir. Elin avuç eksenleri kemiklerden hesaplanır; sulama kabında aşağı, orakta yana dönük kavrama kullanılır. Tam HumanPose'u her kare yeniden uygulamak IK sonucunu bozduğu için yalnızca başlangıç parmak örneğinde kullanılır.
+
+Sulama kabının eldeki kopyası 180° çevrilir; kaynak model/prefab değiştirilmez. Böylece ağız karakterin işlem yönüne bakar. Su çıkışı bu modelin ölçülen ağız konumuna göredir; kabı değiştirirken `FarmerAnimator` içindeki ağız noktası ve `FarmPresentation` içindeki yerel yön de doğrulanmalıdır. `WateringStream` mevcut sahnede kullanılan URP Particles/Unlit shader'ıyla yedi ince akış oluşturur; fizik veya tarla işlemi yürütmez.
+
+Bu küçük prosedürel set tam gövdeli, sanatçı tarafından hazırlanmış sulama/hasat klibi değildir. İleride özel klip eklenirse kol IK/parmak katmanıyla çakışması kontrol edilmeli.

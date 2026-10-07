@@ -16,6 +16,8 @@ namespace Farmer
         public float Speed => speed;
         public float PlanarSpeed { get; private set; }
         public Transform Visual => model;
+        // Tool actions may aim the visual while movement/collision still follow WASD.
+        public Vector3? FacingTarget { get; set; }
         public void Configure(Camera camera, Transform visual) { viewCamera = camera; model = visual; }
 
         private void Awake() => controller = GetComponent<CharacterController>();
@@ -47,8 +49,10 @@ namespace Farmer
             controller.Move(displacement);
             Vector3 moved = transform.position - before; moved.y = 0;
             PlanarSpeed = moved.magnitude / deltaTime;
-            if (model != null && direction.sqrMagnitude > 0.001f)
-                model.rotation = Quaternion.RotateTowards(model.rotation, Quaternion.LookRotation(direction), 720f * deltaTime);
+            Vector3 facing = FacingTarget.HasValue ? FacingTarget.Value - transform.position : direction;
+            facing.y = 0;
+            if (model != null && facing.sqrMagnitude > 0.001f)
+                model.rotation = Quaternion.RotateTowards(model.rotation, Quaternion.LookRotation(facing), 720f * deltaTime);
         }
     }
 }
