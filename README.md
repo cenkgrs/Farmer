@@ -2,7 +2,19 @@
 
 Çalışma adı: **Farmer**. Sabit açılı izometrik kamerayla oynanan, stilize 3D çiftçilik, üs kurma ve hafif keşif/savaş oyunu.
 
-**Unity 6000.3.25f1 LTS + C# + URP** kurulumu doğrulandı. İlk import, C# derlemesi, izometrik başlangıç sahnesi ve Linux geliştirme build'i başarılı. Build çalıştırılıp gerçek ekran görüntüsü incelendi. Mevcut sahne zemin/kamera/tarla temelidir; karakter ve oynanabilir çiftçilik henüz yok.
+**Unity 6000.3.25f1 LTS + C# + URP** kurulumu doğrulandı. İlk import, C# derlemesi, izometrik başlangıç sahnesi ve Linux geliştirme build'i başarılı. Build çalıştırılıp gerçek ekran görüntüsü incelendi. İlk oynanabilir adım hazır: karakter hareketi, çarpışma ve 6×6 tarlada kare seçimi. Çiftçilik/ekonomi döngüsü henüz yok.
+
+## Oyna
+
+`Assets/_Farmer/Scenes/Farm.unity` sahnesini Unity'de açıp Play'e bas. Bu makinede hazır Linux uygulaması `builds/Linux/Farmer.x86_64`; build çıktısı Git'e girmez.
+
+- **WASD / ok tuşları:** hareket.
+- **Sol tık:** yakındaki tarla karesini seç. Turuncu çerçeve, yaklaşman gerektiğini belirtir.
+- **ESC / sağ tık:** seçimi temizle.
+
+Karakter ve çevre geçici geometrilerdir. 0.1 henüz tamamlanmadı; sıradaki adım tohum, ekim ve ürün döngüsüdür. [Testler ve manuel kontrol](docs/TESTLER.md).
+
+![Çalışan hareket ve kare seçimi prototipi](docs/screenshots/movement-prototype.png)
 
 ## Başlangıç
 

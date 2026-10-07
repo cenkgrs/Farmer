@@ -1,6 +1,6 @@
 # Sürüm planı ve kabul ölçütleri
 
-Tarihler/tahmini geliştirme süreleri henüz yok. Her sürüm oynanabilir bir adım olmalı. Şu anda tüm oyun özellikleri **yapılacak** durumunda.
+Tarihler/tahmini geliştirme süreleri henüz yok. Her sürüm oynanabilir bir adım olmalı. 0.1 kapsamında hareket ve kare seçimi doğrulandı; kalan özelliklerin durumu aşağıda.
 
 ## 0.1 — Çekirdek prototip
 
@@ -8,7 +8,7 @@ Küçük arazi, sabit ortografik kamera, karakter hareketi, kare seçimi, temel 
 
 Kabul:
 
-- [ ] Oyuncu hareket eder, seçilen toprak karesi anlaşılır, kamera dönmez.
+- [x] Oyuncu hareket eder, seçilen toprak karesi anlaşılır, kamera dönmez. (7 Ekim: 12 mantık testi, Linux player giriş/çarpışma/seçim kontrolü ve ekran görüntüsü.)
 - [ ] Tohum satın alma → ekim → sulama → dört görünür büyüme aşaması → hasat → satış → yeniden tohum satın alma döngüsü tamamlanır.
 - [ ] Tohum ve para doğru eksilir; hasat tek kez alınır; negatif miktar/para oluşmaz.
 - [ ] Sulanmayan gün büyüme gecikir; bitki hemen ölmez.

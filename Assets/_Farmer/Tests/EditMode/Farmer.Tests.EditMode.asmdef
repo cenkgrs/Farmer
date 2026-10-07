@@ -1,0 +1,6 @@
+{
+  "name": "Farmer.Tests.EditMode",
+  "references": ["Farmer.Runtime"],
+  "includePlatforms": ["Editor"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}

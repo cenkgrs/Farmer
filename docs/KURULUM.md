@@ -30,7 +30,7 @@ git config --local user.email "cenkgrs@gmail.com"
 4. Unity Hub → Projects → Add/Open from disk ile deponun kökünü seç. Mevcut deponun üzerine yeni şablon oluşturma.
 5. İlk import ve paket çözümlemesini bekle. Lisans/derleme hatası varsa önce onu çöz.
 6. `Farm.unity` yoksa Farmer → Create Initial Scene menüsünü bir kez çalıştır. Araç mevcut Farm sahnesinin üzerine yazmaz.
-7. `Assets/_Farmer/Scenes/Farm.unity` sahnesini aç ve Play'e bas. Bu aşama yalnızca zemin/kamera kurulum sahnesidir; oynanabilir tarım henüz yoktur.
+7. `Assets/_Farmer/Scenes/Farm.unity` sahnesini aç ve Play'e bas. Sahnede WASD/ok tuşlarıyla hareket ve yakındaki tarla karesini sol tıkla seçme vardır; ürün yetiştirme henüz yoktur.
 
 Windows adımları diğer makinede henüz denenmedi.
 

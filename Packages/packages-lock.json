@@ -161,7 +161,7 @@
     },
     "com.unity.modules.physics": {
       "version": "1.0.0",
-      "depth": 2,
+      "depth": 0,
       "source": "builtin",
       "dependencies": {}
     },
