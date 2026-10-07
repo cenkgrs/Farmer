@@ -63,3 +63,18 @@ Oyuncu kaydı Unity'nin `Application.persistentDataPath` klasöründe `farm-v1.j
 Her başarılı işlem ve normal çıkış kaydedilir; F5 tekrar kaydeder, F9 diskten yükler. Yeni dosya önce geçici dosyaya yazılır, sonra atomik değiştirme yapılır; önceki kayıt `.bak` olarak korunur. Ana kayıt bozuksa sağlam yedek açılır; bozuk dosya üzerine yazmadan önce `.corrupt-*` kopyası korunur. İkisi de okunamazsa sessizce yeni oyuna başlanmaz: işlemler durdurulur, dosyalar korunur ve ekranda hata gösterilir. Kaydetme izni/disk sorunu olursa mevcut oturum bellekte sürer; F5 ile yeniden dene.
 
 Kayıtlar Git'e girmez ve iki bilgisayar arasında otomatik taşınmaz. Önceki günlük sulama kayıtlarında büyümesi başlamış ürünün (`growth > 0`) daha önce sulandığı anlaşılır ve sulanmış olarak açılır. Şema sürümü 1; para, envanter, gün ve tarla durumunu içerir. Kuşanılan eşya yeni isteğe bağlı `equippedItem` alanında saklanır. Eski sürüm 1 kayıtlarında bu alan yoksa tohum seçilir; iki kalıcı alet envanterde bulunur. Karakter konumu saklanmaz; açılışta pazar yakınında başlarsın. Kayıt yeniyken tohum almak ilk otomatik kaydı oluşturur. Aynı çiftliği iki uygulamada eşzamanlı açma.
+
+## Basılı tutarak sulama ve ses
+
+Son build üzerinde `--farmer-check-watering` eklenerek tarım/hareket kontrolleriyle birlikte çalıştırılır:
+
+```bash
+./builds/Linux/Farmer.x86_64 -screen-fullscreen 0 -screen-width 1280 -screen-height 720 \
+  --farmer-smoke-capture builds/QA/hold-watering-check.png \
+  --farmer-check-controls --farmer-check-farming --farmer-check-watering \
+  -logFile "$PWD/Logs/hold-watering-player.log"
+```
+
+Bu kontrol yalnızca smoke capture'ın ayrı `FarmerQA` kayıt klasöründe geçici tarla kurar; önceki test durumunu sonunda geri yükler. Basılı tutarak iki kareyi sulama, aynı karede beklerken tekrar işlem/kayıt üretmeme, sesin başlaması/durması, HUD/pencere dışı/uzak hedefler, UI'dan başlayan sürükleme, eşya değiştirme, tek tıklık ekim/hasat ve devre dışı bırakma denenir. Odak kaybı callback'i açıkça tetiklenir; gerçek işletim sistemi pencere geçişi testi değildir. 20 `FARMER_WATER_CHECK_OK`, `FARMER_WATERING_CHECKS_FINISHED`, `FARMER_PLAYER_SMOKE_OK` ve çıkış 0 gerekir; `FARMER_WATER_CHECK_FAILED` olmamalı.
+
+Manuel deneme: 2 ile sulama kabını al, iki yakın kuru ekili kare üzerinde sol tuşu bırakmadan gezdir. İkisi de koyulaşmalı. Tuşu bırakınca, arayüze gidince veya 1/3 ile eşya değiştirince su sesi durmalı. Alt-Tab ile de dene. Basılı tuşla tohum/orak sürüklemek ikinci bir kareye işlem yapmamalı. Ses bu aşamada kodla üretilmiş özgün, dört saniyelik bir döngüdür; otomatik kontrol örneklerin boş olmadığını/taşmadığını ve AudioSource oynatma durumunu doğrular. Öznel ses kalitesi dinleme değerlendirmesi bekler.

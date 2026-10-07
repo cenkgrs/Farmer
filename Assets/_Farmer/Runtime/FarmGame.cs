@@ -26,6 +26,9 @@ namespace Farmer
         public bool Ready { get; private set; }
         public bool NearMarket => Near(market);
         public bool NearCamp => Near(camp);
+        public bool WateringActive { get; private set; }
+        public event Action<bool> WateringChanged;
+        private bool wateringGesture;
         public event Action Changed;
         public event Action<int, string> Harvested;
         private FarmSaveStore store;
@@ -51,18 +54,50 @@ namespace Farmer
         private void Update()
         {
             var k = Keyboard.current;
-            if (!Application.isFocused) return;
+            if (!Application.isFocused) { StopWatering(); return; }
             if (k?.f9Key.wasPressedThisFrame == true) LoadGame();
-            if (!Ready) return;
+            if (!Ready) { StopWatering(); return; }
             if (k?.digit1Key.wasPressedThisFrame == true) Equip(FarmItem.Seeds);
             if (k?.digit2Key.wasPressedThisFrame == true) Equip(FarmItem.WateringCan);
             if (k?.digit3Key.wasPressedThisFrame == true) Equip(FarmItem.Sickle);
-            if (Mouse.current?.leftButton.wasPressedThisFrame == true) UseHovered();
+            UpdateToolInput();
             if (k?.bKey.wasPressedThisFrame == true) Buy(1);
             if (k?.vKey.wasPressedThisFrame == true) SellHarvest();
             if (k?.nKey.wasPressedThisFrame == true) Rest();
             if (k?.f5Key.wasPressedThisFrame == true) SaveGame();
         }
+
+        private void UpdateToolInput()
+        {
+            var mouse = Mouse.current;
+            if (mouse == null || !mouse.leftButton.isPressed) { StopWatering(); return; }
+            selection.RefreshPointer();
+            if (Model.EquippedItem != FarmItem.WateringCan)
+            {
+                StopWatering();
+                if (mouse.leftButton.wasPressedThisFrame) UseHovered();
+                return;
+            }
+            // A press beginning on UI cannot spill into the world when dragged off a button.
+            if (mouse.leftButton.wasPressedThisFrame)
+                wateringGesture = !selection.PointerBlocked;
+            bool pouring = wateringGesture && selection.HoveredInReach;
+            SetWatering(pouring);
+            if (!pouring) return;
+            var plot = Model.Plot(HoveredIndex);
+            // Persist only the first successful watering, not every frame of the held gesture.
+            if (!string.IsNullOrEmpty(plot.cropId) && !plot.watered && !Model.IsReady(HoveredIndex))
+                UseHovered();
+        }
+        private void SetWatering(bool active)
+        {
+            if (WateringActive == active) return;
+            WateringActive = active; WateringChanged?.Invoke(active);
+        }
+        private void StopWatering() { wateringGesture = false; SetWatering(false); }
+        private void OnApplicationFocus(bool focused) { if (!focused) StopWatering(); }
+        private void OnApplicationPause(bool paused) { if (paused) StopWatering(); }
+        private void OnDisable() => StopWatering();
 
         private bool Near(Transform target)
         {
@@ -76,12 +111,14 @@ namespace Farmer
         public string EquippedName => Model.EquippedItem == FarmItem.Seeds ? ActiveCrop.displayName + " tohumu"
             : Model.EquippedItem == FarmItem.WateringCan ? "Sulama kabı" : "Orak";
         public string ActionLabel => HoveredIndex < 0 ? "Fareyi tarlaya götür" : !selection.HoveredInReach ? "Kareye yaklaş"
-            : Model.EquippedItem == FarmItem.Seeds ? "Sol tık · Tohum ek" : Model.EquippedItem == FarmItem.WateringCan ? "Sol tık · Sula" : "Sol tık · Hasat et";
+            : Model.EquippedItem == FarmItem.Seeds ? "Sol tık · Tohum ek" : Model.EquippedItem == FarmItem.WateringCan ? "Sol tuşu basılı tut · Sula" : "Sol tık · Hasat et";
 
         public void Equip(FarmItem item)
         {
             if (!Ready || !Model.Equip(item)) return;
-            Feedback = EquippedName + " seçildi. Fareyi yakındaki kareye götür ve sol tıkla.";
+            StopWatering();
+            Feedback = item == FarmItem.WateringCan ? "Sulama kabı: sol tuşu basılı tutarak fareyi tarlada gezdir."
+                : EquippedName + " seçildi. Fareyi yakındaki kareye götür ve sol tıkla.";
             SaveGame(); Changed?.Invoke();
         }
 
@@ -139,6 +176,7 @@ namespace Farmer
         }
         public bool LoadGame()
         {
+            StopWatering();
             try
             {
                 var loaded = store.Load(out bool recovered);

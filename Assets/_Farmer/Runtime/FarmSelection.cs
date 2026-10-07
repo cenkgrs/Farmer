@@ -18,6 +18,7 @@ namespace Farmer
         private FarmGridLayout layout;
         public FarmGridLayout Layout => layout ??= new FarmGridLayout(origin, width, depth, cellSize);
         public Vector2Int? HoveredCell { get; private set; }
+        public bool PointerBlocked { get; private set; } = true;
         public bool HoveredInReach => HoveredCell.HasValue && InReach(HoveredCell.Value);
         public void SetHudPanels(RectTransform[] panels) => hudPanels = panels;
 
@@ -34,7 +35,7 @@ namespace Farmer
             var mouse = Mouse.current;
             if (mouse == null || !Application.isFocused)
             {
-                HoveredCell = null;
+                HoveredCell = null; PointerBlocked = true;
                 DrawOutlines();
                 return;
             }
@@ -49,6 +50,7 @@ namespace Farmer
                 foreach (var panel in hudPanels)
                     blocked |= panel != null && panel.gameObject.activeInHierarchy && RectTransformUtility.RectangleContainsScreenPoint(panel, screenPosition);
 
+            PointerBlocked = blocked;
             var plane = new Plane(Vector3.up, new Vector3(0, 0.055f, 0));
             if (!blocked && viewCamera != null)
             {

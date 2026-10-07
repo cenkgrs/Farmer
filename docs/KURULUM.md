@@ -30,7 +30,7 @@ git config --local user.email "cenkgrs@gmail.com"
 4. Unity Hub → Projects → Add/Open from disk ile deponun kökünü seç. Mevcut deponun üzerine yeni şablon oluşturma.
 5. İlk import ve paket çözümlemesini bekle. Lisans/derleme hatası varsa önce onu çöz.
 6. `Farm.unity` yoksa Farmer → Create Initial Scene menüsünü bir kez çalıştır. Araç mevcut Farm sahnesinin üzerine yazmaz.
-7. `Assets/_Farmer/Scenes/Farm.unity` sahnesini aç ve Play'e bas. Sahnede WASD/oklarla hareket, fareyle tıklamadan kare hedefleme vardır. 1/2/3 ile tohum/sulama kabı/orak kuşan, sol tıkla hedeflenen yakındaki karede kullan. Pazar yakınında B/V ile alış/satış, kampta N ile yeni gün kullanılabilir.
+7. `Assets/_Farmer/Scenes/Farm.unity` sahnesini aç ve Play'e bas. Sahnede WASD/oklarla hareket, fareyle tıklamadan kare hedefleme vardır. 1/2/3 ile tohum/sulama kabı/orak kuşan, tohum/orak için hedeflenen yakındaki kareye sol tıkla; sulama kabında sol tuşu basılı tutup fareyi gezdir. Pazar yakınında B/V ile alış/satış, kampta N ile yeni gün kullanılabilir.
 
 Windows adımları diğer makinede henüz denenmedi.
 

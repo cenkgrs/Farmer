@@ -75,7 +75,7 @@ namespace Farmer
             feedback.text = game.Feedback;
             if (!game.Ready) objective.text = "Kayıt sorunu çözülene kadar çiftlik işlemleri duraklatıldı.";
             else if (model.ReadyCount > 0) objective.text = $"{model.ReadyCount} ürün hasada hazır. Orağı al (3), hedefle ve sol tıkla topla.";
-            else if (model.ThirstyCount > 0) objective.text = $"{model.ThirstyCount} kare sulama bekliyor. Sulama kabını al (2), hedefle ve sol tıkla.";
+            else if (model.ThirstyCount > 0) objective.text = $"{model.ThirstyCount} kare sulama bekliyor. Sulama kabını al (2), sol tuşu basılı tut ve gezdir.";
             else if (model.Produce(crop.id) > 0) objective.text = "Hasadını pazarda sat; kazancınla yeni tohumlar al.";
             else if (model.PlantedCount > 0) objective.text = "Bitkilerin sulandı. Kampta dinlenerek yeni güne geç.";
             else if (model.Seeds(crop.id) > 0) objective.text = "Tohumu al (1), boş kareyi fareyle hedefle ve sol tıkla ek.";

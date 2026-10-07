@@ -14,6 +14,8 @@ namespace Farmer
         private MaterialPropertyBlock block;
         private AudioSource audioSource;
         private AudioClip harvestSound;
+        private AudioSource wateringAudio;
+        private AudioClip wateringSound;
         private readonly GameObject[] heldItems = new GameObject[3];
         private readonly Material[] toolMaterials = new Material[3];
 
@@ -35,15 +37,68 @@ namespace Farmer
             }
             harvestSound = AudioClip.Create("Harvest Chime", samples.Length, 1, rate, false);
             harvestSound.SetData(samples, 0);
+            wateringSound = CreateWateringSound();
+            wateringAudio = gameObject.AddComponent<AudioSource>();
+            wateringAudio.playOnAwake = false; wateringAudio.loop = true;
+            wateringAudio.clip = wateringSound; wateringAudio.volume = 0;
+            game.WateringChanged += OnWatering;
+            OnWatering(game.WateringActive);
             CreateHeldItems();
             game.Changed += Refresh; game.Harvested += OnHarvest; Refresh();
         }
         private void OnDestroy()
         {
-            if (game != null) { game.Changed -= Refresh; game.Harvested -= OnHarvest; }
+            if (game != null) { game.Changed -= Refresh; game.Harvested -= OnHarvest; game.WateringChanged -= OnWatering; }
             if (harvestSound != null) Destroy(harvestSound);
+            if (wateringSound != null) Destroy(wateringSound);
             foreach (var material in toolMaterials) if (material != null) Destroy(material);
             foreach (var item in heldItems) if (item != null) Destroy(item);
+        }
+        private void Update()
+        {
+            if (wateringAudio != null && wateringAudio.isPlaying)
+                wateringAudio.volume = Mathf.MoveTowards(wateringAudio.volume, 0.32f, Time.unscaledDeltaTime * 4f);
+        }
+        private void OnDisable() { if (wateringAudio != null) wateringAudio.Stop(); }
+        private void OnWatering(bool active)
+        {
+            if (active && isActiveAndEnabled)
+            {
+                wateringAudio.volume = 0;
+                if (!wateringAudio.isPlaying) wateringAudio.Play();
+            }
+            else { wateringAudio.Stop(); wateringAudio.volume = 0; }
+        }
+        private static AudioClip CreateWateringSound()
+        {
+            // Original procedural pour: filtered water hiss with irregular short droplet resonances.
+            // Crossfade the end into a pre-roll segment to keep the four-second loop seamless.
+            const int rate = 22050, length = rate * 4, blend = rate / 8;
+            var raw = new float[length + blend];
+            var random = new System.Random(7319);
+            float low = 0, drop = 0, phase = 0, frequency = 900;
+            for (int i = 0; i < raw.Length; i++)
+            {
+                float noise = (float)random.NextDouble() * 2 - 1;
+                low += 0.18f * (noise - low);
+                if (random.NextDouble() < 0.0018)
+                { drop = 0.15f + (float)random.NextDouble() * 0.15f; frequency = 600 + (float)random.NextDouble() * 1400; phase = 0; }
+                phase += 2 * Mathf.PI * frequency / rate;
+                drop *= 0.992f;
+                raw[i] = low * 0.65f + noise * 0.04f + Mathf.Sin(phase) * drop;
+            }
+            var samples = new float[length];
+            for (int i = 0; i < length; i++)
+            {
+                samples[i] = raw[i + blend];
+                if (i >= length - blend)
+                {
+                    int j = i - (length - blend);
+                    samples[i] = Mathf.Lerp(samples[i], raw[j], (float)j / (blend - 1));
+                }
+            }
+            var clip = AudioClip.Create("Watering Pour", length, 1, rate, false);
+            clip.SetData(samples, 0); return clip;
         }
         private void OnHarvest(int index, string label)
         {
