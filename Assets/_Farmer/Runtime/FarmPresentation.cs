@@ -15,8 +15,8 @@ namespace Farmer
         private AudioSource audioSource;
         private AudioClip harvestSound;
         private AudioSource wateringAudio;
-        private AudioClip wateringSound;
-        private const float WateringVolume = 0.064f; // 20% of the previous 0.32 source gain.
+        [SerializeField] private AudioClip wateringSound;
+        private const float WateringVolume = 0.0832f; // 30% above the previous 0.064 source gain.
         private const float WateringReleaseSeconds = 0.7f;
         private bool pouringAudio;
         private float releaseElapsed, releaseVolume;
@@ -41,7 +41,7 @@ namespace Farmer
             }
             harvestSound = AudioClip.Create("Harvest Chime", samples.Length, 1, rate, false);
             harvestSound.SetData(samples, 0);
-            wateringSound = CreateWateringSound();
+            if (wateringSound == null) throw new System.InvalidOperationException("Watering recording is not assigned.");
             wateringAudio = gameObject.AddComponent<AudioSource>();
             wateringAudio.playOnAwake = false; wateringAudio.loop = true;
             wateringAudio.clip = wateringSound; wateringAudio.volume = 0;
@@ -54,7 +54,6 @@ namespace Farmer
         {
             if (game != null) { game.Changed -= Refresh; game.Harvested -= OnHarvest; game.WateringChanged -= OnWatering; }
             if (harvestSound != null) Destroy(harvestSound);
-            if (wateringSound != null) Destroy(wateringSound);
             foreach (var material in toolMaterials) if (material != null) Destroy(material);
             foreach (var item in heldItems) if (item != null) Destroy(item);
         }
@@ -96,45 +95,6 @@ namespace Farmer
                 releaseElapsed = 0;
                 releaseVolume = wateringAudio.volume;
             }
-        }
-        private static AudioClip CreateWateringSound()
-        {
-            // Soft close-up trickle: overlapping rounded droplets, with almost no broadband hiss.
-            // Crossfade the end into pre-roll for a seamless four-second loop.
-            const int rate = 22050, length = rate * 4, blend = rate / 8;
-            var raw = new float[length + blend];
-            var random = new System.Random(7319);
-            float low = 0, smooth = 0;
-            for (int i = 0; i < raw.Length; i++)
-            {
-                low += 0.08f * ((float)random.NextDouble() * 2 - 1 - low);
-                smooth += 0.08f * (low - smooth);
-                raw[i] = smooth * 0.06f;
-            }
-            for (int start = 0; start < raw.Length; start += random.Next(rate / 60, rate / 22))
-            {
-                float frequency = 550 + (float)random.NextDouble() * 650;
-                float amplitude = 0.13f + (float)random.NextDouble() * 0.10f;
-                for (int j = 0; j < rate / 9 && start + j < raw.Length; j++)
-                {
-                    float time = (float)j / rate;
-                    float envelope = (1f - Mathf.Exp(-time * 400f)) * Mathf.Exp(-time * 65f);
-                    float phase = 2 * Mathf.PI * frequency * (time + time * time * 1.4f);
-                    raw[start + j] += amplitude * envelope * (Mathf.Sin(phase) + 0.18f * Mathf.Sin(phase * 1.71f));
-                }
-            }
-            var samples = new float[length];
-            for (int i = 0; i < length; i++)
-            {
-                samples[i] = raw[i + blend];
-                if (i >= length - blend)
-                {
-                    int j = i - (length - blend);
-                    samples[i] = Mathf.Lerp(samples[i], raw[j], (float)j / (blend - 1));
-                }
-            }
-            var clip = AudioClip.Create("Watering Pour", length, 1, rate, false);
-            clip.SetData(samples, 0); return clip;
         }
         private void OnHarvest(int index, string label)
         {

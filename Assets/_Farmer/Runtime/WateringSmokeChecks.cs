@@ -14,6 +14,8 @@ namespace Farmer
         {
             var game = Object.FindFirstObjectByType<FarmGame>();
             var controller = game.Player.GetComponent<CharacterController>();
+            // Physical mouse motion must not replace the synthetic held pointer during checks.
+            var physicalInput = InputSystem.devices.Where(d => d.enabled && (d is Mouse || d is Keyboard)).ToArray();
             var keyboard = InputSystem.AddDevice<Keyboard>();
             var mouse = InputSystem.AddDevice<Mouse>();
             var original = game.Model.Snapshot();
@@ -21,25 +23,33 @@ namespace Farmer
             System.Action countChange = () => changes++;
             try
             {
+                foreach (var device in physicalInput) InputSystem.DisableDevice(device);
+                InputSystem.QueueStateEvent(keyboard, new KeyboardState());
+                InputSystem.QueueStateEvent(mouse, new MouseState());
+                yield return null; yield return null;
                 // Explicit isolated smoke fixture; never run against a normal player's save.
                 if (!game.SavePath.Contains("FarmerQA")) throw new System.InvalidOperationException("Expected isolated smoke save.");
+                Directory.CreateDirectory(Path.GetDirectoryName(game.SavePath));
                 var fixture = game.Model.Snapshot(); fixture.seeds[0].count = 10;
                 for (int i = 0; i < fixture.plots.Length; i++) fixture.plots[i] = new PlotRecord();
                 foreach (int i in new[] { 0, 1, 3 }) fixture.plots[i].cropId = game.ActiveCrop.id;
                 File.WriteAllText(game.SavePath, JsonUtility.ToJson(fixture)); game.LoadGame();
                 controller.enabled = false; controller.transform.position = new Vector3(-0.5f, 0.1f, -3.8f); controller.enabled = true;
                 Physics.SyncTransforms(); game.Equip(FarmItem.WateringCan);
-                var source = game.GetComponents<AudioSource>().Single(s => s.clip != null && s.clip.name == "Watering Pour");
+                yield return null; yield return null;
+                var source = game.GetComponents<AudioSource>().Single(s => s.clip != null && s.clip.name == "watering_can_pour");
                 var samples = new float[source.clip.samples]; source.clip.GetData(samples, 0);
+                Check(source.clip.channels == 1 && source.clip.frequency == 22050 && Mathf.Abs(source.clip.length - 6f) < 0.01f, "Real watering-can recording is loaded with the expected import settings.");
                 Check(samples.Any(v => Mathf.Abs(v) > 0.02f) && samples.All(v => !float.IsNaN(v) && Mathf.Abs(v) < 1), "Water loop contains non-silent, finite, unclipped samples.");
                 Check(Mathf.Abs(samples[0] - samples[samples.Length - 1]) < 0.15f, "Water loop seam has no large amplitude step.");
                 game.Changed += countChange;
                 yield return Pointer(mouse, ScreenCell(game, 0), true);
                 Check(game.Model.Plot(0).watered && game.WateringActive && source.isPlaying && source.loop && source.volume > 0,
-                    "Holding water starts watering and the audible loop.");
+                    $"Holding water starts watering and the audible loop. [focused={Application.isFocused}, target={game.HoveredIndex}, reach={game.Selection.HoveredInReach}, item={game.Model.EquippedItem}, player={game.Player.position}]");
                 string state = JsonUtility.ToJson(game.Model.Snapshot());
-                yield return new WaitForSecondsRealtime(4.25f);
-                Check(Mathf.Abs(source.volume - 0.064f) < 0.0001f, "Water source gain is reduced by 80 percent.");
+                yield return new WaitForSecondsRealtime(source.clip.length + 0.25f);
+                Check(Mathf.Abs(source.volume - 0.0832f) < 0.0001f,
+                    $"Water source gain is increased by 30 percent from 0.064. [volume={source.volume}, focused={Application.isFocused}, pouring={game.WateringActive}]");
                 Check(changes == 1 && JsonUtility.ToJson(game.Model.Snapshot()) == state, "Holding on a wet cell does not repeat transactions or saves.");
                 yield return Pointer(mouse, ScreenCell(game, 1), true);
                 Check(game.Model.Plot(1).watered && changes == 2 && source.isPlaying, "Dragging while held waters a second cell without a new press.");
@@ -114,6 +124,7 @@ namespace Farmer
             {
                 game.Changed -= countChange;
                 InputSystem.RemoveDevice(keyboard); InputSystem.RemoveDevice(mouse);
+                foreach (var device in physicalInput) InputSystem.EnableDevice(device);
                 File.WriteAllText(game.SavePath, JsonUtility.ToJson(original)); game.LoadGame();
             }
         }

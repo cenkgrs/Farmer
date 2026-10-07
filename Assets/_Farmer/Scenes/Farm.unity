@@ -2758,6 +2758,7 @@ MonoBehaviour:
   - {fileID: 1875600076}
   - {fileID: 213172165}
   - {fileID: 675184090}
+  wateringSound: {fileID: 8300000, guid: c2c1c87509421c9d58973f4421f725b3, type: 3}
 --- !u!114 &703771126
 MonoBehaviour:
   m_ObjectHideFlags: 0

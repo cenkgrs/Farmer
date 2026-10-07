@@ -7,6 +7,7 @@
 *.glb binary
 *.fbx binary
 *.blend binary
+*.mp3 binary
 *.wav binary
 *.ogg binary
 
