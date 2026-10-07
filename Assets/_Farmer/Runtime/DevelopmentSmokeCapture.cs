@@ -57,6 +57,8 @@ namespace Farmer
                 yield return FarmingSmokeChecks.Run(outputPath);
             if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-watering") >= 0)
                 yield return WateringSmokeChecks.Run();
+            if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-art") >= 0)
+                yield return ArtSmokeChecks.Run(outputPath);
             yield return new WaitForEndOfFrame();
             ScreenCapture.CaptureScreenshot(outputPath);
             float deadline = Time.realtimeSinceStartup + 15f;

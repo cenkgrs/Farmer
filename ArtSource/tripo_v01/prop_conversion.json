@@ -1,0 +1,20 @@
+{
+  "watering_can": {
+    "triangles": 6222,
+    "vertices": 5661,
+    "height_m": 0.42,
+    "source_scale_factor": 0.006065651549505527
+  },
+  "sickle": {
+    "triangles": 4912,
+    "vertices": 3469,
+    "height_m": 0.5,
+    "source_scale_factor": 0.005106313882003914
+  },
+  "market_stall": {
+    "triangles": 14016,
+    "vertices": 13749,
+    "height_m": 2.4,
+    "source_scale_factor": 0.026536719416823305
+  }
+}

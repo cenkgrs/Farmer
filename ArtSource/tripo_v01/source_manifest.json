@@ -1,0 +1,36 @@
+{
+  "received": "2026-10-07",
+  "source": "User-provided Tripo GLBs and Mixamo FBXs",
+  "files": [
+    {
+      "source_filename": "farmer 3d model.glb",
+      "file": "ArtSource/tripo_v01/farmer.glb",
+      "sha256": "d744d536bd78cff628dbc8de52afb822272663cc661f1aed3fd32cc61bfed06c"
+    },
+    {
+      "source_filename": "watering can 3d model.glb",
+      "file": "ArtSource/tripo_v01/watering_can.glb",
+      "sha256": "2d8333468661f6da464415545160477ac2de18c1672f2a183077d6cddfbdae2c"
+    },
+    {
+      "source_filename": "sickle 3d model.glb",
+      "file": "ArtSource/tripo_v01/sickle.glb",
+      "sha256": "9fbf4886e557805c0f72e772aaa23055de1bb458495e64b3431651f36ee05129"
+    },
+    {
+      "source_filename": "market stall 3d model.glb",
+      "file": "ArtSource/tripo_v01/market_stall.glb",
+      "sha256": "ed6f6186070cefea89fd442746b480269c76c9487deb0a7c84eec74e9c7686bb"
+    },
+    {
+      "source_filename": "Breathing Idle.fbx",
+      "file": "Assets/_Farmer/Art/Models/farmer_idle.fbx",
+      "sha256": "e1bb0284f9197a190a63689375153711e6cd39c5098a7bb87d137b7f058b5079"
+    },
+    {
+      "source_filename": "Walking.fbx",
+      "file": "Assets/_Farmer/Art/Models/farmer_walk.fbx",
+      "sha256": "392d04e3457f9ed0a87e47800e18c010d82f6627e12317b2d03da00b7728dcac"
+    }
+  ]
+}

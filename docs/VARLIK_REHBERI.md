@@ -78,3 +78,7 @@ Bu makinede Git LFS henüz kurulu değil; LFS attribute filtreleri etkin değil.
 ## 7 Ekim — kullanıcı tarafından seçilen görsel ara aşama
 
 0.2 inşa sisteminden önce oyuncu, sulama kabı, orak ve pazar tezgâhı üretilecek. Kullanıcı Tripo modellerini ve Mixamo Idle/Walk animasyonlarını teslim edecek. [Dört ayrı eskiz, model promptları ve teslim listesi](references/model_sketches_v01/README.md) hazır. Bu sıra yukarıdaki ilk ağaç/turp örnek seti önerisinin önüne geçer. Karakterin rig/animasyon entegrasyonu bu küçük ara aşamaya dahildir; modeller gelmeden uyumluluk doğrulanmış sayılmaz.
+
+## Teslim edilen ilk set — entegrasyon
+
+7 Ekim: dört GLB ve iki Mixamo FBX sahneye bağlandı. [Kaynak, ölçü, dönüşüm ve teknik notlar](../ArtSource/tripo_v01/README.md). Karakter şapka dahil 1,85 m, sulama kabı 0,42 m, orak 0,50 m, pazar 2,40 m yüksekliğinde. Alet sapları import edilmiş geometri üzerinden hizalandı; Idle/Walk aynı Humanoid Avatar'ı kullanıyor. Kaynak GLB/FBX'ler korunur. Model seti ilk aşamada normal Git'te; LFS iki makine hazırlanmadan etkinleştirilmedi.

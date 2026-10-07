@@ -16,6 +16,9 @@ namespace Farmer
         private AudioClip harvestSound;
         private AudioSource wateringAudio;
         [SerializeField] private AudioClip wateringSound;
+        [SerializeField] private Transform heldItemSocket;
+        [SerializeField] private GameObject wateringCanPrefab;
+        [SerializeField] private GameObject sicklePrefab;
         private const float WateringVolume = 0.0832f; // 30% above the previous 0.064 source gain.
         private const float WateringReleaseSeconds = 0.7f;
         private bool pouringAudio;
@@ -119,30 +122,22 @@ namespace Farmer
         }
         private void CreateHeldItems()
         {
+            if (heldItemSocket == null || wateringCanPrefab == null || sicklePrefab == null)
+                throw new System.InvalidOperationException("Held item art is not assigned.");
             Color[] colors = { new Color(0.86f, 0.67f, 0.35f), new Color(0.22f, 0.64f, 0.73f), new Color(0.78f, 0.82f, 0.80f) };
             for (int i = 0; i < 3; i++)
             {
                 toolMaterials[i] = new Material(soil[0].sharedMaterial);
                 toolMaterials[i].SetColor("_BaseColor", colors[i]);
-                heldItems[i] = new GameObject("Held " + (FarmItem)i);
-                heldItems[i].transform.SetParent(game.Player.GetComponent<PlayerMotor>().Visual, false);
-                heldItems[i].transform.localPosition = new Vector3(0.38f, 0.8f, 0.24f);
             }
-            Part(0, PrimitiveType.Cube, Vector3.zero, new Vector3(0.28f, 0.36f, 0.18f), 0);
-            Part(0, PrimitiveType.Sphere, new Vector3(0, 0, 0.11f), Vector3.one * 0.13f, 2);
-            Part(1, PrimitiveType.Cylinder, Vector3.zero, new Vector3(0.35f, 0.17f, 0.35f), 1);
-            var spout = Part(1, PrimitiveType.Cylinder, new Vector3(0, 0.04f, 0.27f), new Vector3(0.08f, 0.2f, 0.08f), 1);
-            spout.localRotation = Quaternion.Euler(65, 0, 0);
-            Part(1, PrimitiveType.Cube, new Vector3(0, 0.25f, 0), new Vector3(0.27f, 0.045f, 0.06f), 2);
-            Part(1, PrimitiveType.Cube, new Vector3(-0.12f, 0.17f, 0), new Vector3(0.045f, 0.15f, 0.06f), 2);
-            Part(1, PrimitiveType.Cube, new Vector3(0.12f, 0.17f, 0), new Vector3(0.045f, 0.15f, 0.06f), 2);
-            Part(2, PrimitiveType.Cylinder, Vector3.zero, new Vector3(0.07f, 0.27f, 0.07f), 0);
-            for (int i = 0; i < 6; i++)
-            {
-                float angle = i * 25f * Mathf.Deg2Rad;
-                var blade = Part(2, PrimitiveType.Cube, new Vector3(Mathf.Sin(angle) * 0.28f, 0.25f + Mathf.Cos(angle) * 0.28f, 0), new Vector3(0.16f, 0.07f, 0.05f), 2);
-                blade.localRotation = Quaternion.Euler(0, 0, -i * 25f);
-            }
+            heldItems[0] = new GameObject("Held Seeds");
+            heldItems[0].transform.SetParent(heldItemSocket, false);
+            Part(0, PrimitiveType.Cube, new Vector3(0, -.16f, 0), new Vector3(.22f, .3f, .15f), 0);
+            Part(0, PrimitiveType.Sphere, new Vector3(0, -.16f, .09f), Vector3.one * .1f, 2);
+            heldItems[1] = Instantiate(wateringCanPrefab, heldItemSocket, false);
+            heldItems[2] = Instantiate(sicklePrefab, heldItemSocket, false);
+            heldItems[1].name = "Held WateringCan";
+            heldItems[2].name = "Held Sickle";
         }
         private Transform Part(int item, PrimitiveType shape, Vector3 position, Vector3 scale, int material)
         {

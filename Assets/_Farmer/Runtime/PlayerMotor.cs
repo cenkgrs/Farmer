@@ -14,6 +14,7 @@ namespace Farmer
         private float verticalSpeed;
 
         public float Speed => speed;
+        public float PlanarSpeed { get; private set; }
         public Transform Visual => model;
         public void Configure(Camera camera, Transform visual) { viewCamera = camera; model = visual; }
 
@@ -42,7 +43,10 @@ namespace Farmer
             Vector3 target = transform.position + direction * speed * deltaTime;
             Vector3 displacement = PlanarMovement.ClampToGround(target, walkableHalfExtent) - transform.position;
             displacement.y = verticalSpeed * deltaTime;
+            Vector3 before = transform.position;
             controller.Move(displacement);
+            Vector3 moved = transform.position - before; moved.y = 0;
+            PlanarSpeed = moved.magnitude / deltaTime;
             if (model != null && direction.sqrMagnitude > 0.001f)
                 model.rotation = Quaternion.RotateTowards(model.rotation, Quaternion.LookRotation(direction), 720f * deltaTime);
         }

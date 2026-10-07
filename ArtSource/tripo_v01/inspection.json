@@ -1,0 +1,642 @@
+{
+  "farmer 3d model.glb": {
+    "objects": [
+      {
+        "name": "RootNode",
+        "type": "EMPTY",
+        "location": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "dimensions": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "name": "tripo_node_a5a1c2a5",
+        "type": "MESH",
+        "location": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "dimensions": [
+          98.02700805664062,
+          22.034337997436523,
+          97.5537338256836
+        ],
+        "vertices": 28568,
+        "triangles": 35819,
+        "uvs": 1,
+        "groups": 0,
+        "materials": [
+          "tripo_mat_a5a1c2a5"
+        ],
+        "modifiers": []
+      }
+    ],
+    "images": [
+      {
+        "name": "farmer+3d+model_basecolor.jpg",
+        "size": [
+          4096,
+          4096
+        ],
+        "packed": true,
+        "path": ""
+      },
+      {
+        "name": "farmer+3d+model_normal.png",
+        "size": [
+          4096,
+          4096
+        ],
+        "packed": true,
+        "path": ""
+      },
+      {
+        "name": "farmer+3d+model_rm.png",
+        "size": [
+          4096,
+          4096
+        ],
+        "packed": true,
+        "path": ""
+      }
+    ],
+    "actions": [],
+    "fps": 24
+  },
+  "Walking.fbx": {
+    "objects": [
+      {
+        "name": "Armature",
+        "type": "ARMATURE",
+        "location": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotation": [
+          1.570796251296997,
+          -0.0,
+          0.0
+        ],
+        "scale": [
+          0.009999999776482582,
+          0.009999999776482582,
+          0.009999999776482582
+        ],
+        "dimensions": [
+          0.3242981731891632,
+          1.1084492206573486,
+          0.5327160358428955
+        ],
+        "bones": [
+          "mixamorig:Hips",
+          "mixamorig:Spine",
+          "mixamorig:Spine1",
+          "mixamorig:Spine2",
+          "mixamorig:Neck",
+          "mixamorig:Head",
+          "mixamorig:HeadTop_End",
+          "mixamorig:LeftShoulder",
+          "mixamorig:LeftArm",
+          "mixamorig:LeftForeArm",
+          "mixamorig:LeftHand",
+          "mixamorig:LeftHandThumb1",
+          "mixamorig:LeftHandThumb2",
+          "mixamorig:LeftHandThumb3",
+          "mixamorig:LeftHandThumb4",
+          "mixamorig:LeftHandIndex1",
+          "mixamorig:LeftHandIndex2",
+          "mixamorig:LeftHandIndex3",
+          "mixamorig:LeftHandIndex4",
+          "mixamorig:LeftHandMiddle1",
+          "mixamorig:LeftHandMiddle2",
+          "mixamorig:LeftHandMiddle3",
+          "mixamorig:LeftHandMiddle4",
+          "mixamorig:LeftHandRing1",
+          "mixamorig:LeftHandRing2",
+          "mixamorig:LeftHandRing3",
+          "mixamorig:LeftHandRing4",
+          "mixamorig:LeftHandPinky1",
+          "mixamorig:LeftHandPinky2",
+          "mixamorig:LeftHandPinky3",
+          "mixamorig:LeftHandPinky4",
+          "mixamorig:RightShoulder",
+          "mixamorig:RightArm",
+          "mixamorig:RightForeArm",
+          "mixamorig:RightHand",
+          "mixamorig:RightHandThumb1",
+          "mixamorig:RightHandThumb2",
+          "mixamorig:RightHandThumb3",
+          "mixamorig:RightHandThumb4",
+          "mixamorig:RightHandIndex1",
+          "mixamorig:RightHandIndex2",
+          "mixamorig:RightHandIndex3",
+          "mixamorig:RightHandIndex4",
+          "mixamorig:RightHandMiddle1",
+          "mixamorig:RightHandMiddle2",
+          "mixamorig:RightHandMiddle3",
+          "mixamorig:RightHandMiddle4",
+          "mixamorig:RightHandRing1",
+          "mixamorig:RightHandRing2",
+          "mixamorig:RightHandRing3",
+          "mixamorig:RightHandRing4",
+          "mixamorig:RightHandPinky1",
+          "mixamorig:RightHandPinky2",
+          "mixamorig:RightHandPinky3",
+          "mixamorig:RightHandPinky4",
+          "mixamorig:LeftUpLeg",
+          "mixamorig:LeftLeg",
+          "mixamorig:LeftFoot",
+          "mixamorig:LeftToeBase",
+          "mixamorig:LeftToe_End",
+          "mixamorig:RightUpLeg",
+          "mixamorig:RightLeg",
+          "mixamorig:RightFoot",
+          "mixamorig:RightToeBase",
+          "mixamorig:RightToe_End"
+        ]
+      },
+      {
+        "name": "tripo_mesh_a5a1c2a5",
+        "type": "MESH",
+        "location": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotation": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "dimensions": [
+          0.34873121976852417,
+          0.9303188323974609,
+          0.5602110624313354
+        ],
+        "vertices": 28633,
+        "triangles": 35820,
+        "uvs": 1,
+        "groups": 52,
+        "materials": [],
+        "modifiers": [
+          "ARMATURE"
+        ]
+      }
+    ],
+    "images": [],
+    "actions": [
+      {
+        "name": "Armature|mixamo.com|Layer0",
+        "range": [
+          1.0,
+          27.0
+        ]
+      }
+    ],
+    "fps": 30
+  },
+  "Breathing Idle.fbx": {
+    "objects": [
+      {
+        "name": "Armature",
+        "type": "ARMATURE",
+        "location": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotation": [
+          1.570796251296997,
+          -0.0,
+          0.0
+        ],
+        "scale": [
+          0.009999999776482582,
+          0.009999999776482582,
+          0.009999999776482582
+        ],
+        "dimensions": [
+          0.36700770258903503,
+          1.139136552810669,
+          0.17333079874515533
+        ],
+        "bones": [
+          "mixamorig:Hips",
+          "mixamorig:Spine",
+          "mixamorig:Spine1",
+          "mixamorig:Spine2",
+          "mixamorig:Neck",
+          "mixamorig:Head",
+          "mixamorig:HeadTop_End",
+          "mixamorig:LeftShoulder",
+          "mixamorig:LeftArm",
+          "mixamorig:LeftForeArm",
+          "mixamorig:LeftHand",
+          "mixamorig:LeftHandThumb1",
+          "mixamorig:LeftHandThumb2",
+          "mixamorig:LeftHandThumb3",
+          "mixamorig:LeftHandThumb4",
+          "mixamorig:LeftHandIndex1",
+          "mixamorig:LeftHandIndex2",
+          "mixamorig:LeftHandIndex3",
+          "mixamorig:LeftHandIndex4",
+          "mixamorig:LeftHandMiddle1",
+          "mixamorig:LeftHandMiddle2",
+          "mixamorig:LeftHandMiddle3",
+          "mixamorig:LeftHandMiddle4",
+          "mixamorig:LeftHandRing1",
+          "mixamorig:LeftHandRing2",
+          "mixamorig:LeftHandRing3",
+          "mixamorig:LeftHandRing4",
+          "mixamorig:LeftHandPinky1",
+          "mixamorig:LeftHandPinky2",
+          "mixamorig:LeftHandPinky3",
+          "mixamorig:LeftHandPinky4",
+          "mixamorig:RightShoulder",
+          "mixamorig:RightArm",
+          "mixamorig:RightForeArm",
+          "mixamorig:RightHand",
+          "mixamorig:RightHandThumb1",
+          "mixamorig:RightHandThumb2",
+          "mixamorig:RightHandThumb3",
+          "mixamorig:RightHandThumb4",
+          "mixamorig:RightHandIndex1",
+          "mixamorig:RightHandIndex2",
+          "mixamorig:RightHandIndex3",
+          "mixamorig:RightHandIndex4",
+          "mixamorig:RightHandMiddle1",
+          "mixamorig:RightHandMiddle2",
+          "mixamorig:RightHandMiddle3",
+          "mixamorig:RightHandMiddle4",
+          "mixamorig:RightHandRing1",
+          "mixamorig:RightHandRing2",
+          "mixamorig:RightHandRing3",
+          "mixamorig:RightHandRing4",
+          "mixamorig:RightHandPinky1",
+          "mixamorig:RightHandPinky2",
+          "mixamorig:RightHandPinky3",
+          "mixamorig:RightHandPinky4",
+          "mixamorig:LeftUpLeg",
+          "mixamorig:LeftLeg",
+          "mixamorig:LeftFoot",
+          "mixamorig:LeftToeBase",
+          "mixamorig:LeftToe_End",
+          "mixamorig:RightUpLeg",
+          "mixamorig:RightLeg",
+          "mixamorig:RightFoot",
+          "mixamorig:RightToeBase",
+          "mixamorig:RightToe_End"
+        ]
+      },
+      {
+        "name": "tripo_mesh_a5a1c2a5",
+        "type": "MESH",
+        "location": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotation": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "dimensions": [
+          0.37928956747055054,
+          0.9616714119911194,
+          0.2254001796245575
+        ],
+        "vertices": 28633,
+        "triangles": 35820,
+        "uvs": 1,
+        "groups": 52,
+        "materials": [],
+        "modifiers": [
+          "ARMATURE"
+        ]
+      }
+    ],
+    "images": [],
+    "actions": [
+      {
+        "name": "Armature|mixamo.com|Layer0",
+        "range": [
+          1.0,
+          299.0
+        ]
+      }
+    ],
+    "fps": 30
+  },
+  "watering can 3d model.glb": {
+    "objects": [
+      {
+        "name": "RootNode",
+        "type": "EMPTY",
+        "location": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "dimensions": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "name": "tripo_node_d0f47b4f",
+        "type": "MESH",
+        "location": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "dimensions": [
+          97.75547790527344,
+          60.081459045410156,
+          69.24235534667969
+        ],
+        "vertices": 5661,
+        "triangles": 6222,
+        "uvs": 1,
+        "groups": 0,
+        "materials": [
+          "tripo_mat_d0f47b4f"
+        ],
+        "modifiers": []
+      }
+    ],
+    "images": [
+      {
+        "name": "watering+can+3d+model_basecolor.jpg",
+        "size": [
+          4096,
+          4096
+        ],
+        "packed": true,
+        "path": ""
+      },
+      {
+        "name": "watering+can+3d+model_normal.png",
+        "size": [
+          4096,
+          4096
+        ],
+        "packed": true,
+        "path": ""
+      },
+      {
+        "name": "watering+can+3d+model_rm.png",
+        "size": [
+          4096,
+          4096
+        ],
+        "packed": true,
+        "path": ""
+      }
+    ],
+    "actions": [],
+    "fps": 24
+  },
+  "sickle 3d model.glb": {
+    "objects": [
+      {
+        "name": "RootNode",
+        "type": "EMPTY",
+        "location": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "dimensions": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "name": "tripo_node_ec6a3e60",
+        "type": "MESH",
+        "location": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "dimensions": [
+          65.93811798095703,
+          15.002018928527832,
+          97.9179916381836
+        ],
+        "vertices": 3469,
+        "triangles": 4912,
+        "uvs": 1,
+        "groups": 0,
+        "materials": [
+          "tripo_mat_ec6a3e60"
+        ],
+        "modifiers": []
+      }
+    ],
+    "images": [
+      {
+        "name": "sickle+3d+model_basecolor.jpg",
+        "size": [
+          4096,
+          4096
+        ],
+        "packed": true,
+        "path": ""
+      },
+      {
+        "name": "sickle+3d+model_normal.png",
+        "size": [
+          4096,
+          4096
+        ],
+        "packed": true,
+        "path": ""
+      },
+      {
+        "name": "sickle+3d+model_rm.png",
+        "size": [
+          4096,
+          4096
+        ],
+        "packed": true,
+        "path": ""
+      }
+    ],
+    "actions": [],
+    "fps": 24
+  },
+  "market stall 3d model.glb": {
+    "objects": [
+      {
+        "name": "RootNode",
+        "type": "EMPTY",
+        "location": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "dimensions": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "name": "tripo_node_c8a1fc1f",
+        "type": "MESH",
+        "location": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "dimensions": [
+          97.26515197753906,
+          56.869773864746094,
+          90.44071960449219
+        ],
+        "vertices": 13749,
+        "triangles": 14016,
+        "uvs": 1,
+        "groups": 0,
+        "materials": [
+          "tripo_mat_c8a1fc1f"
+        ],
+        "modifiers": []
+      }
+    ],
+    "images": [
+      {
+        "name": "market+stall+3d+model_basecolor.jpg",
+        "size": [
+          4096,
+          4096
+        ],
+        "packed": true,
+        "path": ""
+      },
+      {
+        "name": "market+stall+3d+model_normal.png",
+        "size": [
+          4096,
+          4096
+        ],
+        "packed": true,
+        "path": ""
+      },
+      {
+        "name": "market+stall+3d+model_rm.png",
+        "size": [
+          4096,
+          4096
+        ],
+        "packed": true,
+        "path": ""
+      }
+    ],
+    "actions": [],
+    "fps": 24
+  }
+}

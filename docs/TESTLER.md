@@ -78,3 +78,17 @@ Son build üzerinde `--farmer-check-watering` eklenerek tarım/hareket kontrolle
 Bu kontrol yalnızca smoke capture'ın ayrı `FarmerQA` kayıt klasöründe geçici tarla kurar; önceki test durumunu sonunda geri yükler. Kontrol boyunca Unity içindeki mevcut fare/klavye cihazları kapatılır, yalnızca sanal test girdileri kullanılır; sonunda cihazlar yeniden açılır. İşletim sistemi pencere odağı yine korunmalıdır. Basılı tutarak iki kareyi sulama, aynı karede beklerken tekrar işlem/kayıt üretmeme, sesin başlaması, önceki 0.064 seviyesinden %30 ses artışı, sönümlenme ve sönümlenirken yeniden basma, HUD/pencere dışı/uzak hedefler, UI'dan başlayan sürükleme, eşya değiştirme, tek tıklık ekim/hasat ve devre dışı bırakma denenir. Odak kaybı callback'i açıkça tetiklenir; gerçek işletim sistemi pencere geçişi testi değildir. 27 `FARMER_WATER_CHECK_OK`, `FARMER_WATERING_CHECKS_FINISHED`, `FARMER_PLAYER_SMOKE_OK` ve çıkış 0 gerekir; `FARMER_WATER_CHECK_FAILED` olmamalı.
 
 Manuel deneme: 2 ile sulama kabını al, iki yakın kuru ekili kare üzerinde sol tuşu bırakmadan gezdir. İkisi de koyulaşmalı. Tuşu bırakınca, arayüze gidince veya 1/3 ile eşya değiştirince sulama hemen durmalı; ses yaklaşık 0,7 saniyede azalıp bitmeli. Sönümlenme sırasında tekrar basmak sesi sıfırdan keserek başlatmamalı. Kaynak ses seviyesi 0.0832 (önceki 0.064 değerinden %30 yüksek). Alt-Tab ile de dene. Basılı tuşla tohum/orak sürüklemek ikinci bir kareye işlem yapmamalı. Ses gerçek sulama kabı kaydından işlenmiş, altı saniyelik CC0 WAV döngüsüdür; otomatik kontrol örneklerin boş olmadığını/taşmadığını ve AudioSource oynatma durumunu doğrular. Öznel ses kalitesi dinleme değerlendirmesi bekler.
+
+## Modeller ve Idle/Walk — 7 Ekim
+
+Son Linux build: `Logs/art-build-delivery.log`. Son player: `Logs/art-player-delivery.log`, çıkış 0; **11 hareket + 50 tarım + 27 sulama + 15 art = 103 kontrol başarılı**. Eski üç başarısız giriş/sulama kontrolü bu ayrı grafik oturumunda geçti. Önceki 44 EditMode sonucu tarihsel olarak korunur; bu adımda tekrar çalıştırılmadı.
+
+`--farmer-check-art`: Humanoid Avatar, root motion kapalı olması, skinned mesh/doku, iki Mixamo klibi, dururken/yürürken geçiş, yatay kayma olmaması, el socket'i, aletlerin gerçek geometri ve dik boyutu, pazar malzeme/çarpışması. 15 `FARMER_ART_CHECK_OK` ve `FARMER_ART_CHECKS_FINISHED` gerekir. Ekran görüntüleri karakter/alet, yürüyüş ve pazar yakın çekimlerini de içerir; sayısal testler görsel incelemenin yerine geçmez.
+
+Masaüstü odağına müdahale etmeden Linux testi için Xvfb ve xwininfo kuruluysa:
+
+```bash
+python3 tools/art/run_player_checks.py --name art-check-unique
+```
+
+Çalıştırıcı yazılım OpenGL kullanır; normal masaüstü GPU performansına dair sonuç çıkarılmaz. Kaynak FBX'te tek kesişen poligon import uyarısı kaydedildi; bu kaynak kusuru düzeltilmiş sayılmıyor. Windows import/build ayrı doğrulanmalı.
