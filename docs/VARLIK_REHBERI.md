@@ -74,3 +74,7 @@ Bu ölçüler ilk deneme içindir. Oyun kamerasında okunabilirlik için birlikt
 ## Git ve büyük dosyalar
 
 Bu makinede Git LFS henüz kurulu değil; LFS attribute filtreleri etkin değil. Model/doku paketleri eklenmeden önce iki makinede LFS kurulumu ve remote desteği kontrol edilecek. Önerilen LFS hedefleri binary model ve büyük kaynak dosyalarıdır; metin sahneleri ve kod normal Git'te kalır. İki mevcut konsept PNG küçüktür ve normal Git'te tutulur.
+
+## 7 Ekim — kullanıcı tarafından seçilen görsel ara aşama
+
+0.2 inşa sisteminden önce oyuncu, sulama kabı, orak ve pazar tezgâhı üretilecek. Kullanıcı Tripo modellerini ve Mixamo Idle/Walk animasyonlarını teslim edecek. [Dört ayrı eskiz, model promptları ve teslim listesi](references/model_sketches_v01/README.md) hazır. Bu sıra yukarıdaki ilk ağaç/turp örnek seti önerisinin önüne geçer. Karakterin rig/animasyon entegrasyonu bu küçük ara aşamaya dahildir; modeller gelmeden uyumluluk doğrulanmış sayılmaz.

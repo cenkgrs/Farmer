@@ -20,6 +20,15 @@ Kabul:
 
 İlk görsel kalite hedefi tek küçük köşede denenir; bütün model listesinin bitmesini beklemek gerekmez.
 
+## 0.2 öncesi — İlk görsel set
+
+7 Ekim kullanıcı kararı: oyuncu, sulama kabı, orak ve pazar Tripo’da üretilecek; oyuncu için Mixamo Idle/Walk eklenecek. Bu küçük ara aşama yeni oyun sistemi içermez.
+
+- [x] Dört ayrı model eskizi ve teslim rehberi hazır: `references/model_sketches_v01/README.md`.
+- [ ] Kullanıcıdan 3D modeller/dokular, iskeletli ana karakter ve Idle/Walk alınacak.
+- [ ] Ölçek, geometri, malzeme, Humanoid/animasyon ve alet tutuşu doğrulanıp sahneye bağlanacak.
+- [ ] Oyun içinde görsel deneme yapılacak; önceki açık otomatik kontroller netleştirilecek.
+
 ## 0.2 — İlk evim
 
 Kaynak elde etme, kare/hacim/kenar yerleşimi, temel ahşap yapı seti, yatak ve sandık, kapı geçişi, çatı/duvar gizleme. Basit masa, sandalye ve lamba.
