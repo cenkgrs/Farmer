@@ -1,6 +1,6 @@
 # Prototip doğrulaması
 
-Unity **6000.3.25f1**, Linux. 7 Ekim 2026: 44 EditMode testi başarılı. Gerçek geliştirme player'ında hareket/seçim ve tam tarım döngüsü kontrol edildi. Windows henüz denenmedi.
+Unity **6000.3.25f1**, Linux. 7 Ekim 2026: 76/76 EditMode testi başarılı (`Logs/world-tests-final.xml`). Gerçek geliştirme player'ında hareket/seçim ve tam tarım döngüsü kontrol edildi. Windows henüz denenmedi.
 
 ## Mantık testleri
 
@@ -36,11 +36,11 @@ Kontrol, Input System'e geçici sanal klavye/fare olayları göndererek normal h
 1. `Farm.unity` sahnesini açıp Play'e bas veya Linux uygulamasını ek bayrak olmadan çalıştır.
 2. WASD ve oklarla her yöne yürü; çapraz hareketin hızlanmadığını, kameranın dönmediğini gözle.
 3. Sağdaki sandığa doğru yürü; içinden geçmemelisin. Arazi kenarına yürü; düşmemelisin.
-4. Fareyi tarlada gezdir; tıklamadan hedef çerçevesi gelmeli. Uzak kare turuncu olmalı ve sol tık işlem yapmamalı.
+4. Yeni oyunda hazır tarla yoktur. 5/çapa ikonuyla boş zemine sol tıkla toprak hazırla. Fareyi tarlada gezdir; tıklamadan hedef çerçevesi gelmeli. Uzak kare turuncu olmalı ve sol tık işlem yapmamalı.
 5. Fare HUD üzerindeyken/pencere dışındayken hedef kaybolmalı; sol tık önceki karede işlem yapmamalı. 1/2/3 veya eşya çubuğu düğmeleri eldeki eşyayı değiştirmeli.
 6. Pazar tezgâhına yaklaş, B veya düğmelerle tohum al. Paran ve tohum sayın doğru değişmeli.
 7. 1 ile tohumu kuşan, yakın boş kareyi fareyle hedefle ve sol tıkla ek. Aynı eşyayla tekrar sol tık sulamamalı. 2 ile sulama kabını kuşan ve sol tıkla sula; toprak koyulaşmalı. 1 ile ikinci bir kareye ekip kuru bırak.
-8. Kamp minderine yaklaş ve N ile günü bitir. Sulanan ürün büyümeli, kuru ürün aynı aşamada kalmalı. Yeniden sulamadan üç kez geceyi geçir; üçüncü geceden sonra hasat hazır olmalı. Hasat sonrası tekrar ekilen bitki bir kez yeniden sulanmalı.
+8. Yatağa yaklaş ve N ile sonraki 06:00'ya uyu. Yataktan uzakta N işlem yapmamalı. Saat normal akışta ilerlemeli; tam döngü 10 gerçek dakika. Sulanan ürün büyümeli, kuru ürün aynı aşamada kalmalı. Yeniden sulamadan üç kez geceyi geçir; üçüncü geceden sonra hasat hazır olmalı. Hasat sonrası tekrar ekilen bitki bir kez yeniden sulanmalı.
 9. Sulama kabıyla olgun ürünü hasat edememelisin. 3 ile orağı kuşan ve sol tıkla hasat et; pazara gidip V ile sat ve kazançla tekrar tohum al.
 10. Bir kareyi suladıktan sonra oyunu kapat/aç veya F9'a bas. Para, tohum, hasat envanteri, gün, bitki, sulama ve kuşanılan eşya korunmalı.
 
@@ -62,7 +62,7 @@ Oyuncu kaydı Unity'nin `Application.persistentDataPath` klasöründe `farm-v1.j
 
 Her başarılı işlem ve normal çıkış kaydedilir; F5 tekrar kaydeder, F9 diskten yükler. Yeni dosya önce geçici dosyaya yazılır, sonra atomik değiştirme yapılır; önceki kayıt `.bak` olarak korunur. Ana kayıt bozuksa sağlam yedek açılır; bozuk dosya üzerine yazmadan önce `.corrupt-*` kopyası korunur. İkisi de okunamazsa sessizce yeni oyuna başlanmaz: işlemler durdurulur, dosyalar korunur ve ekranda hata gösterilir. Kaydetme izni/disk sorunu olursa mevcut oturum bellekte sürer; F5 ile yeniden dene.
 
-Kayıtlar Git'e girmez ve iki bilgisayar arasında otomatik taşınmaz. Önceki günlük sulama kayıtlarında büyümesi başlamış ürünün (`growth > 0`) daha önce sulandığı anlaşılır ve sulanmış olarak açılır. Şema sürümü 2; para, envanter, gün, tarla, odun ve yapı konum/dönüşlerini içerir. Dosya adı uyumluluk için `farm-v1.json` kalır. V1 geçişinde başlangıç odunu bir kez verilir; ilk v2 yazmada sağlam v1 ana dosya `.pre-v2` olarak korunur. Eski exe v2 kaydı desteklemez. Kuşanılan eşya yeni isteğe bağlı `equippedItem` alanında saklanır. Eski sürüm 1 kayıtlarında bu alan yoksa tohum seçilir; iki kalıcı alet envanterde bulunur. Karakter konumu saklanmaz; açılışta pazar yakınında başlarsın. Kayıt yeniyken tohum almak ilk otomatik kaydı oluşturur. Aynı çiftliği iki uygulamada eşzamanlı açma.
+Kayıtlar Git'e girmez ve iki bilgisayar arasında otomatik taşınmaz. Önceki günlük sulama kayıtlarında büyümesi başlamış ürünün (`growth > 0`) daha önce sulandığı anlaşılır ve sulanmış olarak açılır. Şema sürümü 3; para, envanter, gün/dakika, dünya koordinatlı hazırlanmış toprak, odun ve yapı konum/dönüşlerini içerir. Dosya adı uyumluluk için `farm-v1.json` kalır. V1 geçişinde başlangıç odunu bir kez verilir; ilk v3 yazmada sağlam eski ana dosya `.pre-v3` olarak korunur. V1/V2 hazırlanmış tarlalar ve blokların dünya konumları korunur. Eski exe v3 kaydı desteklemez. Kuşanılan eşya yeni isteğe bağlı `equippedItem` alanında saklanır. Eski sürüm 1 kayıtlarında bu alan yoksa tohum seçilir; iki kalıcı alet envanterde bulunur. Karakter konumu saklanmaz; açılışta pazar yakınında başlarsın. Kayıt yeniyken tohum almak ilk otomatik kaydı oluşturur. Aynı çiftliği iki uygulamada eşzamanlı açma.
 
 ## Basılı tutarak sulama ve ses
 
@@ -146,3 +146,19 @@ python3 tools/art/run_player_checks.py --name building-check-unique --checks bui
 Yerel Xvfb PATH üzerinde değilse `--xvfb builds/Tools/xvfb/runtime/usr/bin/Xvfb` ekle; başka bilgisayarda kurulu Xvfb kullan. Tüm gruplar için `--checks` seçeneğini çıkar. İnşa grubunda 22 `FARMER_BUILDING_CHECK_OK`, `FARMER_BUILDING_CHECKS_FINISHED`, `FARMER_PLAYER_SMOKE_OK`, sıfır hata ve çıkış 0 gerekir.
 
 Manuel deneme: sağdaki alana yaklaş, 4 ile aç, yeşil önizlemede iki komşu blok koy. R ile döndür; tekerleği yukarı alıp birinin üstüne blok koy. Altı boş yer kırmızı olmalı. Önce üstteki bloğu sağ tıkla sök; odun iadesini izle. Oyuncunun içine/uzak noktaya veya arayüz üstünden yerleştirmeyi dene; kaynak harcanmamalı. F9 veya kapat/aç ile konum/dönüş/odun korunmalı. Pazarda odun al; 1/2/3 ile tarıma dön. Kapı/çatı/iç mekân bu adımın kabul ölçütü değil.
+
+## Serbest dünya, çapa, saat ve boyanmış envanter
+
+```bash
+python3 tools/art/run_player_checks.py --xvfb builds/Tools/xvfb/runtime/usr/bin/Xvfb --name world-check --checks world
+# Tüm gruplar (yeni ve benzersiz çıktı adı kullan):
+python3 tools/art/run_player_checks.py --xvfb builds/Tools/xvfb/runtime/usr/bin/Xvfb --name complete-check
+```
+
+Xvfb yolu makineye özgü yerel kurulumdur; binary Git içinde değildir. Çalıştırıcı ayrı ekran ve geçici kayıt açar; masaüstündeki oyuncu kaydına dokunmaz. Eski tarım grupları kendi hazırlığında 36 kare açar; normal yeni oyunun hazır tarlası yoktur. Saat, ilgisiz eski testler için dondurulur; dünya grubu otomatik ilerlemeyi ve gece yarısını ayrıca açarak dener.
+
+Dünya grubu: yeni tarla yokluğu, yedi envanter ikonu ve dünya etiketlerinin kaldırılması, 10 dakika ayarı, boş zemine ekim reddi, çapa/tek basış, tarım, eski alan dışında yapı, engelde çapa reddi, 1×2 yatak/uyku, gün/gece ışıkları, otomatik saat/gece yarısı ve kayıt/yükleme. Kayıt denemesinde saat farkı veya yatak/görsel eksikliği ayrıntılı loglanır.
+
+Manuel görsel kontrol: yedi resim ahşap gözlerin içinde taşmadan görünmeli, seçili göz dokuyu kapatmayan altın vurguyla ayrılmalı; sayaçlar okunmalı. İkon tıklaması dünyaya işlem göndermemeli. Gece okunabilir kalmalı; yeni hazırlanmış tarla ve yatak normal kayıt/yüklemede korunmalı.
+
+Son sonuç: `Logs/painted-inventory-delivery.log`, **168/168 geçti**, çıkış 0. Build `Logs/painted-inventory-final-build.log` başarılı. Saatin JSON round-trip testi 1e-9 dakika toleranslı; diğer kayıt alanları birebir karşılaştırılır. 76/76 EditMode sonucu `Logs/world-tests-final.xml`.

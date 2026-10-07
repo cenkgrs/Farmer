@@ -31,7 +31,7 @@ namespace Farmer
                 if (!game.SavePath.Contains("FarmerQA")) throw new System.InvalidOperationException("Expected isolated smoke save.");
                 Directory.CreateDirectory(Path.GetDirectoryName(game.SavePath));
                 var fixture = game.Model.Snapshot(); fixture.seeds[0].count = 10;
-                for (int i = 0; i < fixture.plots.Length; i++) fixture.plots[i] = new PlotRecord();
+                for (int i = 0; i < fixture.plots.Length; i++) fixture.plots[i] = new PlotRecord { x=i%6-3, z=i/6-3 };
                 foreach (int i in new[] { 0, 1, 3 }) fixture.plots[i].cropId = game.ActiveCrop.id;
                 File.WriteAllText(game.SavePath, JsonUtility.ToJson(fixture)); game.LoadGame();
                 controller.enabled = false; controller.transform.position = new Vector3(-0.5f, 0.1f, -3.8f); controller.enabled = true;

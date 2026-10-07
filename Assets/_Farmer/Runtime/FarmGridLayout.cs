@@ -5,22 +5,24 @@ namespace Farmer
 {
     public sealed class FarmGridLayout
     {
+        private readonly bool unbounded;
         public Vector2 Origin { get; }
         public int Width { get; }
         public int Depth { get; }
         public float CellSize { get; }
 
-        public FarmGridLayout(Vector2 origin, int width, int depth, float cellSize)
+        public FarmGridLayout(Vector2 origin, int width, int depth, float cellSize, bool unbounded = false)
         {
             if (width <= 0 || depth <= 0 || cellSize <= 0 || !float.IsFinite(cellSize))
                 throw new ArgumentOutOfRangeException(nameof(cellSize), "Grid dimensions must be positive and finite.");
+            this.unbounded = unbounded;
             Origin = origin;
             Width = width;
             Depth = depth;
             CellSize = cellSize;
         }
 
-        public bool Contains(Vector2Int cell) => cell.x >= 0 && cell.y >= 0 && cell.x < Width && cell.y < Depth;
+        public bool Contains(Vector2Int cell) => unbounded || (cell.x >= 0 && cell.y >= 0 && cell.x < Width && cell.y < Depth);
 
         // Lower edges belong to a cell; upper edges belong to the next cell (or outside).
         public bool TryGetCell(Vector3 world, out Vector2Int cell)

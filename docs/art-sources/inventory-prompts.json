@@ -1,0 +1,174 @@
+{
+  "generator": "built-in imagegen",
+  "reference": "docs/references/farm_isometric_concept.png",
+  "assets": [
+    {
+      "name": "seed_pouch",
+      "prompt": "Use case: stylized-concept. Asset type: production game inventory icon PNG with genuine transparent alpha. Image 1 is STYLE REFERENCE ONLY: match the illustrated inventory icons at the very bottom of this cozy farming concept, not its landscape. Soft hand-painted shaded volume, appealing chunky silhouette, warm restrained outlines, subtle brush texture and highlights, earthy palette, high quality game UI illustration, not flat vector, not pixel art, not photorealism. ONE isolated object centered, fill 76% of square canvas, generous transparent padding on all sides. Slight three-quarter angle, front readable. No slot, frame, floor, scenery, text, letters, numbers, watermark or drop shadow outside object. Keep entire object inside image. Subject: a plump tan linen seed pouch tied with brown twine, visible fabric folds and a small green sprout emblem painted on its face, no lettering.",
+      "file": "Assets/_Farmer/Resources/InventoryArt/seed_pouch.png",
+      "alpha_bounds": [
+        0,
+        88,
+        1235,
+        1184
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sprite_bounds_top_left": [
+        141,
+        91,
+        1131,
+        1170
+      ]
+    },
+    {
+      "name": "wooden_inventory_frame",
+      "prompt": "Use case: stylized-concept. Asset type: production inventory hotbar background with genuine transparent alpha. Image 1 is STYLE REFERENCE ONLY; match its bottom wooden inventory tray. Generate ONLY one long horizontal handmade wooden inventory tray, front view, no perspective distortion, aspect ratio of the TRAY itself 6.1:1. Warm honey oak frame, rounded bevelled corners, visible elegant flowing wood grain, tiny knots, softly worn edges, painterly lit carved trim, small brass corner pins. Exactly SEVEN identical empty recessed square slots in one evenly spaced horizontal row. Slot interiors cream parchment with soft warm mottled texture and subtle inset shadows; no icons or items inside. Tray completely fits inside image; padding outside tray genuinely transparent. Full tray should be about 90% canvas width, placed at center vertically. Seven wells evenly spaced with narrow wooden dividers, equal small end margins. No labels, text, numbers, watermark, scene, extra objects. Beautiful tactile hand-painted game UI art like the reference, not flat solid brown, not vector.",
+      "file": "Assets/_Farmer/Resources/InventoryArt/wooden_inventory_frame.png",
+      "alpha_bounds": [
+        49,
+        20,
+        2146,
+        677
+      ],
+      "size": [
+        2191,
+        718
+      ],
+      "sprite_bounds_top_left": [
+        55,
+        197,
+        2138,
+        541
+      ]
+    },
+    {
+      "name": "watering_can",
+      "prompt": "Use case: stylized-concept. Asset type: production game inventory icon PNG with genuine transparent alpha. Image 1 is STYLE REFERENCE ONLY: match the illustrated inventory icons at the very bottom of this cozy farming concept, not its landscape. Soft hand-painted shaded volume, appealing chunky silhouette, warm restrained outlines, subtle brush texture and highlights, earthy palette, high quality game UI illustration, not flat vector, not pixel art, not photorealism. ONE isolated object centered, fill 76% of square canvas, generous transparent padding on all sides. Slight three-quarter angle, front readable. No slot, frame, floor, scenery, text, letters, numbers, watermark or drop shadow outside object. Keep entire object inside image. Subject: a small blue-gray galvanized metal watering can with chunky round body, readable arched top handle, side handle and long spout ending in a perforated rose, softly worn metal, pale painted highlights.",
+      "file": "Assets/_Farmer/Resources/InventoryArt/watering_can.png",
+      "alpha_bounds": [
+        46,
+        21,
+        1212,
+        1254
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sprite_bounds_top_left": [
+        48,
+        155,
+        1209,
+        1107
+      ]
+    },
+    {
+      "name": "sickle",
+      "prompt": "Use case: stylized-concept. Asset type: production game inventory icon PNG with genuine transparent alpha. Image 1 is STYLE REFERENCE ONLY: match the illustrated inventory icons at the very bottom of this cozy farming concept, not its landscape. Soft hand-painted shaded volume, appealing chunky silhouette, warm restrained outlines, subtle brush texture and highlights, earthy palette, high quality game UI illustration, not flat vector, not pixel art, not photorealism. ONE isolated object centered, fill 76% of square canvas, generous transparent padding on all sides. Slight three-quarter angle, front readable. No slot, frame, floor, scenery, text, letters, numbers, watermark or drop shadow outside object. Keep entire object inside image. Subject: one short harvesting sickle with a warm carved wood handle and a clean crescent-shaped silver steel blade. Diagonal composition from bottom left handle to upper right blade. It must read as a sickle, not a scythe, sword or axe.",
+      "file": "Assets/_Farmer/Resources/InventoryArt/sickle.png",
+      "alpha_bounds": [
+        67,
+        79,
+        1202,
+        1215
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sprite_bounds_top_left": [
+        71,
+        85,
+        1199,
+        1172
+      ]
+    },
+    {
+      "name": "build_hammer",
+      "prompt": "Use case: stylized-concept. Asset type: production game inventory icon PNG with genuine transparent alpha. Image 1 is STYLE REFERENCE ONLY: match the illustrated inventory icons at the very bottom of this cozy farming concept, not its landscape. Soft hand-painted shaded volume, appealing chunky silhouette, warm restrained outlines, subtle brush texture and highlights, earthy palette, high quality game UI illustration, not flat vector, not pixel art, not photorealism. ONE isolated object centered, fill 76% of square canvas, generous transparent padding on all sides. Slight three-quarter angle, front readable. No slot, frame, floor, scenery, text, letters, numbers, watermark or drop shadow outside object. Keep entire object inside image. Subject: one sturdy small carpenter's building hammer, warm brown wooden handle and broad gray metal hammer head. Diagonal composition bottom left handle to top right head, soft edges, readable chunky shapes.",
+      "file": "Assets/_Farmer/Resources/InventoryArt/build_hammer.png",
+      "alpha_bounds": [
+        0,
+        103,
+        1230,
+        1198
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sprite_bounds_top_left": [
+        166,
+        115,
+        1146,
+        1154
+      ]
+    },
+    {
+      "name": "hoe",
+      "prompt": "Use case: stylized-concept. Asset type: production game inventory icon PNG with genuine transparent alpha. Image 1 is STYLE REFERENCE ONLY: match the illustrated inventory icons at the very bottom of this cozy farming concept, not its landscape. Soft hand-painted shaded volume, appealing chunky silhouette, warm restrained outlines, subtle brush texture and highlights, earthy palette, high quality game UI illustration, not flat vector, not pixel art, not photorealism. ONE isolated object centered, fill 76% of square canvas, generous transparent padding on all sides. Slight three-quarter angle, front readable. No slot, frame, floor, scenery, text, letters, numbers, watermark or drop shadow outside object. Keep entire object inside image. Subject: one farming hoe with a long straight warm wooden handle and a broad steel hoe blade fixed at a right angle near its upper end. Diagonal handle from lower left toward upper right, blade clearly recognizable as hoe not axe or pickaxe.",
+      "file": "Assets/_Farmer/Resources/InventoryArt/hoe.png",
+      "alpha_bounds": [
+        57,
+        52,
+        1190,
+        1166
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sprite_bounds_top_left": [
+        154,
+        139,
+        1183,
+        1138
+      ]
+    },
+    {
+      "name": "turnip",
+      "prompt": "Use case: stylized-concept. Asset type: production game inventory icon PNG with genuine transparent alpha. Image 1 is STYLE REFERENCE ONLY: match the illustrated inventory icons at the very bottom of this cozy farming concept, not its landscape. Soft hand-painted shaded volume, appealing chunky silhouette, warm restrained outlines, subtle brush texture and highlights, earthy palette, high quality game UI illustration, not flat vector, not pixel art, not photorealism. ONE isolated object centered, fill 76% of square canvas, generous transparent padding on all sides. Slight three-quarter angle, front readable. No slot, frame, floor, scenery, text, letters, numbers, watermark or drop shadow outside object. Keep entire object inside image. Subject: one fresh round magenta-red turnip with a small cream tapered root tip and a cluster of three green leaves, friendly plump form, soft hand-painted highlights.",
+      "file": "Assets/_Farmer/Resources/InventoryArt/turnip.png",
+      "alpha_bounds": [
+        49,
+        15,
+        1222,
+        1228
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sprite_bounds_top_left": [
+        230,
+        75,
+        1134,
+        1196
+      ]
+    },
+    {
+      "name": "wood_log",
+      "prompt": "Use case: stylized-concept. Asset type: production game inventory icon PNG with genuine transparent alpha. Image 1 is STYLE REFERENCE ONLY: match the illustrated inventory icons at the very bottom of this cozy farming concept, not its landscape. Soft hand-painted shaded volume, appealing chunky silhouette, warm restrained outlines, subtle brush texture and highlights, earthy palette, high quality game UI illustration, not flat vector, not pixel art, not photorealism. ONE isolated object centered, fill 76% of square canvas, generous transparent padding on all sides. Slight three-quarter angle, front readable. No slot, frame, floor, scenery, text, letters, numbers, watermark or drop shadow outside object. Keep entire object inside image. Subject: one short piece of oak firewood, a thick brown bark-covered log diagonally across the frame with a golden cut end facing the viewer, visible simple concentric growth rings and warm painterly bark grain.",
+      "file": "Assets/_Farmer/Resources/InventoryArt/wood_log.png",
+      "alpha_bounds": [
+        0,
+        21,
+        1226,
+        1254
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sprite_bounds_top_left": [
+        71,
+        147,
+        1210,
+        1163
+      ]
+    }
+  ]
+}

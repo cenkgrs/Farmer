@@ -56,11 +56,11 @@ namespace Farmer
         }
         private void OnEnable()
         {
-            if (game != null) { game.Harvested += OnHarvest; game.Changed += OnChanged; OnChanged(); }
+            if (game != null) { game.Harvested += OnHarvest; game.Hoed += OnHoe; game.Changed += OnChanged; OnChanged(); }
         }
         private void OnDisable()
         {
-            if (game != null) { game.Harvested -= OnHarvest; game.Changed -= OnChanged; }
+            if (game != null) { game.Harvested -= OnHarvest; game.Hoed -= OnHoe; game.Changed -= OnChanged; }
             ResetAction();
         }
         private void OnDestroy() => stream?.Dispose();
@@ -84,7 +84,12 @@ namespace Farmer
             if (!isActiveAndEnabled || !Application.isFocused) return;
             harvestStart = handOffset; harvestStartRotation = toolRotation;
             harvestTime = 0;
-            actionTarget = game.Selection.Layout.Center(new Vector2Int(index % game.Model.Width, index / game.Model.Width), .08f);
+            actionTarget = game.PlotCenter(index,.08f);
+        }
+        private void OnHoe(Vector3 target)
+        {
+            if (!isActiveAndEnabled || !Application.isFocused) return;
+            harvestStart = handOffset; harvestStartRotation = toolRotation; harvestTime = 0; actionTarget = target;
         }
         private void Update()
         {
@@ -110,6 +115,11 @@ namespace Farmer
             // Short anticipation, cutting arc, then recovery. Rapid successful clicks blend from the current pose.
             Vector3 raised = new Vector3(.63f, 1.09f, .28f), cut = new Vector3(-.12f, .83f, .57f);
             Quaternion raisedRotation = Quaternion.Euler(15, -35, -30), cutRotation = Quaternion.Euler(72, 30, 58);
+            if (game.Model.EquippedItem == FarmItem.Hoe)
+            {
+                raised = new Vector3(.36f,1.42f,.38f); cut = new Vector3(.32f,.83f,.58f);
+                raisedRotation = Quaternion.Euler(-65,0,0); cutRotation = Quaternion.Euler(30,0,0);
+            }
             if (harvestTime < .1f)
             {
                 float t = Mathf.SmoothStep(0, 1, harvestTime / .1f);

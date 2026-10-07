@@ -8,7 +8,7 @@ namespace Farmer.Tests
     public sealed class BuildingTests
     {
         private static CropRules[] Crops => new[] { new CropRules("turnip", 10, 18, 3, 1) };
-        private static FarmModel Fresh() => new FarmModel(Crops);
+        private static FarmModel Fresh() => FarmingTests.Prepared(new FarmModel(Crops));
         private static string State(FarmModel farm) => JsonUtility.ToJson(farm.Snapshot());
         [Test] public void PlacementStackingRotationAndRemovalConserveWood()
         {
@@ -24,7 +24,7 @@ namespace Farmer.Tests
             Assert.That(b.Remove(1, 0, 0, out _), Is.True);
             Assert.That(b.Wood, Is.EqualTo(BuildingModel.StarterWood));
         }
-        [TestCase(-1,0,0,0)] [TestCase(6,0,0,0)] [TestCase(0,0,5,0)] [TestCase(0,3,0,0)]
+        [TestCase(-100001,0,0,0)] [TestCase(100001,0,0,0)] [TestCase(0,0,100001,0)] [TestCase(0,3,0,0)]
         [TestCase(0,1,0,0)] [TestCase(0,0,0,4)] [TestCase(0,-1,0,0)]
         public void InvalidPlacementDoesNotSpendWood(int x, int level, int z, int rotation)
         {
@@ -77,7 +77,7 @@ namespace Farmer.Tests
         }
         [TestCase("missing")] [TestCase("wood")] [TestCase("unknown")] [TestCase("duplicate")]
         [TestCase("floating")] [TestCase("rotation")] [TestCase("bounds")] [TestCase("null")]
-        public void BrokenV2ConstructionIsRejected(string fault)
+        public void BrokenCurrentConstructionIsRejected(string fault)
         {
             var farm = Fresh(); farm.Building.Place("wood_block", 0, 0, 0, 0, out _); var s = farm.Snapshot();
             switch (fault)
@@ -88,7 +88,7 @@ namespace Farmer.Tests
                 case "duplicate": s.building.blocks = new[] { s.building.blocks[0], s.building.blocks[0] }; break;
                 case "floating": s.building.blocks[0].level = 1; break;
                 case "rotation": s.building.blocks[0].rotation = -1; break;
-                case "bounds": s.building.blocks[0].x = 6; break;
+                case "bounds": s.building.blocks[0].x = 100001; break;
                 case "null": s.building.blocks[0] = null; break;
             }
             Assert.Throws<ArgumentException>(() => FarmModel.Restore(s, Crops, 6, 6));
@@ -101,7 +101,7 @@ namespace Farmer.Tests
             Assert.That(farm.Building.Wood, Is.EqualTo(19));
             Assert.That(FarmModel.Restore(farm.Snapshot(), Crops, 6, 6, rules).Building.Count, Is.EqualTo(1));
         }
-        [Test] public void FirstV2WriteKeepsOriginalV1AndRecoversV2Backup()
+        [Test] public void FirstV3WriteKeepsOriginalV1AndRecoversV3Backup()
         {
             string directory = Path.Combine(Path.GetTempPath(), "farmer-building-test-" + Guid.NewGuid().ToString("N")); Directory.CreateDirectory(directory);
             string path = Path.Combine(directory, "farm-v1.json");
@@ -111,11 +111,11 @@ namespace Farmer.Tests
                 string original = JsonUtility.ToJson(old); File.WriteAllText(path, original);
                 var store = new FarmSaveStore(path, s => FarmModel.Restore(s, Crops, 6, 6));
                 var farm = store.Load(out _); farm.Building.Place("wood_block", 0, 0, 0, 0, out _); store.Save(farm.Snapshot());
-                Assert.That(File.ReadAllText(path + ".pre-v2"), Is.EqualTo(original));
+                Assert.That(File.ReadAllText(path + ".pre-v3"), Is.EqualTo(original));
                 farm.Building.Place("wood_block", 0, 1, 0, 1, out _); store.Save(farm.Snapshot());
                 File.WriteAllText(path, "broken"); var restored = store.Load(out bool recovered);
                 Assert.That(recovered, Is.True); Assert.That(restored.Building.Count, Is.EqualTo(1)); Assert.That(restored.Building.Wood, Is.EqualTo(22));
-                Assert.That(File.ReadAllText(path + ".pre-v2"), Is.EqualTo(original));
+                Assert.That(File.ReadAllText(path + ".pre-v3"), Is.EqualTo(original));
             }
             finally { Directory.Delete(directory, true); }
         }

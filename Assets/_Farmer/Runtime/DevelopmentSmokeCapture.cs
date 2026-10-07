@@ -51,6 +51,11 @@ namespace Farmer
                 yield break;
             }
             yield return new WaitForSecondsRealtime(3f);
+            var farm = FindFirstObjectByType<FarmGame>();
+            farm.GetComponent<DayNightCycle>().ClockPaused = true;
+            // Deterministic regression fixture; normal new games start with unprepared ground.
+            for (int z=-3;z<3;z++) for(int x=-3;x<3;x++) farm.Model.Till(x,z,out _);
+            farm.NotifyTimeAdvanced();
             if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-controls") >= 0)
                 yield return ControlsSmokeChecks.Run();
             if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-farming") >= 0)
@@ -63,6 +68,8 @@ namespace Farmer
                 yield return ToolAnimationSmokeChecks.Run(outputPath);
             if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-building") >= 0)
                 yield return BuildingSmokeChecks.Run(outputPath);
+            if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-world") >= 0)
+                yield return WorldSmokeChecks.Run(outputPath);
             yield return new WaitForEndOfFrame();
             ScreenCapture.CaptureScreenshot(outputPath);
             float deadline = Time.realtimeSinceStartup + 15f;

@@ -127,6 +127,10 @@ Arkadaşına ZIP'in tamamını gönder. ZIP tamamen çıkarıldıktan sonra `Far
 açılır; Unity kurulumu gerekmez. EXE, `Farmer_Data`, `MonoBleedingEdge` ve DLL'ler
 birlikte kalmalıdır. Kontroller ve sorun bildirimi bilgileri paketteki rehberdedir.
 
-## İlk inşa denemesi
+## Serbest inşa, çapa ve saat
 
-Güncel Linux build'inde `4` ile inşa moduna gir; tarlanın sağındaki çizgili alana yaklaş. Sol tık yerleştirir, `R` döndürür, tekerlek yüksekliği seçer, sağ tık bloğu söker. `Esc` veya `1/2/3` ile tarıma dön. Başlangıç 24 odun, blok 2 odun; pazarın yeni düğmesinden 20 paraya 10 odun alınır. Üst blok için alt destek gerekir. Mevcut Windows ZIP bu değişikliği içermez; güncel kaynakla yeniden build/paket gerekir.
+`4` inşa, `Q` blok/yatak, sol tık yerleştir, `R` döndür, tekerlek blok yüksekliği, sağ tık sök. İşaretli inşa alanı yok; uygun boş zemine yaklaş. `5` çapa ile boş toprağı hazırla, sonra 1/2/3 ile ek/sula/hasat et. Yeni oyunda hazır tarla bulunmaz; eski kayıttaki tarla korunur.
+
+Tam gün **10 gerçek dakika** sürer; ışık ve saat otomatik ilerler. Yalnızca yatak yakınında `N` sonraki 06:00'ya atlar. Başlangıç yatağı dışında 8 oduna yeni yatak kurulabilir. Kayıt v3'e geçer, eski sağlam ana kayıt `.pre-v3` olarak korunur. Mevcut eski Windows ZIP bu değişiklikleri içermez; güncel kaynakla yeniden build/paket gerekir.
+
+Envanter artık ekranın altında kompakt ikon çubuğudur; eşya ikonuna tıkla veya kısayolunu kullan, kullanım bilgisi için üzerine gel. Dünyadaki pazar/yatak yazıları kaldırıldı; yaklaşınca alışveriş/uyuma paneli açılır.

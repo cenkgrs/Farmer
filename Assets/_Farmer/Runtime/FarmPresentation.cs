@@ -8,6 +8,8 @@ namespace Farmer
         [SerializeField] private FarmGame game;
         [SerializeField] private Renderer[] soil;
         private GameObject[] plants;
+        private Renderer soilTemplate;
+        private FarmModel observedModel;
         private int[] shownStages;
         private string[] shownCrops;
         private Color[] dryColors;
@@ -23,7 +25,7 @@ namespace Farmer
         private const float WateringReleaseSeconds = 0.7f;
         private bool pouringAudio;
         private float releaseElapsed, releaseVolume;
-        private readonly GameObject[] heldItems = new GameObject[3];
+        private readonly GameObject[] heldItems = new GameObject[4];
         private readonly Material[] toolMaterials = new Material[3];
 
         public float WateringIntensity => wateringAudio != null && wateringAudio.isPlaying ? Mathf.Clamp01(wateringAudio.volume / WateringVolume) : 0;
@@ -32,9 +34,10 @@ namespace Farmer
         private void Start()
         {
             block = new MaterialPropertyBlock();
-            plants = new GameObject[soil.Length]; shownStages = new int[soil.Length]; shownCrops = new string[soil.Length];
-            dryColors = new Color[soil.Length];
-            for (int i = 0; i < soil.Length; i++) { shownStages[i] = -1; dryColors[i] = soil[i].sharedMaterial.GetColor("_BaseColor"); }
+            soilTemplate = soil[0];
+            foreach (var renderer in soil) renderer.gameObject.SetActive(false);
+            soil = new Renderer[0]; plants = new GameObject[0];
+            shownStages = new int[0]; shownCrops = new string[0]; dryColors = new Color[0];
             audioSource = gameObject.AddComponent<AudioSource>(); audioSource.playOnAwake = false;
             const int rate = 22050;
             var samples = new float[rate / 4];
@@ -109,7 +112,7 @@ namespace Farmer
         private IEnumerator FloatHarvest(int index, string label)
         {
             var obj = new GameObject("Harvest Feedback"); obj.transform.SetParent(transform);
-            Vector3 start = game.Selection.Layout.Center(new Vector2Int(index % game.Model.Width, index / game.Model.Width), 1.7f);
+            Vector3 start = game.PlotCenter(index, 1.7f);
             obj.transform.rotation = Camera.main.transform.rotation;
             var text = obj.AddComponent<TextMesh>(); text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             obj.GetComponent<MeshRenderer>().sharedMaterial = text.font.material;
@@ -129,7 +132,7 @@ namespace Farmer
             Color[] colors = { new Color(0.86f, 0.67f, 0.35f), new Color(0.22f, 0.64f, 0.73f), new Color(0.78f, 0.82f, 0.80f) };
             for (int i = 0; i < 3; i++)
             {
-                toolMaterials[i] = new Material(soil[0].sharedMaterial);
+                toolMaterials[i] = new Material(soilTemplate.sharedMaterial);
                 toolMaterials[i].SetColor("_BaseColor", colors[i]);
             }
             heldItems[0] = new GameObject("Held Seeds");
@@ -142,6 +145,9 @@ namespace Farmer
             heldItems[1].transform.localRotation = Quaternion.Euler(0, 180, 0);
             heldItems[1].name = "Held WateringCan";
             heldItems[2].name = "Held Sickle";
+            heldItems[3] = new GameObject("Held Hoe"); heldItems[3].transform.SetParent(heldItemSocket,false);
+            Part(3, PrimitiveType.Cylinder, new Vector3(0,-.22f,.03f), new Vector3(.038f,.48f,.038f),0);
+            Part(3, PrimitiveType.Cube, new Vector3(0,-.67f,.13f), new Vector3(.27f,.055f,.25f),2);
         }
         private Transform Part(int item, PrimitiveType shape, Vector3 position, Vector3 scale, int material)
         {
@@ -156,6 +162,27 @@ namespace Farmer
         {
             for (int i = 0; i < heldItems.Length; i++)
                 heldItems[i].SetActive(!game.BuildMode && game.Model.EquippedItem == (FarmItem)i && game.Model.ItemCount((FarmItem)i, game.ActiveCrop.id) > 0);
+            if (observedModel != game.Model)
+            {
+                foreach (var renderer in soil) Destroy(renderer.gameObject);
+                foreach (var plant in plants) if (plant != null) Destroy(plant);
+                soil = new Renderer[0]; plants = new GameObject[0]; shownStages = new int[0]; shownCrops = new string[0]; dryColors = new Color[0];
+                observedModel = game.Model;
+            }
+            if (soil.Length != game.Model.PlotCount)
+            {
+                int previous = soil.Length, count = game.Model.PlotCount;
+                System.Array.Resize(ref soil,count);System.Array.Resize(ref plants,count);System.Array.Resize(ref shownStages,count);
+                System.Array.Resize(ref shownCrops,count);System.Array.Resize(ref dryColors,count);
+                for (int i = previous; i < count; i++)
+                {
+                    var obj = Instantiate(soilTemplate.gameObject,game.PlotCenter(i,.025f),Quaternion.identity,transform);
+                    obj.name = "Tilled Soil " + i;
+                    foreach (var collider in obj.GetComponentsInChildren<Collider>()) { collider.enabled=false; Destroy(collider); }
+                    obj.SetActive(true); soil[i] = obj.GetComponent<Renderer>();
+                    dryColors[i] = soilTemplate.sharedMaterial.GetColor("_BaseColor"); shownStages[i] = -1;
+                }
+            }
             for (int i = 0; i < soil.Length; i++)
             {
                 var plot = game.Model.Plot(i);
@@ -169,7 +196,7 @@ namespace Farmer
                 var definition = game.Definition(plot.cropId);
                 plants[i] = Instantiate(definition.growthStages[stage], transform);
                 plants[i].name = $"{plot.cropId} {i} stage {stage}";
-                plants[i].transform.position = game.Selection.Layout.Center(new Vector2Int(i % game.Model.Width, i / game.Model.Width), 0.06f);
+                plants[i].transform.position = game.PlotCenter(i);
             }
         }
     }

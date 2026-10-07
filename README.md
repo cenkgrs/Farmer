@@ -2,7 +2,7 @@
 
 Çalışma adı: **Farmer**. Sabit açılı izometrik kamerayla oynanan, stilize 3D çiftçilik, üs kurma ve hafif keşif/savaş oyunu.
 
-**Unity 6000.3.25f1 LTS + C# + URP** kurulumu doğrulandı. İlk import, C# derlemesi, izometrik başlangıç sahnesi ve Linux geliştirme build'i başarılı. Build çalıştırılıp gerçek ekran görüntüsü incelendi. 0.1 çekirdek döngüsü hazır: hareket, 6×6 tarla, tohum satın alma, ekim/sulama, dört büyüme aşaması, hasat/satış ve kayıt/yükleme.
+**Unity 6000.3.25f1 LTS + C# + URP** kurulumu doğrulandı. İlk import, C# derlemesi, izometrik başlangıç sahnesi ve Linux geliştirme build'i başarılı. Build çalıştırılıp gerçek ekran görüntüsü incelendi. 0.1 çekirdek döngüsü hazır: hareket, çapayla hazırlanan tarla, tohum satın alma, ekim/sulama, dört büyüme aşaması, hasat/satış ve kayıt/yükleme.
 
 ## Oyna
 
@@ -10,19 +10,22 @@
 
 - **WASD / ok tuşları:** hareket.
 - **Fare:** tarla karesini hedefle; tıklamana gerek yok. Turuncu çerçeve, yaklaşman gerektiğini belirtir.
+- **5 · Çapa:** boş toprağı sol tıkla ekime hazırla. Yeni oyunda hazır tarla bulunmaz.
 - **1 / 2 / 3:** tohum / sulama kabı / orak kuşan. Eşya çubuğuna tıklayarak da seçebilirsin.
 - **Sol tık:** tohum ek veya orakla hasat et.
 - **Sulama kabıyla sol tuşu basılı tut:** fareyi yakındaki tarla karelerinde gezdirerek sula. Sulama boyunca hafif su sesi çalar; tuşu bırakınca yaklaşık 0,7 saniyede azalarak biter.
 - **Pazar yakınında B:** 1 tohum al. **V:** turpların hepsini sat. Ekrandan 5 tohum da alınabilir.
-- **Kamp yakınında N:** günü bitir. Bir kez sulanan ürünler büyür; hiç sulanmayanlar bekler.
-- **4 · İnşa:** sol tıkla ahşap blok koy, R ile döndür, tekerlekle yüksekliği seç, sağ tıkla sök. Esc veya 1/2/3 ile çık.
+- **Yatak yakınında N:** sonraki sabah 06:00'ya kadar uyu. Saat kendiliğinden de ilerler; tam bir gün 10 gerçek dakika sürer. Sulanan ürünler gece yarısında büyür.
+- **4 · İnşa:** uygun boş zeminde sol tıkla yerleştir. Q ile blok/yatak seç, R ile döndür, tekerlekle blok yüksekliği seç, sağ tıkla sök. Esc veya 1/2/3/5 ile çık.
 - **F5 / F9:** kaydet / son kaydı yükle. Başarılı işlemler zaten otomatik kaydedilir.
 
-Sulama kabı ve orak başlangıç eşyalarıdır; kullanıldıkça tükenmez. Tohum sayısı satın alma/ekimle değişir. Elindeki eşya da kaydedilir.
+Sulama kabı, orak ve çapa başlangıç eşyalarıdır; kullanıldıkça tükenmez. Tohum sayısı satın alma/ekimle değişir. Elindeki eşya da kaydedilir.
 
-Oyuncu, sulama kabı, orak ve pazar kullanıcı tarafından sağlanan dokulu 3D modelleri kullanır; karakterde Mixamo Idle/Walk animasyonları vardır. Zemin, ürünler, kamp ve tohum torbası hâlâ geçici görsellerdir. İlk ürün turptur: tohum 10, satış 18 para; ekimden sonra bir kez sulanır ve üç gece sonra hasat edilir. Gerçek zamanlı bekleme yoktur. 0.2'nin ilk ahşap blok adımı hazır: sağdaki alanda yan yana/üst üste inşa et. Başlangıç 24 odun, blok başına 2 odun; sökme tam iade, pazarda 20 paraya 10 odun. Ev/kapı/çatı/mobilya sonraki adımlardır. [Testler ve manuel kontrol](docs/TESTLER.md).
+Oyuncu, sulama kabı, orak ve pazar kullanıcı tarafından sağlanan dokulu 3D modelleri kullanır; karakterde Mixamo Idle/Walk animasyonları vardır. Zemin, ürünler, kamp ve tohum torbası hâlâ geçici görsellerdir. İlk ürün turptur: tohum 10, satış 18 para; ekimden sonra bir kez sulanır ve üç gece sonra hasat edilir. 0.2'de alan kısıtı olmadan uygun zeminde yapı kurabilirsin. Başlangıç 24 odun; blok 2, yatak 8 odun; sökme tam iade, pazarda 20 paraya 10 odun. Kapı/çatı ve diğer mobilyalar sonraki adımlardır. [Testler ve manuel kontrol](docs/TESTLER.md).
 
 ![Tripo modelleri ve Mixamo animasyonlarıyla çalışan tarım prototipi](docs/screenshots/art-integration.png)
+
+Alt ahşap envanter çubuğunda ikonlara tıklayarak eşya seçebilirsin; üzerine gelince kullanım bilgisi görünür. Tohum, hasat ve odun adetleri ikon köşelerindedir.
 
 ## Başlangıç
 

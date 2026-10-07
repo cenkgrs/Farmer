@@ -16,7 +16,7 @@ Tekrarlanan işleri ileride sulama/üretim sistemleri kolaylaştırmalı. Daha g
 
 ## Çiftçilik
 
-**7 Ekim kullanıcı geri bildirimiyle kesinleşen etkileşim:** Tarla karesini tıklayarak seçmek gerekmez. Fare o karenin üzerindeyken ve oyuncu yeterince yakındayken sol tık, eldeki eşyayı kullanır. Tohum ekim, sulama kabı sulama, orak hasat yapar; işlemler bitkinin durumuna bakarak otomatik başka bir işe dönüşmez. Eşyalar hızlı erişim çubuğundan veya 1/2/3 ile kuşanılır; karakterin elinde görünür. Tohum ve hasat bir sol tıkla tek işlem yapar. Sulama kabında sol tuş basılı tutulur; farenin geçtiği erişilebilir ekili kareler birer kez sulanır. Yakındaki tarla üzerinde hafif su dökme sesi döner. Tuş bırakma, eşya değiştirme veya hedeften çıkmada sulama hemen durur; ses yaklaşık 0,7 saniyede azalarak biter. Odak kaybı/pause/devre dışı bırakmada ses doğrudan susturulur. Son 7 Ekim ses geri bildirimiyle sentez yerine gerçek sulama kabı kaydına geçildi; kaynak ses seviyesi 0.064 değerinden %30 artırılarak 0.0832 yapıldı. Kaynak/lisans `audio-sources/README.md` içinde. Arayüz üzerinde başlayan sürükleme sulamayı başlatmaz. Alan etkisi, su doldurma ve alet dayanıklılığı yoktur.
+**7 Ekim kullanıcı geri bildirimiyle kesinleşen etkileşim:** Tarla karesini tıklayarak seçmek gerekmez. Fare o karenin üzerindeyken ve oyuncu yeterince yakındayken sol tık, eldeki eşyayı kullanır. Tohum ekim, sulama kabı sulama, orak hasat yapar; işlemler bitkinin durumuna bakarak otomatik başka bir işe dönüşmez. Eşyalar hızlı erişim çubuğundan veya 1/2/3/5 ile kuşanılır; karakterin elinde görünür. Tohum ve hasat bir sol tıkla tek işlem yapar. Sulama kabında sol tuş basılı tutulur; farenin geçtiği erişilebilir ekili kareler birer kez sulanır. Yakındaki tarla üzerinde hafif su dökme sesi döner. Tuş bırakma, eşya değiştirme veya hedeften çıkmada sulama hemen durur; ses yaklaşık 0,7 saniyede azalarak biter. Odak kaybı/pause/devre dışı bırakmada ses doğrudan susturulur. Son 7 Ekim ses geri bildirimiyle sentez yerine gerçek sulama kabı kaydına geçildi; kaynak ses seviyesi 0.064 değerinden %30 artırılarak 0.0832 yapıldı. Kaynak/lisans `audio-sources/README.md` içinde. Arayüz üzerinde başlayan sürükleme sulamayı başlatmaz. Alan etkisi, su doldurma ve alet dayanıklılığı yoktur.
 
 **Alet hareketleri:** Sularken kol öne uzanır, kap eğilir ve ağzından hedef kareye ince su akışı görünür. Tuş bırakıldığında kap 0,7 saniyede taşımaya döner; su görseli mevcut sesin sönümlenmesini izler. Başarılı hasatta orak 0,52 saniyelik hazırlanma/savurma/toparlanma hareketi yapar. Bunlar mevcut Idle/Walk üzerinde prosedürel kol/el hareketleridir; yeni FBX gerektirmez. Hareket kilidi veya ek bekleme süresi yoktur, işlem sonucu mevcut tıklama anında uygulanır. Oyuncu sularken yürüyebilir; karakter görseli işlem hedefine bakar. Eşya değişimi, kayıt yükleme, odak/pause ve devre dışı bırakma geçici hareketi temizler.
 
@@ -40,9 +40,9 @@ Tekrarlanan işleri ileride sulama/üretim sistemleri kolaylaştırmalı. Daha g
 | Keten | Lif/kumaş, eşya üretimi. |
 | Şifalı ot | Keşif için iyileştirici üretimi. |
 
-0.1 için uygulanan geçici denge: turp tohumu 10 para, ürün satışı 18 para, hasat verimi 1, olgunlaşma ilk sulamadan sonraki üç gece. Başlangıç 60 para, sıfır tohum/ürün ve iki başlangıç aleti. Dört aşama ekildiği gün filiz, ilk sulamadan bir gece sonra gelişen bitki, ikinci gece olgunlaşan bitki ve üçüncü gece hasada hazır bitkidir. Diğer ürünlerin değerleri henüz belirlenmedi.
+0.1 için uygulanan geçici denge: turp tohumu 10 para, ürün satışı 18 para, hasat verimi 1, olgunlaşma ilk sulamadan sonraki üç gece. Başlangıç 60 para, sıfır tohum/ürün, sulama kabı, orak ve çapa. Dört aşama ekildiği gün filiz, ilk sulamadan bir gece sonra gelişen bitki, ikinci gece olgunlaşan bitki ve üçüncü gece hasada hazır bitkidir. Diğer ürünlerin değerleri henüz belirlenmedi.
 
-Ürün değerleri `Assets/_Farmer/Data/Turnip.asset` tanımındadır. Gün yalnızca kampta N veya dinlenme düğmesiyle ilerler; gerçek zamanlı süre sınırı yoktur. Pazar tezgâhına yaklaşarak tohum alınır ve ürün satılır. Başarılı işlemler otomatik kaydedilir. Bu ilk denge oynanış geri bildirimiyle değişebilir.
+Ürün değerleri `Assets/_Farmer/Data/Turnip.asset` tanımındadır. Saat normal akışta ilerler; tam 24 oyun saati kullanıcı kararıyla **10 gerçek dakika** sürer. Gece yarısında gün ve sulanmış ürünlerin büyümesi bir kez ilerler. Yalnızca bir yatağın yanında N veya uyuma düğmesi saati sonraki 06:00'ya taşır; 00:00–05:59 arasında bu aynı günün sabahıdır ve yeniden büyüme vermez. Uyku zorunlu değildir; gece kendiliğinden sabaha döner. Odak kaybında zaman durur, oyun kapalıyken ilerlemez. Pazar tezgâhına yaklaşarak tohum alınır ve ürün satılır. Başarılı işlemler otomatik kaydedilir. Bu ilk denge oynanış geri bildirimiyle değişebilir.
 
 ## Üs kurma
 
@@ -56,13 +56,19 @@ Tekrarlanan işleri ileride sulama/üretim sistemleri kolaylaştırmalı. Daha g
 - İlk ev tek katlıdır. Blokları üst üste koymak erken desteklenir; yaşanabilir üst kat, merdiven ve gelişmiş kat yönetimi demo sonrasına aittir.
 - Izgara, kapı geçişi, karakter yüksekliği ve eşya boyutları birlikte prototiplenir. Geçici ölçüler kesin üretim standardı diye kabul edilmez.
 
-### 0.2 ilk yerleşim denemesi
+### Dünya üzerinde serbest yerleşim ve çapa — 7 Ekim güncel karar
 
-Uygulanan geçici değerler: tarlanın sağındaki 6×5 inşa alanında 1 m ahşap bloklar, en fazla üç blok yüksekliği. Başlangıç 24 odun; bir blok 2 odun, sökme tam iade. Pazardan 20 paraya 10 odun alınır; odun üst sınırı 999. Bunlar nihai ekonomi dengesi değildir; kaynak toplama daha sonra ele alınacak.
+İnşa alanı veya yalnızca çiftlikte kurma kısıtı yoktur. Gelecekte düşman bölgelerinde de uygun zeminde yapı/barınak kurulabilir; düşmanlardan korunma, duvarların davranışı ve uyuma tehlikesi o bölgenin geliştirmesinde ele alınacak. Bu adım yeni düşman bölgesi veya savaş eklemez.
 
-`4` veya alt çubuk inşa modunu açar. Sol tık yerleştirir, `R` 90° döndürür, tekerlek yüksekliği seçer, sağ tık görünen bloğu söker; `Esc` veya `1/2/3` tarıma döner. Önizleme yeşil/kırmızıyla geçerliliği gösterir. Yerleştirme yatayda 3,5 m erişim ister; oyuncu/nesne çakışması ve havada desteksiz blok engellenir. Üstünde blok olan alt blok sökülemez. Basılı sol tık tekrar tekrar blok üretmez.
+Mevcut prototipin düz 20×20 arazisindeki boş ve sağlam zemin kullanılabilir. Arazinin dışı, havada kalan yapılar, mevcut nesneler/oyuncu ve ekili ürünlerle çakışma engellenir. Dünya kayıtları alan kimliğine bağlı değildir; yeni bölgelerde zemin `WorldGround` ile tanımlanır. Prototipte zemin y=0, hücre 1 m, üst üste en fazla üç ahşap blok; farklı arazi yükseklikleri ve yaşanabilir üst kat henüz yoktur.
 
-Yapı ve odun mevcut çiftlikle birlikte kaydedilir; eski çiftlikler korunarak kayıt sürümü 2'ye taşınır. Henüz çit, kapı, çatı, eşya veya duvar gizleme yoktur.
+`4` inşa; `Q` ahşap blok/yatak seçimi; sol tık yerleştir; `R` 90° döndür; tekerlek blok yüksekliği; sağ tık görünen yapıyı sök. `Esc` veya `1/2/3/5` tarıma döner. Grid sadece oyuncu çevresindeki bir hizalama yardımcısıdır, yerleşim bölgesi değildir. Yeşil/kırmızı önizleme ve yatay 3,5 m erişim korunur. Alt destek gereklidir; üstünde blok olan alt blok sökülemez.
+
+Başlangıç 24 odun; blok 2, 1×2 hücrelik yatak 8 odun; sökme tam iade. Pazar 20 paraya 10 odun, çanta sınırı 999. Bunlar geçici denge değerleridir. Yatak zemine kurulur ve 1,8 m çevresinde uyuma sağlar; başlangıç minderinin kendisi de yataktır. Yatak önizlemesi uyuma sağlamaz.
+
+Yeni oyunda otomatik hazırlanmış tarla yoktur. `5` ile kuşanılan çapa, yakındaki boş toprağı sol tıkla ekime hazırlar. Ardından 1/2/3 ile aynı ekim/sulama/hasat döngüsü işler. Ekili kare tekrar çapalanmaz ve kaynak kaybetmez; hasat sonrası toprak ekilebilir kalır. Yapının altında veya sert engellerde çapa kullanılmaz; boş ekilebilir karenin üzerine yapı kurulabilir, ekili ürün önce hasat edilmelidir.
+
+Saat, odun, yatak/yapı koordinatları ve hazırlanmış toprak kayıt sürümü 3'te saklanır. V1/V2 kayıtlarındaki tarlalar ve blokların dünya konumları korunur; eski çiftlik bilerek silinmez. İlk v3 yazımından önce sağlam eski ana kayıt `.pre-v3` yedeğine alınır. Saat gündüz/gece ışıklarını yumuşak değiştirir; kalıcı işlem ve gece yarısına ek olarak 30 saniyede bir kaydedilir.
 
 ## Dünya ve savaş
 
@@ -79,3 +85,10 @@ Odun → yapı parçaları; keten → lif/kumaş → yatak/ekipman; maden → ge
 İlk demoda multiplayer, hayvancılık, mevsimler, karmaşık NPC ilişkileri, büyük açık dünya, tam otomasyon ve yaşanabilir üst katlar yok. Bunlar ileride değerlendirilebilir; vaat veya aktif iş değildir.
 
 İlk fikirlerde geçen sihirli bitkiler/sis temizleme ve hava felaketleri temel kapsamda kabul edilmedi. Bunları sessizce oyunun ana mekaniğine dönüştürme.
+
+
+## Oyun içi arayüz — güncel kullanıcı tercihi
+
+Pazar ve yatağın üstünde dünya yazısı yoktur; yaklaşınca etkileşim paneli açılır. Alt arayüz referanstaki gibi ortalanmış ahşap çerçeveli küçük eşya gözlerinden oluşur: tohum, sulama kabı, orak, inşa, çapa, hasat ve odun. Tohum/hasat/odun miktarları ikon köşesinde görünür; seçili eşya altın renkle ayrılır. Sürekli geniş tuş listesi kaldırıldı. Ad/kısayol/kullanım açıklaması yalnızca ikonun üzerine gelince; inşa komutları inşa modundayken gösterilir. İşlem geri bildirimi kısa süreli görünür. Saat ve para sol üstte küçük karttadır. Bu hızlı envanter çubuğudur; genel çanta/sürükle-bırak/depolama sistemi değildir.
+
+Kullanıcı düz vektör ikon ve tek renk kahverengi arka planı reddetti. Envanterde konseptle eşleşen ImageGen boyanmış eşya resimleri, ahşap damarları ve krem dokulu oyuklar kullanılır; miktar ve seçim vurgusu ayrı UI katmanıdır.

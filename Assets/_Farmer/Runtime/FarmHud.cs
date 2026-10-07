@@ -8,147 +8,137 @@ namespace Farmer
     public sealed class FarmHud : MonoBehaviour
     {
         [SerializeField] private FarmGame game;
-        private Text summary, objective, saveStatus, selectionStatus, feedback, campWarning, actionText;
-        private RectTransform shop, camp;
-        private Button buyOne, buyFive, buyWood, sell, sleep, buildButton;
-        private Text controls;
+        private Text summary,money,saveStatus,selectionStatus,feedback,campWarning,tooltipText;
+        private RectTransform shop,camp,detail,tooltip,toast;
+        private Button buyOne,buyFive,buyWood,sell,sleep,buildButton;
         private BuildController builder;
-        private readonly Button[] slots = new Button[3];
-        private readonly Text[] slotLabels = new Text[3];
-        private static readonly Color Gold = new Color(0.98f, 0.84f, 0.49f);
-        public void Configure(FarmGame source) => game = source;
-
+        private readonly Button[] slots=new Button[4];
+        private Text seedCount,produceCount,woodCount;
+        private string hovered,lastFeedback;
+        private float feedbackUntil;
+        private static Sprite rounded;
+        private static readonly Color Cream=new Color(.94f,.85f,.66f),Ink=new Color(.25f,.19f,.12f),Wood=Color.white,Gold=new Color(1f,.63f,.08f,.32f);
+        public void Configure(FarmGame source)=>game=source;
         private void Start()
         {
-            builder = game.GetComponent<BuildController>();
-            var root = new GameObject("Farm HUD", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-            root.transform.SetParent(transform, false);
-            root.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
-            var scaler = root.GetComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1280, 720); scaler.matchWidthOrHeight = 0.5f;
-            if (EventSystem.current == null)
+            builder=game.GetComponent<BuildController>();
+            var root=new GameObject("Farm HUD",typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));root.transform.SetParent(transform,false);
+            root.GetComponent<Canvas>().renderMode=RenderMode.ScreenSpaceOverlay;
+            var scaler=root.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1280,720);scaler.matchWidthOrHeight=.5f;
+            if(EventSystem.current==null)
             {
-                var events = new GameObject("Farm UI Input", typeof(EventSystem), typeof(InputSystemUIInputModule));
-                events.transform.SetParent(transform, false);
+                var events=new GameObject("Farm UI Input",typeof(EventSystem),typeof(InputSystemUIInputModule));events.transform.SetParent(transform,false);
                 events.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();
             }
-            var header = Panel("Header", root.transform, new Vector2(0.5f, 1), new Vector2(0, -20), new Vector2(1232, 92));
-            Label(header, "F A R M E R", 25, 18, 10, 230, 34, Gold);
-            summary = Label(header, "", 19, 260, 12, 950, 32, Color.white);
-            objective = Label(header, "", 16, 18, 55, 925, 28, Color.white);
-            saveStatus = Label(header, "", 13, 955, 51, 260, 40, Gold);
+            var header=Panel("Clock and Wallet",root.transform,new Vector2(0,1),new Vector2(24,-20),new Vector2(224,76),Cream);
+            summary=Label(header,"",20,14,9,196,26,Ink);money=Label(header,"",15,14,41,126,24,Ink);
+            saveStatus=Label(header,"",10,130,46,88,18,new Color(.40f,.39f,.23f));
+            detail=Panel("Cell Details",root.transform,new Vector2(1,1),new Vector2(-24,-20),new Vector2(244,110),Cream);
+            selectionStatus=Label(detail,"",15,14,12,216,90,Ink);
+            shop=Panel("Market",root.transform,new Vector2(0,1),new Vector2(24,-112),new Vector2(250,264),Cream);
+            Label(shop,"Tohum & malzeme",20,14,10,224,28,Ink);
+            Label(shop,$"{game.ActiveCrop.displayName} · satış {game.ActiveCrop.salePrice} para",13,14,41,224,22,Ink);
+            buyOne=Button(shop,$"B · 1 tohum al ({game.ActiveCrop.seedPrice})",14,72,222,36,()=>game.Buy(1));
+            buyFive=Button(shop,$"5 tohum al ({game.ActiveCrop.seedPrice*5})",14,116,222,36,()=>game.Buy(5));
+            sell=Button(shop,"V · Ürünlerin hepsini sat",14,160,222,36,()=>game.SellHarvest());
+            buyWood=Button(shop,"10 odun al (20 para)",14,204,222,36,()=>game.BuyWood());
+            camp=Panel("Sleep",root.transform,new Vector2(0,1),new Vector2(24,-112),new Vector2(250,140),Cream);
+            Label(camp,"Biraz dinlen",20,14,10,224,28,Ink);
+            campWarning=Label(camp,"",13,14,43,224,44,Ink);
+            sleep=Button(camp,"N · Sabaha kadar uyu",14,91,222,35,()=>game.Rest());
 
-            var detail = Panel("Cell Details", root.transform, new Vector2(1, 1), new Vector2(-24, -130), new Vector2(260, 142));
-            selectionStatus = Label(detail, "", 18, 16, 13, 232, 117, Color.white);
-            shop = Panel("Market", root.transform, new Vector2(0, 1), new Vector2(24, -130), new Vector2(265, 294));
-            Label(shop, "PAZAR  ·  " + game.ActiveCrop.displayName, 21, 16, 12, 233, 33, Gold);
-            Label(shop, $"Tohum {game.ActiveCrop.seedPrice}  /  Ürün {game.ActiveCrop.salePrice} para", 15, 16, 47, 233, 25, Color.white);
-            buyOne = Button(shop, $"B · 1 tohum al ({game.ActiveCrop.seedPrice})", 16, 79, 233, 40, () => game.Buy(1));
-            buyFive = Button(shop, $"5 tohum al ({game.ActiveCrop.seedPrice * 5})", 16, 129, 233, 40, () => game.Buy(5));
-            sell = Button(shop, "V · Ürünlerin hepsini sat", 16, 179, 233, 40, () => game.SellHarvest());
-
-            buyWood = Button(shop, "10 odun al (20 para)", 16, 229, 233, 40, () => game.BuyWood());
-
-            camp = Panel("Camp", root.transform, new Vector2(0, 1), new Vector2(24, -130), new Vector2(265, 214));
-            Label(camp, "KAMP · DİNLEN", 21, 16, 12, 233, 32, Gold);
-            campWarning = Label(camp, "", 16, 16, 53, 233, 90, Color.white);
-            sleep = Button(camp, "N · Günü bitir", 16, 158, 233, 40, () => game.Rest());
-
-            var footer = Panel("Controls", root.transform, new Vector2(0.5f, 0), new Vector2(0, 18), new Vector2(1232, 106));
-            controls = Label(footer, "WASD / OKLAR  Hareket    FARE  Hedefle    SOL TIK  Eşyayı kullan    PAZAR: B Al · V Sat    KAMP: N Yeni gün",
-                14, 18, 7, 1195, 24, Gold);
-            for (int i = 0; i < slots.Length; i++)
+            var bar=Panel("Inventory Bar",root.transform,new Vector2(.5f,0),new Vector2(0,20),new Vector2(476,78),Wood);
+            var frame=bar.GetComponent<Image>();frame.sprite=InventoryIcon.Artwork(7);frame.type=Image.Type.Simple;
+            Object.Destroy(bar.GetComponent<Outline>());
+            // Display order matches the existing shortcuts, but the slots themselves show items rather than instructions.
+            int[] order={0,1,2,4,3,5,6};
+            for(int i=0;i<order.Length;i++)
             {
-                var item = (FarmItem)i;
-                slots[i] = Button(footer, "", 18 + i * 190, 36, 180, 38, () => game.Equip(item));
-                slots[i].gameObject.name = "Inventory Slot " + i;
-                slotLabels[i] = slots[i].GetComponentInChildren<Text>();
+                int kind=order[i];float x=15+i*65;
+                var button=Button(bar,"",x,11,55,55,()=>{if(kind<4)game.Equip((FarmItem)kind);else if(kind==4)builder.ToggleMode();});
+                Object.Destroy(button.GetComponentInChildren<Text>().gameObject);
+                Object.Destroy(button.GetComponent<Outline>());
+                var iconObj=new GameObject("Item Icon",typeof(RectTransform),typeof(InventoryIcon));var rect=iconObj.GetComponent<RectTransform>();rect.SetParent(button.transform,false);rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.one;rect.offsetMin=new Vector2(6,7);rect.offsetMax=new Vector2(-6,-5);
+                var icon=iconObj.GetComponent<InventoryIcon>();icon.Kind=kind;icon.raycastTarget=false;
+                var count=Label(button.transform,"",12,28,36,23,17,Ink);count.alignment=TextAnchor.MiddleRight;
+                if(kind<4){slots[kind]=button;button.name="Inventory Slot "+kind;}
+                if(kind==4){buildButton=button;button.name="Build Mode Button";}
+                if(kind==0)seedCount=count;if(kind==5)produceCount=count;if(kind==6)woodCount=count;
+                string hint=kind==0?"Turp tohumu · 1\nHazır toprağa sol tıkla ek.":kind==1?"Sulama kabı · 2\nSol tuşu basılı tutarak sula.":kind==2?"Orak · 3\nOlgun ürünü sol tıkla hasat et.":kind==3?"Çapa · 5\nBoş toprağı sol tıkla hazırla.":kind==4?"İnşa · 4\nYapı kurmak için seç.":kind==5?"Turp\nHasadını pazarda satabilirsin.":"Odun\nYapı malzemesi · Pazardan alınır.";
+                AddHover(button.gameObject,hint);
+                button.GetComponent<Image>().color=Color.clear;
             }
-            buildButton = Button(footer, "4 · İnşa", 590, 36, 145, 38, () => builder.ToggleMode());
-            buildButton.gameObject.name = "Build Mode Button";
-            actionText = Label(footer, "", 15, 752, 40, 455, 38, Gold);
-            feedback = Label(footer, "", 14, 18, 79, 1195, 24, Color.white);
-            game.Selection.SetHudPanels(new[] { header, detail, shop, camp, footer });
-            Refresh();
+            tooltip=Panel("Item Tooltip",root.transform,new Vector2(.5f,0),new Vector2(0,106),new Vector2(440,56),Cream);
+            tooltipText=Label(tooltip,"",14,12,8,416,44,Ink);tooltipText.alignment=TextAnchor.MiddleCenter;
+            toast=Panel("Feedback Toast",root.transform,new Vector2(.5f,0),new Vector2(0,172),new Vector2(570,36),new Color(.20f,.24f,.17f,.92f));
+            feedback=Label(toast,"",13,10,7,550,25,Cream);feedback.alignment=TextAnchor.MiddleCenter;
+            game.Selection.SetHudPanels(new[]{header,detail,shop,camp,bar,tooltip,toast});Refresh();
         }
-
-        private void LateUpdate() { if (summary != null) Refresh(); }
+        private void AddHover(GameObject obj,string value)
+        {
+            var events=obj.AddComponent<EventTrigger>();
+            var enter=new EventTrigger.Entry{eventID=EventTriggerType.PointerEnter};enter.callback.AddListener(_=>hovered=value);events.triggers.Add(enter);
+            var exit=new EventTrigger.Entry{eventID=EventTriggerType.PointerExit};exit.callback.AddListener(_=>hovered=null);events.triggers.Add(exit);
+        }
+        private void LateUpdate(){if(summary!=null)Refresh();}
         private void Refresh()
         {
-            var model = game.Model; var crop = game.ActiveCrop;
-            summary.text = $"GÜN {model.Day}     •     {model.Money} para     •     Tohum {model.Seeds(crop.id)}     •     {crop.displayName} {model.Produce(crop.id)}     •     Odun {model.Building.Wood}";
-            saveStatus.text = game.SaveStatus + "\nF5 Kaydet  /  F9 Yükle";
-            feedback.text = game.Feedback;
-            if (!game.Ready) objective.text = "Kayıt sorunu çözülene kadar çiftlik işlemleri duraklatıldı.";
-            else if (game.BuildMode) objective.text = $"Ahşap blok · {game.BuildPieces[0].woodCost} odun. İşaretli alanda kendi yapını kur; sökünce odun geri gelir.";
-            else if (model.ReadyCount > 0) objective.text = $"{model.ReadyCount} ürün hasada hazır. Orağı al (3), hedefle ve sol tıkla topla.";
-            else if (model.ThirstyCount > 0) objective.text = $"{model.ThirstyCount} kare sulama bekliyor. Sulama kabını al (2), sol tuşu basılı tut ve gezdir.";
-            else if (model.Produce(crop.id) > 0) objective.text = "Hasadını pazarda sat; kazancınla yeni tohumlar al.";
-            else if (model.PlantedCount > 0) objective.text = "Bitkilerin sulandı. Kampta dinlenerek yeni güne geç.";
-            else if (model.Seeds(crop.id) > 0) objective.text = "Tohumu al (1), boş kareyi fareyle hedefle ve sol tıkla ek.";
-            else objective.text = "Çizgili pazar tezgâhına yaklaş; B ile ilk tohumunu al.";
-
-            int index = game.HoveredIndex;
-            if (index < 0) selectionStatus.text = $"TARLANI KEŞFET\n\nFareyi kareye götür.\n{crop.displayName}: {crop.wateredDays} gece · tek sulama";
-            else
+            var model=game.Model;var crop=game.ActiveCrop;
+            summary.text=$"Gün {model.Day}   ·   {model.ClockText}";money.text=$"{model.Money} para";saveStatus.text=game.SaveStatus=="Kaydedildi"?"Kaydedildi":game.Ready?"F5 · Kaydet":"Kayıt hatası";
+            if(lastFeedback!=game.Feedback){lastFeedback=game.Feedback;feedbackUntil=Time.unscaledTime+3.5f;}
+            feedback.text=game.Feedback;toast.gameObject.SetActive(Time.unscaledTime<feedbackUntil||!game.Ready);
+            seedCount.text=model.Seeds(crop.id).ToString();produceCount.text=model.Produce(crop.id).ToString();woodCount.text=model.Building.Wood.ToString();
+            for(int i=0;i<slots.Length;i++)
             {
-                var plot = model.Plot(index); var cell = game.Selection.HoveredCell.Value;
-                string state = string.IsNullOrEmpty(plot.cropId) ? "Boş toprak" : model.IsReady(index) ? "Hasada hazır!"
-                    : $"{game.Definition(plot.cropId).displayName} · Aşama {model.Stage(index) + 1}/4\n" + (plot.watered ? "Sulandı · bakım tamam" : "Su bekliyor");
-                selectionStatus.text = $"KARE {cell.x + 1} / {cell.y + 1}\n{state}\n" + (game.Selection.HoveredInReach ? "Erişim mesafesinde" : "Kareye yaklaş");
+                slots[i].GetComponent<Image>().color=!game.BuildMode&&model.EquippedItem==(FarmItem)i?Gold:Color.clear;
+                slots[i].interactable=game.Ready;
             }
-            if (game.BuildMode)
-                selectionStatus.text = $"İNŞA · Ahşap blok\nYükseklik {builder.Level + 1}/{BuildingModel.Levels} · Dönüş {builder.Rotation * 90}°\n{builder.Status}";
-            actionText.text = game.BuildMode ? builder.Status : game.ActionLabel;
-            controls.text = game.BuildMode
-                ? "WASD  Hareket    SOL TIK  Yerleştir    SAĞ TIK  Sök    R  Döndür    TEKERLEK  Yükseklik    ESC / 1–3  Çık"
-                : "WASD / OKLAR  Hareket    SOL TIK  Eşyayı kullan    4  İnşa    PAZAR: B Al · V Sat    KAMP: N Yeni gün";
-            buildButton.GetComponent<Image>().color = game.BuildMode ? new Color(.64f, .48f, .21f) : new Color(.29f, .43f, .30f);
-            buildButton.interactable = game.Ready;
-            for (int i = 0; i < slots.Length; i++)
+            buildButton.GetComponent<Image>().color=game.BuildMode?Gold:Color.clear;buildButton.interactable=game.Ready;
+            string hint=hovered;
+            if(hint==null&&game.BuildMode)hint=$"{builder.ActiveDefinition.displayName} · {builder.ActiveDefinition.woodCost} odun\nQ Parça   R Döndür   Tekerlek Yükseklik   Sağ tık Sök";
+            tooltip.gameObject.SetActive(hint!=null);tooltipText.text=hint??"";
+            int index=game.HoveredIndex;detail.gameObject.SetActive(game.BuildMode||index>=0);
+            if(game.BuildMode)selectionStatus.text=$"{builder.ActiveDefinition.displayName}\nYükseklik {builder.Level+1}/{BuildingModel.Levels} · {builder.Rotation*90}°\n{builder.Status}";
+            else if(index>=0)
             {
-                var item = (FarmItem)i;
-                string name = item == FarmItem.Seeds ? crop.displayName + " tohumu" : item == FarmItem.WateringCan ? "Sulama kabı" : "Orak";
-                slotLabels[i].text = $"{i + 1} · {name} ×{model.ItemCount(item, crop.id)}";
-                slots[i].GetComponent<Image>().color = !game.BuildMode && model.EquippedItem == item ? new Color(0.64f, 0.48f, 0.21f) : new Color(0.29f, 0.43f, 0.30f);
-                slots[i].interactable = game.Ready;
+                var plot=model.Plot(index);
+                selectionStatus.text=string.IsNullOrEmpty(plot.cropId)?"Ekime hazır toprak":model.IsReady(index)?"Hasada hazır!":$"{game.Definition(plot.cropId).displayName} · Aşama {model.Stage(index)+1}/4\n"+(plot.watered?"Sulandı":"Su bekliyor");
+                selectionStatus.text+="\n"+(game.Selection.HoveredInReach?game.ActionLabel:"Biraz yaklaş");
             }
-            shop.gameObject.SetActive(game.NearMarket);
-            camp.gameObject.SetActive(game.NearCamp);
-            buyOne.interactable = game.Ready && model.Money >= crop.seedPrice && model.Seeds(crop.id) < FarmModel.StackLimit;
-            buyFive.interactable = game.Ready && model.Money >= crop.seedPrice * 5 && model.Seeds(crop.id) <= FarmModel.StackLimit - 5;
-            sell.interactable = game.Ready && model.Produce(crop.id) > 0;
-            buyWood.interactable = game.Ready && model.Money >= BuildingModel.WoodPackPrice && model.Building.Wood <= BuildingModel.WoodLimit - BuildingModel.WoodPackCount;
-            sleep.interactable = game.Ready;
-            campWarning.text = model.ThirstyCount > 0 ? $"{model.ThirstyCount} bitki henüz sulanmadı.\nBu gece büyümeyecekler."
-                : "Sulanan bitkilerin gece\nboyunca büyüyecek.\nHazır olduğunda dinlen.";
+            shop.gameObject.SetActive(game.NearMarket);camp.gameObject.SetActive(game.NearCamp&&!game.NearMarket);
+            buyOne.interactable=game.Ready&&model.Money>=crop.seedPrice&&model.Seeds(crop.id)<FarmModel.StackLimit;
+            buyFive.interactable=game.Ready&&model.Money>=crop.seedPrice*5&&model.Seeds(crop.id)<=FarmModel.StackLimit-5;
+            sell.interactable=game.Ready&&model.Produce(crop.id)>0;
+            buyWood.interactable=game.Ready&&model.Money>=BuildingModel.WoodPackPrice&&model.Building.Wood<=BuildingModel.WoodLimit-BuildingModel.WoodPackCount;
+            sleep.interactable=game.Ready;campWarning.text=model.ThirstyCount>0?$"{model.ThirstyCount} bitki su bekliyor.\nUyandığında saat 06:00 olacak.":"Yatağında sabaha kadar uyu.\nUyandığında saat 06:00 olacak.";
         }
-
-        private static RectTransform Panel(string name, Transform parent, Vector2 anchor, Vector2 position, Vector2 size)
+        private static Sprite Rounded()
         {
-            var obj = new GameObject(name, typeof(RectTransform), typeof(Image)); var r = obj.GetComponent<RectTransform>();
-            r.SetParent(parent, false); r.anchorMin = r.anchorMax = r.pivot = anchor; r.anchoredPosition = position; r.sizeDelta = size;
-            obj.GetComponent<Image>().color = new Color(0.10f, 0.17f, 0.15f, 0.96f);
-            return r;
+            if(rounded!=null)return rounded;
+            const int size=32;var texture=new Texture2D(size,size,TextureFormat.RGBA32,false);texture.name="Rounded UI";texture.filterMode=FilterMode.Bilinear;
+            var pixels=new Color[size*size];
+            for(int y=0;y<size;y++)for(int x=0;x<size;x++)
+            {
+                float dx=Mathf.Max(8.5f-x,0,x-22.5f),dy=Mathf.Max(8.5f-y,0,y-22.5f);
+                pixels[x+y*size]=new Color(1,1,1,Mathf.Clamp01(8.5f-Mathf.Sqrt(dx*dx+dy*dy)));
+            }
+            texture.SetPixels(pixels);texture.Apply();rounded=Sprite.Create(texture,new Rect(0,0,size,size),Vector2.one*.5f,100,0,SpriteMeshType.FullRect,new Vector4(10,10,10,10));return rounded;
         }
-        private static Text Label(Transform parent, string value, int size, float x, float y, float width, float height, Color color)
+        private static RectTransform Panel(string name,Transform parent,Vector2 anchor,Vector2 position,Vector2 size,Color tint)
         {
-            var obj = new GameObject("Label", typeof(RectTransform), typeof(Text)); var r = obj.GetComponent<RectTransform>();
-            r.SetParent(parent, false); r.anchorMin = r.anchorMax = r.pivot = new Vector2(0, 1);
-            r.anchoredPosition = new Vector2(x, -y); r.sizeDelta = new Vector2(width, height);
-            var t = obj.GetComponent<Text>(); t.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            t.fontSize = size; t.text = value; t.color = color; t.raycastTarget = false; return t;
+            var obj=new GameObject(name,typeof(RectTransform),typeof(Image));var r=obj.GetComponent<RectTransform>();r.SetParent(parent,false);r.anchorMin=r.anchorMax=r.pivot=anchor;r.anchoredPosition=position;r.sizeDelta=size;
+            var image=obj.GetComponent<Image>();image.sprite=Rounded();image.type=Image.Type.Sliced;image.color=tint;
+            var outline=obj.AddComponent<Outline>();outline.effectColor=new Color(.23f,.15f,.08f,.8f);outline.effectDistance=new Vector2(1.5f,-1.5f);return r;
         }
-        private static Button Button(Transform parent, string label, float x, float y, float width, float height, UnityEngine.Events.UnityAction onClick)
+        private static Text Label(Transform parent,string value,int size,float x,float y,float width,float height,Color color)
         {
-            var r = Panel(label, parent, new Vector2(0, 1), new Vector2(x, -y), new Vector2(width, height));
-            r.GetComponent<Image>().color = new Color(0.29f, 0.43f, 0.30f);
-            var b = r.gameObject.AddComponent<Button>(); b.targetGraphic = r.GetComponent<Image>();
-            b.navigation = new Navigation { mode = Navigation.Mode.None };
-            var colors = b.colors; colors.disabledColor = new Color(0.5f, 0.5f, 0.5f, 0.55f); b.colors = colors;
-            var text = Label(r, label, 16, 6, 2, width - 12, height - 4, Color.white); text.alignment = TextAnchor.MiddleCenter;
-            b.onClick.AddListener(onClick); return b;
+            var obj=new GameObject("Label",typeof(RectTransform),typeof(Text));var r=obj.GetComponent<RectTransform>();r.SetParent(parent,false);r.anchorMin=r.anchorMax=r.pivot=new Vector2(0,1);r.anchoredPosition=new Vector2(x,-y);r.sizeDelta=new Vector2(width,height);
+            var t=obj.GetComponent<Text>();t.font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");t.fontSize=size;t.text=value;t.color=color;t.raycastTarget=false;return t;
+        }
+        private static Button Button(Transform parent,string label,float x,float y,float width,float height,UnityEngine.Events.UnityAction action)
+        {
+            var r=Panel(label,parent,new Vector2(0,1),new Vector2(x,-y),new Vector2(width,height),new Color(.78f,.66f,.43f));var b=r.gameObject.AddComponent<Button>();b.targetGraphic=r.GetComponent<Image>();b.navigation=new Navigation{mode=Navigation.Mode.None};b.onClick.AddListener(action);
+            var text=Label(r,label,14,5,2,width-10,height-4,Ink);text.alignment=TextAnchor.MiddleCenter;return b;
         }
     }
 }

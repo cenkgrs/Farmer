@@ -8,7 +8,8 @@ namespace Farmer.Tests
     public class FarmingTests
     {
         private static CropRules[] Catalog => new[] { new CropRules("turnip", 10, 18, 3, 1) };
-        private static FarmModel Fresh(int money = 60) => new FarmModel(Catalog, 6, 6, money);
+        private static FarmModel Fresh(int money = 60) => Prepared(new FarmModel(Catalog, 6, 6, money));
+        public static FarmModel Prepared(FarmModel model) { for(int z=-3;z<3;z++) for(int x=-3;x<3;x++) model.Till(x,z,out _); return model; }
         private static FarmModel Restore(FarmSnapshot snapshot) => FarmModel.Restore(snapshot, Catalog, 6, 6);
         private static string State(FarmModel m) => JsonUtility.ToJson(m.Snapshot());
 
@@ -69,7 +70,7 @@ namespace Farmer.Tests
         public void LegacyGrowingCropDoesNotNeedToBeWateredAgain()
         {
             var saved = Fresh().Snapshot();
-            saved.plots[0] = new PlotRecord { cropId = "turnip", growth = 1, watered = false };
+            saved.plots[0] = new PlotRecord { x=-3, z=-3, cropId = "turnip", growth = 1, watered = false };
             var m = Restore(saved);
             Assert.That(m.Plot(0).watered, Is.True);
             m.EndDay(out _); Assert.That(m.IsReady(0), Is.False);
@@ -101,7 +102,7 @@ namespace Farmer.Tests
         public void FullInventoryDoesNotDestroyReadyCropOrSpendMoney()
         {
             var saved = Fresh().Snapshot(); saved.seeds[0].count = FarmModel.StackLimit; saved.produce[0].count = FarmModel.StackLimit;
-            saved.plots[0] = new PlotRecord { cropId = "turnip", growth = 3 };
+            saved.plots[0] = new PlotRecord { x=-3, z=-3, cropId = "turnip", growth = 3 };
             var m = Restore(saved); string before = State(m);
             Assert.That(m.Harvest(0, out _), Is.False); Assert.That(m.BuySeeds("turnip", 1, out _), Is.False);
             Assert.That(State(m), Is.EqualTo(before));
@@ -147,7 +148,7 @@ namespace Farmer.Tests
                 case "inventory": s.seeds[0].count = -1; break;
                 case "duplicate": s.seeds = new[] { s.seeds[0], s.seeds[0] }; break;
                 case "crop": s.plots[0].cropId = "missing"; break;
-                case "growth": s.plots[0] = new PlotRecord { cropId = "turnip", growth = 4 }; break;
+                case "growth": s.plots[0] = new PlotRecord { x=-3, z=-3, cropId = "turnip", growth = 4 }; break;
                 case "empty": s.plots[0].watered = true; break;
                 case "missing": s.plots[4] = null; break;
             }
@@ -157,7 +158,7 @@ namespace Farmer.Tests
         [Test]
         public void NewCropRulesUseSameInventoryAndGrowthTransactions()
         {
-            var m = new FarmModel(new[] { Catalog[0], new CropRules("other", 5, 12, 6, 2) });
+            var m = Prepared(new FarmModel(new[] { Catalog[0], new CropRules("other", 5, 12, 6, 2) }));
             m.BuySeeds("other", 1, out _); m.Plant(0, "other", out _);
             m.Water(0, out _);
             for (int i = 0; i < 6; i++) m.EndDay(out _);

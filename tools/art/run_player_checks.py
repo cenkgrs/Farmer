@@ -1,7 +1,7 @@
 """Isolated Linux graphics test; requires Xvfb and xwininfo. No desktop focus changes."""
 import argparse, ctypes as c, os, re, signal, subprocess, time
 from pathlib import Path
-p=argparse.ArgumentParser();p.add_argument('--xvfb',default='Xvfb');p.add_argument('--name',required=True);p.add_argument('--checks',nargs='+',choices=['controls','farming','watering','art','tool-animation','building'],default=['controls','farming','watering','art','tool-animation','building']);args=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--xvfb',default='Xvfb');p.add_argument('--name',required=True);p.add_argument('--checks',nargs='+',choices=['controls','farming','watering','art','tool-animation','building','world'],default=['controls','farming','watering','art','tool-animation','building','world']);args=p.parse_args()
 root=Path(__file__).resolve().parents[2];os.chdir(root)
 read,write=os.pipe()
 server=subprocess.Popen([args.xvfb,'-displayfd',str(write),'-screen','0','1280x720x24','-nolisten','tcp'],pass_fds=(write,),stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)

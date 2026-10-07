@@ -16,8 +16,9 @@ namespace Farmer
         [SerializeField] private float cellSize = 1f;
         [SerializeField] private float reach = 2.5f;
         private FarmGridLayout layout;
-        public FarmGridLayout Layout => layout ??= new FarmGridLayout(origin, width, depth, cellSize);
+        public FarmGridLayout Layout => layout ??= new FarmGridLayout(origin, width, depth, cellSize, true);
         public Vector2Int? HoveredCell { get; private set; }
+        public Vector2Int? WorldCell => HoveredCell.HasValue ? new Vector2Int(Mathf.FloorToInt(Layout.Center(HoveredCell.Value).x), Mathf.FloorToInt(Layout.Center(HoveredCell.Value).z)) : (Vector2Int?)null;
         public bool HideOutline { get; set; }
         public bool PointerBlocked { get; private set; } = true;
         public bool HoveredInReach => HoveredCell.HasValue && InReach(HoveredCell.Value);
@@ -57,7 +58,10 @@ namespace Farmer
             {
                 Ray ray = viewCamera.ScreenPointToRay(screenPosition);
                 if (plane.Raycast(ray, out float distance) && Layout.TryGetCell(ray.GetPoint(distance), out var cell))
-                    HoveredCell = cell;
+                {
+                    Vector3 center = Layout.Center(cell);
+                    if (WorldGround.SupportsCell(Mathf.FloorToInt(center.x), Mathf.FloorToInt(center.z), true)) HoveredCell = cell;
+                }
             }
             DrawOutlines();
         }

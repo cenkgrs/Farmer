@@ -1,6 +1,6 @@
 # Sürüm planı ve kabul ölçütleri
 
-Tarihler/tahmini geliştirme süreleri henüz yok. Her sürüm oynanabilir bir adım olmalı. 0.1 çekirdek prototipi Linux üzerinde doğrulandı; 0.2 ilk ahşap blok adımı hazır, sürümün tamamı henüz bitmedi. Görseller geçici, Windows doğrulaması ayrı açık iş.
+Tarihler/tahmini geliştirme süreleri henüz yok. Her sürüm oynanabilir bir adım olmalı. 0.1 çekirdek prototipi Linux üzerinde doğrulandı; 0.2 serbest blok/yatak yerleşimi, çapa ve 10 dakikalık gece–gündüz adımı hazır, sürümün tamamı henüz bitmedi. Görseller geçici, Windows doğrulaması ayrı açık iş.
 
 ## 0.1 — Çekirdek prototip
 
@@ -14,7 +14,7 @@ Kabul:
 - [x] Tohum ve para doğru eksilir; hasat tek kez alınır; negatif miktar/para oluşmaz.
 - [x] Sulama kabıyla basılı tutarak erişilebilir kareler arasında sulama ve döngüsel su sesi; bırakma/arayüzde 0,7 saniyelik ses sönümlenmesi, odak kaybında susma.
 - [x] Her ekimde tek sulama büyümeyi başlatır; üç gece süresi korunur. Hiç sulanmayan ürün bekler, bitki hemen ölmez.
-- [x] Geliştirme sırasında gün ilerletme hızlandırılabilir; oyuncu akışında anlaşılır gün bitirme etkileşimi vardır.
+- [x] Saat kendiliğinden ilerler; 24 oyun saati 10 gerçek dakika. Gece/gündüz ışıkları değişir; yalnızca yatakta N ile sonraki sabah 06:00'ya uyunur.
 - [x] Temel kayıt/yükleme ile para, envanter, gün ve tarla durumu korunur. Bu teknik gereksinim tasarım sürekliliği için önerilen kapsamdır.
 - [x] Mantık kontrolleri ve kısa oyun içi deneme belgelenir.
 
@@ -44,7 +44,9 @@ Kabul:
 - [ ] Yatakla günü bitirme ve sandık depolaması çalışır; sökme/taşıma eşya çoğaltmaz veya kaybetmez.
 - [ ] Yerleştirilen yapılar ve depolama kayıt/yüklemede korunur.
 
-7 Ekim ilk parça: 6×5 alanda 1 m ahşap blok, üç blok yüksekliği, önizleme/döndürme/yükseklik/sökme, odun maliyeti/iadesi, pazardan odun ve kayıt geçişi uygulandı. Taşıma şimdilik söküp yeniden kurmayla yapılır; ayrı taşıma aracı yok. Ev, kapı, çatı, mobilya ve depolama henüz yapılmadığından yukarıdaki birleşik ölçütler açık tutuldu.
+7 Ekim güncel parça: ilk 6×5 inşa kısıtı kaldırıldı. Boş dünya zemini üzerinde blok/yatak yerleştirme, üç blok yüksekliği, önizleme/döndürme/yükseklik/sökme, odun maliyeti/iadesi ve pazardan odun var. Yeni tarlalar çapa ile hazırlanıyor; eski kayıtlar korunarak v3'e taşınıyor. Yatak uyutuyor, sandık/depolama henüz yok. Taşıma şimdilik söküp yeniden kurmayla yapılır; ayrı taşıma aracı yok. Ev, kapı, çatı, diğer mobilyalar ve depolama henüz yapılmadığından yukarıdaki birleşik ölçütler açık tutuldu.
+
+Kullanıcı kararı: aynı inşa ve tarla kuralları gelecekte çiftlik dışındaki düşman bölgelerinde de kullanılacak. Bölgeye özel inşa sınırı yoktur; düşman güvenliği henüz uygulanmadı.
 
 Yaşanabilir ikinci kat bu sürüme dahil değildir.
 

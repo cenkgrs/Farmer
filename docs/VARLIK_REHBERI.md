@@ -91,3 +91,7 @@ Sulama ve hasat mevcut Humanoid iskelet üzerinde `FarmerAnimator` ile prosedür
 Sulama kabının eldeki kopyası 180° çevrilir; kaynak model/prefab değiştirilmez. Böylece ağız karakterin işlem yönüne bakar. Su çıkışı bu modelin ölçülen ağız konumuna göredir; kabı değiştirirken `FarmerAnimator` içindeki ağız noktası ve `FarmPresentation` içindeki yerel yön de doğrulanmalıdır. `WateringStream` mevcut sahnede kullanılan URP Particles/Unlit shader'ıyla yedi ince akış oluşturur; fizik veya tarla işlemi yürütmez.
 
 Bu küçük prosedürel set tam gövdeli, sanatçı tarafından hazırlanmış sulama/hasat klibi değildir. İleride özel klip eklenirse kol IK/parmak katmanıyla çakışması kontrol edilmeli.
+
+## Envanter görselleri — 7 Ekim 2026
+
+Yedi ikon ve ahşap tepsi yerleşik ImageGen ile ayrı ayrı üretildi. Konseptteki alt envanter stil referansı olarak verildi. PNG dosyaları `Assets/_Farmer/Resources/InventoryArt` içinde; [üretim promptları ve ölçüler](art-sources/inventory-prompts.json), [entegrasyon notu](art-sources/README.md). Bu 2D arayüz varlıkları eldeki 3D alet modellerini değiştirmez.

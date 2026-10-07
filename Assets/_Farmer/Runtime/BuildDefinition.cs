@@ -9,6 +9,7 @@ namespace Farmer
         public string displayName = "Ahşap blok";
         [Min(1)] public int woodCost = 2;
         public GameObject prefab;
-        public BuildRules Rules => new BuildRules(id, woodCost);
+        public bool isBed;
+        public BuildRules Rules => new BuildRules(id, woodCost, isBed);
     }
 }

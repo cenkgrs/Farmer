@@ -28,7 +28,7 @@ namespace Farmer
                 InputSystem.QueueStateEvent(keyboard, new KeyboardState());
                 InputSystem.QueueStateEvent(mouse, new MouseState { position = new Vector2(-10, -10) });
                 var fixture = game.Model.Snapshot(); fixture.seeds[0].count = 5;
-                for (int i = 0; i < fixture.plots.Length; i++) fixture.plots[i] = new PlotRecord();
+                for (int i = 0; i < fixture.plots.Length; i++) fixture.plots[i] = new PlotRecord { x=i%6-3, z=i/6-3 };
                 foreach (int i in new[] { 0, 1 }) fixture.plots[i].cropId = game.ActiveCrop.id;
                 Directory.CreateDirectory(Path.GetDirectoryName(game.SavePath));
                 File.WriteAllText(game.SavePath, JsonUtility.ToJson(fixture)); game.LoadGame();

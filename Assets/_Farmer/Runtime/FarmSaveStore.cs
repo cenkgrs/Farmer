@@ -32,9 +32,10 @@ namespace Farmer
             if (!File.Exists(Path)) { File.Move(temporary, Path); return; }
             if (TryRead(Path, out _))
             {
-                // Preserve the last original v1 file once, before the first schema-v2 write.
-                if (snapshot.version == 2 && JsonUtility.FromJson<FarmSnapshot>(File.ReadAllText(Path)).version == 1 && !File.Exists(Path + ".pre-v2"))
-                    File.Copy(Path, Path + ".pre-v2");
+                // Preserve the original file once before any schema upgrade.
+                int previousVersion = JsonUtility.FromJson<FarmSnapshot>(File.ReadAllText(Path)).version;
+                string migrationBackup = Path + ".pre-v" + snapshot.version;
+                if (previousVersion < snapshot.version && !File.Exists(migrationBackup)) File.Copy(Path, migrationBackup);
                 File.Replace(temporary, Path, Path + ".bak");
             }
             else
@@ -50,7 +51,7 @@ namespace Farmer
             model = null;
             try
             {
-                if (!File.Exists(path) || new FileInfo(path).Length > 1024 * 1024) return false;
+                if (!File.Exists(path) || new FileInfo(path).Length > 16 * 1024 * 1024) return false;
                 model = validate(JsonUtility.FromJson<FarmSnapshot>(File.ReadAllText(path)));
                 return true;
             }

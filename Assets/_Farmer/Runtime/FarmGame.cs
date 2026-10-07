@@ -28,12 +28,15 @@ namespace Farmer
         public string SaveStatus { get; private set; } = "Yeni çiftlik";
         public bool Ready { get; private set; }
         public bool NearMarket => Near(market);
-        public bool NearCamp => Near(camp);
+        public bool NearCamp => Bed.IsNear(player.position); // Compatibility name; proximity is to a real bed.
         public bool WateringActive { get; private set; }
         public event Action<bool> WateringChanged;
         private bool wateringGesture;
         public event Action Changed;
         public event Action<int, string> Harvested;
+        public event Action<Vector3> Hoed;
+        public void NotifyTimeAdvanced() { SaveGame(); Changed?.Invoke(); }
+        public Vector3 PlotCenter(int index, float height = .06f) { var p = Model.Plot(index); return new Vector3(p.x+.5f,height,p.z+.5f); }
         private FarmSaveStore store;
         private bool smokeSession;
         public string SavePath { get; private set; }
@@ -63,6 +66,7 @@ namespace Farmer
             if (k?.digit1Key.wasPressedThisFrame == true) Equip(FarmItem.Seeds);
             if (k?.digit2Key.wasPressedThisFrame == true) Equip(FarmItem.WateringCan);
             if (k?.digit3Key.wasPressedThisFrame == true) Equip(FarmItem.Sickle);
+            if (k?.digit5Key.wasPressedThisFrame == true) Equip(FarmItem.Hoe);
             if (BuildMode) StopWatering(); else UpdateToolInput();
             if (k?.bKey.wasPressedThisFrame == true) Buy(1);
             if (k?.vKey.wasPressedThisFrame == true) SellHarvest();
@@ -111,6 +115,7 @@ namespace Farmer
             bool pouring = wateringGesture && selection.HoveredInReach;
             SetWatering(pouring);
             if (!pouring) return;
+            if (HoveredIndex < 0) return;
             var plot = Model.Plot(HoveredIndex);
             // Persist only the first successful watering, not every frame of the held gesture.
             if (!string.IsNullOrEmpty(plot.cropId) && !plot.watered && !Model.IsReady(HoveredIndex))
@@ -134,11 +139,11 @@ namespace Farmer
         }
 
         public Transform Player => player;
-        public int HoveredIndex => selection.HoveredCell is Vector2Int c ? c.x + c.y * Model.Width : -1;
+        public int HoveredIndex => selection.WorldCell is Vector2Int c ? Model.IndexAt(c.x,c.y) : -1;
         public string EquippedName => Model.EquippedItem == FarmItem.Seeds ? ActiveCrop.displayName + " tohumu"
-            : Model.EquippedItem == FarmItem.WateringCan ? "Sulama kabı" : "Orak";
-        public string ActionLabel => HoveredIndex < 0 ? "Fareyi tarlaya götür" : !selection.HoveredInReach ? "Kareye yaklaş"
-            : Model.EquippedItem == FarmItem.Seeds ? "Sol tık · Tohum ek" : Model.EquippedItem == FarmItem.WateringCan ? "Sol tuşu basılı tut · Sula" : "Sol tık · Hasat et";
+            : Model.EquippedItem == FarmItem.WateringCan ? "Sulama kabı" : Model.EquippedItem == FarmItem.Hoe ? "Çapa" : "Orak";
+        public string ActionLabel => !selection.WorldCell.HasValue ? "Fareyi toprağa götür" : !selection.HoveredInReach ? "Kareye yaklaş"
+            : Model.EquippedItem == FarmItem.Hoe ? "Sol tık · Toprağı çapala" : HoveredIndex < 0 ? "Önce çapa ile toprağı hazırla (5)" : Model.EquippedItem == FarmItem.Seeds ? "Sol tık · Tohum ek" : Model.EquippedItem == FarmItem.WateringCan ? "Sol tuşu basılı tut · Sula" : "Sol tık · Hasat et";
 
         public void Equip(FarmItem item)
         {
@@ -154,9 +159,20 @@ namespace Farmer
             if (!Ready || BuildMode || !Application.isFocused) return false;
             selection.RefreshPointer();
             int index = HoveredIndex;
-            if (index < 0) return false; // UI and outside-world clicks are not farm actions.
+            if (!selection.WorldCell.HasValue) return false;
             if (!selection.HoveredInReach)
             { Feedback = "Bu kare uzakta. Biraz yaklaş."; return false; }
+            var cell = selection.WorldCell.Value;
+            if (Model.EquippedItem == FarmItem.Hoe)
+            {
+                if (!WorldGround.SupportsCell(cell.x,cell.y,true) || WorldGround.Obstructed(cell.x,cell.y,player))
+                { Feedback = "Burada çapa kullanmak için boş toprak gerekiyor."; return false; }
+                bool tilled = Complete(Model.Till(cell.x,cell.y,out var reason),reason);
+                if (tilled) Hoed?.Invoke(new Vector3(cell.x+.5f,.06f,cell.y+.5f));
+                return tilled;
+            }
+            if (index < 0) { Feedback = "Önce çapa (5) ile toprağı ekime hazırla."; return false; }
+            if (WorldGround.Obstructed(cell.x,cell.y,player)) { Feedback = "Toprağın üzerinde bir yapı veya engel var."; return false; }
             var plot = Model.Plot(index);
             bool harvesting = Model.EquippedItem == FarmItem.Sickle;
             bool ok = Model.UseEquipped(index, ActiveCrop.id, out string message);
@@ -184,7 +200,7 @@ namespace Farmer
         public bool Rest()
         {
             if (!Ready) return false;
-            if (!NearCamp) { Feedback = "Günü bitirmek için kamp minderine yaklaş."; return false; }
+            if (!NearCamp) { Feedback = "Uyumak için bir yatağa yaklaş."; return false; }
             bool ok = Model.EndDay(out var message); return Complete(ok, message);
         }
         private bool Complete(bool success, string message)
@@ -211,7 +227,7 @@ namespace Farmer
                 if (loaded != null) Model = loaded;
                 Ready = true;
                 SaveStatus = recovered ? "Yedek kayıt yüklendi" : loaded == null ? "Yeni çiftlik" : "Kayıt yüklendi";
-                Feedback = recovered ? "Son sağlam yedek açıldı; önceki dosya korunacak." : "1/2/3 ile eşya seç; fareyi yakındaki kareye götür ve sol tıkla.";
+                Feedback = recovered ? "Son sağlam yedek açıldı; önceki dosya korunacak." : "5 ile çapa seç; boş toprağı hazırla. 1/2/3 ile ek, sula ve hasat et.";
                 Changed?.Invoke(); return true;
             }
             catch (Exception e) when (e is IOException || e is UnauthorizedAccessException || e is ArgumentException)

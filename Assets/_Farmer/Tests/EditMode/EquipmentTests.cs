@@ -9,7 +9,7 @@ namespace Farmer.Tests
         [Test]
         public void ItemsHaveIndependentActionsAndReusableTools()
         {
-            var farm = new FarmModel(Catalog);
+            var farm = FarmingTests.Prepared(new FarmModel(Catalog));
             Assert.That(farm.ItemCount(FarmItem.WateringCan, "turnip"), Is.EqualTo(1));
             Assert.That(farm.ItemCount(FarmItem.Sickle, "turnip"), Is.EqualTo(1));
             Assert.That(farm.UseEquipped(0, "turnip", out _), Is.False);
@@ -34,7 +34,7 @@ namespace Farmer.Tests
         [Test]
         public void EquippedItemRoundTripsAndLegacySaveDefaultsToSeeds()
         {
-            var farm = new FarmModel(Catalog);
+            var farm = FarmingTests.Prepared(new FarmModel(Catalog));
             farm.Equip(FarmItem.Sickle);
             Assert.That(FarmModel.Restore(farm.Snapshot(), Catalog, 6, 6).EquippedItem, Is.EqualTo(FarmItem.Sickle));
             string legacy = JsonUtility.ToJson(farm.Snapshot()).Replace("\"equippedItem\":2,", "");
@@ -43,7 +43,7 @@ namespace Farmer.Tests
         [Test]
         public void InvalidEquipmentCannotChangeInventoryOrBeLoaded()
         {
-            var farm = new FarmModel(Catalog);
+            var farm = FarmingTests.Prepared(new FarmModel(Catalog));
             Assert.That(farm.Equip((FarmItem)100), Is.False);
             Assert.That(farm.EquippedItem, Is.EqualTo(FarmItem.Seeds));
             var save = farm.Snapshot(); save.equippedItem = (FarmItem)100;

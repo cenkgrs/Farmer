@@ -16,25 +16,33 @@ namespace Farmer
         private Renderer[] previewRenderers;
         private Vector3Int? target;
         private BlockRecord removeTarget;
-        private int level, rotation;
+        private BuildingModel displayedModel;
+        private int displayedRevision = -1;
+        private int level, rotation, pieceIndex;
+        public BuildDefinition ActiveDefinition => game.BuildPieces[pieceIndex];
         public int Level => level;
         public int Rotation => rotation;
         public bool ValidPreview { get; private set; }
-        public string Status { get; private set; } = "Fareyi işaretli inşa alanına götür.";
+        public string Status { get; private set; } = "Fareyi boş zemine götür.";
         public int VisibleBlockCount => placed.Count;
         public Vector3Int? Target => target;
         public void Configure(FarmGame source, Material line) { game = source; outlineMaterial = line; }
-        public static Vector3 Center(int x, int y, int z) => new Vector3(BuildingModel.OriginX + x + .5f, y + .5f, BuildingModel.OriginZ + z + .5f);
+        public static Vector3 Center(int x, int y, int z) => new Vector3(x + .5f, y + .5f, z + .5f);
         private void Start()
         {
-            preview = Instantiate(game.BuildPieces[0].prefab, transform); preview.name = "Build Preview";
-            foreach (var collider in preview.GetComponentsInChildren<Collider>()) collider.enabled = false;
             previewMaterial = new Material(outlineMaterial);
-            previewMaterial.SetColor("_BaseColor", new Color(.3f, .8f, .55f));
+            CreatePreview();
+            CreateGrid(); game.Changed += Rebuild; Rebuild();
+        }
+        private void CreatePreview()
+        {
+            if (preview != null) { preview.SetActive(false); Destroy(preview); }
+            preview = Instantiate(ActiveDefinition.prefab, transform); preview.name = "Build Preview";
+            foreach (var collider in preview.GetComponentsInChildren<Collider>()) collider.enabled = false;
+            foreach (var bed in preview.GetComponentsInChildren<Bed>()) { bed.enabled=false; Destroy(bed); }
             previewRenderers = preview.GetComponentsInChildren<Renderer>();
             foreach (var renderer in previewRenderers) { renderer.sharedMaterial = previewMaterial; renderer.shadowCastingMode = ShadowCastingMode.Off; }
             preview.SetActive(false);
-            CreateGrid(); game.Changed += Rebuild; Rebuild();
         }
         private void OnDestroy()
         {
@@ -57,7 +65,9 @@ namespace Farmer
             if (keyboard?.digit4Key.wasPressedThisFrame == true) ToggleMode();
             if (keyboard?.escapeKey.wasPressedThisFrame == true) game.SetBuildMode(false);
             grid.SetActive(game.BuildMode);
+            grid.transform.position = new Vector3(Mathf.Floor(game.Player.position.x),0,Mathf.Floor(game.Player.position.z));
             if (!game.BuildMode) { preview.SetActive(false); target = null; return; }
+            if (keyboard?.qKey.wasPressedThisFrame == true) { pieceIndex = (pieceIndex+1)%game.BuildPieces.Length; level=0; CreatePreview(); }
             if (keyboard?.rKey.wasPressedThisFrame == true) rotation = (rotation + 1) % 4;
             if (mouse != null && Mathf.Abs(mouse.scroll.ReadValue().y) > .01f)
                 level = Mathf.Clamp(level + (mouse.scroll.ReadValue().y > 0 ? 1 : -1), 0, BuildingModel.Levels - 1);
@@ -67,7 +77,7 @@ namespace Farmer
                 if (ValidPreview)
                 {
                     var c = target.Value;
-                    game.PlaceBlock(game.BuildPieces[0].id, c.x, c.y, c.z, rotation);
+                    game.PlaceBlock(ActiveDefinition.id, c.x, c.y, c.z, rotation);
                 }
                 else game.ShowBuildFeedback(Status);
             }
@@ -87,7 +97,7 @@ namespace Farmer
         {
             target = null; removeTarget = null; ValidPreview = false; preview.SetActive(false);
             game.Selection.RefreshPointer();
-            Status = "Fareyi işaretli inşa alanına götür.";
+            Status = "Fareyi boş zemine götür.";
             if (game.Selection.PointerBlocked || Mouse.current == null) return;
             Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
             if (Physics.Raycast(ray, out var hit, 100f, ~0, QueryTriggerInteraction.Ignore))
@@ -98,14 +108,23 @@ namespace Farmer
             var plane = new Plane(Vector3.up, Vector3.up * level);
             if (!plane.Raycast(ray, out float distance)) return;
             Vector3 point = ray.GetPoint(distance);
-            int x = Mathf.FloorToInt(point.x - BuildingModel.OriginX), z = Mathf.FloorToInt(point.z - BuildingModel.OriginZ);
+            int x = Mathf.FloorToInt(point.x), z = Mathf.FloorToInt(point.z);
             if (!BuildingModel.InBounds(x, level, z)) return;
             target = new Vector3Int(x, level, z);
             Vector3 center = Center(x, level, z);
-            bool valid = game.Model.Building.CanPlace(game.BuildPieces[0].id, x, level, z, rotation, out string reason);
+            bool valid = game.Model.Building.CanPlace(ActiveDefinition.id, x, level, z, rotation, out string reason);
             if (!InReach(center)) { valid = false; reason = "Yerleştirmek için yaklaş."; }
-            else if (valid && Physics.CheckBox(center, Vector3.one * .48f, Quaternion.identity, ~0, QueryTriggerInteraction.Ignore))
-            { valid = false; reason = "Oyuncu veya başka bir nesneyle çakışıyor."; }
+            else if (valid)
+            {
+                foreach (var cell in game.Model.Building.Footprint(ActiveDefinition.id,x,z,rotation))
+                {
+                    if (!WorldGround.SupportsCell(cell.x,cell.z,false)) { valid=false; reason="Düz ve sağlam zemin gerekiyor."; break; }
+                    int soilIndex = game.Model.IndexAt(cell.x,cell.z);
+                    if (soilIndex >= 0 && !string.IsNullOrEmpty(game.Model.Plot(soilIndex).cropId)) { valid=false; reason="Önce buradaki ürünü hasat et."; break; }
+                    if (Physics.CheckBox(Center(cell.x,level,cell.z), Vector3.one*.48f,Quaternion.identity,~0,QueryTriggerInteraction.Ignore))
+                    { valid=false; reason="Oyuncu veya başka bir nesneyle çakışıyor."; break; }
+                }
+            }
             ValidPreview = valid; Status = reason;
             preview.transform.SetPositionAndRotation(center, Quaternion.Euler(0, rotation * 90, 0));
             previewMaterial.SetColor("_BaseColor", valid ? new Color(.28f, .8f, .5f) : new Color(.94f, .3f, .25f));
@@ -113,6 +132,8 @@ namespace Farmer
         }
         private void Rebuild()
         {
+            if (displayedModel == game.Model.Building && displayedRevision == game.Model.Building.Revision) return;
+            displayedModel = game.Model.Building; displayedRevision = displayedModel.Revision;
             // Disable old colliders immediately; Destroy itself is deferred until end of frame.
             foreach (var obj in placed) { obj.SetActive(false); Destroy(obj); }
             placed.Clear();
@@ -129,17 +150,15 @@ namespace Farmer
         private void CreateGrid()
         {
             grid = new GameObject("Construction Grid"); grid.transform.SetParent(transform, false);
-            for (int x = 0; x <= BuildingModel.Width; x++)
-                Line(new Vector3(BuildingModel.OriginX + x, .018f, BuildingModel.OriginZ), new Vector3(BuildingModel.OriginX + x, .018f, BuildingModel.OriginZ + BuildingModel.Depth));
-            for (int z = 0; z <= BuildingModel.Depth; z++)
-                Line(new Vector3(BuildingModel.OriginX, .018f, BuildingModel.OriginZ + z), new Vector3(BuildingModel.OriginX + BuildingModel.Width, .018f, BuildingModel.OriginZ + z));
+            for (int x = -3; x <= 4; x++) Line(new Vector3(x,.018f,-3),new Vector3(x,.018f,4));
+            for (int z = -3; z <= 4; z++) Line(new Vector3(-3,.018f,z),new Vector3(4,.018f,z));
             grid.SetActive(false);
         }
         private void Line(Vector3 a, Vector3 b)
         {
             var obj = new GameObject("Build Grid Line"); obj.transform.SetParent(grid.transform, false);
             var line = obj.AddComponent<LineRenderer>(); line.sharedMaterial = outlineMaterial;
-            line.positionCount = 2; line.SetPosition(0, a); line.SetPosition(1, b);
+            line.useWorldSpace = false; line.positionCount = 2; line.SetPosition(0, a); line.SetPosition(1, b);
             line.startWidth = line.endWidth = .014f;
             line.startColor = line.endColor = new Color(.82f, .72f, .46f);
             line.shadowCastingMode = ShadowCastingMode.Off;

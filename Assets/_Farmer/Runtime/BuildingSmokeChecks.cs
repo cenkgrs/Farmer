@@ -23,14 +23,14 @@ namespace Farmer
                 foreach (var device in physical) InputSystem.DisableDevice(device);
                 var fixture = game.Model.Snapshot(); fixture.building = new BuildingSnapshot { wood = 40, blocks = new BlockRecord[0] };
                 fixture.seeds[0].count = 10; fixture.money = 60;
-                for (int i = 0; i < fixture.plots.Length; i++) fixture.plots[i] = new PlotRecord();
+                for (int i = 0; i < fixture.plots.Length; i++) fixture.plots[i] = new PlotRecord { x=i%6-3, z=i/6-3 };
                 Directory.CreateDirectory(Path.GetDirectoryName(game.SavePath)); File.WriteAllText(game.SavePath, JsonUtility.ToJson(fixture)); game.LoadGame();
                 Teleport(cc, new Vector3(3.4f, .1f, -6.5f));
                 InputSystem.QueueStateEvent(mouse, new MouseState { position = new Vector2(-10,-10) });
                 yield return KeyPress(keyboard, Key.Digit4);
                 Check(game.BuildMode && builder.VisibleBlockCount == 0, "4 enters construction with a clean synchronized view.");
                 yield return Pointer(mouse, Cell(1,0,0), false);
-                Check(builder.ValidPreview && builder.Target == new Vector3Int(1,0,0), $"Reachable empty ground has a valid preview. [{builder.Status}, target={builder.Target}]");
+                Check(builder.ValidPreview && builder.Target == new Vector3Int(4,0,-7), $"Reachable empty ground has a valid preview. [{builder.Status}, target={builder.Target}]");
                 yield return Capture(screenshot, "build-preview");
                 yield return KeyPress(keyboard, Key.R);
                 Check(builder.Rotation == 1, "R rotates the preview by a quarter turn.");
@@ -48,7 +48,7 @@ namespace Farmer
                 yield return Pointer(mouse, Cell(1,1,0), false);
                 Check(builder.Level == 1 && builder.ValidPreview, $"Wheel selects the supported upper level. [{builder.Status}]");
                 yield return Pointer(mouse, Cell(1,1,0), true);
-                Check(game.Model.Building.Occupied(1,1,0) && game.Model.Building.Wood == 34, "Upper block stacks and spends wood once.");
+                Check(game.Model.Building.Occupied(4,1,-7) && game.Model.Building.Wood == 34, "Upper block stacks and spends wood once.");
                 yield return Pointer(mouse, Cell(3,1,0), false);
                 Check(!builder.ValidPreview, "Floating upper blocks get an invalid preview.");
                 yield return Pointer(mouse, Cell(3,1,0), true);
@@ -56,9 +56,9 @@ namespace Farmer
                 yield return Pointer(mouse, Cell(3,1,0), false);
                 yield return Capture(screenshot, "build-stacked");
                 // Hit the upper block's top so the ray selects the actual visible block, not a layer-plane guess.
-                Vector2 top = Camera.main.WorldToScreenPoint(BuildController.Center(1,1,0) + Vector3.up * .48f);
+                Vector2 top = Camera.main.WorldToScreenPoint(BuildController.Center(4,1,-7) + Vector3.up * .48f);
                 yield return Pointer(mouse, top, false, true);
-                Check(!game.Model.Building.Occupied(1,1,0) && game.Model.Building.Wood == 36, "Right click removes the hit upper block and refunds its wood.");
+                Check(!game.Model.Building.Occupied(4,1,-7) && game.Model.Building.Wood == 36, "Right click removes the hit upper block and refunds its wood.");
                 yield return Pointer(mouse, top, false);
                 string saved = JsonUtility.ToJson(game.Model.Snapshot()); game.SaveGame();
                 yield return KeyPress(keyboard, Key.F9);
@@ -72,7 +72,7 @@ namespace Farmer
                 yield return Pointer(mouse, Cell(0,0,0), true);
                 Check(game.Model.Building.Count == 2, "Player overlap cannot spend resources or place a block.");
                 yield return Pointer(mouse, Cell(0,0,0), false);
-                obstacle = GameObject.CreatePrimitive(PrimitiveType.Cube); obstacle.transform.position = BuildController.Center(0,0,1); Physics.SyncTransforms();
+                obstacle = GameObject.CreatePrimitive(PrimitiveType.Cube); obstacle.transform.position = BuildController.Center(3,0,-6); Physics.SyncTransforms();
                 yield return Pointer(mouse, Cell(0,0,1), false);
                 Check(!builder.ValidPreview && builder.Status.Contains("çakış"), "Other solid objects reject placement.");
                 Object.Destroy(obstacle); obstacle = null; yield return null;
@@ -106,7 +106,7 @@ namespace Farmer
             }
         }
         private static void Teleport(CharacterController cc, Vector3 position) { cc.enabled=false; cc.transform.position=position; cc.enabled=true; Physics.SyncTransforms(); }
-        private static Vector2 Cell(int x,int y,int z) => Camera.main.WorldToScreenPoint(BuildController.Center(x,y,z) - Vector3.up*.5f);
+        private static Vector2 Cell(int x,int y,int z) => Camera.main.WorldToScreenPoint(BuildController.Center(x+3,y,z-7) - Vector3.up*.5f);
         private static IEnumerator KeyPress(Keyboard keyboard, Key key)
         {
             InputSystem.QueueStateEvent(keyboard,new KeyboardState(key)); yield return null; yield return null;
