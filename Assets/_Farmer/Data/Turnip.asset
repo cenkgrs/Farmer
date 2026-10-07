@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 932c993bb1fc95ae39930499e4b041e1, type: 3}
+  m_Name: Turnip
+  m_EditorClassIdentifier: Farmer.Runtime::Farmer.CropDefinition
+  id: turnip
+  displayName: Turp
+  seedPrice: 10
+  salePrice: 18
+  wateredDays: 3
+  harvestYield: 1
+  growthStages:
+  - {fileID: 3785909346164271507, guid: 731b1eafb6b98993a921c3a0693ae6c1, type: 3}
+  - {fileID: 3192556274213767008, guid: c9be9db6e0b18efd09177cf8f362e055, type: 3}
+  - {fileID: 7486210659052451942, guid: a3984afe1bcba6d1a8b4f83e0066021c, type: 3}
+  - {fileID: 6462579319193599027, guid: 625bef93789f29aaf923038ed2d8006f, type: 3}

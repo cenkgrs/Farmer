@@ -4,7 +4,7 @@ Son güncelleme: **7 Ekim 2026 — Europe/Istanbul**.
 
 ## Şu an nerede kaldık?
 
-**Unity 6000.3.25f1 LTS (e1dba0a9aba4)** Linux makinesine kuruldu ve `Unity -version` ile doğrulandı. Resmi URP şablonunun kaynak dosyaları depoya alındı. 7 Ekim tarihinde aktif lisans doğrulandı; ilk paket importu, C# derlemesi ve başlangıç sahnesi üretimi başarıyla tamamlandı. Linux build ve görsel kontrol sonucu aşağıdaki doğrulama kaydında tutulur. Aktif hedef 0.1; **karakter hareketi ve tarla karesi seçimi artık çalışıyor**. Sıradaki adım veri tanımlı turp/tohum/ekonomi döngüsü. 0.1 bütünü henüz tamamlanmadı.
+**Unity 6000.3.25f1 LTS (e1dba0a9aba4)** Linux makinesine kuruldu ve `Unity -version` ile doğrulandı. Resmi URP şablonunun kaynak dosyaları depoya alındı. 7 Ekim tarihinde aktif lisans doğrulandı; ilk paket importu, C# derlemesi ve başlangıç sahnesi üretimi başarıyla tamamlandı. Linux build ve görsel kontrol sonucu aşağıdaki doğrulama kaydında tutulur. **0.1 çekirdek prototipi Linux üzerinde tamamlandı:** hareket, kare seçimi, tohum satın alma, ekim/sulama, dört görünür büyüme aşaması, hasat/satış, gün ilerletme ve kayıt/yükleme çalışıyor. Sıradaki geliştirme 0.2 modüler üs kurmanın ilk küçük adımı. Görseller geçici; Windows doğrulaması ve kullanıcıyla tarım hissi değerlendirmesi açık.
 
 Kullanıcı tek başına geliştirecek, Linux ve Windows bilgisayarlar arasında çalışacak. Python, C# ve Java deneyimi yüksek; oyun motoru deneyimi sınırlı ancak Unity'de Godot'tan daha deneyimli. Modelleri harici AI araçlarıyla üretebilir; biz prompt ve entegrasyon gereksinimlerini hazırlayacağız.
 
@@ -75,15 +75,33 @@ Kullanıcı 7 Ekim 2026'da diğer bilgisayarda değişiklik yapmadığını beli
 - 6×6 tarla; fareyle kare önizlemesi, 2.5 birim yakınlıkta sol tıkla seçim, uzak karede yaklaşma bildirimi, ESC/sağ tıkla temizleme. HUD üstündeki tıklamalar dünyaya geçmez. Dünya sınırı karakter merkezi için ±9.3; bunlar değiştirilebilir prototip değerleridir.
 - `FarmGridLayout` ve `PlanarMovement` hesapları sunumdan ayrı. `PlayerMotor`, `FarmSelection`, `PrototypeHud` sahne bileşenleri; runtime ve EditMode test assembly'leri ayrıldı.
 - `MovementPrototypeSetup.UpgradeScene` ilk kurulum sahnesine bir kez ekleme yapar; mevcut hareket prototipinin üzerine yazmayı reddeder. Sonraki oturumlarda tekrar çalıştırma; sahne ve GUID'ler depoda hazır.
-- Karakter/şapka/sandık geçici geometrilerden oluşuyor. Onaylanan konsept görsel kalitesine ulaşıldığı iddia edilmiyor. Ürün, pazar, para, envanter, gün, kayıt/yükleme ve inşaat henüz yok.
+- Karakter/şapka/sandık geçici geometrilerden oluşuyor. Onaylanan konsept görsel kalitesine ulaşıldığı iddia edilmiyor. Tarım/ekonomi ve kayıt sistemi aşağıdaki sonraki adımda eklendi. İnşaat henüz yok.
 - **12/12 EditMode testi başarılı**, başarısız/atlanan test yok. Negatif koordinatlar, üst sınır, hücre merkezi dönüşümü, erişim mesafesi, çapraz hareket ve dünya sınırı kontrol edildi.
 - Linux geliştirme build'i başarılı. `--farmer-check-controls` ile Input System'e sanal klavye/fare olayları gönderilen gerçek player denemesinde **11 kontrol başarılı**: odak, hareket/yön, sandık çarpışması, dünya sınırı, yakın kare, HUD engellemesi, ESC, uzak kare, ekran dışı hover ve sabit kamera. Çıkış 0 ve `FARMER_PLAYER_SMOKE_OK`.
-- 1280×720 player görüntüsü görsel olarak incelendi; karakter, grid, seçim çerçevesi ve Türkçe HUD görünüyor. Güncel görüntü `docs/screenshots/movement-prototype.png` içinde. Kontroller otomatik; kullanıcıyla manuel oynanış hissi değerlendirmesi henüz yapılmadı. Test komutları `docs/TESTLER.md` içinde. Yerel günlükler `Logs/movement-*.log`, XML sonucu `Logs/movement-tests.xml`; Git'e girmez.
+- 1280×720 player görüntüsü görsel olarak incelendi; karakter, grid, seçim çerçevesi ve Türkçe HUD görünüyor. Bu adımın görüntüsü `docs/screenshots/movement-prototype.png` içinde. Kullanıcı bu adımın tamam olduğunu belirterek devam edilmesini istedi; aşağıdaki tarım döngüsünün manuel değerlendirmesi henüz yapılmadı. Test komutları `docs/TESTLER.md` içinde. Yerel günlükler `Logs/movement-*.log`, XML sonucu `Logs/movement-tests.xml`; Git'e girmez.
+
+## 0.1 tarım ve ekonomi — tamamlandı
+
+- `CropDefinition` ve `Data/Turnip.asset`: veri tanımlı ürün, fiyat, büyüme süresi, hasat miktarı ve dört prefab. Başlangıç 60 para; turp tohumu 10, satış 18 para, hasat 1 ürün, 3 sulanmış gece. Bunlar prototip denge değerleridir.
+- `FarmModel`: sahne/girdi/dosya bağımlılığı olmayan C# kuralları. Ürün başına tohum/hasat envanteri, alım/satım, ekim, günlük sulama, büyüme, hasat ve doğrulamalı snapshot. Yeni ürün kuralları aynı modelle çalışır; mevcut oyuncu arayüzü 0.1 gereği tek üründür.
+- `FarmGame`: yakınlık kontrollü pazar/kamp, seçili kare işlemi, otomatik kayıt. B: tohum al, V: hasadı sat, E: ek/sula/hasat, kamp yakınında N: ertesi gün. Sulanmayan ürün bekler; ölüm ve gerçek zamanlı bekleme yok.
+- `FarmPresentation` ve `FarmHud`: dört görünür aşama, ıslak toprak, hasatta kısa ses ve +ürün bildirimi, para/envanter/gün, bağlama göre pazar/kamp panelleri ve işlem düğmesi. Pazar ve kamp geçici geometrilerdir. Filizler görsel kontrol sonrası büyütüldü.
+- `FarmSaveStore`: sürüm 1 JSON, geçici dosyadan değiştirme, önceki sağlam kayıt yedeği, bozuk ana kayıttan yedeğe dönüş. İki dosya da bozuksa işlemler durur ve dosyalar korunur. Para, envanter, gün, ekili ürün/büyüme/sulama saklanır; karakter konumu saklanmaz. Kayıt yereldir, Git ile taşınmaz. Konum ve kurtarma ayrıntıları `docs/TESTLER.md` içinde.
+- `FarmingPrototypeSetup.UpgradeScene` sahneye bir kez uygulandı; tekrar çalıştırma. `PolishPresentation` font ve prefab ölçeğini düzenlemek için kullanıldı. Güncel Farm sahnesi, veri, prefab ve meta dosyaları depoda hazır.
+
+### Doğrulama
+
+- **39/39 EditMode testi başarılı**, başarısız/atlanan yok: önceki 12 hareket/grid + 22 tarım mantığı + 5 dosya kayıt/kurtarma testi. XML: `Logs/farming-tests.xml`.
+- Son Linux geliştirme build'i başarılı, `FARMER_BUILD_OK`; günlük `Logs/farming-build-final.log`.
+- Gerçek Linux player'da **11 hareket/seçim + 41 tarım kontrolü başarılı**. Pazar düğmesine UI tıklaması ve B/E/N/V/F5/F9 tuş olaylarıyla tam döngü, kuru ürünün beklemesi, uzak hasat engeli, tekrar hasat engeli, yeniden yatırım ve kayıt/yükleme denendi. Çıkış 0, `FARMER_FARMING_CHECKS_FINISHED` ve `FARMER_PLAYER_SMOKE_OK`; günlük `Logs/farming-player-final.log`.
+- Pazar, dört aşama ve son toplu görüntü incelendi; eksik/pembe malzeme veya kesilmiş HUD görülmedi. Güncel örnekler `docs/screenshots/farming-prototype.png` ve `docs/screenshots/farming-market.png`. Hasat sesinin oynatma durumu kontrol edildi; dinleme kalitesi değerlendirmesi yapılmadı.
+- Smoke capture ayrı geçici kayıt kullanır ve normal oyuncu kaydını değiştirmez; sonunda test kayıtları temizlenir. Build, günlük ve QA ara çıktıları Git dışında.
+- Windows, editör Play modu ve uzun süreli performans testi ayrıca yapılmadı. 0.2 inşaat, çoklu ürün seçimi, üretim ve moblar bu sürüme dahil değil.
 
 ## Sıradaki somut işler
 
-1. Veri tanımlı tek ürün (turp), tohum satın alma, envanter/para, ekim/sulama/büyüme/hasat/satış döngüsünü ekle; ekonomi ve ürün kurallarını görüntüden ayır.
-2. Gün ilerletme ve kayıt/yükleme ekle; yol haritasındaki kalan 0.1 kabul ölçütlerini test et.
+1. 0.1 tarım döngüsünü kullanıcı oynarken değerlendir; varsa kullanım sorunlarını küçük düzeltmelerle gider.
+2. **0.2 ilk adım:** veri tanımlı ahşap blok, kare/hacim yerleşim modeli, geçerli/geçersiz önizleme, yan yana/üst üste koyma ve oyuncuyla çakışmayı engelleme. Kaynak harcaması ve kayıt şemasını birlikte ele al; mevcut tarla kayıtlarını korumadan şema değiştirme. 0.2'nin tamamını tek seferde yapmaya çalışma.
 3. Windows'ta aynı editör sürümüyle açılış ve build ayrıca doğrulanmalı. Mevcut Farm sahnesini yeniden üretme; ValidateProject kullan.
 
 ## Son oturum kaydı
@@ -95,3 +113,5 @@ Kullanıcı 7 Ekim 2026'da diğer bilgisayarda değişiklik yapmadığını beli
 **2026-10-07:** Kullanıcı diğer bilgisayarda işlem yapmadığını belirtti; Linux üzerinde devam edildi. Aktif lisansla paketler çözüldü, Farm sahnesi üretildi, Linux geliştirme build'i ve gerçek player ekran görüntüsü doğrulandı. Sonraki adım 0.1 hareket/kare seçimi.
 
 **2026-10-07 — hareket prototipi:** Kullanıcının devam talimatıyla karakter hareketi, çarpışma, 6×6 grid, erişim kontrollü kare seçimi ve HUD eklendi. 12 EditMode testi ve 11 gerçek player kontrolü geçti; Linux build ve ekran görüntüsü doğrulandı. Sonraki özellik tarım/ekonomi döngüsü.
+
+**2026-10-07 — tarım prototipi:** Kullanıcının devam talimatıyla 0.1 tarım/ekonomi, gün ve kalıcı kayıt döngüsü tamamlandı. 39 EditMode testi ve 52 gerçek player kontrolü geçti; son Linux build ve görseller doğrulandı. Devir için kod, prefablar, sahne, testler ve belgeler birlikte commitlenir; kesin commit/push durumu Git üzerinden kontrol edilmeli. Sıradaki geliştirme 0.2 ilk ahşap yerleşim adımı.

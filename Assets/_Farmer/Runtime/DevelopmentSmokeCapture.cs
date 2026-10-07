@@ -53,6 +53,8 @@ namespace Farmer
             yield return new WaitForSecondsRealtime(3f);
             if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-controls") >= 0)
                 yield return ControlsSmokeChecks.Run();
+            if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-farming") >= 0)
+                yield return FarmingSmokeChecks.Run(outputPath);
             yield return new WaitForEndOfFrame();
             ScreenCapture.CaptureScreenshot(outputPath);
             float deadline = Time.realtimeSinceStartup + 15f;

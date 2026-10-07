@@ -19,8 +19,11 @@ namespace Farmer
         public FarmGridLayout Layout => layout ??= new FarmGridLayout(origin, width, depth, cellSize);
         public Vector2Int? HoveredCell { get; private set; }
         public Vector2Int? SelectedCell { get; private set; }
-        public string Feedback { get; private set; } = "Bir tarla karesine yaklaş ve tıkla.";
+        private string feedback = "Bir tarla karesine yaklaş ve tıkla.";
+        public event System.Action<string> FeedbackChanged;
+        public string Feedback { get => feedback; private set { feedback = value; FeedbackChanged?.Invoke(value); } }
         public bool SelectedInReach => SelectedCell.HasValue && InReach(SelectedCell.Value);
+        public void SetHudPanels(RectTransform[] panels) => hudPanels = panels;
 
         public void Configure(Camera camera, Transform actor, LineRenderer hover, LineRenderer selected, RectTransform[] panels)
         {
@@ -51,7 +54,7 @@ namespace Farmer
             bool blocked = screenPosition.x < 0 || screenPosition.y < 0 || screenPosition.x >= Screen.width || screenPosition.y >= Screen.height;
             if (hudPanels != null)
                 foreach (var panel in hudPanels)
-                    blocked |= panel != null && RectTransformUtility.RectangleContainsScreenPoint(panel, screenPosition);
+                    blocked |= panel != null && panel.gameObject.activeInHierarchy && RectTransformUtility.RectangleContainsScreenPoint(panel, screenPosition);
 
             var plane = new Plane(Vector3.up, new Vector3(0, 0.055f, 0));
             if (!blocked && viewCamera != null)

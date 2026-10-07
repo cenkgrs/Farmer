@@ -34,7 +34,9 @@ Tekrarlanan işleri ileride sulama/üretim sistemleri kolaylaştırmalı. Daha g
 | Keten | Lif/kumaş, eşya üretimi. |
 | Şifalı ot | Keşif için iyileştirici üretimi. |
 
-Süreler, fiyatlar, verimler ve tarif miktarları henüz kararlaştırılmadı. Kod içine dağılmış sabitler yerine düzenlenebilir tanımlar kullanılacak.
+0.1 için uygulanan geçici denge: turp tohumu 10 para, ürün satışı 18 para, hasat verimi 1, olgunlaşma üç **sulanmış** gece. Başlangıç 60 para ve boş envanter. Dört aşama ekildiği gün filiz, bir sulanmış gece sonrası gelişen bitki, ikinci gece olgunlaşan bitki ve üçüncü gece hasada hazır bitkidir. Diğer ürünlerin değerleri henüz belirlenmedi.
+
+Ürün değerleri `Assets/_Farmer/Data/Turnip.asset` tanımındadır. Gün yalnızca kampta N veya dinlenme düğmesiyle ilerler; gerçek zamanlı süre sınırı yoktur. Pazar tezgâhına yaklaşarak tohum alınır ve ürün satılır. Başarılı işlemler otomatik kaydedilir. Bu ilk denge oynanış geri bildirimiyle değişebilir.
 
 ## Üs kurma
 

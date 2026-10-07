@@ -53,7 +53,7 @@ namespace Farmer
                 Check(motor.transform.position.x <= 9.31f && motor.transform.position.y > -0.1f,
                     "Player remains on the ground at the world boundary.");
 
-                Teleport(controller, start);
+                Teleport(controller, new Vector3(-4, 0.1f, -4));
                 yield return null;
                 var near = new Vector2Int(0, 0);
                 Vector2 nearScreen = camera.WorldToScreenPoint(selection.Layout.Center(near, 0.055f));

@@ -1,6 +1,6 @@
 # Sürüm planı ve kabul ölçütleri
 
-Tarihler/tahmini geliştirme süreleri henüz yok. Her sürüm oynanabilir bir adım olmalı. 0.1 kapsamında hareket ve kare seçimi doğrulandı; kalan özelliklerin durumu aşağıda.
+Tarihler/tahmini geliştirme süreleri henüz yok. Her sürüm oynanabilir bir adım olmalı. 0.1 çekirdek prototipi Linux üzerinde doğrulandı; sonraki sürüm 0.2. Görseller geçici, Windows doğrulaması ayrı açık iş.
 
 ## 0.1 — Çekirdek prototip
 
@@ -9,12 +9,12 @@ Küçük arazi, sabit ortografik kamera, karakter hareketi, kare seçimi, temel 
 Kabul:
 
 - [x] Oyuncu hareket eder, seçilen toprak karesi anlaşılır, kamera dönmez. (7 Ekim: 12 mantık testi, Linux player giriş/çarpışma/seçim kontrolü ve ekran görüntüsü.)
-- [ ] Tohum satın alma → ekim → sulama → dört görünür büyüme aşaması → hasat → satış → yeniden tohum satın alma döngüsü tamamlanır.
-- [ ] Tohum ve para doğru eksilir; hasat tek kez alınır; negatif miktar/para oluşmaz.
-- [ ] Sulanmayan gün büyüme gecikir; bitki hemen ölmez.
-- [ ] Geliştirme sırasında gün ilerletme hızlandırılabilir; oyuncu akışında anlaşılır gün bitirme etkileşimi vardır.
-- [ ] Temel kayıt/yükleme ile para, envanter, gün ve tarla durumu korunur. Bu teknik gereksinim tasarım sürekliliği için önerilen kapsamdır.
-- [ ] Mantık kontrolleri ve kısa oyun içi deneme belgelenir.
+- [x] Tohum satın alma → ekim → sulama → dört görünür büyüme aşaması → hasat → satış → yeniden tohum satın alma döngüsü tamamlanır.
+- [x] Tohum ve para doğru eksilir; hasat tek kez alınır; negatif miktar/para oluşmaz.
+- [x] Sulanmayan gün büyüme gecikir; bitki hemen ölmez.
+- [x] Geliştirme sırasında gün ilerletme hızlandırılabilir; oyuncu akışında anlaşılır gün bitirme etkileşimi vardır.
+- [x] Temel kayıt/yükleme ile para, envanter, gün ve tarla durumu korunur. Bu teknik gereksinim tasarım sürekliliği için önerilen kapsamdır.
+- [x] Mantık kontrolleri ve kısa oyun içi deneme belgelenir.
 
 İlk görsel kalite hedefi tek küçük köşede denenir; bütün model listesinin bitmesini beklemek gerekmez.
 

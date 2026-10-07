@@ -2,7 +2,7 @@
 
 Çalışma adı: **Farmer**. Sabit açılı izometrik kamerayla oynanan, stilize 3D çiftçilik, üs kurma ve hafif keşif/savaş oyunu.
 
-**Unity 6000.3.25f1 LTS + C# + URP** kurulumu doğrulandı. İlk import, C# derlemesi, izometrik başlangıç sahnesi ve Linux geliştirme build'i başarılı. Build çalıştırılıp gerçek ekran görüntüsü incelendi. İlk oynanabilir adım hazır: karakter hareketi, çarpışma ve 6×6 tarlada kare seçimi. Çiftçilik/ekonomi döngüsü henüz yok.
+**Unity 6000.3.25f1 LTS + C# + URP** kurulumu doğrulandı. İlk import, C# derlemesi, izometrik başlangıç sahnesi ve Linux geliştirme build'i başarılı. Build çalıştırılıp gerçek ekran görüntüsü incelendi. 0.1 çekirdek döngüsü hazır: hareket, 6×6 tarla, tohum satın alma, ekim/sulama, dört büyüme aşaması, hasat/satış ve kayıt/yükleme.
 
 ## Oyna
 
@@ -10,11 +10,15 @@
 
 - **WASD / ok tuşları:** hareket.
 - **Sol tık:** yakındaki tarla karesini seç. Turuncu çerçeve, yaklaşman gerektiğini belirtir.
+- **E / ekrandaki işlem düğmesi:** seçili kareye ek, sula veya olgun ürünü hasat et.
+- **Pazar yakınında B:** 1 tohum al. **V:** turpların hepsini sat. Ekrandan 5 tohum da alınabilir.
+- **Kamp yakınında N:** günü bitir. Sulanan ürünler büyür; sulanmayanlar bekler.
 - **ESC / sağ tık:** seçimi temizle.
+- **F5 / F9:** kaydet / son kaydı yükle. Başarılı işlemler zaten otomatik kaydedilir.
 
-Karakter ve çevre geçici geometrilerdir. 0.1 henüz tamamlanmadı; sıradaki adım tohum, ekim ve ürün döngüsüdür. [Testler ve manuel kontrol](docs/TESTLER.md).
+Karakter ve çevre geçici geometrilerdir. İlk ürün turptur: tohum 10, satış 18 para; üç sulanmış günün ardından hasat edilir. Gerçek zamanlı bekleme yoktur. Sıradaki sürüm 0.2 modüler üs kurmadır. [Testler ve manuel kontrol](docs/TESTLER.md).
 
-![Çalışan hareket ve kare seçimi prototipi](docs/screenshots/movement-prototype.png)
+![Çalışan tarım döngüsü ve dört büyüme aşaması](docs/screenshots/farming-prototype.png)
 
 ## Başlangıç
 
