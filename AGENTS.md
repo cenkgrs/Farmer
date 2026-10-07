@@ -23,7 +23,7 @@
 - Küçük, oynanabilir adımlar üret. Yeni ürün veya tarif eklemek için mevcut kodu kopyalamak yerine veri tanımları kullan.
 - Ürün, envanter ve üretim kurallarını kamera/görsel sunum kodundan ayır; başlangıçta gereksiz framework kurma.
 - Makineye özel mutlak yolları, motor önbelleğini, kişisel ayarları ve sırları sürüm kontrolüne alma.
-- Unity editör yamasını `ProjectSettings/ProjectVersion.txt`, paketleri `Packages/manifest.json` ve `Packages/packages-lock.json` ile sabitle; bir makinede kendiliğinden yükseltme. İlk şablon kilidi manifestle tutarsızdı ve kaldırıldı. İlk başarılı editör açılışında packages-lock.json üretilip doğrulanmalı ve commit edilmeli.
+- Unity editör yamasını `ProjectSettings/ProjectVersion.txt`, paketleri `Packages/manifest.json` ve `Packages/packages-lock.json` ile sabitle; bir makinede kendiliğinden yükseltme. Kilit dosyası 7 Ekim 2026 tarihinde gerçek editör importuyla üretildi; manifestle birlikte korunmalı ve yalnızca bilinçli paket değişikliklerinde güncellenmeli.
 - Unity `.meta` dosyalarını assetleriyle birlikte sürümle; GUID değerlerini koru. Sahne/prefab serileştirmesi Force Text, sürüm kontrol modu Visible Meta Files olmalı.
 - Anlamlı mantık değişikliklerini uygun testlerle; kamera, yerleşim ve görselleri oyun içinde doğrula. Çalıştırılmamış bir kontrolü geçti diye yazma.
 - Mevcut kullanıcı değişikliklerini koru. Yıkıcı Git komutları ve force push kullanma.

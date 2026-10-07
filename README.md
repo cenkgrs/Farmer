@@ -2,7 +2,7 @@
 
 Çalışma adı: **Farmer**. Sabit açılı izometrik kamerayla oynanan, stilize 3D çiftçilik, üs kurma ve hafif keşif/savaş oyunu.
 
-**Unity 6000.3.25f1 LTS + C# + URP** proje iskeleti hazırlandı. Editör bu Linux makinesine kuruldu; ilk import, sahne üretimi ve build kontrolü aktif Unity lisansını bekliyor. Henüz oynanabilir oyun yok.
+**Unity 6000.3.25f1 LTS + C# + URP** kurulumu doğrulandı. İlk import, C# derlemesi, izometrik başlangıç sahnesi ve Linux geliştirme build'i başarılı. Build çalıştırılıp gerçek ekran görüntüsü incelendi. Mevcut sahne zemin/kamera/tarla temelidir; karakter ve oynanabilir çiftçilik henüz yok.
 
 ## Başlangıç
 
