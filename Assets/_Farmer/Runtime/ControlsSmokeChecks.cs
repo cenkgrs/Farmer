@@ -57,27 +57,27 @@ namespace Farmer
                 yield return null;
                 var near = new Vector2Int(0, 0);
                 Vector2 nearScreen = camera.WorldToScreenPoint(selection.Layout.Center(near, 0.055f));
-                yield return Click(mouse, nearScreen);
-                Check(selection.SelectedCell == near, "Mouse ray selects the reachable cell.");
+                yield return Hover(mouse, nearScreen);
+                Check(selection.HoveredCell == near, "Mouse ray targets the reachable cell without clicking.");
                 yield return Click(mouse, new Vector2(60, Screen.height - 60));
-                Check(selection.SelectedCell == near, "HUD clicks do not change the selected cell.");
+                Check(!selection.HoveredCell.HasValue, "HUD blocks the world target.");
 
                 InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.Escape));
                 yield return null;
                 yield return null;
                 InputSystem.QueueStateEvent(keyboard, new KeyboardState());
-                Check(!selection.SelectedCell.HasValue, "Escape clears selection.");
+                Check(!selection.HoveredCell.HasValue, "HUD target remains empty after Escape.");
                 Vector2 farScreen = camera.WorldToScreenPoint(selection.Layout.Center(new Vector2Int(5, 5), 0.055f));
                 yield return Click(mouse, farScreen);
-                Check(!selection.SelectedCell.HasValue, "Distant cells cannot be selected.");
-                yield return Click(mouse, nearScreen);
+                Check(selection.HoveredCell.HasValue && !selection.HoveredInReach, "Distant targets are out of reach.");
+                yield return Hover(mouse, nearScreen);
                 InputSystem.QueueStateEvent(mouse, new MouseState { position = new Vector2(-10, -10) });
                 yield return null;
                 yield return null;
-                Check(!selection.HoveredCell.HasValue && selection.SelectedCell == near,
-                    "Leaving the viewport clears hover but preserves selection.");
+                Check(!selection.HoveredCell.HasValue,
+                    "Leaving the viewport clears the target.");
                 Check(camera.transform.position == cameraPosition && Quaternion.Angle(cameraRotation, camera.transform.rotation) < 0.001f,
-                    "Camera stays fixed while moving and selecting.");
+                    "Camera stays fixed while moving and targeting.");
                 Debug.Log("FARMER_CONTROLS_CHECKS_FINISHED");
             }
             finally
@@ -85,6 +85,12 @@ namespace Farmer
                 InputSystem.RemoveDevice(keyboard);
                 InputSystem.RemoveDevice(mouse);
             }
+        }
+
+        private static IEnumerator Hover(Mouse mouse, Vector2 position)
+        {
+            InputSystem.QueueStateEvent(mouse, new MouseState { position = position });
+            yield return null; yield return null;
         }
 
         private static IEnumerator Click(Mouse mouse, Vector2 position)

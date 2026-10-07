@@ -46,19 +46,18 @@ namespace Farmer
 #endif
             SavePath = Path.Combine(directory, "farm-v1.json");
             store = new FarmSaveStore(SavePath, snapshot => FarmModel.Restore(snapshot, rules, selection.Layout.Width, selection.Layout.Depth));
-            selection.FeedbackChanged += OnSelectionFeedback;
             LoadGame();
         }
-        private void OnSelectionFeedback(string message) => Feedback = message;
-        private void OnDestroy() { if (selection != null) selection.FeedbackChanged -= OnSelectionFeedback; }
-
         private void Update()
         {
             var k = Keyboard.current;
             if (!Application.isFocused || k == null) return;
             if (k.f9Key.wasPressedThisFrame) LoadGame();
             if (!Ready) return;
-            if (k.eKey.wasPressedThisFrame) ActOnSelected();
+            if (k.digit1Key.wasPressedThisFrame) Equip(FarmItem.Seeds);
+            if (k.digit2Key.wasPressedThisFrame) Equip(FarmItem.WateringCan);
+            if (k.digit3Key.wasPressedThisFrame) Equip(FarmItem.Sickle);
+            if (k.eKey.wasPressedThisFrame) UseHovered();
             if (k.bKey.wasPressedThisFrame) Buy(1);
             if (k.vKey.wasPressedThisFrame) SellHarvest();
             if (k.nKey.wasPressedThisFrame) Rest();
@@ -72,34 +71,32 @@ namespace Farmer
             return delta.sqrMagnitude <= 2.6f * 2.6f;
         }
 
-        public int SelectedIndex => selection.SelectedCell is Vector2Int c ? c.x + c.y * Model.Width : -1;
-        public string ActionLabel
+        public Transform Player => player;
+        public int HoveredIndex => selection.HoveredCell is Vector2Int c ? c.x + c.y * Model.Width : -1;
+        public string EquippedName => Model.EquippedItem == FarmItem.Seeds ? ActiveCrop.displayName + " tohumu"
+            : Model.EquippedItem == FarmItem.WateringCan ? "Sulama kabı" : "Orak";
+        public string ActionLabel => HoveredIndex < 0 ? "Fareyi tarlaya götür" : !selection.HoveredInReach ? "Kareye yaklaş"
+            : Model.EquippedItem == FarmItem.Seeds ? "E · Tohum ek" : Model.EquippedItem == FarmItem.WateringCan ? "E · Sula" : "E · Hasat et";
+
+        public void Equip(FarmItem item)
         {
-            get
-            {
-                int i = SelectedIndex;
-                if (i < 0) return "Bir kare seç";
-                if (!selection.SelectedInReach) return "Kareye yaklaş";
-                var plot = Model.Plot(i);
-                if (string.IsNullOrEmpty(plot.cropId)) return "E · " + ActiveCrop.displayName + " ek";
-                if (Model.IsReady(i)) return "E · Hasat et";
-                return plot.watered ? "Bugün sulandı" : "E · Sula";
-            }
+            if (!Ready || !Model.Equip(item)) return;
+            Feedback = EquippedName + " seçildi. Fareyi yakındaki kareye götür ve E'ye bas.";
+            SaveGame(); Changed?.Invoke();
         }
 
-        public bool ActOnSelected()
+        public bool UseHovered()
         {
-            if (!Ready) return false;
-            int index = SelectedIndex;
-            if (index < 0 || !selection.SelectedInReach) { Feedback = "Önce yakındaki bir tarla karesini seç."; return false; }
+            if (!Ready || !Application.isFocused) return false;
+            selection.RefreshPointer();
+            int index = HoveredIndex;
+            if (index < 0 || !selection.HoveredInReach)
+            { Feedback = index < 0 ? "Fareyi bir tarla karesinin üzerine götür." : "Bu kare uzakta. Biraz yaklaş."; return false; }
             var plot = Model.Plot(index);
-            bool wasReady = Model.IsReady(index);
-            bool ok; string message;
-            if (string.IsNullOrEmpty(plot.cropId)) ok = Model.Plant(index, ActiveCrop.id, out message);
-            else if (Model.IsReady(index)) ok = Model.Harvest(index, out message);
-            else ok = Model.Water(index, out message);
+            bool harvesting = Model.EquippedItem == FarmItem.Sickle;
+            bool ok = Model.UseEquipped(index, ActiveCrop.id, out string message);
             Complete(ok, message);
-            if (ok && wasReady)
+            if (ok && harvesting)
             {
                 var definition = Definition(plot.cropId);
                 Harvested?.Invoke(index, $"+{definition.harvestYield} {definition.displayName}");
@@ -147,7 +144,7 @@ namespace Farmer
                 if (loaded != null) Model = loaded;
                 Ready = true;
                 SaveStatus = recovered ? "Yedek kayıt yüklendi" : loaded == null ? "Yeni çiftlik" : "Kayıt yüklendi";
-                Feedback = recovered ? "Son sağlam yedek açıldı; önceki dosya korunacak." : "Pazar: B ile tohum al. Tarla: bir kare seç ve E'ye bas.";
+                Feedback = recovered ? "Son sağlam yedek açıldı; önceki dosya korunacak." : "1/2/3 ile eşya seç; fareyi yakındaki kareye götür ve E'ye bas.";
                 Changed?.Invoke(); return true;
             }
             catch (Exception e) when (e is IOException || e is UnauthorizedAccessException || e is ArgumentException)

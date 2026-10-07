@@ -4,14 +4,15 @@ Tarihler/tahmini geliştirme süreleri henüz yok. Her sürüm oynanabilir bir a
 
 ## 0.1 — Çekirdek prototip
 
-Küçük arazi, sabit ortografik kamera, karakter hareketi, kare seçimi, temel envanter/para, bir ürün, basit pazar etkileşimi ve oyun günü ilerlemesi.
+Küçük arazi, sabit ortografik kamera, karakter hareketi, fareyle kare hedefleme, temel envanter/para, bir ürün, basit pazar etkileşimi ve oyun günü ilerlemesi.
 
 Kabul:
 
-- [x] Oyuncu hareket eder, seçilen toprak karesi anlaşılır, kamera dönmez. (7 Ekim: 12 mantık testi, Linux player giriş/çarpışma/seçim kontrolü ve ekran görüntüsü.)
+- [x] Oyuncu hareket eder, hedeflenen toprak karesi anlaşılır, kamera dönmez. (7 Ekim: 12 mantık testi, Linux player giriş/çarpışma/seçim kontrolü ve ekran görüntüsü.)
+- [x] Elde kuşanılan tohum/sulama kabı/orak, fare hedefi üzerinde E ile kullanılır; tarla için önce tıklama gerekmez.
 - [x] Tohum satın alma → ekim → sulama → dört görünür büyüme aşaması → hasat → satış → yeniden tohum satın alma döngüsü tamamlanır.
 - [x] Tohum ve para doğru eksilir; hasat tek kez alınır; negatif miktar/para oluşmaz.
-- [x] Sulanmayan gün büyüme gecikir; bitki hemen ölmez.
+- [x] Her ekimde tek sulama büyümeyi başlatır; üç gece süresi korunur. Hiç sulanmayan ürün bekler, bitki hemen ölmez.
 - [x] Geliştirme sırasında gün ilerletme hızlandırılabilir; oyuncu akışında anlaşılır gün bitirme etkileşimi vardır.
 - [x] Temel kayıt/yükleme ile para, envanter, gün ve tarla durumu korunur. Bu teknik gereksinim tasarım sürekliliği için önerilen kapsamdır.
 - [x] Mantık kontrolleri ve kısa oyun içi deneme belgelenir.

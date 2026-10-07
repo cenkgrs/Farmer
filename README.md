@@ -9,14 +9,16 @@
 `Assets/_Farmer/Scenes/Farm.unity` sahnesini Unity'de açıp Play'e bas. Bu makinede hazır Linux uygulaması `builds/Linux/Farmer.x86_64`; build çıktısı Git'e girmez.
 
 - **WASD / ok tuşları:** hareket.
-- **Sol tık:** yakındaki tarla karesini seç. Turuncu çerçeve, yaklaşman gerektiğini belirtir.
-- **E / ekrandaki işlem düğmesi:** seçili kareye ek, sula veya olgun ürünü hasat et.
+- **Fare:** tarla karesini hedefle; tıklamana gerek yok. Turuncu çerçeve, yaklaşman gerektiğini belirtir.
+- **1 / 2 / 3:** tohum / sulama kabı / orak kuşan. Eşya çubuğuna tıklayarak da seçebilirsin.
+- **E:** farenin gösterdiği yakındaki karede elindeki eşyayı kullan. Tohum eker, sulama kabı sular, orak hasat eder.
 - **Pazar yakınında B:** 1 tohum al. **V:** turpların hepsini sat. Ekrandan 5 tohum da alınabilir.
-- **Kamp yakınında N:** günü bitir. Sulanan ürünler büyür; sulanmayanlar bekler.
-- **ESC / sağ tık:** seçimi temizle.
+- **Kamp yakınında N:** günü bitir. Bir kez sulanan ürünler büyür; hiç sulanmayanlar bekler.
 - **F5 / F9:** kaydet / son kaydı yükle. Başarılı işlemler zaten otomatik kaydedilir.
 
-Karakter ve çevre geçici geometrilerdir. İlk ürün turptur: tohum 10, satış 18 para; üç sulanmış günün ardından hasat edilir. Gerçek zamanlı bekleme yoktur. Sıradaki sürüm 0.2 modüler üs kurmadır. [Testler ve manuel kontrol](docs/TESTLER.md).
+Sulama kabı ve orak başlangıç eşyalarıdır; kullanıldıkça tükenmez. Tohum sayısı satın alma/ekimle değişir. Elindeki eşya da kaydedilir.
+
+Karakter, aletler ve çevre geçici geometrilerdir. İlk ürün turptur: tohum 10, satış 18 para; ekimden sonra bir kez sulanır ve üç gece sonra hasat edilir. Gerçek zamanlı bekleme yoktur. Sıradaki sürüm 0.2 modüler üs kurmadır. [Testler ve manuel kontrol](docs/TESTLER.md).
 
 ![Çalışan tarım döngüsü ve dört büyüme aşaması](docs/screenshots/farming-prototype.png)
 

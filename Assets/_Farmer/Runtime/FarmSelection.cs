@@ -18,11 +18,7 @@ namespace Farmer
         private FarmGridLayout layout;
         public FarmGridLayout Layout => layout ??= new FarmGridLayout(origin, width, depth, cellSize);
         public Vector2Int? HoveredCell { get; private set; }
-        public Vector2Int? SelectedCell { get; private set; }
-        private string feedback = "Bir tarla karesine yaklaş ve tıkla.";
-        public event System.Action<string> FeedbackChanged;
-        public string Feedback { get => feedback; private set { feedback = value; FeedbackChanged?.Invoke(value); } }
-        public bool SelectedInReach => SelectedCell.HasValue && InReach(SelectedCell.Value);
+        public bool HoveredInReach => HoveredCell.HasValue && InReach(HoveredCell.Value);
         public void SetHudPanels(RectTransform[] panels) => hudPanels = panels;
 
         public void Configure(Camera camera, Transform actor, LineRenderer hover, LineRenderer selected, RectTransform[] panels)
@@ -30,26 +26,23 @@ namespace Farmer
             viewCamera = camera; player = actor; hoverOutline = hover; selectedOutline = selected; hudPanels = panels;
         }
 
-        private void Update()
+        private void Update() => RefreshPointer();
+
+        // Re-sample on use as FarmGame can update before this component in the same frame.
+        public void RefreshPointer()
         {
             var mouse = Mouse.current;
-            bool clear = Keyboard.current?.escapeKey.wasPressedThisFrame == true || mouse?.rightButton.wasPressedThisFrame == true;
             if (mouse == null || !Application.isFocused)
             {
                 HoveredCell = null;
                 DrawOutlines();
                 return;
             }
-            UpdatePointer(mouse.position.ReadValue(), mouse.leftButton.wasPressedThisFrame, clear);
+            UpdatePointer(mouse.position.ReadValue());
         }
 
-        public void UpdatePointer(Vector2 screenPosition, bool select, bool clear)
+        public void UpdatePointer(Vector2 screenPosition)
         {
-            if (clear)
-            {
-                SelectedCell = null;
-                Feedback = "Seçim temizlendi.";
-            }
             HoveredCell = null;
             bool blocked = screenPosition.x < 0 || screenPosition.y < 0 || screenPosition.x >= Screen.width || screenPosition.y >= Screen.height;
             if (hudPanels != null)
@@ -63,16 +56,6 @@ namespace Farmer
                 if (plane.Raycast(ray, out float distance) && Layout.TryGetCell(ray.GetPoint(distance), out var cell))
                     HoveredCell = cell;
             }
-            if (select && !blocked)
-            {
-                if (!HoveredCell.HasValue) { SelectedCell = null; Feedback = "Tarlanın içindeki bir kareyi seç."; }
-                else if (!InReach(HoveredCell.Value)) Feedback = "Bu kare uzakta. Biraz yaklaş.";
-                else
-                {
-                    SelectedCell = HoveredCell;
-                    Feedback = "Kare seçildi.";
-                }
-            }
             DrawOutlines();
         }
 
@@ -82,8 +65,7 @@ namespace Farmer
         {
             Draw(hoverOutline, HoveredCell, HoveredCell.HasValue && InReach(HoveredCell.Value)
                 ? new Color(1f, 0.96f, 0.78f) : new Color(1f, 0.45f, 0.22f), 0.48f, 0.09f);
-            Draw(selectedOutline, SelectedCell, SelectedInReach
-                ? new Color(0.98f, 0.81f, 0.24f) : new Color(1f, 0.45f, 0.22f), 0.43f, 0.10f);
+            if (selectedOutline != null) selectedOutline.enabled = false;
         }
 
         private void Draw(LineRenderer line, Vector2Int? cell, Color color, float inset, float height)

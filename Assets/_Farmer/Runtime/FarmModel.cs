@@ -4,6 +4,8 @@ using System.Linq;
 
 namespace Farmer
 {
+    public enum FarmItem { Seeds = 0, WateringCan = 1, Sickle = 2 }
+
     public sealed class CropRules
     {
         public string Id { get; }
@@ -35,6 +37,7 @@ namespace Farmer
         public int depth;
         public int day;
         public int money;
+        public FarmItem equippedItem;
         public InventoryRecord[] seeds;
         public InventoryRecord[] produce;
         public PlotRecord[] plots;
@@ -54,6 +57,25 @@ namespace Farmer
         public int Depth { get; }
         public int Day { get; private set; } = 1;
         public int Money { get; private set; }
+        public FarmItem EquippedItem { get; private set; }
+        // The two reusable starter tools are permanent inventory items in the 0.1 prototype.
+        public int ItemCount(FarmItem item, string cropId) => item == FarmItem.Seeds ? Seeds(cropId)
+            : item == FarmItem.WateringCan || item == FarmItem.Sickle ? 1 : 0;
+        public bool Equip(FarmItem item)
+        {
+            if (item < FarmItem.Seeds || item > FarmItem.Sickle) return false;
+            EquippedItem = item; return true;
+        }
+        public bool UseEquipped(int index, string seedId, out string message)
+        {
+            switch (EquippedItem)
+            {
+                case FarmItem.Seeds: return Plant(index, seedId, out message);
+                case FarmItem.WateringCan: return Water(index, out message);
+                case FarmItem.Sickle: return Harvest(index, out message);
+                default: return Fail("Önce bir eşya kuşan.", out message);
+            }
+        }
         public int PlotCount => plots.Length;
         public int PlantedCount => plots.Count(p => !string.IsNullOrEmpty(p.cropId));
         public int ReadyCount => Enumerable.Range(0, plots.Length).Count(IsReady);
@@ -94,16 +116,16 @@ namespace Farmer
             if (!string.IsNullOrEmpty(plots[index].cropId)) return Fail("Bu kare zaten ekili.", out message);
             if (seeds[id] < 1) return Fail("Tohumun yok. Pazardan tohum al.", out message);
             seeds[id]--; plots[index] = new PlotRecord { cropId = id };
-            message = "Tohum ekildi. Büyümesi için bugün sula."; return true;
+            message = "Tohum ekildi. Büyümeyi başlatmak için bir kez sula."; return true;
         }
 
         public bool Water(int index, out string message)
         {
             if (!Valid(index) || string.IsNullOrEmpty(plots[index].cropId)) return Fail("Önce tohum ek.", out message);
             if (IsReady(index)) return Fail("Bu ürün hasada hazır.", out message);
-            if (plots[index].watered) return Fail("Bu kare bugün zaten sulandı.", out message);
+            if (plots[index].watered) return Fail("Bu bitki zaten sulandı; tekrar sulamana gerek yok.", out message);
             plots[index].watered = true;
-            message = "Sulandı. Gece boyunca büyüyecek."; return true;
+            message = "Sulandı. Hasada kadar yeniden sulama gerekmiyor."; return true;
         }
 
         public bool Harvest(int index, out string message)
@@ -132,14 +154,13 @@ namespace Farmer
             {
                 if (plot.watered && crops.TryGetValue(plot.cropId, out var c) && plot.growth < c.WateredDays)
                 { plot.growth++; grown++; }
-                plot.watered = false;
             }
-            Day++; message = $"Gün {Day}. {grown} bitki büyüdü. Yeni günün sulamasını unutma."; return true;
+            Day++; message = $"Gün {Day}. {grown} bitki büyüdü. Sulanan bitkiler büyümeye devam eder."; return true;
         }
 
         public FarmSnapshot Snapshot() => new FarmSnapshot
         {
-            version = 1, width = Width, depth = Depth, day = Day, money = Money,
+            version = 1, width = Width, depth = Depth, day = Day, money = Money, equippedItem = EquippedItem,
             seeds = seeds.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
             produce = produce.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
             plots = plots.Select(p => p.Copy()).ToArray()
@@ -151,6 +172,7 @@ namespace Farmer
                 || saved.day > DayLimit || saved.money < 0 || saved.money > MoneyLimit || saved.plots == null || saved.plots.Length != width * depth)
                 throw new ArgumentException("Save header or grid is invalid or unsupported.");
             var model = new FarmModel(catalog, width, depth, saved.money) { Day = saved.day };
+            if (!model.Equip(saved.equippedItem)) throw new ArgumentException("Unknown equipped item.");
             model.RestoreInventory(saved.seeds, model.seeds);
             model.RestoreInventory(saved.produce, model.produce);
             for (int i = 0; i < saved.plots.Length; i++)
@@ -167,6 +189,8 @@ namespace Farmer
                     if (!model.crops.TryGetValue(p.cropId, out var crop) || p.growth > crop.WateredDays)
                         throw new ArgumentException("Unknown crop or invalid growth.");
                     model.plots[i] = p.Copy();
+                    // Earlier v1 saves cleared water each day. Growth proves that crop was watered before.
+                    model.plots[i].watered = p.watered || p.growth > 0;
                 }
             }
             return model;

@@ -16,9 +16,13 @@ Tekrarlanan işleri ileride sulama/üretim sistemleri kolaylaştırmalı. Daha g
 
 ## Çiftçilik
 
+**7 Ekim kullanıcı geri bildirimiyle kesinleşen etkileşim:** Tarla karesini tıklayarak seçmek gerekmez. Fare o karenin üzerindeyken ve oyuncu yeterince yakındayken E, eldeki eşyayı kullanır. Tohum ekim, sulama kabı sulama, orak hasat yapar; işlemler bitkinin durumuna bakarak otomatik başka bir işe dönüşmez. Eşyalar hızlı erişim çubuğundan veya 1/2/3 ile kuşanılır; karakterin elinde görünür. Bir basış bir işlem yapar. Şimdilik basılı tutma, alan etkisi, su doldurma ve alet dayanıklılığı yoktur.
+
+0.1 envanterinde sulama kabı ve orak birer kalıcı başlangıç eşyasıdır. Tohum adedi pazar alışverişinden gelir ve ekimde azalır. Bu prototipte genel çanta/taşıma sistemi yoktur; alet edinme/üretme ekonomisi sonraki tasarım işidir.
+
 - Pazar temel tohumların güvenilir kaynağıdır; keşif ileride çeşitliliği artırabilir.
 - Her üründe dört görünür aşama: filiz, gelişen bitki, olgunlaşan bitki, hasada hazır bitki.
-- Sulanmış ve kuru toprak görsel olarak ayrılır. Başlangıçta sulamayı atlamak büyümeyi geciktirir; hemen ölüm/çürüme yoktur.
+- Her ekimden sonra **bir kez sulamak yeterlidir**; sulama hasada kadar korunur. Büyüme süresi değişmez. Hiç sulanmayan bitki bekler; ölüm/çürüme yoktur. Hasat sonrası yeni ekim yeniden bir sulama ister. Sulanmış ve kuru toprak görsel olarak ayrılır.
 - Gelişme oyun zamanı üzerinden ilerler; gerçek dünyada bekleme zorunluluğu hedeflenmez.
 - Hasat açık geri bildirim verir: animasyon, ses, ürün ve envanter değişimi.
 - Satış, yeniden yatırım, yemek ve eşya üretimi arasında seçim vardır.
@@ -34,7 +38,7 @@ Tekrarlanan işleri ileride sulama/üretim sistemleri kolaylaştırmalı. Daha g
 | Keten | Lif/kumaş, eşya üretimi. |
 | Şifalı ot | Keşif için iyileştirici üretimi. |
 
-0.1 için uygulanan geçici denge: turp tohumu 10 para, ürün satışı 18 para, hasat verimi 1, olgunlaşma üç **sulanmış** gece. Başlangıç 60 para ve boş envanter. Dört aşama ekildiği gün filiz, bir sulanmış gece sonrası gelişen bitki, ikinci gece olgunlaşan bitki ve üçüncü gece hasada hazır bitkidir. Diğer ürünlerin değerleri henüz belirlenmedi.
+0.1 için uygulanan geçici denge: turp tohumu 10 para, ürün satışı 18 para, hasat verimi 1, olgunlaşma ilk sulamadan sonraki üç gece. Başlangıç 60 para, sıfır tohum/ürün ve iki başlangıç aleti. Dört aşama ekildiği gün filiz, ilk sulamadan bir gece sonra gelişen bitki, ikinci gece olgunlaşan bitki ve üçüncü gece hasada hazır bitkidir. Diğer ürünlerin değerleri henüz belirlenmedi.
 
 Ürün değerleri `Assets/_Farmer/Data/Turnip.asset` tanımındadır. Gün yalnızca kampta N veya dinlenme düğmesiyle ilerler; gerçek zamanlı süre sınırı yoktur. Pazar tezgâhına yaklaşarak tohum alınır ve ürün satılır. Başarılı işlemler otomatik kaydedilir. Bu ilk denge oynanış geri bildirimiyle değişebilir.
 

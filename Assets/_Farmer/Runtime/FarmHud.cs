@@ -10,7 +10,9 @@ namespace Farmer
         [SerializeField] private FarmGame game;
         private Text summary, objective, saveStatus, selectionStatus, feedback, campWarning, actionText;
         private RectTransform shop, camp;
-        private Button buyOne, buyFive, sell, sleep, action;
+        private Button buyOne, buyFive, sell, sleep;
+        private readonly Button[] slots = new Button[3];
+        private readonly Text[] slotLabels = new Text[3];
         private static readonly Color Gold = new Color(0.98f, 0.84f, 0.49f);
         public void Configure(FarmGame source) => game = source;
 
@@ -49,11 +51,17 @@ namespace Farmer
             sleep = Button(camp, "N · Günü bitir", 16, 158, 233, 40, () => game.Rest());
 
             var footer = Panel("Controls", root.transform, new Vector2(0.5f, 0), new Vector2(0, 18), new Vector2(1232, 106));
-            Label(footer, "WASD / OKLAR  Hareket     SOL TIK  Kare seç     E  Ek / sula / hasat\nPAZARDA: B  Tohum al · V  Sat      KAMPTA: N  Yeni gün      ESC / SAĞ TIK  Temizle",
-                15, 18, 9, 930, 46, Gold);
-            feedback = Label(footer, "", 16, 18, 68, 945, 29, Color.white);
-            action = Button(footer, "Bir kare seç", 970, 29, 244, 48, () => game.ActOnSelected());
-            actionText = action.GetComponentInChildren<Text>();
+            Label(footer, "WASD / OKLAR  Hareket    FARE  Hedefle    E  Eldeki eşyayı kullan    PAZAR: B Al · V Sat    KAMP: N Yeni gün",
+                14, 18, 7, 1195, 24, Gold);
+            for (int i = 0; i < slots.Length; i++)
+            {
+                var item = (FarmItem)i;
+                slots[i] = Button(footer, "", 18 + i * 225, 36, 215, 38, () => game.Equip(item));
+                slots[i].gameObject.name = "Inventory Slot " + i;
+                slotLabels[i] = slots[i].GetComponentInChildren<Text>();
+            }
+            actionText = Label(footer, "", 17, 715, 40, 500, 32, Gold);
+            feedback = Label(footer, "", 14, 18, 79, 1195, 24, Color.white);
             game.Selection.SetHudPanels(new[] { header, detail, shop, camp, footer });
             Refresh();
         }
@@ -66,32 +74,38 @@ namespace Farmer
             saveStatus.text = game.SaveStatus + "\nF5 Kaydet  /  F9 Yükle";
             feedback.text = game.Feedback;
             if (!game.Ready) objective.text = "Kayıt sorunu çözülene kadar çiftlik işlemleri duraklatıldı.";
-            else if (model.ReadyCount > 0) objective.text = $"{model.ReadyCount} ürün hasada hazır. Topla ve pazarda sat.";
-            else if (model.ThirstyCount > 0) objective.text = $"{model.ThirstyCount} kare sulama bekliyor. Kareyi seçip E'ye bas.";
+            else if (model.ReadyCount > 0) objective.text = $"{model.ReadyCount} ürün hasada hazır. Orağı al (3), hedefle ve E ile topla.";
+            else if (model.ThirstyCount > 0) objective.text = $"{model.ThirstyCount} kare sulama bekliyor. Sulama kabını al (2), hedefle ve E'ye bas.";
             else if (model.Produce(crop.id) > 0) objective.text = "Hasadını pazarda sat; kazancınla yeni tohumlar al.";
             else if (model.PlantedCount > 0) objective.text = "Bitkilerin sulandı. Kampta dinlenerek yeni güne geç.";
-            else if (model.Seeds(crop.id) > 0) objective.text = "Boş bir kareye yaklaş, sol tıkla seç ve E ile tohum ek.";
+            else if (model.Seeds(crop.id) > 0) objective.text = "Tohumu al (1), boş kareyi fareyle hedefle ve E ile ek.";
             else objective.text = "Çizgili pazar tezgâhına yaklaş; B ile ilk tohumunu al.";
 
-            int index = game.SelectedIndex;
-            if (index < 0) selectionStatus.text = $"TARLANI KEŞFET\n\nBoş bir kare seç.\n{crop.displayName}: {crop.wateredDays} sulanmış gün";
+            int index = game.HoveredIndex;
+            if (index < 0) selectionStatus.text = $"TARLANI KEŞFET\n\nFareyi kareye götür.\n{crop.displayName}: {crop.wateredDays} gece · tek sulama";
             else
             {
-                var plot = model.Plot(index); var cell = game.Selection.SelectedCell.Value;
+                var plot = model.Plot(index); var cell = game.Selection.HoveredCell.Value;
                 string state = string.IsNullOrEmpty(plot.cropId) ? "Boş toprak" : model.IsReady(index) ? "Hasada hazır!"
-                    : $"{game.Definition(plot.cropId).displayName} · Aşama {model.Stage(index) + 1}/4\n" + (plot.watered ? "Bugün sulandı" : "Su bekliyor");
-                selectionStatus.text = $"KARE {cell.x + 1} / {cell.y + 1}\n{state}\n" + (game.Selection.SelectedInReach ? "Erişim mesafesinde" : "Kareye yaklaş");
+                    : $"{game.Definition(plot.cropId).displayName} · Aşama {model.Stage(index) + 1}/4\n" + (plot.watered ? "Sulandı · bakım tamam" : "Su bekliyor");
+                selectionStatus.text = $"KARE {cell.x + 1} / {cell.y + 1}\n{state}\n" + (game.Selection.HoveredInReach ? "Erişim mesafesinde" : "Kareye yaklaş");
             }
             actionText.text = game.ActionLabel;
-            action.interactable = game.Ready && index >= 0 && game.Selection.SelectedInReach
-                && (!model.Plot(index).watered || model.IsReady(index));
+            for (int i = 0; i < slots.Length; i++)
+            {
+                var item = (FarmItem)i;
+                string name = item == FarmItem.Seeds ? crop.displayName + " tohumu" : item == FarmItem.WateringCan ? "Sulama kabı" : "Orak";
+                slotLabels[i].text = $"{i + 1} · {name} ×{model.ItemCount(item, crop.id)}";
+                slots[i].GetComponent<Image>().color = model.EquippedItem == item ? new Color(0.64f, 0.48f, 0.21f) : new Color(0.29f, 0.43f, 0.30f);
+                slots[i].interactable = game.Ready;
+            }
             shop.gameObject.SetActive(game.NearMarket);
             camp.gameObject.SetActive(game.NearCamp);
             buyOne.interactable = game.Ready && model.Money >= crop.seedPrice && model.Seeds(crop.id) < FarmModel.StackLimit;
             buyFive.interactable = game.Ready && model.Money >= crop.seedPrice * 5 && model.Seeds(crop.id) <= FarmModel.StackLimit - 5;
             sell.interactable = game.Ready && model.Produce(crop.id) > 0;
             sleep.interactable = game.Ready;
-            campWarning.text = model.ThirstyCount > 0 ? $"{model.ThirstyCount} bitki bugün sulanmadı.\nBu gece büyümeyecekler."
+            campWarning.text = model.ThirstyCount > 0 ? $"{model.ThirstyCount} bitki henüz sulanmadı.\nBu gece büyümeyecekler."
                 : "Sulanan bitkilerin gece\nboyunca büyüyecek.\nHazır olduğunda dinlen.";
         }
 

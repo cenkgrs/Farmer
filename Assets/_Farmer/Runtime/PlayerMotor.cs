@@ -14,6 +14,7 @@ namespace Farmer
         private float verticalSpeed;
 
         public float Speed => speed;
+        public Transform Visual => model;
         public void Configure(Camera camera, Transform visual) { viewCamera = camera; model = visual; }
 
         private void Awake() => controller = GetComponent<CharacterController>();

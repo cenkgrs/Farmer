@@ -20,13 +20,14 @@ namespace Farmer.Tests
             Assert.That(m.Money, Is.EqualTo(30));
             Assert.That(m.Plant(0, "turnip", out _), Is.True);
             Assert.That(m.Seeds("turnip"), Is.EqualTo(2));
+            Assert.That(m.Water(0, out _), Is.True);
             for (int stage = 0; stage < 3; stage++)
             {
                 Assert.That(m.Stage(0), Is.EqualTo(stage));
                 Assert.That(m.Harvest(0, out _), Is.False);
-                Assert.That(m.Water(0, out _), Is.True);
+                Assert.That(m.Water(0, out _), Is.False);
                 Assert.That(m.EndDay(out _), Is.True);
-                Assert.That(m.Plot(0).watered, Is.False);
+                Assert.That(m.Plot(0).watered, Is.True);
             }
             Assert.That(m.Stage(0), Is.EqualTo(3));
             Assert.That(m.Harvest(0, out _), Is.True);
@@ -47,7 +48,32 @@ namespace Farmer.Tests
             m.Water(0, out _); Assert.That(m.Water(0, out _), Is.False); m.EndDay(out _);
             Assert.That(m.Plot(0).growth, Is.EqualTo(1)); Assert.That(m.Plot(1).growth, Is.Zero);
             for (int day = 0; day < 20; day++) m.EndDay(out _);
-            Assert.That(m.Plot(0).growth, Is.EqualTo(1)); Assert.That(m.Plot(1).cropId, Is.EqualTo("turnip"));
+            Assert.That(m.Plot(0).growth, Is.EqualTo(3)); Assert.That(m.Plot(1).growth, Is.Zero); Assert.That(m.Plot(1).cropId, Is.EqualTo("turnip"));
+        }
+
+        [Test]
+        public void SingleWateringSurvivesSaveAndHarvestResetsItForNextPlant()
+        {
+            var m = Fresh(); m.BuySeeds("turnip", 2, out _); m.Plant(0, "turnip", out _);
+            m.Water(0, out _); m.EndDay(out _);
+            var loaded = Restore(m.Snapshot());
+            loaded.EndDay(out _); Assert.That(loaded.IsReady(0), Is.False);
+            loaded.EndDay(out _); Assert.That(loaded.IsReady(0), Is.True);
+            loaded.Harvest(0, out _); loaded.Plant(0, "turnip", out _);
+            loaded.EndDay(out _);
+            Assert.That(loaded.Plot(0).watered, Is.False);
+            Assert.That(loaded.Plot(0).growth, Is.Zero);
+        }
+
+        [Test]
+        public void LegacyGrowingCropDoesNotNeedToBeWateredAgain()
+        {
+            var saved = Fresh().Snapshot();
+            saved.plots[0] = new PlotRecord { cropId = "turnip", growth = 1, watered = false };
+            var m = Restore(saved);
+            Assert.That(m.Plot(0).watered, Is.True);
+            m.EndDay(out _); Assert.That(m.IsReady(0), Is.False);
+            m.EndDay(out _); Assert.That(m.IsReady(0), Is.True);
         }
 
         [TestCase(-1)] [TestCase(0)] [TestCase(7)] [TestCase(1000)] [TestCase(int.MaxValue)]
@@ -95,7 +121,7 @@ namespace Farmer.Tests
         public void SaveRoundTripPreservesMoneyInventoryGrowthDayAndWaterAndCopiesData()
         {
             var m = Fresh(); m.BuySeeds("turnip", 4, out _); m.Plant(0, "turnip", out _); m.Water(0, out _);
-            m.EndDay(out _); m.Water(0, out _); m.Plant(5, "turnip", out _);
+            m.EndDay(out _); m.Plant(5, "turnip", out _);
             string json = State(m);
             var saved = JsonUtility.FromJson<FarmSnapshot>(json); var restored = Restore(saved);
             Assert.That(State(restored), Is.EqualTo(json));
@@ -133,7 +159,8 @@ namespace Farmer.Tests
         {
             var m = new FarmModel(new[] { Catalog[0], new CropRules("other", 5, 12, 6, 2) });
             m.BuySeeds("other", 1, out _); m.Plant(0, "other", out _);
-            for (int i = 0; i < 6; i++) { m.Water(0, out _); m.EndDay(out _); }
+            m.Water(0, out _);
+            for (int i = 0; i < 6; i++) m.EndDay(out _);
             m.Harvest(0, out _); Assert.That(m.Produce("other"), Is.EqualTo(2)); Assert.That(m.Produce("turnip"), Is.Zero);
             m.Sell("other", 2, out _); Assert.That(m.Money, Is.EqualTo(79));
         }

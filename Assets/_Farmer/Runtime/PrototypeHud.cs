@@ -15,10 +15,10 @@ namespace Farmer
         private void LateUpdate()
         {
             if (selection == null) return;
-            if (selection.SelectedCell is Vector2Int cell)
-                status.text = $"KARE {cell.x + 1} / {cell.y + 1}\n" + (selection.SelectedInReach ? "Erişim mesafesinde" : "Yaklaşman gerekiyor");
+            if (selection.HoveredCell is Vector2Int cell)
+                status.text = $"KARE {cell.x + 1} / {cell.y + 1}\n" + (selection.HoveredInReach ? "Erişim mesafesinde" : "Yaklaşman gerekiyor");
             else status.text = "TARLANI KEŞFET\n6 × 6 ekim alanı";
-            feedback.text = selection.Feedback;
+            feedback.text = "Fareyi yakındaki kareye götür.";
         }
     }
 }

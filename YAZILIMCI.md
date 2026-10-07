@@ -4,7 +4,7 @@ Son güncelleme: **7 Ekim 2026 — Europe/Istanbul**.
 
 ## Şu an nerede kaldık?
 
-**Unity 6000.3.25f1 LTS (e1dba0a9aba4)** Linux makinesine kuruldu ve `Unity -version` ile doğrulandı. Resmi URP şablonunun kaynak dosyaları depoya alındı. 7 Ekim tarihinde aktif lisans doğrulandı; ilk paket importu, C# derlemesi ve başlangıç sahnesi üretimi başarıyla tamamlandı. Linux build ve görsel kontrol sonucu aşağıdaki doğrulama kaydında tutulur. **0.1 çekirdek prototipi Linux üzerinde tamamlandı:** hareket, kare seçimi, tohum satın alma, ekim/sulama, dört görünür büyüme aşaması, hasat/satış, gün ilerletme ve kayıt/yükleme çalışıyor. Sıradaki geliştirme 0.2 modüler üs kurmanın ilk küçük adımı. Görseller geçici; Windows doğrulaması ve kullanıcıyla tarım hissi değerlendirmesi açık.
+**Unity 6000.3.25f1 LTS (e1dba0a9aba4)** Linux makinesine kuruldu ve `Unity -version` ile doğrulandı. Resmi URP şablonunun kaynak dosyaları depoya alındı. 7 Ekim tarihinde aktif lisans doğrulandı; ilk paket importu, C# derlemesi ve başlangıç sahnesi üretimi başarıyla tamamlandı. Linux build ve görsel kontrol sonucu aşağıdaki doğrulama kaydında tutulur. **0.1 çekirdek prototipi Linux üzerinde tamamlandı:** hareket, kare seçimi, tohum satın alma, ekim/sulama, dört görünür büyüme aşaması, hasat/satış, gün ilerletme ve kayıt/yükleme çalışıyor. Sıradaki geliştirme 0.2 modüler üs kurmanın ilk küçük adımı. Kullanıcının ilk oynanış geri bildirimi uygulandı: tıkla-seç adımı kaldırıldı, fare hedefi üzerinde eldeki eşya ile E etkileşimine geçildi. Her ekimde tek sulama yeterli; hasat süresi üç gece olarak korundu. Görseller geçici; Windows doğrulaması açık.
 
 Kullanıcı tek başına geliştirecek, Linux ve Windows bilgisayarlar arasında çalışacak. Python, C# ve Java deneyimi yüksek; oyun motoru deneyimi sınırlı ancak Unity'de Godot'tan daha deneyimli. Modelleri harici AI araçlarıyla üretebilir; biz prompt ve entegrasyon gereksinimlerini hazırlayacağız.
 
@@ -69,7 +69,7 @@ Kullanıcı 7 Ekim 2026'da diğer bilgisayarda değişiklik yapmadığını beli
 - Build sonrası Unity kapanışında `.NET SDK/build-server` bulunamadı mesajı görüldü; build raporu ve çıkış kodu başarılı. Player'da ekran DPI bilgisi alınamadı uyarıları ve kapanışta motorun allocation raporu mevcut; sahne çalışmasını engellemedi. Uzun süreli performans/bellek testi yapılmadı.
 - GUI editörünün ilk kullanım onayı sonrasında ana Unity penceresinin açıldığı doğrulandı. Kullanıcı otomatik test/build için editörü kapattı. Windows açılışı/build'i ve editör Play modu ayrıca denenmedi; oynanış Linux player üzerinde doğrulanıyor.
 
-## 0.1 ilk oynanabilir adım — hareket ve kare seçimi
+## 0.1 ilk oynanabilir adım — hareket ve kare seçimi (tarihsel)
 
 - WASD/ok tuşları, kameraya göre yön, çapraz hız sınırı, CharacterController çarpışması ve arazi kenarında kalma.
 - 6×6 tarla; fareyle kare önizlemesi, 2.5 birim yakınlıkta sol tıkla seçim, uzak karede yaklaşma bildirimi, ESC/sağ tıkla temizleme. HUD üstündeki tıklamalar dünyaya geçmez. Dünya sınırı karakter merkezi için ±9.3; bunlar değiştirilebilir prototip değerleridir.
@@ -80,7 +80,7 @@ Kullanıcı 7 Ekim 2026'da diğer bilgisayarda değişiklik yapmadığını beli
 - Linux geliştirme build'i başarılı. `--farmer-check-controls` ile Input System'e sanal klavye/fare olayları gönderilen gerçek player denemesinde **11 kontrol başarılı**: odak, hareket/yön, sandık çarpışması, dünya sınırı, yakın kare, HUD engellemesi, ESC, uzak kare, ekran dışı hover ve sabit kamera. Çıkış 0 ve `FARMER_PLAYER_SMOKE_OK`.
 - 1280×720 player görüntüsü görsel olarak incelendi; karakter, grid, seçim çerçevesi ve Türkçe HUD görünüyor. Bu adımın görüntüsü `docs/screenshots/movement-prototype.png` içinde. Kullanıcı bu adımın tamam olduğunu belirterek devam edilmesini istedi; aşağıdaki tarım döngüsünün manuel değerlendirmesi henüz yapılmadı. Test komutları `docs/TESTLER.md` içinde. Yerel günlükler `Logs/movement-*.log`, XML sonucu `Logs/movement-tests.xml`; Git'e girmez.
 
-## 0.1 tarım ve ekonomi — tamamlandı
+## 0.1 tarım ve ekonomi — ilk uygulama (etkileşim aşağıda güncellendi)
 
 - `CropDefinition` ve `Data/Turnip.asset`: veri tanımlı ürün, fiyat, büyüme süresi, hasat miktarı ve dört prefab. Başlangıç 60 para; turp tohumu 10, satış 18 para, hasat 1 ürün, 3 sulanmış gece. Bunlar prototip denge değerleridir.
 - `FarmModel`: sahne/girdi/dosya bağımlılığı olmayan C# kuralları. Ürün başına tohum/hasat envanteri, alım/satım, ekim, günlük sulama, büyüme, hasat ve doğrulamalı snapshot. Yeni ürün kuralları aynı modelle çalışır; mevcut oyuncu arayüzü 0.1 gereği tek üründür.
@@ -98,9 +98,24 @@ Kullanıcı 7 Ekim 2026'da diğer bilgisayarda değişiklik yapmadığını beli
 - Smoke capture ayrı geçici kayıt kullanır ve normal oyuncu kaydını değiştirmez; sonunda test kayıtları temizlenir. Build, günlük ve QA ara çıktıları Git dışında.
 - Windows, editör Play modu ve uzun süreli performans testi ayrıca yapılmadı. 0.2 inşaat, çoklu ürün seçimi, üretim ve moblar bu sürüme dahil değil.
 
+## Güncel etkileşim — eldeki eşya ve tıklamasız hedefleme
+
+Kullanıcı 7 Ekim'de her kareye tıklayıp E'ye basmanın geniş tarlalarda yorucu olduğunu bildirdi. İstenen değişiklik uygulandı:
+
+- **1:** turp tohumu; **2:** sulama kabı; **3:** orak. Alt eşya çubuğundan da kuşanılır. Alınan tohum adedi burada gösterilir; sulama kabı ve orak kalıcı başlangıç envanter eşyalarıdır. Genel çanta/alet satın alma sistemi henüz yok.
+- Fare yakındaki kare üzerindeyken **E** eldeki eşyayı kullanır. Tarlaya sol tıklama gerekmez, kalıcı kare seçimi yoktur. Yanlış alet başka bir işe dönüşmez; tekrar ekim/sulama/hasat kaynak çoğaltmaz.
+- HUD/pencere dışı/uzak karede işlem engellenir. E sırasında fare konumu yeniden okunur; aynı görüntü karesinde eski hedefe yanlış işlem yapılmaz. Bir basış bir işlem; basılı tutma ve alan etkisi eklenmedi.
+- `FarmModel.EquippedItem` / `UseEquipped` kuralları sunumdan ayrıdır. `FarmGame.UseHovered` erişimi kontrol eder; `FarmSelection` yalnızca imleç hedefini tutar. `FarmHud` eşya çubuğu ve hedef bilgisi gösterir.
+- Tohum torbası, sulama kabı ve orak karakterin elinde geçici geometriyle görünür. Tohum sayısı sıfırsa elde torba gösterilmez. Modeller nihai sanat varlığı değildir.
+- Kuşanılan eşya `FarmSnapshot.equippedItem` ile kaydedilir. Şema hâlâ sürüm 1; eski kayıtta bu alan yoksa tohum varsayılır. Para/tarla/envanter korunur, aletler başlangıç donanımı olarak bulunur.
+- Tek sulama hasada kadar korunur; hiç sulanmayan ürün bekler, hasat sonrası yeni ekim yeniden bir kez sulanır. Süre üç gecedir. Eski kayıtta `growth > 0` olan ürün önceden sulanmış kabul edilir; ilerleme kaybolmaz.
+- **44/44 EditMode testi geçti** (`Logs/equipment-watering-tests.xml`): eşya işlemleri, eski kayıt uyumluluğu, tek sulamanın kayıt sonrası sürmesi ve yeniden ekimde sıfırlanması dahil.
+- Son Linux build başarılı (`Logs/equipment-watering-build.log`). Gerçek player'da **11 hareket/hedef + 48 tarım kontrolü geçti**, çıkış 0 (`Logs/equipment-watering-player.log`). Döngüde hiç tarla tıklaması yok; tek sulamadan sonra yeniden sulanmadan üç gecede hasat doğrulandı; eşya düğmesi/1–2–3, yanlış alet, HUD üzerinde E, pencere dışı E, aynı görüntü karesinde fare hareketi + E ve kayıt/yükleme denendi.
+- Yeni eşya çubuğu, tohum torbası, sulama kabı ve orak oyun görüntülerinde incelendi. Güncel PNG'ler `docs/screenshots/farming-prototype.png` / `farming-market.png`. Windows ve kullanıcıyla yeni etkileşimin hissi henüz denenmedi.
+
 ## Sıradaki somut işler
 
-1. 0.1 tarım döngüsünü kullanıcı oynarken değerlendir; varsa kullanım sorunlarını küçük düzeltmelerle gider.
+1. Yeni eşya/hover etkileşimini kullanıcıyla değerlendir. Bir sonraki kapsam 0.2; ek kullanım sorunları bildirilirse önce bunları gider.
 2. **0.2 ilk adım:** veri tanımlı ahşap blok, kare/hacim yerleşim modeli, geçerli/geçersiz önizleme, yan yana/üst üste koyma ve oyuncuyla çakışmayı engelleme. Kaynak harcaması ve kayıt şemasını birlikte ele al; mevcut tarla kayıtlarını korumadan şema değiştirme. 0.2'nin tamamını tek seferde yapmaya çalışma.
 3. Windows'ta aynı editör sürümüyle açılış ve build ayrıca doğrulanmalı. Mevcut Farm sahnesini yeniden üretme; ValidateProject kullan.
 
@@ -115,3 +130,7 @@ Kullanıcı 7 Ekim 2026'da diğer bilgisayarda değişiklik yapmadığını beli
 **2026-10-07 — hareket prototipi:** Kullanıcının devam talimatıyla karakter hareketi, çarpışma, 6×6 grid, erişim kontrollü kare seçimi ve HUD eklendi. 12 EditMode testi ve 11 gerçek player kontrolü geçti; Linux build ve ekran görüntüsü doğrulandı. Sonraki özellik tarım/ekonomi döngüsü.
 
 **2026-10-07 — tarım prototipi:** Kullanıcının devam talimatıyla 0.1 tarım/ekonomi, gün ve kalıcı kayıt döngüsü tamamlandı. 39 EditMode testi ve 52 gerçek player kontrolü geçti; son Linux build ve görseller doğrulandı. Devir için kod, prefablar, sahne, testler ve belgeler birlikte commitlenir; kesin commit/push durumu Git üzerinden kontrol edilmeli. Sıradaki geliştirme 0.2 ilk ahşap yerleşim adımı.
+
+**2026-10-07 — etkileşim geri bildirimi:** Kullanıcının isteğiyle tıkla-seç + bağlama göre işlem yapısı kaldırıldı. 1/2/3 ve eşya çubuğuyla kuşanılan tohum/sulama kabı/orak, fare hedefindeki yakın kareye E ile uygulanıyor. Eşya adımı önce 42 mantık testi ve 61 player kontrolüyle doğrulandı; aşağıdaki tek sulama değişikliği sonrasında güncel sonuç 44 mantık testi ve 59 player kontrolüdür.
+
+**2026-10-07 — tek sulama geri bildirimi:** Kullanıcı aynı adımda günlük sulama gereğini kaldırmamızı istedi. Her ekimde bir sulama yeterli olacak şekilde model, kayıt uyumluluğu ve arayüz güncellendi; olgunlaşma üç gece olarak korundu. Son Linux build, 44 mantık testi ve 59 player kontrolü başarılı.
