@@ -126,3 +126,7 @@ yeni paket için `--name Farmer-0.1.0-Windows-x64-r2` gibi bir ad ver.
 Arkadaşına ZIP'in tamamını gönder. ZIP tamamen çıkarıldıktan sonra `Farmer.exe`
 açılır; Unity kurulumu gerekmez. EXE, `Farmer_Data`, `MonoBleedingEdge` ve DLL'ler
 birlikte kalmalıdır. Kontroller ve sorun bildirimi bilgileri paketteki rehberdedir.
+
+## İlk inşa denemesi
+
+Güncel Linux build'inde `4` ile inşa moduna gir; tarlanın sağındaki çizgili alana yaklaş. Sol tık yerleştirir, `R` döndürür, tekerlek yüksekliği seçer, sağ tık bloğu söker. `Esc` veya `1/2/3` ile tarıma dön. Başlangıç 24 odun, blok 2 odun; pazarın yeni düğmesinden 20 paraya 10 odun alınır. Üst blok için alt destek gerekir. Mevcut Windows ZIP bu değişikliği içermez; güncel kaynakla yeniden build/paket gerekir.

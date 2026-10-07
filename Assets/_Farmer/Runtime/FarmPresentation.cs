@@ -155,7 +155,7 @@ namespace Farmer
         private void Refresh()
         {
             for (int i = 0; i < heldItems.Length; i++)
-                heldItems[i].SetActive(game.Model.EquippedItem == (FarmItem)i && game.Model.ItemCount((FarmItem)i, game.ActiveCrop.id) > 0);
+                heldItems[i].SetActive(!game.BuildMode && game.Model.EquippedItem == (FarmItem)i && game.Model.ItemCount((FarmItem)i, game.ActiveCrop.id) > 0);
             for (int i = 0; i < soil.Length; i++)
             {
                 var plot = game.Model.Plot(i);

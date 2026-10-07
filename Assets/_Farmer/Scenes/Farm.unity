@@ -2360,6 +2360,7 @@ GameObject:
   - component: {fileID: 703771126}
   - component: {fileID: 703771125}
   - component: {fileID: 703771124}
+  - component: {fileID: 703771128}
   m_Layer: 0
   m_Name: Farming
   m_TagString: Untagged
@@ -2448,6 +2449,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Farmer.Runtime::Farmer.FarmGame
   crops:
   - {fileID: 11400000, guid: 0ae6a42e8d9a5a619931b595e0b26226, type: 2}
+  buildPieces:
+  - {fileID: 11400000, guid: ee7188d2447b3f71ba4a8798d7f7c960, type: 2}
   selection: {fileID: 1968616115}
   player: {fileID: 1590656332}
   market: {fileID: 1393950083}
@@ -2470,6 +2473,20 @@ Transform:
   - {fileID: 358981036}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &703771128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703771123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7ef2c711512479f81fcb7edafc22a2c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Farmer.Runtime::Farmer.BuildController
+  game: {fileID: 703771126}
+  outlineMaterial: {fileID: 2100000, guid: 91ba28f6210b8f3559be9dfa014f4228, type: 2}
 --- !u!1 &703808392
 GameObject:
   m_ObjectHideFlags: 0
@@ -7819,6 +7836,110 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1875600074}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1908295599
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1908295602}
+  - component: {fileID: 1908295601}
+  - component: {fileID: 1908295600}
+  m_Layer: 0
+  m_Name: Construction Sign
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!102 &1908295600
+TextMesh:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1908295599}
+  m_Text: "\u0130N\u015EA ALANI \xB7 4"
+  m_OffsetZ: 0
+  m_CharacterSize: 0.045
+  m_LineSpacing: 1
+  m_Anchor: 4
+  m_Alignment: 0
+  m_TabSize: 4
+  m_FontSize: 48
+  m_FontStyle: 0
+  m_RichText: 1
+  m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Color:
+    serializedVersion: 2
+    rgba: 4289258487
+--- !u!23 &1908295601
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1908295599}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10100, guid: 0000000000000000e000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!4 &1908295602
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1908295599}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.27984515, y: 0.36470562, z: -0.11591567, w: 0.8804772}
+  m_LocalPosition: {x: 6, y: 0.15, z: -7.35}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1929808207
 GameObject:
   m_ObjectHideFlags: 0
@@ -8175,3 +8296,4 @@ SceneRoots:
   - {fileID: 71967446}
   - {fileID: 1633225889}
   - {fileID: 703771127}
+  - {fileID: 1908295602}

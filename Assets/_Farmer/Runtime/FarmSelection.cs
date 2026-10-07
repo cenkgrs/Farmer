@@ -18,6 +18,7 @@ namespace Farmer
         private FarmGridLayout layout;
         public FarmGridLayout Layout => layout ??= new FarmGridLayout(origin, width, depth, cellSize);
         public Vector2Int? HoveredCell { get; private set; }
+        public bool HideOutline { get; set; }
         public bool PointerBlocked { get; private set; } = true;
         public bool HoveredInReach => HoveredCell.HasValue && InReach(HoveredCell.Value);
         public void SetHudPanels(RectTransform[] panels) => hudPanels = panels;
@@ -65,7 +66,7 @@ namespace Farmer
 
         private void DrawOutlines()
         {
-            Draw(hoverOutline, HoveredCell, HoveredCell.HasValue && InReach(HoveredCell.Value)
+            Draw(hoverOutline, HideOutline ? null : HoveredCell, HoveredCell.HasValue && InReach(HoveredCell.Value)
                 ? new Color(1f, 0.96f, 0.78f) : new Color(1f, 0.45f, 0.22f), 0.48f, 0.09f);
             if (selectedOutline != null) selectedOutline.enabled = false;
         }

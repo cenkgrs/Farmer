@@ -15,11 +15,12 @@
 - **Sulama kabıyla sol tuşu basılı tut:** fareyi yakındaki tarla karelerinde gezdirerek sula. Sulama boyunca hafif su sesi çalar; tuşu bırakınca yaklaşık 0,7 saniyede azalarak biter.
 - **Pazar yakınında B:** 1 tohum al. **V:** turpların hepsini sat. Ekrandan 5 tohum da alınabilir.
 - **Kamp yakınında N:** günü bitir. Bir kez sulanan ürünler büyür; hiç sulanmayanlar bekler.
+- **4 · İnşa:** sol tıkla ahşap blok koy, R ile döndür, tekerlekle yüksekliği seç, sağ tıkla sök. Esc veya 1/2/3 ile çık.
 - **F5 / F9:** kaydet / son kaydı yükle. Başarılı işlemler zaten otomatik kaydedilir.
 
 Sulama kabı ve orak başlangıç eşyalarıdır; kullanıldıkça tükenmez. Tohum sayısı satın alma/ekimle değişir. Elindeki eşya da kaydedilir.
 
-Oyuncu, sulama kabı, orak ve pazar kullanıcı tarafından sağlanan dokulu 3D modelleri kullanır; karakterde Mixamo Idle/Walk animasyonları vardır. Zemin, ürünler, kamp ve tohum torbası hâlâ geçici görsellerdir. İlk ürün turptur: tohum 10, satış 18 para; ekimden sonra bir kez sulanır ve üç gece sonra hasat edilir. Gerçek zamanlı bekleme yoktur. Sıradaki sürüm 0.2 modüler üs kurmadır. [Testler ve manuel kontrol](docs/TESTLER.md).
+Oyuncu, sulama kabı, orak ve pazar kullanıcı tarafından sağlanan dokulu 3D modelleri kullanır; karakterde Mixamo Idle/Walk animasyonları vardır. Zemin, ürünler, kamp ve tohum torbası hâlâ geçici görsellerdir. İlk ürün turptur: tohum 10, satış 18 para; ekimden sonra bir kez sulanır ve üç gece sonra hasat edilir. Gerçek zamanlı bekleme yoktur. 0.2'nin ilk ahşap blok adımı hazır: sağdaki alanda yan yana/üst üste inşa et. Başlangıç 24 odun, blok başına 2 odun; sökme tam iade, pazarda 20 paraya 10 odun. Ev/kapı/çatı/mobilya sonraki adımlardır. [Testler ve manuel kontrol](docs/TESTLER.md).
 
 ![Tripo modelleri ve Mixamo animasyonlarıyla çalışan tarım prototipi](docs/screenshots/art-integration.png)
 

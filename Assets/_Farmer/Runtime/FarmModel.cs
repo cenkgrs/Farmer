@@ -41,6 +41,7 @@ namespace Farmer
         public InventoryRecord[] seeds;
         public InventoryRecord[] produce;
         public PlotRecord[] plots;
+        public BuildingSnapshot building;
     }
 
     // No scene, input, filesystem or clock dependencies: all transactions validate before mutating.
@@ -58,6 +59,7 @@ namespace Farmer
         public int Day { get; private set; } = 1;
         public int Money { get; private set; }
         public FarmItem EquippedItem { get; private set; }
+        public BuildingModel Building { get; private set; }
         // The two reusable starter tools are permanent inventory items in the 0.1 prototype.
         public int ItemCount(FarmItem item, string cropId) => item == FarmItem.Seeds ? Seeds(cropId)
             : item == FarmItem.WateringCan || item == FarmItem.Sickle ? 1 : 0;
@@ -80,13 +82,14 @@ namespace Farmer
         public int PlantedCount => plots.Count(p => !string.IsNullOrEmpty(p.cropId));
         public int ReadyCount => Enumerable.Range(0, plots.Length).Count(IsReady);
 
-        public FarmModel(IEnumerable<CropRules> catalog, int width = 6, int depth = 6, int startingMoney = 60)
+        public FarmModel(IEnumerable<CropRules> catalog, int width = 6, int depth = 6, int startingMoney = 60, IEnumerable<BuildRules> buildCatalog = null)
         {
             if (width < 1 || width > 100 || depth < 1 || depth > 100 || startingMoney < 0 || startingMoney > MoneyLimit)
                 throw new ArgumentOutOfRangeException(nameof(width));
             crops = catalog.ToDictionary(c => c.Id);
             if (crops.Count == 0) throw new ArgumentException("A crop catalog is required.");
             Width = width; Depth = depth; Money = startingMoney;
+            Building = new BuildingModel(buildCatalog ?? BuildRules.Defaults);
             plots = Enumerable.Range(0, width * depth).Select(_ => new PlotRecord()).ToArray();
             foreach (string id in crops.Keys) { seeds[id] = 0; produce[id] = 0; }
         }
@@ -108,6 +111,14 @@ namespace Farmer
             if (Money < cost) return Fail("Yeterli paran yok.", out message);
             Money -= (int)cost; seeds[id] += count;
             message = $"{count} tohum alındı. −{cost} para."; return true;
+        }
+
+        public bool BuyWood(out string message)
+        {
+            if (Money < BuildingModel.WoodPackPrice) return Fail("Odun almak için yeterli paran yok.", out message);
+            if (!Building.AddWood(BuildingModel.WoodPackCount)) return Fail("Odun çantası dolu.", out message);
+            Money -= BuildingModel.WoodPackPrice;
+            message = $"{BuildingModel.WoodPackCount} odun alındı. −{BuildingModel.WoodPackPrice} para."; return true;
         }
 
         public bool Plant(int index, string id, out string message)
@@ -160,18 +171,22 @@ namespace Farmer
 
         public FarmSnapshot Snapshot() => new FarmSnapshot
         {
-            version = 1, width = Width, depth = Depth, day = Day, money = Money, equippedItem = EquippedItem,
+            version = 2, width = Width, depth = Depth, day = Day, money = Money, equippedItem = EquippedItem,
             seeds = seeds.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
             produce = produce.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
-            plots = plots.Select(p => p.Copy()).ToArray()
+            plots = plots.Select(p => p.Copy()).ToArray(), building = Building.Snapshot()
         };
 
-        public static FarmModel Restore(FarmSnapshot saved, IEnumerable<CropRules> catalog, int width, int depth)
+        public static FarmModel Restore(FarmSnapshot saved, IEnumerable<CropRules> catalog, int width, int depth, IEnumerable<BuildRules> buildCatalog = null)
         {
-            if (saved == null || saved.version != 1 || saved.width != width || saved.depth != depth || saved.day < 1
+            if (saved == null || (saved.version != 1 && saved.version != 2) || saved.width != width || saved.depth != depth || saved.day < 1
                 || saved.day > DayLimit || saved.money < 0 || saved.money > MoneyLimit || saved.plots == null || saved.plots.Length != width * depth)
                 throw new ArgumentException("Save header or grid is invalid or unsupported.");
-            var model = new FarmModel(catalog, width, depth, saved.money) { Day = saved.day };
+            var rules = (buildCatalog ?? BuildRules.Defaults).ToArray();
+            var model = new FarmModel(catalog, width, depth, saved.money, rules) { Day = saved.day };
+            if (saved.version == 2) model.Building = BuildingModel.Restore(saved.building, rules);
+            // V1 has no construction state. JsonUtility may materialize an empty nested object;
+            // migrate by schema version, not by the nullness of that object.
             if (!model.Equip(saved.equippedItem)) throw new ArgumentException("Unknown equipped item.");
             model.RestoreInventory(saved.seeds, model.seeds);
             model.RestoreInventory(saved.produce, model.produce);

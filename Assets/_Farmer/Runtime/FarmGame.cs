@@ -10,6 +10,9 @@ namespace Farmer
     public sealed class FarmGame : MonoBehaviour
     {
         [SerializeField] private CropDefinition[] crops;
+        [SerializeField] private BuildDefinition[] buildPieces;
+        public BuildDefinition[] BuildPieces => buildPieces;
+        public bool BuildMode { get; private set; }
         [SerializeField] private FarmSelection selection;
         [SerializeField] private Transform player;
         [SerializeField] private Transform market;
@@ -41,14 +44,14 @@ namespace Farmer
         private void Awake()
         {
             var rules = crops.Select(c => c.Rules).ToArray();
-            Model = new FarmModel(rules, selection.Layout.Width, selection.Layout.Depth, startingMoney);
+            Model = new FarmModel(rules, selection.Layout.Width, selection.Layout.Depth, startingMoney, BuildingRules());
             string directory = Application.persistentDataPath;
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
             smokeSession = Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-smoke-capture") >= 0;
             if (smokeSession) directory = Path.Combine(Application.temporaryCachePath, "FarmerQA", Guid.NewGuid().ToString("N"));
 #endif
             SavePath = Path.Combine(directory, "farm-v1.json");
-            store = new FarmSaveStore(SavePath, snapshot => FarmModel.Restore(snapshot, rules, selection.Layout.Width, selection.Layout.Depth));
+            store = new FarmSaveStore(SavePath, snapshot => FarmModel.Restore(snapshot, rules, selection.Layout.Width, selection.Layout.Depth, BuildingRules()));
             LoadGame();
         }
         private void Update()
@@ -60,12 +63,36 @@ namespace Farmer
             if (k?.digit1Key.wasPressedThisFrame == true) Equip(FarmItem.Seeds);
             if (k?.digit2Key.wasPressedThisFrame == true) Equip(FarmItem.WateringCan);
             if (k?.digit3Key.wasPressedThisFrame == true) Equip(FarmItem.Sickle);
-            UpdateToolInput();
+            if (BuildMode) StopWatering(); else UpdateToolInput();
             if (k?.bKey.wasPressedThisFrame == true) Buy(1);
             if (k?.vKey.wasPressedThisFrame == true) SellHarvest();
             if (k?.nKey.wasPressedThisFrame == true) Rest();
             if (k?.f5Key.wasPressedThisFrame == true) SaveGame();
         }
+
+        private BuildRules[] BuildingRules() => buildPieces != null && buildPieces.Length > 0 ? buildPieces.Select(b => b.Rules).ToArray() : BuildRules.Defaults;
+        public void SetBuildMode(bool active)
+        {
+            if (!Ready && active) return;
+            BuildMode = active; selection.HideOutline = active; StopWatering(); Changed?.Invoke();
+        }
+        public bool BuyWood()
+        {
+            if (!Ready) return false;
+            if (!NearMarket) { Feedback = "Odun almak için pazara yaklaş."; return false; }
+            return Complete(Model.BuyWood(out var message), message);
+        }
+        public bool PlaceBlock(string id, int x, int level, int z, int rotation)
+        {
+            if (!Ready || !BuildMode) return false;
+            return Complete(Model.Building.Place(id, x, level, z, rotation, out var message), message);
+        }
+        public bool RemoveBlock(int x, int level, int z)
+        {
+            if (!Ready || !BuildMode) return false;
+            return Complete(Model.Building.Remove(x, level, z, out var message), message);
+        }
+        public void ShowBuildFeedback(string message) => Feedback = message;
 
         private void UpdateToolInput()
         {
@@ -116,7 +143,7 @@ namespace Farmer
         public void Equip(FarmItem item)
         {
             if (!Ready || !Model.Equip(item)) return;
-            StopWatering();
+            SetBuildMode(false);
             Feedback = item == FarmItem.WateringCan ? "Sulama kabı: sol tuşu basılı tutarak fareyi tarlada gezdir."
                 : EquippedName + " seçildi. Fareyi yakındaki kareye götür ve sol tıkla.";
             SaveGame(); Changed?.Invoke();
@@ -124,7 +151,7 @@ namespace Farmer
 
         public bool UseHovered()
         {
-            if (!Ready || !Application.isFocused) return false;
+            if (!Ready || BuildMode || !Application.isFocused) return false;
             selection.RefreshPointer();
             int index = HoveredIndex;
             if (index < 0) return false; // UI and outside-world clicks are not farm actions.
@@ -176,6 +203,7 @@ namespace Farmer
         }
         public bool LoadGame()
         {
+            BuildMode = false; selection.HideOutline = false;
             StopWatering();
             try
             {

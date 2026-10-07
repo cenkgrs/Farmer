@@ -69,7 +69,7 @@ namespace Farmer
         private void OnChanged()
         {
             // Loading a save or changing equipment cannot carry a swing into the next tool.
-            if (game.Model != observedModel || game.Model.EquippedItem != observedItem) ResetAction();
+            if (game.BuildMode || game.Model != observedModel || game.Model.EquippedItem != observedItem) ResetAction();
             observedModel = game.Model; observedItem = game.Model.EquippedItem;
         }
         private void ResetAction()
@@ -91,7 +91,7 @@ namespace Farmer
             if (motor == null) return;
             animator.SetFloat(MoveSpeed, Mathf.Clamp01(motor.PlanarSpeed / motor.Speed), .12f, Time.deltaTime);
             bool ready = game != null && game.Ready && game.isActiveAndEnabled && Application.isFocused;
-            bool holding = ready && game.Model.ItemCount(game.Model.EquippedItem, game.ActiveCrop.id) > 0;
+            bool holding = ready && !game.BuildMode && game.Model.ItemCount(game.Model.EquippedItem, game.ActiveCrop.id) > 0;
             gripWeight = Mathf.MoveTowards(gripWeight, holding ? 1 : 0, Time.deltaTime * 8);
             if (!ready) { ResetAction(); return; }
             bool pouring = game.WateringActive && game.Model.EquippedItem == FarmItem.WateringCan;

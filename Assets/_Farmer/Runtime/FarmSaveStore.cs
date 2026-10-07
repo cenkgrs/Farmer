@@ -30,7 +30,13 @@ namespace Farmer
                 writer.Write(JsonUtility.ToJson(snapshot, true)); writer.Flush(); stream.Flush(true);
             }
             if (!File.Exists(Path)) { File.Move(temporary, Path); return; }
-            if (TryRead(Path, out _)) File.Replace(temporary, Path, Path + ".bak");
+            if (TryRead(Path, out _))
+            {
+                // Preserve the last original v1 file once, before the first schema-v2 write.
+                if (snapshot.version == 2 && JsonUtility.FromJson<FarmSnapshot>(File.ReadAllText(Path)).version == 1 && !File.Exists(Path + ".pre-v2"))
+                    File.Copy(Path, Path + ".pre-v2");
+                File.Replace(temporary, Path, Path + ".bak");
+            }
             else
             {
                 // Keep the corrupt primary for recovery and never replace the known-good backup with it.

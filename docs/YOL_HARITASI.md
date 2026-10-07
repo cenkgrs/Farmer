@@ -1,6 +1,6 @@
 # Sürüm planı ve kabul ölçütleri
 
-Tarihler/tahmini geliştirme süreleri henüz yok. Her sürüm oynanabilir bir adım olmalı. 0.1 çekirdek prototipi Linux üzerinde doğrulandı; sonraki sürüm 0.2. Görseller geçici, Windows doğrulaması ayrı açık iş.
+Tarihler/tahmini geliştirme süreleri henüz yok. Her sürüm oynanabilir bir adım olmalı. 0.1 çekirdek prototipi Linux üzerinde doğrulandı; 0.2 ilk ahşap blok adımı hazır, sürümün tamamı henüz bitmedi. Görseller geçici, Windows doğrulaması ayrı açık iş.
 
 ## 0.1 — Çekirdek prototip
 
@@ -38,11 +38,13 @@ Kaynak elde etme, kare/hacim/kenar yerleşimi, temel ahşap yapı seti, yatak ve
 Kabul:
 
 - [ ] Kaynaklar harcanarak tek katlı, içine girilebilir bir ev kurulabilir.
-- [ ] Ahşap bloklar yan yana/üst üste yerleşir; geçersiz çakışmalar önlenir.
+- [x] Ahşap bloklar yan yana/üst üste yerleşir; geçersiz çakışmalar önlenir.
 - [ ] Önizleme, döndürme, yükseklik seçimi, taşıma ve sökme çalışır.
 - [ ] Ev içinde karakter ve yerleştirilen eşya görülebilir.
 - [ ] Yatakla günü bitirme ve sandık depolaması çalışır; sökme/taşıma eşya çoğaltmaz veya kaybetmez.
 - [ ] Yerleştirilen yapılar ve depolama kayıt/yüklemede korunur.
+
+7 Ekim ilk parça: 6×5 alanda 1 m ahşap blok, üç blok yüksekliği, önizleme/döndürme/yükseklik/sökme, odun maliyeti/iadesi, pazardan odun ve kayıt geçişi uygulandı. Taşıma şimdilik söküp yeniden kurmayla yapılır; ayrı taşıma aracı yok. Ev, kapı, çatı, mobilya ve depolama henüz yapılmadığından yukarıdaki birleşik ölçütler açık tutuldu.
 
 Yaşanabilir ikinci kat bu sürüme dahil değildir.
 

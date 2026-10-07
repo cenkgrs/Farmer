@@ -56,6 +56,14 @@ Tekrarlanan işleri ileride sulama/üretim sistemleri kolaylaştırmalı. Daha g
 - İlk ev tek katlıdır. Blokları üst üste koymak erken desteklenir; yaşanabilir üst kat, merdiven ve gelişmiş kat yönetimi demo sonrasına aittir.
 - Izgara, kapı geçişi, karakter yüksekliği ve eşya boyutları birlikte prototiplenir. Geçici ölçüler kesin üretim standardı diye kabul edilmez.
 
+### 0.2 ilk yerleşim denemesi
+
+Uygulanan geçici değerler: tarlanın sağındaki 6×5 inşa alanında 1 m ahşap bloklar, en fazla üç blok yüksekliği. Başlangıç 24 odun; bir blok 2 odun, sökme tam iade. Pazardan 20 paraya 10 odun alınır; odun üst sınırı 999. Bunlar nihai ekonomi dengesi değildir; kaynak toplama daha sonra ele alınacak.
+
+`4` veya alt çubuk inşa modunu açar. Sol tık yerleştirir, `R` 90° döndürür, tekerlek yüksekliği seçer, sağ tık görünen bloğu söker; `Esc` veya `1/2/3` tarıma döner. Önizleme yeşil/kırmızıyla geçerliliği gösterir. Yerleştirme yatayda 3,5 m erişim ister; oyuncu/nesne çakışması ve havada desteksiz blok engellenir. Üstünde blok olan alt blok sökülemez. Basılı sol tık tekrar tekrar blok üretmez.
+
+Yapı ve odun mevcut çiftlikle birlikte kaydedilir; eski çiftlikler korunarak kayıt sürümü 2'ye taşınır. Henüz çit, kapı, çatı, eşya veya duvar gizleme yoktur.
+
 ## Dünya ve savaş
 
 İlk demo: çiftlik, küçük pazar ve orman/küçük maden girişi. Büyük açık dünya gerekmiyor.

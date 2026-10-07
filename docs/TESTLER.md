@@ -62,7 +62,7 @@ Oyuncu kaydı Unity'nin `Application.persistentDataPath` klasöründe `farm-v1.j
 
 Her başarılı işlem ve normal çıkış kaydedilir; F5 tekrar kaydeder, F9 diskten yükler. Yeni dosya önce geçici dosyaya yazılır, sonra atomik değiştirme yapılır; önceki kayıt `.bak` olarak korunur. Ana kayıt bozuksa sağlam yedek açılır; bozuk dosya üzerine yazmadan önce `.corrupt-*` kopyası korunur. İkisi de okunamazsa sessizce yeni oyuna başlanmaz: işlemler durdurulur, dosyalar korunur ve ekranda hata gösterilir. Kaydetme izni/disk sorunu olursa mevcut oturum bellekte sürer; F5 ile yeniden dene.
 
-Kayıtlar Git'e girmez ve iki bilgisayar arasında otomatik taşınmaz. Önceki günlük sulama kayıtlarında büyümesi başlamış ürünün (`growth > 0`) daha önce sulandığı anlaşılır ve sulanmış olarak açılır. Şema sürümü 1; para, envanter, gün ve tarla durumunu içerir. Kuşanılan eşya yeni isteğe bağlı `equippedItem` alanında saklanır. Eski sürüm 1 kayıtlarında bu alan yoksa tohum seçilir; iki kalıcı alet envanterde bulunur. Karakter konumu saklanmaz; açılışta pazar yakınında başlarsın. Kayıt yeniyken tohum almak ilk otomatik kaydı oluşturur. Aynı çiftliği iki uygulamada eşzamanlı açma.
+Kayıtlar Git'e girmez ve iki bilgisayar arasında otomatik taşınmaz. Önceki günlük sulama kayıtlarında büyümesi başlamış ürünün (`growth > 0`) daha önce sulandığı anlaşılır ve sulanmış olarak açılır. Şema sürümü 2; para, envanter, gün, tarla, odun ve yapı konum/dönüşlerini içerir. Dosya adı uyumluluk için `farm-v1.json` kalır. V1 geçişinde başlangıç odunu bir kez verilir; ilk v2 yazmada sağlam v1 ana dosya `.pre-v2` olarak korunur. Eski exe v2 kaydı desteklemez. Kuşanılan eşya yeni isteğe bağlı `equippedItem` alanında saklanır. Eski sürüm 1 kayıtlarında bu alan yoksa tohum seçilir; iki kalıcı alet envanterde bulunur. Karakter konumu saklanmaz; açılışta pazar yakınında başlarsın. Kayıt yeniyken tohum almak ilk otomatik kaydı oluşturur. Aynı çiftliği iki uygulamada eşzamanlı açma.
 
 ## Basılı tutarak sulama ve ses
 
@@ -133,3 +133,16 @@ Manuel: 2 ile kabı kuşan; basılı sularken WASD ile yürü ve hedefi değişt
 Kabın ağzı suyla birlikte hedefe yönelmeli, parmaklar sapı kavramalı. Bırakınca
 0,7 saniyede normale dönmeli. 3 ile olgun ürüne tıkla; kısa savurma bir kez olmalı.
 Eşya değişimi ve F9 eski hareketi taşımamalı. Gerçek Alt-Tab da ayrıca denenmeli.
+
+
+## Ahşap blok inşası — güncel doğrulama
+
+66/66 EditMode testi geçti (`Logs/building-tests-final.xml`); ilk turdaki v1 geçiş hatası düzeltildi. Son Linux build `Logs/building-player-build.log`; tam player turu `Logs/building-regression.log`, çıkış 0, 143/143 kontrol (önceki 121 + yeni 22 inşa). Görseller ayrıca incelendi; Windows sonucu değildir.
+
+```bash
+python3 tools/art/run_player_checks.py --name building-check-unique --checks building
+```
+
+Yerel Xvfb PATH üzerinde değilse `--xvfb builds/Tools/xvfb/runtime/usr/bin/Xvfb` ekle; başka bilgisayarda kurulu Xvfb kullan. Tüm gruplar için `--checks` seçeneğini çıkar. İnşa grubunda 22 `FARMER_BUILDING_CHECK_OK`, `FARMER_BUILDING_CHECKS_FINISHED`, `FARMER_PLAYER_SMOKE_OK`, sıfır hata ve çıkış 0 gerekir.
+
+Manuel deneme: sağdaki alana yaklaş, 4 ile aç, yeşil önizlemede iki komşu blok koy. R ile döndür; tekerleği yukarı alıp birinin üstüne blok koy. Altı boş yer kırmızı olmalı. Önce üstteki bloğu sağ tıkla sök; odun iadesini izle. Oyuncunun içine/uzak noktaya veya arayüz üstünden yerleştirmeyi dene; kaynak harcanmamalı. F9 veya kapat/aç ile konum/dönüş/odun korunmalı. Pazarda odun al; 1/2/3 ile tarıma dön. Kapı/çatı/iç mekân bu adımın kabul ölçütü değil.
