@@ -12,7 +12,7 @@ Kabul:
 - [x] Elde kuşanılan tohum/sulama kabı/orak, fare hedefi üzerinde sol tıkla kullanılır; önce kare seçme adımı yoktur.
 - [x] Tohum satın alma → ekim → sulama → dört görünür büyüme aşaması → hasat → satış → yeniden tohum satın alma döngüsü tamamlanır.
 - [x] Tohum ve para doğru eksilir; hasat tek kez alınır; negatif miktar/para oluşmaz.
-- [x] Sulama kabıyla basılı tutarak erişilebilir kareler arasında sulama ve döngüsel su sesi; bırakma/arayüz/odak kaybında durma.
+- [x] Sulama kabıyla basılı tutarak erişilebilir kareler arasında sulama ve döngüsel su sesi; bırakma/arayüzde 0,7 saniyelik ses sönümlenmesi, odak kaybında susma.
 - [x] Her ekimde tek sulama büyümeyi başlatır; üç gece süresi korunur. Hiç sulanmayan ürün bekler, bitki hemen ölmez.
 - [x] Geliştirme sırasında gün ilerletme hızlandırılabilir; oyuncu akışında anlaşılır gün bitirme etkileşimi vardır.
 - [x] Temel kayıt/yükleme ile para, envanter, gün ve tarla durumu korunur. Bu teknik gereksinim tasarım sürekliliği için önerilen kapsamdır.

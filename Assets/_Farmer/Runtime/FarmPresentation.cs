@@ -16,6 +16,10 @@ namespace Farmer
         private AudioClip harvestSound;
         private AudioSource wateringAudio;
         private AudioClip wateringSound;
+        private const float WateringVolume = 0.064f; // 20% of the previous 0.32 source gain.
+        private const float WateringReleaseSeconds = 0.7f;
+        private bool pouringAudio;
+        private float releaseElapsed, releaseVolume;
         private readonly GameObject[] heldItems = new GameObject[3];
         private readonly Material[] toolMaterials = new Material[3];
 
@@ -56,36 +60,68 @@ namespace Farmer
         }
         private void Update()
         {
-            if (wateringAudio != null && wateringAudio.isPlaying)
-                wateringAudio.volume = Mathf.MoveTowards(wateringAudio.volume, 0.32f, Time.unscaledDeltaTime * 4f);
+            if (wateringAudio == null || !wateringAudio.isPlaying) return;
+            if (!game.isActiveAndEnabled) { StopWateringAudio(); return; }
+            if (pouringAudio)
+                wateringAudio.volume = Mathf.MoveTowards(wateringAudio.volume, WateringVolume, Time.unscaledDeltaTime * WateringVolume / 0.12f);
+            else
+            {
+                releaseElapsed += Time.unscaledDeltaTime;
+                float remaining = 1f - Mathf.Clamp01(releaseElapsed / WateringReleaseSeconds);
+                wateringAudio.volume = releaseVolume * remaining * remaining;
+                if (remaining <= 0) StopWateringAudio();
+            }
         }
-        private void OnDisable() { if (wateringAudio != null) wateringAudio.Stop(); }
+        private void OnDisable() => StopWateringAudio();
+        private void OnApplicationFocus(bool focused) { if (!focused) StopWateringAudio(); }
+        private void OnApplicationPause(bool paused) { if (paused) StopWateringAudio(); }
+        private void StopWateringAudio()
+        {
+            pouringAudio = false;
+            if (wateringAudio == null) return;
+            wateringAudio.Stop(); wateringAudio.volume = 0;
+        }
         private void OnWatering(bool active)
         {
-            if (active && isActiveAndEnabled)
+            if (!isActiveAndEnabled || !game.isActiveAndEnabled || !Application.isFocused)
+            { StopWateringAudio(); return; }
+            pouringAudio = active;
+            if (active)
             {
-                wateringAudio.volume = 0;
-                if (!wateringAudio.isPlaying) wateringAudio.Play();
+                // Re-gripping during the tail reuses the playing source without a restart or overlap.
+                if (!wateringAudio.isPlaying) { wateringAudio.volume = 0; wateringAudio.Play(); }
             }
-            else { wateringAudio.Stop(); wateringAudio.volume = 0; }
+            else
+            {
+                releaseElapsed = 0;
+                releaseVolume = wateringAudio.volume;
+            }
         }
         private static AudioClip CreateWateringSound()
         {
-            // Original procedural pour: filtered water hiss with irregular short droplet resonances.
-            // Crossfade the end into a pre-roll segment to keep the four-second loop seamless.
+            // Soft close-up trickle: overlapping rounded droplets, with almost no broadband hiss.
+            // Crossfade the end into pre-roll for a seamless four-second loop.
             const int rate = 22050, length = rate * 4, blend = rate / 8;
             var raw = new float[length + blend];
             var random = new System.Random(7319);
-            float low = 0, drop = 0, phase = 0, frequency = 900;
+            float low = 0, smooth = 0;
             for (int i = 0; i < raw.Length; i++)
             {
-                float noise = (float)random.NextDouble() * 2 - 1;
-                low += 0.18f * (noise - low);
-                if (random.NextDouble() < 0.0018)
-                { drop = 0.15f + (float)random.NextDouble() * 0.15f; frequency = 600 + (float)random.NextDouble() * 1400; phase = 0; }
-                phase += 2 * Mathf.PI * frequency / rate;
-                drop *= 0.992f;
-                raw[i] = low * 0.65f + noise * 0.04f + Mathf.Sin(phase) * drop;
+                low += 0.08f * ((float)random.NextDouble() * 2 - 1 - low);
+                smooth += 0.08f * (low - smooth);
+                raw[i] = smooth * 0.06f;
+            }
+            for (int start = 0; start < raw.Length; start += random.Next(rate / 60, rate / 22))
+            {
+                float frequency = 550 + (float)random.NextDouble() * 650;
+                float amplitude = 0.13f + (float)random.NextDouble() * 0.10f;
+                for (int j = 0; j < rate / 9 && start + j < raw.Length; j++)
+                {
+                    float time = (float)j / rate;
+                    float envelope = (1f - Mathf.Exp(-time * 400f)) * Mathf.Exp(-time * 65f);
+                    float phase = 2 * Mathf.PI * frequency * (time + time * time * 1.4f);
+                    raw[start + j] += amplitude * envelope * (Mathf.Sin(phase) + 0.18f * Mathf.Sin(phase * 1.71f));
+                }
             }
             var samples = new float[length];
             for (int i = 0; i < length; i++)

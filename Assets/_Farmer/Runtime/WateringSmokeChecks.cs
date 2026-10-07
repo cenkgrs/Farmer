@@ -39,11 +39,14 @@ namespace Farmer
                     "Holding water starts watering and the audible loop.");
                 string state = JsonUtility.ToJson(game.Model.Snapshot());
                 yield return new WaitForSecondsRealtime(4.25f);
+                Check(Mathf.Abs(source.volume - 0.064f) < 0.0001f, "Water source gain is reduced by 80 percent.");
                 Check(changes == 1 && JsonUtility.ToJson(game.Model.Snapshot()) == state, "Holding on a wet cell does not repeat transactions or saves.");
                 yield return Pointer(mouse, ScreenCell(game, 1), true);
                 Check(game.Model.Plot(1).watered && changes == 2 && source.isPlaying, "Dragging while held waters a second cell without a new press.");
                 yield return Pointer(mouse, new Vector2(60, Screen.height - 60), true);
-                Check(!game.WateringActive && !source.isPlaying, "HUD interrupts watering and its sound.");
+                Check(!game.WateringActive, "HUD interrupts watering immediately.");
+                yield return new WaitForSecondsRealtime(0.8f);
+                Check(!source.isPlaying, "HUD audio tail fades to silence.");
                 yield return Pointer(mouse, new Vector2(-10, -10), true);
                 Check(!source.isPlaying && changes == 2, "Outside-window hold does not water or play audio.");
                 yield return Pointer(mouse, ScreenCell(game, 35), true);
@@ -51,7 +54,17 @@ namespace Farmer
                 yield return Pointer(mouse, ScreenCell(game, 1), true);
                 Check(game.WateringActive && source.isPlaying, "Returning to reachable soil resumes an existing watering gesture.");
                 yield return Pointer(mouse, ScreenCell(game, 1), false);
-                Check(!game.WateringActive && !source.isPlaying, "Release stops pouring and sound.");
+                Check(!game.WateringActive && source.isPlaying && source.volume > 0, "Release ends watering but preserves a short audio tail.");
+                float tailStart = source.volume;
+                string releasedState = JsonUtility.ToJson(game.Model.Snapshot());
+                yield return new WaitForSecondsRealtime(0.15f);
+                Check(source.isPlaying && source.volume > 0 && source.volume < tailStart, "Released water fades gradually instead of cutting off.");
+                yield return Pointer(mouse, ScreenCell(game, 1), true);
+                Check(game.WateringActive && source.isPlaying && source.volume > 0, "Re-gripping during fade resumes the same audio source.");
+                yield return Pointer(mouse, ScreenCell(game, 1), false);
+                yield return new WaitForSecondsRealtime(0.8f);
+                Check(!source.isPlaying && source.volume == 0 && JsonUtility.ToJson(game.Model.Snapshot()) == releasedState,
+                    "Tail ends in silence without performing extra watering.");
                 yield return Pointer(mouse, new Vector2(60, Screen.height - 60), true);
                 yield return Pointer(mouse, ScreenCell(game, 3), true);
                 Check(!game.Model.Plot(3).watered && !source.isPlaying, "A press starting on UI cannot spill into the farm.");
@@ -60,7 +73,9 @@ namespace Farmer
                 Check(game.Model.Plot(3).watered && source.isPlaying, "A fresh press starts a new watering gesture.");
                 InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.Digit1)); yield return null; yield return null;
                 InputSystem.QueueStateEvent(keyboard, new KeyboardState());
-                Check(!game.WateringActive && !source.isPlaying, "Changing equipment stops watering audio immediately.");
+                Check(!game.WateringActive, "Changing equipment stops watering immediately.");
+                yield return new WaitForSecondsRealtime(0.8f);
+                Check(!source.isPlaying, "Changing equipment lets the audio tail finish.");
                 yield return Pointer(mouse, ScreenCell(game, 2), true);
                 Check(game.Model.Stage(2) == -1, "Switching to seeds while held does not plant.");
                 yield return Pointer(mouse, ScreenCell(game, 2), false);
