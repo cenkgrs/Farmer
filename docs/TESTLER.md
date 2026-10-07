@@ -92,3 +92,18 @@ python3 tools/art/run_player_checks.py --name art-check-unique
 ```
 
 Çalıştırıcı yazılım OpenGL kullanır; normal masaüstü GPU performansına dair sonuç çıkarılmaz. Kaynak FBX'te tek kesişen poligon import uyarısı kaydedildi; bu kaynak kusuru düzeltilmiş sayılmıyor. Windows import/build ayrı doğrulanmalı.
+
+
+## Windows deneme paketi — 7 Ekim
+
+Windows x64 Mono release build Linux'ta üretildi. Son doğrulama:
+`Logs/windows-playtest-strict-build.log`, çıkış 0, `FARMER_WINDOWS_BUILD_OK`;
+StrictMode açık, raporda hata yok. İlk denemedeki UberPost shader hatası son
+derlemede tekrarlanmadı; eksik üç varyant yeniden derlendi.
+`tools/build/package_windows.py` PE x64 başlığı/runtime dosyaları ve ZIP CRC
+kontrollerini geçti. 168 dosya, 52,3 MiB; SHA-256 devir notundadır.
+
+Windows'ta gerçek çalıştırma henüz denenmedi. ZIP tamamen çıkarılıp EXE açılmalı;
+manuel deneme listesindeki hareket, pazar, ekim/sulama/hasat ve kayıt döngüsü
+Windows'ta tekrarlanmalı. Hata varsa `BENI_OKU.txt` içindeki Player.log konumu
+kullanılmalı. Bu paketleme işi için oyun mantık testleri tekrar çalıştırılmadı.

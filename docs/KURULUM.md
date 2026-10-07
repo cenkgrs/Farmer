@@ -97,3 +97,32 @@ Bu kontrol grafik oturumu gerektirir; `-nographics` veya `-batchmode` kullanma. 
 İki bilgisayarda aynı tam editör sürümünü kullan. `Assets`, `Packages`, `ProjectSettings` ve `.meta` dosyalarını sürümle; `Library`, `Temp`, `Logs`, `UserSettings` ve `builds` yerel kalır. İlk importun her makinede tekrarlanması normaldir.
 
 Devirde editörü kapat, çalışma ağacını kontrol et, notlarla birlikte commit/push yap. Diğer bilgisayarda temiz çalışma ağacıyla `git pull --ff-only` çalıştır.
+
+## Arkadaşa gönderilecek Windows paketi
+
+Unity 6000.3.25f1 için **Windows Build Support (Mono)** modülü gerekir.
+Linux'ta mevcut Unity CLI ile `unity install-modules -e 6000.3.25f1 -a x86_64 -m windows-mono` kurulabilir.
+Editör kapalıyken depo kökünde:
+
+```bash
+"$UNITY_EDITOR" -batchmode -nographics -quit -job-worker-count 4 -buildTarget Win64 -projectPath "$PWD" \
+  -executeMethod Farmer.Editor.ProjectSetup.BuildWindows \
+  -logFile "$PWD/Logs/windows-playtest-build.log"
+python3 tools/build/package_windows.py
+```
+
+Unity çıkış kodu 0 ve `FARMER_WINDOWS_BUILD_OK` görülmeden paketleme yapma.
+`BuildWindows`, mevcut Mono ayarını doğrular ve x64 release build üretir;
+oyun içi geliştirme testleri dahil edilmez. StrictMode ve hata sayısı kontrolü açıktır. Çıktı `builds/Windows/Farmer.exe`.
+Aynı araç editörde **Farmer → Build Windows Playtest** menüsündedir.
+Linux build'e dönmek için batch komutuna `-buildTarget Linux64` ekle.
+
+Paketleyici gerekli runtime dosyalarını ve EXE'nin Windows x64 başlığını kontrol eder,
+oyun dosyalarını `BENI_OKU.txt` ile ZIP'e koyar, arşiv CRC kontrolü ve SHA-256 üretir.
+Çıktı `builds/Releases/Farmer-0.1.0-Windows-x64.zip`; dosya varsa üzerine yazmaz,
+yeni paket için `--name Farmer-0.1.0-Windows-x64-r2` gibi bir ad ver.
+`builds/` Git dışında kalır. Paketleme tek başına oyunun Windows'ta çalıştığını doğrulamaz.
+
+Arkadaşına ZIP'in tamamını gönder. ZIP tamamen çıkarıldıktan sonra `Farmer.exe`
+açılır; Unity kurulumu gerekmez. EXE, `Farmer_Data`, `MonoBleedingEdge` ve DLL'ler
+birlikte kalmalıdır. Kontroller ve sorun bildirimi bilgileri paketteki rehberdedir.

@@ -138,6 +138,28 @@ namespace Farmer.Editor
             Debug.Log("FARMER_BUILD_OK: builds/Linux/Farmer.x86_64");
         }
 
+        [MenuItem("Farmer/Build Windows Playtest")]
+        public static void BuildWindows()
+        {
+            ValidateProject();
+            if (!BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64))
+                throw new InvalidOperationException("Install Windows Build Support (Mono) for Unity 6000.3.25f1.");
+            if (PlayerSettings.GetScriptingBackend(UnityEditor.Build.NamedBuildTarget.Standalone) != ScriptingImplementation.Mono2x)
+                throw new InvalidOperationException("The Windows playtest requires the Mono scripting backend.");
+
+            Directory.CreateDirectory("builds/Windows");
+            var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+            {
+                scenes = new[] { ScenePath },
+                locationPathName = "builds/Windows/Farmer.exe",
+                target = BuildTarget.StandaloneWindows64,
+                options = BuildOptions.StrictMode
+            });
+            if (report.summary.result != BuildResult.Succeeded || report.summary.totalErrors > 0)
+                throw new InvalidOperationException($"Windows build failed: {report.summary.result}, errors: {report.summary.totalErrors}");
+            Debug.Log("FARMER_WINDOWS_BUILD_OK: builds/Windows/Farmer.exe (x64, Mono, release)");
+        }
+
         private static Material CreateMaterial(string name, Color color)
         {
             string path = $"{MaterialsPath}/{name}.mat";
