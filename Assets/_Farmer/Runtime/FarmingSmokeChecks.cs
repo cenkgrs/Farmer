@@ -39,21 +39,29 @@ namespace Farmer
                 yield return KeyPress(keyboard, Key.Digit1);
                 yield return Hover(game, controller, mouse, 0);
                 yield return KeyPress(keyboard, Key.E);
-                Check(game.Model.Seeds("turnip") == 5 && game.Model.Stage(0) == 0, "E plants without a prior click and consumes one seed.");
-                yield return KeyPress(keyboard, Key.E);
+                Check(game.Model.Stage(0) == -1 && game.Model.Seeds("turnip") == 6, "E no longer performs farm actions.");
+                Vector3 walkStart = player.transform.position;
+                InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.W));
+                yield return new WaitForSecondsRealtime(0.1f);
+                yield return Click(mouse, mouse.position.ReadValue());
+                InputSystem.QueueStateEvent(keyboard, new KeyboardState());
+                yield return null; yield return null;
+                Check(Vector3.Distance(player.transform.position, walkStart) > 0.1f, "W movement continues while left click uses an item.");
+                Check(game.Model.Seeds("turnip") == 5 && game.Model.Stage(0) == 0, "One left click plants directly and consumes one seed.");
+                yield return Click(mouse, mouse.position.ReadValue());
                 Check(!game.Model.Plot(0).watered && game.Model.Seeds("turnip") == 5, "Seed item cannot water an occupied plot.");
                 var waterSlot = GameObject.Find("Inventory Slot 1").GetComponent<Button>();
                 yield return Click(mouse, RectTransformUtility.WorldToScreenPoint(null, waterSlot.transform.position
                     + (Vector3)((RectTransform)waterSlot.transform).rect.center));
                 Check(game.Model.EquippedItem == FarmItem.WateringCan && GameObject.Find("Held WateringCan") != null, "Inventory click equips a visible watering can.");
-                yield return KeyPress(keyboard, Key.E);
-                Check(!game.Model.Plot(0).watered, "E over inventory does not use the previous soil target.");
+                yield return Click(mouse, mouse.position.ReadValue());
+                Check(!game.Model.Plot(0).watered, "Click over inventory does not use the previous soil target.");
                 yield return Hover(game, controller, mouse, 0);
-                yield return KeyPress(keyboard, Key.E);
-                Check(game.Model.Plot(0).watered, "E waters the planted crop.");
+                yield return Click(mouse, mouse.position.ReadValue());
+                Check(game.Model.Plot(0).watered, "Left click waters the planted crop.");
                 yield return KeyPress(keyboard, Key.Digit1);
                 yield return Hover(game, controller, mouse, 1);
-                yield return KeyPress(keyboard, Key.E);
+                yield return Click(mouse, mouse.position.ReadValue());
                 Check(!game.Model.Plot(1).watered, "Second planted crop starts dry.");
                 yield return Capture(screenshot, "stage-0");
                 yield return KeyPress(keyboard, Key.Digit2);
@@ -68,16 +76,16 @@ namespace Farmer
 
                 }
                 Check(game.Model.IsReady(0) && game.Model.Day == 4, "One watering and three nights produce a ready turnip.");
-                yield return KeyPress(keyboard, Key.E);
+                yield return Click(mouse, mouse.position.ReadValue());
                 Check(game.Model.Produce("turnip") == 0 && game.Model.IsReady(0), "Watering can never harvest a ripe plant.");
                 yield return KeyPress(keyboard, Key.Digit3);
                 Check(GameObject.Find("Held Sickle") != null, "Number key equips a visible sickle.");
                 yield return Capture(screenshot, "sickle");
                 Teleport(controller, new Vector3(7, 0.1f, 7));
-                yield return KeyPress(keyboard, Key.E);
+                yield return Click(mouse, mouse.position.ReadValue());
                 Check(game.Model.IsReady(0) && game.Model.Produce("turnip") == 0, "Walking away prevents remote harvesting.");
                 yield return Hover(game, controller, mouse, 0);
-                yield return KeyPress(keyboard, Key.E);
+                yield return Click(mouse, mouse.position.ReadValue());
                 Check(game.Model.Produce("turnip") == 1 && game.Model.Stage(0) == -1, "Harvest clears the plot and grants one item.");
                 Check(GameObject.Find("Harvest Feedback") != null && game.GetComponent<AudioSource>().isPlaying,
                     "Harvest triggers a floating item label and an audio cue.");
@@ -94,34 +102,32 @@ namespace Farmer
 
                 // Each crop is watered only once; stagger planting for a four-stage overview.
                 yield return KeyPress(keyboard, Key.Digit1);
-                yield return Hover(game, controller, mouse, 0); yield return KeyPress(keyboard, Key.E);
-                yield return KeyPress(keyboard, Key.Digit2); yield return KeyPress(keyboard, Key.E);
+                yield return Hover(game, controller, mouse, 0); yield return Click(mouse, mouse.position.ReadValue());
+                yield return KeyPress(keyboard, Key.Digit2); yield return Click(mouse, mouse.position.ReadValue());
                 Teleport(controller, game.Camp.position + Vector3.right); yield return KeyPress(keyboard, Key.N);
-                yield return Hover(game, controller, mouse, 1); yield return KeyPress(keyboard, Key.E);
-                Teleport(controller, game.Camp.position + Vector3.right); yield return KeyPress(keyboard, Key.N);
-                yield return KeyPress(keyboard, Key.Digit1);
-                yield return Hover(game, controller, mouse, 2); yield return KeyPress(keyboard, Key.E);
-                yield return KeyPress(keyboard, Key.Digit2); yield return KeyPress(keyboard, Key.E);
+                yield return Hover(game, controller, mouse, 1); yield return Click(mouse, mouse.position.ReadValue());
                 Teleport(controller, game.Camp.position + Vector3.right); yield return KeyPress(keyboard, Key.N);
                 yield return KeyPress(keyboard, Key.Digit1);
-                yield return Hover(game, controller, mouse, 3); yield return KeyPress(keyboard, Key.E);
-                yield return KeyPress(keyboard, Key.Digit2); yield return KeyPress(keyboard, Key.E);
+                yield return Hover(game, controller, mouse, 2); yield return Click(mouse, mouse.position.ReadValue());
+                yield return KeyPress(keyboard, Key.Digit2); yield return Click(mouse, mouse.position.ReadValue());
+                Teleport(controller, game.Camp.position + Vector3.right); yield return KeyPress(keyboard, Key.N);
+                yield return KeyPress(keyboard, Key.Digit1);
+                yield return Hover(game, controller, mouse, 3); yield return Click(mouse, mouse.position.ReadValue());
+                yield return KeyPress(keyboard, Key.Digit2); yield return Click(mouse, mouse.position.ReadValue());
                 Check(game.Model.Stage(0) == 3 && game.Model.Stage(1) == 2 && game.Model.Stage(2) == 1 && game.Model.Stage(3) == 0,
                     "Four distinct growth stages coexist in the final view.");
                 yield return Hover(game, controller, mouse, 0);
                 Teleport(controller, new Vector3(-4.5f, 0.1f, -2.8f));
                 yield return null;
-                // Pointer motion and E arriving in the same frame must act on the new target.
+                // Pointer motion and left click arriving in the same frame must act on the new target.
                 yield return KeyPress(keyboard, Key.Digit1);
                 Vector3 fresh = game.Selection.Layout.Center(new Vector2Int(4, 0), 0.055f);
                 Teleport(controller, fresh + Vector3.back * 1.5f + Vector3.up * 0.1f);
-                InputSystem.QueueStateEvent(mouse, new MouseState { position = Camera.main.WorldToScreenPoint(fresh) });
-                yield return KeyPress(keyboard, Key.E);
-                Check(game.Model.Stage(4) == 0, "E uses the new mouse position in the same frame.");
+                yield return Click(mouse, Camera.main.WorldToScreenPoint(fresh));
+                Check(game.Model.Stage(4) == 0, "Left click uses the new mouse position in the same frame.");
                 string state = JsonUtility.ToJson(game.Model.Snapshot());
-                InputSystem.QueueStateEvent(mouse, new MouseState { position = new Vector2(-10, -10) });
-                yield return KeyPress(keyboard, Key.E);
-                Check(JsonUtility.ToJson(game.Model.Snapshot()) == state, "E outside the window cannot affect the farm.");
+                yield return Click(mouse, new Vector2(-10, -10));
+                Check(JsonUtility.ToJson(game.Model.Snapshot()) == state, "Click outside the window cannot affect the farm.");
                 yield return KeyPress(keyboard, Key.Digit2);
                 yield return Hover(game, controller, mouse, 2);
                 Teleport(controller, new Vector3(-4.5f, 0.1f, -2.8f));

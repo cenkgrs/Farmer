@@ -51,7 +51,7 @@ namespace Farmer
             sleep = Button(camp, "N · Günü bitir", 16, 158, 233, 40, () => game.Rest());
 
             var footer = Panel("Controls", root.transform, new Vector2(0.5f, 0), new Vector2(0, 18), new Vector2(1232, 106));
-            Label(footer, "WASD / OKLAR  Hareket    FARE  Hedefle    E  Eldeki eşyayı kullan    PAZAR: B Al · V Sat    KAMP: N Yeni gün",
+            Label(footer, "WASD / OKLAR  Hareket    FARE  Hedefle    SOL TIK  Eşyayı kullan    PAZAR: B Al · V Sat    KAMP: N Yeni gün",
                 14, 18, 7, 1195, 24, Gold);
             for (int i = 0; i < slots.Length; i++)
             {
@@ -74,11 +74,11 @@ namespace Farmer
             saveStatus.text = game.SaveStatus + "\nF5 Kaydet  /  F9 Yükle";
             feedback.text = game.Feedback;
             if (!game.Ready) objective.text = "Kayıt sorunu çözülene kadar çiftlik işlemleri duraklatıldı.";
-            else if (model.ReadyCount > 0) objective.text = $"{model.ReadyCount} ürün hasada hazır. Orağı al (3), hedefle ve E ile topla.";
-            else if (model.ThirstyCount > 0) objective.text = $"{model.ThirstyCount} kare sulama bekliyor. Sulama kabını al (2), hedefle ve E'ye bas.";
+            else if (model.ReadyCount > 0) objective.text = $"{model.ReadyCount} ürün hasada hazır. Orağı al (3), hedefle ve sol tıkla topla.";
+            else if (model.ThirstyCount > 0) objective.text = $"{model.ThirstyCount} kare sulama bekliyor. Sulama kabını al (2), hedefle ve sol tıkla.";
             else if (model.Produce(crop.id) > 0) objective.text = "Hasadını pazarda sat; kazancınla yeni tohumlar al.";
             else if (model.PlantedCount > 0) objective.text = "Bitkilerin sulandı. Kampta dinlenerek yeni güne geç.";
-            else if (model.Seeds(crop.id) > 0) objective.text = "Tohumu al (1), boş kareyi fareyle hedefle ve E ile ek.";
+            else if (model.Seeds(crop.id) > 0) objective.text = "Tohumu al (1), boş kareyi fareyle hedefle ve sol tıkla ek.";
             else objective.text = "Çizgili pazar tezgâhına yaklaş; B ile ilk tohumunu al.";
 
             int index = game.HoveredIndex;

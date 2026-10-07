@@ -4,7 +4,7 @@ Son güncelleme: **7 Ekim 2026 — Europe/Istanbul**.
 
 ## Şu an nerede kaldık?
 
-**Unity 6000.3.25f1 LTS (e1dba0a9aba4)** Linux makinesine kuruldu ve `Unity -version` ile doğrulandı. Resmi URP şablonunun kaynak dosyaları depoya alındı. 7 Ekim tarihinde aktif lisans doğrulandı; ilk paket importu, C# derlemesi ve başlangıç sahnesi üretimi başarıyla tamamlandı. Linux build ve görsel kontrol sonucu aşağıdaki doğrulama kaydında tutulur. **0.1 çekirdek prototipi Linux üzerinde tamamlandı:** hareket, kare seçimi, tohum satın alma, ekim/sulama, dört görünür büyüme aşaması, hasat/satış, gün ilerletme ve kayıt/yükleme çalışıyor. Sıradaki geliştirme 0.2 modüler üs kurmanın ilk küçük adımı. Kullanıcının ilk oynanış geri bildirimi uygulandı: tıkla-seç adımı kaldırıldı, fare hedefi üzerinde eldeki eşya ile E etkileşimine geçildi. Her ekimde tek sulama yeterli; hasat süresi üç gece olarak korundu. Görseller geçici; Windows doğrulaması açık.
+**Unity 6000.3.25f1 LTS (e1dba0a9aba4)** Linux makinesine kuruldu ve `Unity -version` ile doğrulandı. Resmi URP şablonunun kaynak dosyaları depoya alındı. 7 Ekim tarihinde aktif lisans doğrulandı; ilk paket importu, C# derlemesi ve başlangıç sahnesi üretimi başarıyla tamamlandı. Linux build ve görsel kontrol sonucu aşağıdaki doğrulama kaydında tutulur. **0.1 çekirdek prototipi Linux üzerinde tamamlandı:** hareket, kare seçimi, tohum satın alma, ekim/sulama, dört görünür büyüme aşaması, hasat/satış, gün ilerletme ve kayıt/yükleme çalışıyor. Sıradaki geliştirme 0.2 modüler üs kurmanın ilk küçük adımı. Kullanıcının ilk oynanış geri bildirimi uygulandı: tıkla-seç adımı kaldırıldı, fare hedefi üzerinde eldeki eşya ile doğrudan sol tık etkileşimine geçildi. Her ekimde tek sulama yeterli; hasat süresi üç gece olarak korundu. Görseller geçici; Windows doğrulaması açık.
 
 Kullanıcı tek başına geliştirecek, Linux ve Windows bilgisayarlar arasında çalışacak. Python, C# ve Java deneyimi yüksek; oyun motoru deneyimi sınırlı ancak Unity'de Godot'tan daha deneyimli. Modelleri harici AI araçlarıyla üretebilir; biz prompt ve entegrasyon gereksinimlerini hazırlayacağız.
 
@@ -98,19 +98,20 @@ Kullanıcı 7 Ekim 2026'da diğer bilgisayarda değişiklik yapmadığını beli
 - Smoke capture ayrı geçici kayıt kullanır ve normal oyuncu kaydını değiştirmez; sonunda test kayıtları temizlenir. Build, günlük ve QA ara çıktıları Git dışında.
 - Windows, editör Play modu ve uzun süreli performans testi ayrıca yapılmadı. 0.2 inşaat, çoklu ürün seçimi, üretim ve moblar bu sürüme dahil değil.
 
-## Güncel etkileşim — eldeki eşya ve tıklamasız hedefleme
+## Güncel etkileşim — eldeki eşya ve doğrudan sol tık
 
-Kullanıcı 7 Ekim'de her kareye tıklayıp E'ye basmanın geniş tarlalarda yorucu olduğunu bildirdi. İstenen değişiklik uygulandı:
+Kullanıcı 7 Ekim'de önce kare seçme adımını kaldırmamızı, ardından WASD ile birlikte kullanım daha rahat olsun diye E yerine sol tık kullanmamızı istedi. Güncel davranış:
 
 - **1:** turp tohumu; **2:** sulama kabı; **3:** orak. Alt eşya çubuğundan da kuşanılır. Alınan tohum adedi burada gösterilir; sulama kabı ve orak kalıcı başlangıç envanter eşyalarıdır. Genel çanta/alet satın alma sistemi henüz yok.
-- Fare yakındaki kare üzerindeyken **E** eldeki eşyayı kullanır. Tarlaya sol tıklama gerekmez, kalıcı kare seçimi yoktur. Yanlış alet başka bir işe dönüşmez; tekrar ekim/sulama/hasat kaynak çoğaltmaz.
-- HUD/pencere dışı/uzak karede işlem engellenir. E sırasında fare konumu yeniden okunur; aynı görüntü karesinde eski hedefe yanlış işlem yapılmaz. Bir basış bir işlem; basılı tutma ve alan etkisi eklenmedi.
+- Fare yakındaki kare üzerindeyken **sol tık** eldeki eşyayı doğrudan kullanır. Önce seçim adımı yoktur; E artık tarla işlemi yapmaz. Yanlış alet başka bir işe dönüşmez; tekrar ekim/sulama/hasat kaynak çoğaltmaz.
+- HUD/pencere dışı/uzak karede işlem engellenir. Sol tık sırasında fare konumu yeniden okunur; aynı görüntü karesinde eski hedefe yanlış işlem yapılmaz. Bir basış bir işlem; basılı tutma ve alan etkisi eklenmedi.
 - `FarmModel.EquippedItem` / `UseEquipped` kuralları sunumdan ayrıdır. `FarmGame.UseHovered` erişimi kontrol eder; `FarmSelection` yalnızca imleç hedefini tutar. `FarmHud` eşya çubuğu ve hedef bilgisi gösterir.
 - Tohum torbası, sulama kabı ve orak karakterin elinde geçici geometriyle görünür. Tohum sayısı sıfırsa elde torba gösterilmez. Modeller nihai sanat varlığı değildir.
 - Kuşanılan eşya `FarmSnapshot.equippedItem` ile kaydedilir. Şema hâlâ sürüm 1; eski kayıtta bu alan yoksa tohum varsayılır. Para/tarla/envanter korunur, aletler başlangıç donanımı olarak bulunur.
 - Tek sulama hasada kadar korunur; hiç sulanmayan ürün bekler, hasat sonrası yeni ekim yeniden bir kez sulanır. Süre üç gecedir. Eski kayıtta `growth > 0` olan ürün önceden sulanmış kabul edilir; ilerleme kaybolmaz.
 - **44/44 EditMode testi geçti** (`Logs/equipment-watering-tests.xml`): eşya işlemleri, eski kayıt uyumluluğu, tek sulamanın kayıt sonrası sürmesi ve yeniden ekimde sıfırlanması dahil.
-- Son Linux build başarılı (`Logs/equipment-watering-build.log`). Gerçek player'da **11 hareket/hedef + 48 tarım kontrolü geçti**, çıkış 0 (`Logs/equipment-watering-player.log`). Döngüde hiç tarla tıklaması yok; tek sulamadan sonra yeniden sulanmadan üç gecede hasat doğrulandı; eşya düğmesi/1–2–3, yanlış alet, HUD üzerinde E, pencere dışı E, aynı görüntü karesinde fare hareketi + E ve kayıt/yükleme denendi.
+- Önceki eşya/tek sulama Linux build'i başarılı (`Logs/equipment-watering-build.log`). Gerçek player'da **11 hareket/hedef + 48 tarım kontrolü geçti**, çıkış 0 (`Logs/equipment-watering-player.log`). Döngüde hiç tarla tıklaması yok; tek sulamadan sonra yeniden sulanmadan üç gecede hasat doğrulandı; eşya düğmesi/1–2–3, yanlış alet, HUD üzerinde E, pencere dışı E, aynı görüntü karesinde fare hareketi + E ve kayıt/yükleme denendi.
+- **Son sol tık doğrulaması:** Linux build ve 61 gerçek player kontrolü geçti; `Logs/click-build.log` / `Logs/click-player.log`. Arayüz yönlendirmeleri ve ekran görüntüleri güncellendi.
 - Yeni eşya çubuğu, tohum torbası, sulama kabı ve orak oyun görüntülerinde incelendi. Güncel PNG'ler `docs/screenshots/farming-prototype.png` / `farming-market.png`. Windows ve kullanıcıyla yeni etkileşimin hissi henüz denenmedi.
 
 ## Sıradaki somut işler
@@ -134,3 +135,5 @@ Kullanıcı 7 Ekim'de her kareye tıklayıp E'ye basmanın geniş tarlalarda yor
 **2026-10-07 — etkileşim geri bildirimi:** Kullanıcının isteğiyle tıkla-seç + bağlama göre işlem yapısı kaldırıldı. 1/2/3 ve eşya çubuğuyla kuşanılan tohum/sulama kabı/orak, fare hedefindeki yakın kareye E ile uygulanıyor. Eşya adımı önce 42 mantık testi ve 61 player kontrolüyle doğrulandı; aşağıdaki tek sulama değişikliği sonrasında güncel sonuç 44 mantık testi ve 59 player kontrolüdür.
 
 **2026-10-07 — tek sulama geri bildirimi:** Kullanıcı aynı adımda günlük sulama gereğini kaldırmamızı istedi. Her ekimde bir sulama yeterli olacak şekilde model, kayıt uyumluluğu ve arayüz güncellendi; olgunlaşma üç gece olarak korundu. Son Linux build, 44 mantık testi ve 59 player kontrolü başarılı.
+
+**2026-10-07 — sol tık geri bildirimi:** Kullanıcı WASD ile E kullanmanın yorucu olduğunu bildirdi. Ekim/sulama/hasat doğrudan sol tıka taşındı; 1/2/3 eşya seçimi ve tek sulama/üç gece kuralı korundu. Arayüz ve pencere dışı tıklamalar tarla işlemi yapmaz. Linux build başarılı (`Logs/click-build.log`); gerçek player'da 11 hareket/hedef ve 50 tarım kontrolü başarılı, çıkış 0 (`Logs/click-player.log`). W ile yürürken tek tıkla ekim, E'nin etkisiz olması, yanlış alet, arayüz/pencere dışı tıklama ve tam tarım döngüsü denendi. Güncel ekran görüntüsü incelendi. Model/kayıt kuralları değişmediği için 44 EditMode testi bu adımda tekrar çalıştırılmadı; önceki geçerli sonuç yukarıdadır.

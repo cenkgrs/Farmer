@@ -36,12 +36,12 @@ Kontrol, Input System'e geçici sanal klavye/fare olayları göndererek normal h
 1. `Farm.unity` sahnesini açıp Play'e bas veya Linux uygulamasını ek bayrak olmadan çalıştır.
 2. WASD ve oklarla her yöne yürü; çapraz hareketin hızlanmadığını, kameranın dönmediğini gözle.
 3. Sağdaki sandığa doğru yürü; içinden geçmemelisin. Arazi kenarına yürü; düşmemelisin.
-4. Fareyi tarlada gezdir; tıklamadan hedef çerçevesi gelmeli. Uzak kare turuncu olmalı ve E işlem yapmamalı.
-5. Fare HUD üzerindeyken/pencere dışındayken hedef kaybolmalı; E önceki karede işlem yapmamalı. 1/2/3 veya eşya çubuğu düğmeleri eldeki eşyayı değiştirmeli.
+4. Fareyi tarlada gezdir; tıklamadan hedef çerçevesi gelmeli. Uzak kare turuncu olmalı ve sol tık işlem yapmamalı.
+5. Fare HUD üzerindeyken/pencere dışındayken hedef kaybolmalı; sol tık önceki karede işlem yapmamalı. 1/2/3 veya eşya çubuğu düğmeleri eldeki eşyayı değiştirmeli.
 6. Pazar tezgâhına yaklaş, B veya düğmelerle tohum al. Paran ve tohum sayın doğru değişmeli.
-7. 1 ile tohumu kuşan, yakın boş kareyi fareyle hedefle ve E ile ek. Aynı eşyayla tekrar E sulamamalı. 2 ile sulama kabını kuşan ve E ile sula; toprak koyulaşmalı. 1 ile ikinci bir kareye ekip kuru bırak.
+7. 1 ile tohumu kuşan, yakın boş kareyi fareyle hedefle ve sol tıkla ek. Aynı eşyayla tekrar sol tık sulamamalı. 2 ile sulama kabını kuşan ve sol tıkla sula; toprak koyulaşmalı. 1 ile ikinci bir kareye ekip kuru bırak.
 8. Kamp minderine yaklaş ve N ile günü bitir. Sulanan ürün büyümeli, kuru ürün aynı aşamada kalmalı. Yeniden sulamadan üç kez geceyi geçir; üçüncü geceden sonra hasat hazır olmalı. Hasat sonrası tekrar ekilen bitki bir kez yeniden sulanmalı.
-9. Sulama kabıyla olgun ürünü hasat edememelisin. 3 ile orağı kuşan ve E ile hasat et; pazara gidip V ile sat ve kazançla tekrar tohum al.
+9. Sulama kabıyla olgun ürünü hasat edememelisin. 3 ile orağı kuşan ve sol tıkla hasat et; pazara gidip V ile sat ve kazançla tekrar tohum al.
 10. Bir kareyi suladıktan sonra oyunu kapat/aç veya F9'a bas. Para, tohum, hasat envanteri, gün, bitki, sulama ve kuşanılan eşya korunmalı.
 
 ## Tarım döngüsünün otomatik player denemesi
@@ -52,9 +52,9 @@ Kontrol, Input System'e geçici sanal klavye/fare olayları göndererek normal h
   -logFile "$PWD/Logs/farming-player.log"
 ```
 
-`--farmer-check-farming`, pazar düğmesine gerçek UI tıklaması ve 1/2/3/B/E/N/V/F5/F9 tuş olaylarıyla satın alma, kuru bitkinin beklemesi, dört aşama, uzak hasadın engellenmesi, hasat, satış, yeniden yatırım ve kayıt yüklemeyi kontrol eder. Tarla işlemleri öncesinde fare tıklaması gönderilmez. Yanlış alet, HUD/pencere dışı E, eşya düğmesi ve aynı karede imleç hareketi + E de kontrol edilir. Ayrıca pazar ve her büyüme aşaması için ayrı PNG üretir; son görüntüde farklı yaşta dört bitki bırakır. Testte konum hazırlığı teleport ile yapılır; hareket/çarpışma ayrıca önceki kontrol setinde denenir.
+`--farmer-check-farming`, pazar düğmesine gerçek UI tıklaması ve 1/2/3/B/N/V/F5/F9 tuş olaylarıyla satın alma, kuru bitkinin beklemesi, dört aşama, uzak hasadın engellenmesi, hasat, satış, yeniden yatırım ve kayıt yüklemeyi kontrol eder. Tarla işlemleri tek sol tıkla yapılır; E işlemez. WASD hareketi sırasında tıklama da denenir. Yanlış alet, HUD/pencere dışı tıklama, eşya düğmesi ve aynı karede imleç hareketi + sol tık da kontrol edilir. Ayrıca pazar ve her büyüme aşaması için ayrı PNG üretir; son görüntüde farklı yaşta dört bitki bırakır. Testte konum hazırlığı teleport ile yapılır; hareket/çarpışma ayrıca önceki kontrol setinde denenir.
 
-**Her smoke capture çalıştırması ayrı geçici kayıt klasörü kullanır; oyuncunun normal çiftliğini yüklemez veya üzerine yazmaz.** Sonunda test kayıt klasörü temizlenir. Ekran görüntüleri ve günlükler `builds/QA` / `Logs` altında kalır. Başarı için 48 `FARMER_FARM_CHECK_OK`, `FARMER_FARMING_CHECKS_FINISHED`, `FARMER_PLAYER_SMOKE_OK` ve çıkış 0 gerekir; `FARMER_FARM_CHECK_FAILED` olmamalı. Ses kontrolü AudioSource oynatma durumunu doğrular; dinleme kalitesi değerlendirmesi değildir.
+**Her smoke capture çalıştırması ayrı geçici kayıt klasörü kullanır; oyuncunun normal çiftliğini yüklemez veya üzerine yazmaz.** Sonunda test kayıt klasörü temizlenir. Ekran görüntüleri ve günlükler `builds/QA` / `Logs` altında kalır. Başarı için 50 `FARMER_FARM_CHECK_OK`, `FARMER_FARMING_CHECKS_FINISHED`, `FARMER_PLAYER_SMOKE_OK` ve çıkış 0 gerekir; `FARMER_FARM_CHECK_FAILED` olmamalı. Ses kontrolü AudioSource oynatma durumunu doğrular; dinleme kalitesi değerlendirmesi değildir.
 
 ## Kayıt dosyası
 

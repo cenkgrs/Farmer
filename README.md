@@ -11,7 +11,7 @@
 - **WASD / ok tuşları:** hareket.
 - **Fare:** tarla karesini hedefle; tıklamana gerek yok. Turuncu çerçeve, yaklaşman gerektiğini belirtir.
 - **1 / 2 / 3:** tohum / sulama kabı / orak kuşan. Eşya çubuğuna tıklayarak da seçebilirsin.
-- **E:** farenin gösterdiği yakındaki karede elindeki eşyayı kullan. Tohum eker, sulama kabı sular, orak hasat eder.
+- **Sol tık:** farenin gösterdiği yakındaki karede elindeki eşyayı kullan. Tohum eker, sulama kabı sular, orak hasat eder.
 - **Pazar yakınında B:** 1 tohum al. **V:** turpların hepsini sat. Ekrandan 5 tohum da alınabilir.
 - **Kamp yakınında N:** günü bitir. Bir kez sulanan ürünler büyür; hiç sulanmayanlar bekler.
 - **F5 / F9:** kaydet / son kaydı yükle. Başarılı işlemler zaten otomatik kaydedilir.

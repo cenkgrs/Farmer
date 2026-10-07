@@ -51,17 +51,17 @@ namespace Farmer
         private void Update()
         {
             var k = Keyboard.current;
-            if (!Application.isFocused || k == null) return;
-            if (k.f9Key.wasPressedThisFrame) LoadGame();
+            if (!Application.isFocused) return;
+            if (k?.f9Key.wasPressedThisFrame == true) LoadGame();
             if (!Ready) return;
-            if (k.digit1Key.wasPressedThisFrame) Equip(FarmItem.Seeds);
-            if (k.digit2Key.wasPressedThisFrame) Equip(FarmItem.WateringCan);
-            if (k.digit3Key.wasPressedThisFrame) Equip(FarmItem.Sickle);
-            if (k.eKey.wasPressedThisFrame) UseHovered();
-            if (k.bKey.wasPressedThisFrame) Buy(1);
-            if (k.vKey.wasPressedThisFrame) SellHarvest();
-            if (k.nKey.wasPressedThisFrame) Rest();
-            if (k.f5Key.wasPressedThisFrame) SaveGame();
+            if (k?.digit1Key.wasPressedThisFrame == true) Equip(FarmItem.Seeds);
+            if (k?.digit2Key.wasPressedThisFrame == true) Equip(FarmItem.WateringCan);
+            if (k?.digit3Key.wasPressedThisFrame == true) Equip(FarmItem.Sickle);
+            if (Mouse.current?.leftButton.wasPressedThisFrame == true) UseHovered();
+            if (k?.bKey.wasPressedThisFrame == true) Buy(1);
+            if (k?.vKey.wasPressedThisFrame == true) SellHarvest();
+            if (k?.nKey.wasPressedThisFrame == true) Rest();
+            if (k?.f5Key.wasPressedThisFrame == true) SaveGame();
         }
 
         private bool Near(Transform target)
@@ -76,12 +76,12 @@ namespace Farmer
         public string EquippedName => Model.EquippedItem == FarmItem.Seeds ? ActiveCrop.displayName + " tohumu"
             : Model.EquippedItem == FarmItem.WateringCan ? "Sulama kabı" : "Orak";
         public string ActionLabel => HoveredIndex < 0 ? "Fareyi tarlaya götür" : !selection.HoveredInReach ? "Kareye yaklaş"
-            : Model.EquippedItem == FarmItem.Seeds ? "E · Tohum ek" : Model.EquippedItem == FarmItem.WateringCan ? "E · Sula" : "E · Hasat et";
+            : Model.EquippedItem == FarmItem.Seeds ? "Sol tık · Tohum ek" : Model.EquippedItem == FarmItem.WateringCan ? "Sol tık · Sula" : "Sol tık · Hasat et";
 
         public void Equip(FarmItem item)
         {
             if (!Ready || !Model.Equip(item)) return;
-            Feedback = EquippedName + " seçildi. Fareyi yakındaki kareye götür ve E'ye bas.";
+            Feedback = EquippedName + " seçildi. Fareyi yakındaki kareye götür ve sol tıkla.";
             SaveGame(); Changed?.Invoke();
         }
 
@@ -90,8 +90,9 @@ namespace Farmer
             if (!Ready || !Application.isFocused) return false;
             selection.RefreshPointer();
             int index = HoveredIndex;
-            if (index < 0 || !selection.HoveredInReach)
-            { Feedback = index < 0 ? "Fareyi bir tarla karesinin üzerine götür." : "Bu kare uzakta. Biraz yaklaş."; return false; }
+            if (index < 0) return false; // UI and outside-world clicks are not farm actions.
+            if (!selection.HoveredInReach)
+            { Feedback = "Bu kare uzakta. Biraz yaklaş."; return false; }
             var plot = Model.Plot(index);
             bool harvesting = Model.EquippedItem == FarmItem.Sickle;
             bool ok = Model.UseEquipped(index, ActiveCrop.id, out string message);
@@ -144,7 +145,7 @@ namespace Farmer
                 if (loaded != null) Model = loaded;
                 Ready = true;
                 SaveStatus = recovered ? "Yedek kayıt yüklendi" : loaded == null ? "Yeni çiftlik" : "Kayıt yüklendi";
-                Feedback = recovered ? "Son sağlam yedek açıldı; önceki dosya korunacak." : "1/2/3 ile eşya seç; fareyi yakındaki kareye götür ve E'ye bas.";
+                Feedback = recovered ? "Son sağlam yedek açıldı; önceki dosya korunacak." : "1/2/3 ile eşya seç; fareyi yakındaki kareye götür ve sol tıkla.";
                 Changed?.Invoke(); return true;
             }
             catch (Exception e) when (e is IOException || e is UnauthorizedAccessException || e is ArgumentException)

@@ -16,7 +16,7 @@ Tekrarlanan işleri ileride sulama/üretim sistemleri kolaylaştırmalı. Daha g
 
 ## Çiftçilik
 
-**7 Ekim kullanıcı geri bildirimiyle kesinleşen etkileşim:** Tarla karesini tıklayarak seçmek gerekmez. Fare o karenin üzerindeyken ve oyuncu yeterince yakındayken E, eldeki eşyayı kullanır. Tohum ekim, sulama kabı sulama, orak hasat yapar; işlemler bitkinin durumuna bakarak otomatik başka bir işe dönüşmez. Eşyalar hızlı erişim çubuğundan veya 1/2/3 ile kuşanılır; karakterin elinde görünür. Bir basış bir işlem yapar. Şimdilik basılı tutma, alan etkisi, su doldurma ve alet dayanıklılığı yoktur.
+**7 Ekim kullanıcı geri bildirimiyle kesinleşen etkileşim:** Tarla karesini tıklayarak seçmek gerekmez. Fare o karenin üzerindeyken ve oyuncu yeterince yakındayken sol tık, eldeki eşyayı kullanır. Tohum ekim, sulama kabı sulama, orak hasat yapar; işlemler bitkinin durumuna bakarak otomatik başka bir işe dönüşmez. Eşyalar hızlı erişim çubuğundan veya 1/2/3 ile kuşanılır; karakterin elinde görünür. Bir sol tık bir işlem yapar. Şimdilik basılı tutma, alan etkisi, su doldurma ve alet dayanıklılığı yoktur.
 
 0.1 envanterinde sulama kabı ve orak birer kalıcı başlangıç eşyasıdır. Tohum adedi pazar alışverişinden gelir ve ekimde azalır. Bu prototipte genel çanta/taşıma sistemi yoktur; alet edinme/üretme ekonomisi sonraki tasarım işidir.
 

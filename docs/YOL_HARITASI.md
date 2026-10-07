@@ -9,7 +9,7 @@ Küçük arazi, sabit ortografik kamera, karakter hareketi, fareyle kare hedefle
 Kabul:
 
 - [x] Oyuncu hareket eder, hedeflenen toprak karesi anlaşılır, kamera dönmez. (7 Ekim: 12 mantık testi, Linux player giriş/çarpışma/seçim kontrolü ve ekran görüntüsü.)
-- [x] Elde kuşanılan tohum/sulama kabı/orak, fare hedefi üzerinde E ile kullanılır; tarla için önce tıklama gerekmez.
+- [x] Elde kuşanılan tohum/sulama kabı/orak, fare hedefi üzerinde sol tıkla kullanılır; önce kare seçme adımı yoktur.
 - [x] Tohum satın alma → ekim → sulama → dört görünür büyüme aşaması → hasat → satış → yeniden tohum satın alma döngüsü tamamlanır.
 - [x] Tohum ve para doğru eksilir; hasat tek kez alınır; negatif miktar/para oluşmaz.
 - [x] Her ekimde tek sulama büyümeyi başlatır; üç gece süresi korunur. Hiç sulanmayan ürün bekler, bitki hemen ölmez.
