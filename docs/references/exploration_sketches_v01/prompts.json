@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-08",
+  "generator": "ImageGen",
+  "style_reference": "docs/references/farm_isometric_concept.png",
+  "prompts": [
+    {
+      "name": "tree",
+      "prompt": "Create a single isolated stylized oak tree game-asset reference. Match ONLY the cozy hand-painted 3D art style, warm earthy palette and soft bevels of the supplied farm concept; do not reproduce the landscape. Three-quarter view, complete tree centered, no cropping. A character-scale oak about 3.2 meters tall, broad irregular canopy about 2.5 meters across, sturdy warm brown trunk with visible branching, gently flared roots. Rich olive and fresh green foliage in layered angular-rounded leafy clumps, carefully painted leaf accents, appealing asymmetrical silhouette. Not spherical balloon foliage. Clearly readable trunk below canopy. High quality stylized game prop with restrained geometric detail. No fruit, no grass, no soil platform, no rocks, no additional objects, no text, no labels, no cast shadow on background. Single tree only, transparent background."
+    },
+    {
+      "name": "stump",
+      "prompt": "Single isolated chopped oak tree stump, three-quarter elevated view, cozy stylized hand-painted 3D farming game asset reference. Warm brown faceted bark, softly beveled forms, pale golden cut face with simple growth rings, slightly irregular freshly cut rim, subtle flared roots. About 30cm tall and 55cm wide. Match the warm earthy painterly style of the supplied farm concept only. Complete object centered with margin. No axe, foliage, mushrooms, stones, grass, soil platform, text, scenery or background shadow. Transparent background. One stump only."
+    },
+    {
+      "name": "axe",
+      "prompt": "Single isolated woodcutting axe for a cozy stylized hand-painted 3D farming game, matching the supplied concept's warm earthy soft-beveled art style only. Entire axe visible, diagonal composition with generous margin, three-quarter view showing thickness. Practical small 70cm wooden handled axe, gently curved honey-brown wooden handle, single broad gray steel cutting head, simple dark metal wedge attachment. Chunky readable silhouette, subtle painted grain, softly beveled steel edge, no intricate decorations. It is a farming tool, not a fantasy battle axe. No hands, character, stump, ground, text, labels, additional objects or background shadows. Transparent background."
+    },
+    {
+      "name": "chest",
+      "prompt": "Single isolated CLOSED wooden exploration chest, cozy stylized hand-painted 3D farming game reference, use supplied farm concept ONLY as style reference. Three-quarter elevated front view showing front, right side and lid. About 95cm wide, 70cm deep, 75cm tall. Honey brown timber planks with soft beveled edges, slightly arched separate hinged wooden lid, two simple dark iron straps, small warm brass clasp centered on front. Friendly rustic proportions, subtle wear and painted wood grain, restrained chunky game-ready detail, readable at isometric distance. Lid visibly separated by seam, no padlock, no coins or contents, no glow or magic, no pedestal, scenery, text, labels or additional objects. Entire object centered with margin, transparent background, no background shadow."
+    },
+    {
+      "name": "plant",
+      "prompt": "Single isolated wild seed-bearing plant for cozy stylized hand-painted 3D farming game, supplied image is art style reference ONLY. A small compact 60cm tall plant with a basal cluster of broad softly angular green leaves, three sturdy stems ending in clearly readable tan golden seed pods. Natural asymmetric silhouette, warm earthy palette, hand-painted color variation, soft chunky shapes suitable for isometric camera. Full plant visible, stems meet at a single base. No flower pot, dirt, soil platform, roots below ground, grass patch, other objects, text or labels. Transparent background, absolutely no halo, glow or cast shadow. One plant only centered with generous margin."
+    }
+  ],
+  "chest_edit": "Keep this exact wooden chest unchanged. Remove ALL brown glow/halo/background outside the chest silhouette. Replace it with fully transparent alpha background, clean cutout edges. No shadow outside the object. Preserve the complete chest, colors, painted texture and perspective."
+}

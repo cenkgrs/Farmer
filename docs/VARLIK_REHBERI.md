@@ -107,3 +107,8 @@ Ahşap çatı 1×1 m düz paneldir; 2,4 m ince duvar veya 3 m blok duvar üstün
 ## İlk kaynak geometrileri
 
 8 Ekim keşif prototipi: ağaç 3 m civarı, dar gövde collider'ı; sandık yaklaşık 0,95×0,76×0,7 m, arkadan menteşeli kapak; yabani bitki 0,65 m. `ResourceView` geçici geometrileri; nihai Tripo modelleri olarak değerlendirilmez. Elde balta `FarmPresentation` altında kısa ahşap sap/metal baştır; Humanoid prosedürel kesme hareketini kullanır. Balta ikonu yerleşik ImageGen, `docs/art-sources/axe-prompt.json`. Nihai modellerde boyut, pivot, menteşe ve collider ayrımı korunmalı.
+
+
+## Keşif kaynakları referansları — 8 Ekim 2026
+
+Meşe, kütük, balta, keşif sandığı ve yabani tohum bitkisi için [eskizler, Tripo promptları ve teslim ölçüleri](references/exploration_sketches_v01/README.md) hazır. Önce meşe üretilecek. Bunlar 2D referanslardır; kullanıcıdan gelecek 3D dosyalar doğrulanmadan oyuna hazır sayılmaz.

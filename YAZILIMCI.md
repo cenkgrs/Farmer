@@ -257,3 +257,11 @@ Kullanıcı 7 Ekim'de önce kare seçme adımını kaldırmamızı, ardından WA
 - İlk genel gerçek-player turu **237/239 geçti**, yalnızca iki eski ses kuyruğu ölçümü başarısızdı (`Logs/exploration-final.log`). Yeni keşif **20/20**, diğer hareket/tarım/alet/inşa/dünya/ev grupları geçti. Ölçüm eklenen ses turunda üç karenin **0,565 s** sürdüğü görüldü (`Logs/exploration-audio-diagnostic.log`); sonraki bekleme 0,7 s kuyruğu aşıyordu. Ses davranışı değiştirilmedi; test, bırakma sonrasındaki ilk kareyi gözlüyor. Son build `Logs/exploration-delivery-build.log` başarılı. Model testlerinden sonra model kuralları değişmedi; yeniden koşulmadı.
 
 - Son teslim turu **47/47 geçti** (27 sulama/ses + 20 keşif), çıkış 0 ve `FARMER_PLAYER_SMOKE_OK` (`Logs/exploration-delivery.log`). Genel turdaki iki zamanlama başarısızlığı bu tekrarda kapandı; üretim ses davranışı değişmedi. Önceki genel turun diğer 212 kontrolü geçmişti; toplam kapsam 239 kontrol, son tek tam tur 237/239 idi. `docs/screenshots/exploration-forest.png` incelendi: yeni balta ikonu, açık sandık, kaynak çevresi, ücretsiz yataksız fixture. Asset/meta ve GUID denetimi temiz; diff boşluk kontrolü temiz. Bu turdaki test süreçleri kapatıldı, normal oyun otomatik açılmadı. Devir main/origin; kesin commit için git log -1.
+
+
+## 8 Ekim 2026 — Keşif modelleri için görsel teslim
+
+- Kullanıcının istediği ağaç öncelikli 2D eskiz paketi `docs/references/exploration_sketches_v01/` içine eklendi: meşe, kesilmiş kütük, balta, kapalı keşif sandığı ve yabani tohum bitkisi. ImageGen üretimi; promptlar sürümlendi.
+- README: her model için ayrı Tripo promptu, ölçü/üçgen hedefi, GLB teslim ve kontrol listesi. Ağaç Trunk/Canopy, sandık Body/Lid ayrımı isteniyor; aracın bunu garanti ettiği varsayılmıyor. Sandık referansındaki arka plan halesi model parçası değil.
+- Görseller gözle incelendi. Oyun kodu/assetleri değişmedi; Unity, build ve oyun testi çalıştırılmadı. Mevcut 3D kaynaklar hâlâ geçici geometriler.
+- Sıradaki somut iş: kullanıcı önce ağaç GLB dosyasını iletsin; mesh/doku/ölçek ve taç gizleme uygunluğunu doğrula, ardından kütük/balta/sandık/bitkiyi entegre et. Bu referans turunda 3D üretim kredisi kullanılmadı.
