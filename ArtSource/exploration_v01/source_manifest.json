@@ -1,0 +1,52 @@
+{
+  "axe": {
+    "sha256": "4ed0616c4bcc6799a3bd08028e4f24b70e81f439533621380e84cd9b67a32684",
+    "source_texture_sizes": [
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ]
+    ],
+    "working_texture_size": 1024,
+    "base_color_factor": [
+      0.800000011920929,
+      0.800000011920929,
+      0.800000011920929,
+      1.0
+    ],
+    "triangles": 15792
+  },
+  "tree_stump": {
+    "sha256": "49ade960806ff133d2f3bbbfacb22a5f13486f427d36eadd12feed68a3ce9c80",
+    "source_texture_sizes": [
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ]
+    ],
+    "working_texture_size": 1024,
+    "base_color_factor": [
+      0.800000011920929,
+      0.800000011920929,
+      0.800000011920929,
+      1.0
+    ],
+    "triangles": 2173
+  }
+}

@@ -148,9 +148,8 @@ namespace Farmer
             heldItems[3] = new GameObject("Held Hoe"); heldItems[3].transform.SetParent(heldItemSocket,false);
             Part(3, PrimitiveType.Cylinder, new Vector3(0,-.22f,.03f), new Vector3(.038f,.48f,.038f),0);
             Part(3, PrimitiveType.Cube, new Vector3(0,-.67f,.13f), new Vector3(.27f,.055f,.25f),2);
-            heldItems[4]=new GameObject("Held Axe");heldItems[4].transform.SetParent(heldItemSocket,false);
-            Part(4,PrimitiveType.Cylinder,new Vector3(0,.18f,0),new Vector3(.045f,.35f,.045f),0);
-            Part(4,PrimitiveType.Cube,new Vector3(.1f,.45f,0),new Vector3(.30f,.22f,.055f),2);
+            heldItems[4] = Instantiate(Resources.Load<GameObject>("ExplorationArt/axe"), heldItemSocket, false);
+            heldItems[4].name = "Held Axe";
         }
         private Transform Part(int item, PrimitiveType shape, Vector3 position, Vector3 scale, int material)
         {

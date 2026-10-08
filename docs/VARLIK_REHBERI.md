@@ -112,3 +112,8 @@ Ahşap çatı 1×1 m düz paneldir; 2,4 m ince duvar veya 3 m blok duvar üstün
 ## Keşif kaynakları referansları — 8 Ekim 2026
 
 Meşe, kütük, balta, keşif sandığı ve yabani tohum bitkisi için [eskizler, Tripo promptları ve teslim ölçüleri](references/exploration_sketches_v01/README.md) hazır. Önce meşe üretilecek. Bunlar 2D referanslardır; kullanıcıdan gelecek 3D dosyalar doğrulanmadan oyuna hazır sayılmaz.
+
+
+## Balta/kütük teslimi — 8 Ekim 2026
+
+Kullanıcının balta ve kesilmiş kütük modelleri oyuna entegre edildi. [Kaynak/dönüşüm kaydı](../ArtSource/exploration_v01/README.md): 0,70 m balta, 0,30 m kütük; 1K URP dokular. Balta sağ el kavramasına, kütük ağacın kesilmiş durumuna bağlıdır. Ağaç, sandık ve yabani bitki modelleri bekleniyor.

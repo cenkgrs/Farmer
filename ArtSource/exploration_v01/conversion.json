@@ -1,0 +1,22 @@
+{
+  "axe": {
+    "triangles": 15792,
+    "vertices": 9727,
+    "size_blender_xyz": [
+      0.27891258697053595,
+      0.09675934116873816,
+      0.7
+    ],
+    "height_m": 0.7
+  },
+  "tree_stump": {
+    "triangles": 2173,
+    "vertices": 2032,
+    "size_blender_xyz": [
+      0.542317372183185,
+      0.5398236410373854,
+      0.3
+    ],
+    "height_m": 0.3
+  }
+}

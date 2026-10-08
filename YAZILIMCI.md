@@ -265,3 +265,14 @@ Kullanıcı 7 Ekim'de önce kare seçme adımını kaldırmamızı, ardından WA
 - README: her model için ayrı Tripo promptu, ölçü/üçgen hedefi, GLB teslim ve kontrol listesi. Ağaç Trunk/Canopy, sandık Body/Lid ayrımı isteniyor; aracın bunu garanti ettiği varsayılmıyor. Sandık referansındaki arka plan halesi model parçası değil.
 - Görseller gözle incelendi. Oyun kodu/assetleri değişmedi; Unity, build ve oyun testi çalıştırılmadı. Mevcut 3D kaynaklar hâlâ geçici geometriler.
 - Sıradaki somut iş: kullanıcı önce ağaç GLB dosyasını iletsin; mesh/doku/ölçek ve taç gizleme uygunluğunu doğrula, ardından kütük/balta/sandık/bitkiyi entegre et. Bu referans turunda 3D üretim kredisi kullanılmadı.
+
+
+## 8 Ekim 2026 — Teslim edilen balta ve kütük entegre
+
+- Kullanıcının iki GLB dosyası değişmeden `ArtSource/exploration_v01` içine alındı; kaynak SHA-256, gerçek geometri/doku sayımları ve yerel dönüşüm betikleri kayıtlı. Balta 15.792, kütük 2.173 üçgen; 4K kaynaklar korundu, çalışma dokuları 1K.
+- Balta 0,70 m; çapraz kaynak ana ekseni dikleştirildi, sap kavrama noktası ve ileri kesme yönü prefabda hizalandı. Mevcut el socket/animasyonu kullanılır. Kütük 0,30 m boy, yaklaşık 0,54 m genişlikte; kesilmiş ağaçta görünür, collider yok. Kaynak ödülleri ve v6 kayıt kuralları değişmedi.
+- `ExplorationArtSetup.ApplyAndBuild` iki URP materyal ve Resources/ExplorationArt prefabını üretir. Ana sahneyi yeniden üretmez. Normal klonda tekrar çalıştırmak gerekmiyor; FBX/doku/prefab/meta sürümlü. Diğer kaynak modelleri hâlâ geçici.
+- Linux build başarılı: `Logs/exploration-art-front-build.log`, FARMER_BUILD_OK. Gerçek player son tur **25/25 keşif kontrolü**, çıkış 0 ve FARMER_PLAYER_SMOKE_OK (`Logs/exploration-art-front.log`). Beş yeni kontrol: teslim balta mesh/doku/el bağlantısı, kütük görünümü/boyut/collider ve yeniden yükleme. İlk tur da 25/25; ilk görüntü arkadan olduğu için kontrol kamerası öne alındı.
+- Ön açı balta tutuşu ve kütük zemine oturuşu incelendi: `docs/screenshots/exploration-axe-grip.png`, `exploration-axe-stump.png`. Meta eşleri/GUID benzersizliği kontrol edildi. Oyun mantığı değişmediğinden EditMode/genel player paketi tekrar çalıştırılmadı; Windows yeniden derlenmedi. Test süreçleri kapandı.
+- Oturum başında `Assets/_Farmer/Editor/ArtSceneSetup.cs` içinde kullanıcı düzenlemesi vardı; korunup bu commitin dışında bırakıldı. Bu nedenle çalışma ağacının tamamen temiz olduğu söylenmemeli.
+- Sıradaki somut iş: kullanıcıdan ağaç/sandık/yabani bitki modellerini alıp ayrı ayrı doğrula ve entegre et; ardından sonraki oynanabilir sürüm adımına geç.

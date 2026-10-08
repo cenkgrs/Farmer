@@ -57,7 +57,7 @@ namespace Farmer.Editor
             importer.clipAnimations = clips;
             importer.SaveAndReimport();
         }
-        private static void CreateMaterial(string name)
+        public static void CreateMaterial(string name)
         {
             foreach (string suffix in new[] { "basecolor", "normal", "metallic_smoothness" })
             {

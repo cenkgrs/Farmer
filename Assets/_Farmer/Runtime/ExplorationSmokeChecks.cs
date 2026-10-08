@@ -26,6 +26,11 @@ namespace Farmer
                 Check(WorldGround.SupportsCell(tree.x,tree.z,true),"Forest cells have buildable, cultivable ground.");
                 int wood=game.Model.Building.Wood;yield return Click(mouse,Point(tree));Check(game.Model.Exploration.Node(tree.id).hits==0,"Seeds cannot cut trees.");
                 yield return Press(keyboard,Key.Digit6);Check(game.Model.EquippedItem==FarmItem.Axe&&GameObject.Find("Held Axe")!=null,"Shortcut six equips and displays the axe.");
+                var axe=GameObject.Find("Held Axe");
+                var hand=game.Player.GetComponentInChildren<Animator>().GetBoneTransform(HumanBodyBones.RightHand);
+                Check(axe.transform.IsChildOf(hand)&&Vector3.Distance(axe.transform.position,hand.position)<.12f,"Delivered axe follows the hand socket.");
+                Check(axe.GetComponentInChildren<MeshFilter>().sharedMesh.vertexCount>1000&&axe.GetComponentInChildren<Renderer>().sharedMaterial.GetTexture("_BaseMap")!=null,"Axe uses delivered textured geometry.");
+                yield return Closeup(screenshot,"axe-grip",game.Player.position+Vector3.up*.9f);
                 var hudPoint=new Vector2(60,Screen.height-50);yield return Click(mouse,hudPoint);Check(game.Model.Exploration.Node(tree.id).hits==0,"HUD clicks cannot chop a resource.");
                 var barrier=GameObject.CreatePrimitive(PrimitiveType.Cube);barrier.transform.position=new Vector3(tree.x+.5f,1,tree.z-.5f);barrier.transform.localScale=new Vector3(1,2,.2f);Physics.SyncTransforms();
                 Check(!game.Gather(tree.id)&&game.Model.Exploration.Node(tree.id).hits==0,"A wall between player and tree blocks gathering.");barrier.SetActive(false);Object.Destroy(barrier);
@@ -33,6 +38,10 @@ namespace Farmer
                 game.SaveGame();yield return Press(keyboard,Key.F9);Check(game.Model.Exploration.Node(tree.id).hits==1,"Partial tree chopping survives save and reload.");
                 yield return Click(mouse,Point(tree));yield return Click(mouse,Point(tree));Check(game.Model.Building.Wood==wood+8&&game.Model.Exploration.Node(tree.id).collected,"Three hits fell the tree and give eight wood.");
                 Check(!Object.FindObjectsByType<ResourceView>(FindObjectsSortMode.None).Single(v=>v.Id==tree.id).GetComponent<Collider>().enabled,"Felled tree no longer blocks movement or construction.");
+                var stump=Object.FindObjectsByType<ResourceView>(FindObjectsSortMode.None).Single(v=>v.Id==tree.id).transform.Find("Felled Oak Stump");
+                Check(stump.gameObject.activeInHierarchy&&stump.GetComponentInChildren<MeshFilter>().sharedMesh.vertexCount>1000,"Felling reveals the supplied stump model.");
+                Check(stump.GetComponentInChildren<Renderer>().bounds.size.y>.29f&&stump.GetComponentInChildren<Renderer>().bounds.size.y<.31f&&stump.GetComponentsInChildren<Collider>().Length==0,"Stump is grounded at 0.3m and has no blocking collider.");
+                yield return Closeup(screenshot,"axe-stump",new Vector3(tree.x+.5f,.65f,tree.z));
                 yield return Click(mouse,Point(tree));Check(game.Model.Building.Wood==wood+8,"Repeated clicking cannot duplicate the tree reward.");
                 var plant=game.Model.Exploration.Nodes.First(n=>n.kind==ResourceKind.WildPlant);Teleport(cc,plant);yield return new WaitForSecondsRealtime(2f);
                 yield return Click(mouse,Point(plant));Check(!game.Model.Exploration.Node(plant.id).collected,"Axe cannot harvest a wild seed plant.");
@@ -41,6 +50,7 @@ namespace Farmer
                 int money=game.Model.Money;yield return Click(mouse,Point(chest));Check(game.Model.Money==money+chest.coins&&game.Model.Exploration.Node(chest.id).collected,"A chest opens with left click and grants its saved coin reward.");
                 yield return Capture(screenshot,"forest-loot");string saved=JsonUtility.ToJson(game.Model.Snapshot());game.SaveGame();yield return Press(keyboard,Key.F9);
                 Check(saved==JsonUtility.ToJson(game.Model.Snapshot()),"Resource positions, loot and all collected states survive loading unchanged.");
+                Check(Object.FindObjectsByType<ResourceView>(FindObjectsSortMode.None).Single(v=>v.Id==tree.id).transform.Find("Felled Oak Stump").gameObject.activeInHierarchy,"Collected stump remains visible after save reload.");
                 yield return Click(mouse,Point(chest));Check(game.Model.Money==money+chest.coins,"Reopening the same chest after reload gives no extra money.");
                 var distant=game.Model.Exploration.Nodes.First(n=>!n.collected&&n.kind==ResourceKind.Chest);Check(!game.Gather(distant.id),"Distant resources cannot be collected remotely.");
                 yield return Press(keyboard,Key.Digit4);Check(game.BuildMode,"Free construction remains available outside the farm.");yield return Press(keyboard,Key.Escape);
@@ -51,6 +61,18 @@ namespace Farmer
             {
                 game.Camp.gameObject.SetActive(campActive);follow.enabled=false;camera.transform.SetPositionAndRotation(cameraPosition,rotation);InputSystem.RemoveDevice(keyboard);InputSystem.RemoveDevice(mouse);foreach(var d in devices)InputSystem.EnableDevice(d);Load(game,original);
             }
+        }
+        private static IEnumerator Closeup(string screenshot,string label,Vector3 target)
+        {
+            var camera=Camera.main;var follow=camera.GetComponent<ExplorationCamera>();
+            var position=camera.transform.position;var rotation=camera.transform.rotation;float size=camera.orthographicSize;
+            follow.enabled=false;
+            try
+            {
+                camera.transform.position=target+new Vector3(5,2.5f,3);camera.transform.LookAt(target);camera.orthographicSize=1.7f;
+                yield return Capture(screenshot,label);
+            }
+            finally{camera.transform.SetPositionAndRotation(position,rotation);camera.orthographicSize=size;follow.enabled=true;}
         }
         private static void Load(FarmGame game,FarmSnapshot snapshot){File.WriteAllText(game.SavePath,JsonUtility.ToJson(snapshot));game.LoadGame();}
         private static void Teleport(CharacterController cc,ResourceRecord n){cc.enabled=false;cc.transform.position=new Vector3(n.x+.5f,.1f,n.z-1.5f);cc.enabled=true;Physics.SyncTransforms();}

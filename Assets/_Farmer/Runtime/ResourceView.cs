@@ -6,6 +6,7 @@ namespace Farmer
         public int Id { get; private set; }
         public ResourceKind Kind { get; private set; }
         private Transform crown,lid,trunk,plant;
+        private GameObject stump;
         private Collider obstacle;
         private bool collected;
         private float shake;
@@ -20,6 +21,8 @@ namespace Farmer
                 {
                     var leaf=Part("Leaves",PrimitiveType.Sphere,new Vector3((i-1)*.55f,2.05f+i*.16f,(i%2)*.28f),new Vector3(1.75f,1.65f,1.65f),materials[1+i%2]);leaf.SetParent(crown,true);
                 }
+                stump=Instantiate(Resources.Load<GameObject>("ExplorationArt/tree_stump"),transform,false);
+                stump.name="Felled Oak Stump";
                 var box=gameObject.AddComponent<BoxCollider>();box.center=new Vector3(0,.9f,0);box.size=new Vector3(.6f,1.8f,.6f);obstacle=box;
             }
             else if(Kind==ResourceKind.Chest)
@@ -54,7 +57,7 @@ namespace Farmer
             collected=record.collected;
             if(Kind==ResourceKind.Tree)
             {
-                crown.gameObject.SetActive(!collected);trunk.localScale=new Vector3(.42f,collected?.13f:.85f,.42f);trunk.localPosition=new Vector3(0,collected?.13f:.85f,0);
+                crown.gameObject.SetActive(!collected);trunk.gameObject.SetActive(!collected);stump.SetActive(collected);
                 obstacle.enabled=!collected;
             }
             else if(Kind==ResourceKind.WildPlant){plant.gameObject.SetActive(!collected);obstacle.enabled=!collected;}
