@@ -62,13 +62,13 @@ Tekrarlanan işleri ileride sulama/üretim sistemleri kolaylaştırmalı. Daha g
 
 Mevcut prototipin düz 20×20 arazisindeki boş ve sağlam zemin kullanılabilir. Arazinin dışı, havada kalan yapılar, mevcut nesneler/oyuncu ve ekili ürünlerle çakışma engellenir. Dünya kayıtları alan kimliğine bağlı değildir; yeni bölgelerde zemin `WorldGround` ile tanımlanır. Prototipte zemin y=0, hücre 1 m, üst üste en fazla üç ahşap blok; farklı arazi yükseklikleri ve yaşanabilir üst kat henüz yoktur.
 
-`4` inşa; `Q` ahşap blok/yatak seçimi; sol tık yerleştir; `R` 90° döndür; tekerlek blok yüksekliği; sağ tık görünen yapıyı sök. `Esc` veya `1/2/3/5` tarıma döner. Grid sadece oyuncu çevresindeki bir hizalama yardımcısıdır, yerleşim bölgesi değildir. Yeşil/kırmızı önizleme ve yatay 3,5 m erişim korunur. Alt destek gereklidir; üstünde blok olan alt blok sökülemez.
+`4` inşa; `Q` ahşap blok/yatak/döşeme/duvar/kapı seçimi; sol tık yerleştir; `R` 90° döndür; tekerlek blok yüksekliği; sağ tık görünen yapıyı sök. `Esc` veya `1/2/3/5` tarıma döner. Grid sadece oyuncu çevresindeki bir hizalama yardımcısıdır, yerleşim bölgesi değildir. Yeşil/kırmızı önizleme ve yatay 3,5 m erişim korunur. Alt destek gereklidir; üstünde blok olan alt blok sökülemez.
 
 Başlangıç 24 odun; blok 2, 1×2 hücrelik yatak 8 odun; sökme tam iade. Pazar 20 paraya 10 odun, çanta sınırı 999. Bunlar geçici denge değerleridir. Yatak zemine kurulur ve 1,8 m çevresinde uyuma sağlar; başlangıç minderinin kendisi de yataktır. Yatak önizlemesi uyuma sağlamaz.
 
 Yeni oyunda otomatik hazırlanmış tarla yoktur. `5` ile kuşanılan çapa, yakındaki boş toprağı sol tıkla ekime hazırlar. Ardından 1/2/3 ile aynı ekim/sulama/hasat döngüsü işler. Ekili kare tekrar çapalanmaz ve kaynak kaybetmez; hasat sonrası toprak ekilebilir kalır. Yapının altında veya sert engellerde çapa kullanılmaz; boş ekilebilir karenin üzerine yapı kurulabilir, ekili ürün önce hasat edilmelidir.
 
-Saat, odun, yatak/yapı koordinatları ve hazırlanmış toprak kayıt sürümü 3'te saklanır. V1/V2 kayıtlarındaki tarlalar ve blokların dünya konumları korunur; eski çiftlik bilerek silinmez. İlk v3 yazımından önce sağlam eski ana kayıt `.pre-v3` yedeğine alınır. Saat gündüz/gece ışıklarını yumuşak değiştirir; kalıcı işlem ve gece yarısına ek olarak 30 saniyede bir kaydedilir.
+Saat, odun, yatak/yapı koordinatları ve hazırlanmış toprak kayıt sürümü 4'te saklanır. V1/V2 kayıtlarındaki tarlalar ve blokların dünya konumları korunur; eski çiftlik bilerek silinmez. İlk v4 yazımından önce sağlam eski ana kayıt `.pre-v4` yedeğine alınır. Saat gündüz/gece ışıklarını yumuşak değiştirir; kalıcı işlem ve gece yarısına ek olarak 30 saniyede bir kaydedilir.
 
 ## Dünya ve savaş
 
@@ -92,3 +92,13 @@ Odun → yapı parçaları; keten → lif/kumaş → yatak/ekipman; maden → ge
 Pazar ve yatağın üstünde dünya yazısı yoktur; yaklaşınca etkileşim paneli açılır. Alt arayüz referanstaki gibi ortalanmış ahşap çerçeveli küçük eşya gözlerinden oluşur: tohum, sulama kabı, orak, inşa, çapa, hasat ve odun. Tohum/hasat/odun miktarları ikon köşesinde görünür; seçili eşya altın renkle ayrılır. Sürekli geniş tuş listesi kaldırıldı. Ad/kısayol/kullanım açıklaması yalnızca ikonun üzerine gelince; inşa komutları inşa modundayken gösterilir. İşlem geri bildirimi kısa süreli görünür. Saat ve para sol üstte küçük karttadır. Bu hızlı envanter çubuğudur; genel çanta/sürükle-bırak/depolama sistemi değildir.
 
 Kullanıcı düz vektör ikon ve tek renk kahverengi arka planı reddetti. Envanterde konseptle eşleşen ImageGen boyanmış eşya resimleri, ahşap damarları ve krem dokulu oyuklar kullanılır; miktar ve seçim vurgusu ayrı UI katmanıdır.
+
+## İlk oda — 8 Ekim 2026
+
+Döşeme (1 odun) 1×1 hücrenin tabanına, ince duvar (2 odun) ve kapı (3 odun) hücrenin kenarına oturur. R ile seçilen kenar döner. Komşu karenin karşı kenarı aynı yerdir; iki kez yerleştirilemez. Döşeme ile yatak aynı hücreyi paylaşır; duvar iki hücrelik yatağı ortadan bölemez. Döşeme üzerinde tarım yapılamaz. Duvar ve kapı 2,4 m yüksektir; bu parçalar şimdilik yalnızca zemin katına konur. Döşeme üst bloklara taşıyıcı değildir.
+
+Yakındaki kapıya fareyi yöneltip F ile aç/kapat. Kapı kanadı 90° döner; oyuncu veya eşya açılma alanını kapatıyorsa işlem reddedilir. Kapının açık/kapalı hali kayıt v4'te saklanır. Sağ tık, imlecin gerçekten değdiği parçayı söker; aynı hücredeki döşeme/duvar/yatağı birlikte silmez. V1/V2/V3 çiftlikler korunur; ilk v4 kayıttan önce eski sağlam ana dosya `.pre-v4` yedeği alır.
+
+Bu parça çatısız, içine girilebilir oda iskeletidir. Çatı, sandık ve dekorasyon sonraki küçük adımlardır; 0.2 tamamlandı sayılmaz. Dünya arazi sınırları ve mevcut 10 dakikalık saat değişmez.
+
+Kullanıcının 8 Ekim görsel düzeltmesi: yalnızca tepenin açık olması yetmez. Oyuncunun bulunduğu döşemeli odanın kameraya bakan ön ve yan duvarları, kapı/çerçeve dahil, yaklaşık %16 opaklığa yumuşak geçer. Arka duvarlar korunur; karakteri doğrudan örten diğer duvar parçaları da saydamlaşır. Odadan ve görüş engelinden çıkınca eski malzeme geri gelir. Collider ve kapı etkileşimi değişmez. Oda döşemeden bulunur; duvar/kapı kenarları komşu odaları ayırır.

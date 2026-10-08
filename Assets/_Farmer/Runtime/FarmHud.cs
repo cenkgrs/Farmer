@@ -95,6 +95,7 @@ namespace Farmer
             }
             buildButton.GetComponent<Image>().color=game.BuildMode?Gold:Color.clear;buildButton.interactable=game.Ready;
             string hint=hovered;
+            if(hint==null&&!game.BuildMode)hint=game.GetComponent<DoorInteraction>()?.Hint;
             if(hint==null&&game.BuildMode)hint=$"{builder.ActiveDefinition.displayName} · {builder.ActiveDefinition.woodCost} odun\nQ Parça   R Döndür   Tekerlek Yükseklik   Sağ tık Sök";
             tooltip.gameObject.SetActive(hint!=null);tooltipText.text=hint??"";
             int index=game.HoveredIndex;detail.gameObject.SetActive(game.BuildMode||index>=0);

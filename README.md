@@ -16,12 +16,13 @@
 - **Sulama kabıyla sol tuşu basılı tut:** fareyi yakındaki tarla karelerinde gezdirerek sula. Sulama boyunca hafif su sesi çalar; tuşu bırakınca yaklaşık 0,7 saniyede azalarak biter.
 - **Pazar yakınında B:** 1 tohum al. **V:** turpların hepsini sat. Ekrandan 5 tohum da alınabilir.
 - **Yatak yakınında N:** sonraki sabah 06:00'ya kadar uyu. Saat kendiliğinden de ilerler; tam bir gün 10 gerçek dakika sürer. Sulanan ürünler gece yarısında büyür.
-- **4 · İnşa:** uygun boş zeminde sol tıkla yerleştir. Q ile blok/yatak seç, R ile döndür, tekerlekle blok yüksekliği seç, sağ tıkla sök. Esc veya 1/2/3/5 ile çık.
+- **4 · İnşa:** uygun boş zeminde sol tıkla yerleştir. Q ile blok/yatak/döşeme/duvar/kapı seç, R ile döndür, tekerlekle blok yüksekliği seç, sağ tıkla sök. Esc veya 1/2/3/5 ile çık.
+- **Kapıyı fareyle hedefleyip F:** yakındayken aç/kapat. Kanadın açılma alanı doluysa önce yana çekil.
 - **F5 / F9:** kaydet / son kaydı yükle. Başarılı işlemler zaten otomatik kaydedilir.
 
 Sulama kabı, orak ve çapa başlangıç eşyalarıdır; kullanıldıkça tükenmez. Tohum sayısı satın alma/ekimle değişir. Elindeki eşya da kaydedilir.
 
-Oyuncu, sulama kabı, orak ve pazar kullanıcı tarafından sağlanan dokulu 3D modelleri kullanır; karakterde Mixamo Idle/Walk animasyonları vardır. Zemin, ürünler, kamp ve tohum torbası hâlâ geçici görsellerdir. İlk ürün turptur: tohum 10, satış 18 para; ekimden sonra bir kez sulanır ve üç gece sonra hasat edilir. 0.2'de alan kısıtı olmadan uygun zeminde yapı kurabilirsin. Başlangıç 24 odun; blok 2, yatak 8 odun; sökme tam iade, pazarda 20 paraya 10 odun. Kapı/çatı ve diğer mobilyalar sonraki adımlardır. [Testler ve manuel kontrol](docs/TESTLER.md).
+Oyuncu, sulama kabı, orak ve pazar kullanıcı tarafından sağlanan dokulu 3D modelleri kullanır; karakterde Mixamo Idle/Walk animasyonları vardır. Zemin, ürünler, kamp ve tohum torbası hâlâ geçici görsellerdir. İlk ürün turptur: tohum 10, satış 18 para; ekimden sonra bir kez sulanır ve üç gece sonra hasat edilir. 0.2'de alan kısıtı olmadan uygun zeminde yapı kurabilirsin. Başlangıç 24 odun; döşeme 1, duvar/blok 2, kapı 3, yatak 8 odun; sökme tam iade, pazarda 20 paraya 10 odun. Döşeme tabana, duvar/kapı hücre kenarına oturur; döşemenin üstüne yatak koyabilirsin. İçeride kamera tarafındaki ön/yan duvarlar ve kapı saydamlaşır; dışarı çıkınca geri gelir. Çatı ve diğer mobilyalar sonraki adımlardır. [Testler ve manuel kontrol](docs/TESTLER.md).
 
 ![Tripo modelleri ve Mixamo animasyonlarıyla çalışan tarım prototipi](docs/screenshots/art-integration.png)
 

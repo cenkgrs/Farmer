@@ -70,6 +70,8 @@ namespace Farmer
                 yield return BuildingSmokeChecks.Run(outputPath);
             if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-world") >= 0)
                 yield return WorldSmokeChecks.Run(outputPath);
+            if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-house") >= 0)
+                yield return HouseSmokeChecks.Run(outputPath);
             yield return new WaitForEndOfFrame();
             ScreenCapture.CaptureScreenshot(outputPath);
             float deadline = Time.realtimeSinceStartup + 15f;

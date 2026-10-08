@@ -129,6 +129,7 @@ namespace Farmer
         public bool Plant(int index, string id, out string message)
         {
             if (!Valid(index) || !crops.ContainsKey(id)) return Fail("Geçersiz tarla karesi.", out message);
+            if (Building.Occupied(plots[index].x,0,plots[index].z)) return Fail("Yapının altında ekim yapamazsın.", out message);
             if (!string.IsNullOrEmpty(plots[index].cropId)) return Fail("Bu kare zaten ekili.", out message);
             if (seeds[id] < 1) return Fail("Tohumun yok. Pazardan tohum al.", out message);
             seeds[id]--; plots[index].cropId = id; plots[index].growth = 0; plots[index].watered = false;
@@ -196,7 +197,7 @@ namespace Farmer
 
         public FarmSnapshot Snapshot() => new FarmSnapshot
         {
-            version = 3, width = Width, depth = Depth, day = Day, money = Money, minuteOfDay = MinuteOfDay, equippedItem = EquippedItem,
+            version = 4, width = Width, depth = Depth, day = Day, money = Money, minuteOfDay = MinuteOfDay, equippedItem = EquippedItem,
             seeds = seeds.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
             produce = produce.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
             plots = plots.Select(p => p.Copy()).ToArray(), building = Building.Snapshot()
@@ -204,7 +205,7 @@ namespace Farmer
 
         public static FarmModel Restore(FarmSnapshot saved, IEnumerable<CropRules> catalog, int width, int depth, IEnumerable<BuildRules> buildCatalog = null)
         {
-            if (saved == null || (saved.version < 1 || saved.version > 3) || saved.width != width || saved.depth != depth || saved.day < 1
+            if (saved == null || (saved.version < 1 || saved.version > 4) || saved.width != width || saved.depth != depth || saved.day < 1
                 || saved.day > DayLimit || saved.money < 0 || saved.money > MoneyLimit || saved.plots == null || (saved.version < 3 ? saved.plots.Length != width * depth : saved.plots.Length > PlotLimit))
                 throw new ArgumentException("Save header or grid is invalid or unsupported.");
             var rules = (buildCatalog ?? BuildRules.Defaults).ToArray();
@@ -220,7 +221,7 @@ namespace Farmer
                     }).ToArray() };
                 model.Building = BuildingModel.Restore(building, rules);
             }
-            if (saved.version == 3)
+            if (saved.version >= 3)
             {
                 if (double.IsNaN(saved.minuteOfDay) || double.IsInfinity(saved.minuteOfDay) || saved.minuteOfDay < 0 || saved.minuteOfDay >= 1440)
                     throw new ArgumentException("Invalid clock.");

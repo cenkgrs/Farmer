@@ -10,6 +10,8 @@ namespace Farmer
         [Min(1)] public int woodCost = 2;
         public GameObject prefab;
         public bool isBed;
-        public BuildRules Rules => new BuildRules(id, woodCost, isBed);
+        public BuildPlacement placement;
+        public bool isDoor;
+        public BuildRules Rules => new BuildRules(id, woodCost, isBed, placement, isDoor);
     }
 }

@@ -1,6 +1,6 @@
 # Prototip doğrulaması
 
-Unity **6000.3.25f1**, Linux. 7 Ekim 2026: 76/76 EditMode testi başarılı (`Logs/world-tests-final.xml`). Gerçek geliştirme player'ında hareket/seçim ve tam tarım döngüsü kontrol edildi. Windows henüz denenmedi.
+Unity **6000.3.25f1**, Linux. 8 Ekim 2026: 86/86 EditMode testi başarılı (`Logs/house-final-tests.xml`). Gerçek geliştirme player'ında hareket/seçim ve tam tarım döngüsü kontrol edildi. Windows henüz denenmedi.
 
 ## Mantık testleri
 
@@ -62,7 +62,7 @@ Oyuncu kaydı Unity'nin `Application.persistentDataPath` klasöründe `farm-v1.j
 
 Her başarılı işlem ve normal çıkış kaydedilir; F5 tekrar kaydeder, F9 diskten yükler. Yeni dosya önce geçici dosyaya yazılır, sonra atomik değiştirme yapılır; önceki kayıt `.bak` olarak korunur. Ana kayıt bozuksa sağlam yedek açılır; bozuk dosya üzerine yazmadan önce `.corrupt-*` kopyası korunur. İkisi de okunamazsa sessizce yeni oyuna başlanmaz: işlemler durdurulur, dosyalar korunur ve ekranda hata gösterilir. Kaydetme izni/disk sorunu olursa mevcut oturum bellekte sürer; F5 ile yeniden dene.
 
-Kayıtlar Git'e girmez ve iki bilgisayar arasında otomatik taşınmaz. Önceki günlük sulama kayıtlarında büyümesi başlamış ürünün (`growth > 0`) daha önce sulandığı anlaşılır ve sulanmış olarak açılır. Şema sürümü 3; para, envanter, gün/dakika, dünya koordinatlı hazırlanmış toprak, odun ve yapı konum/dönüşlerini içerir. Dosya adı uyumluluk için `farm-v1.json` kalır. V1 geçişinde başlangıç odunu bir kez verilir; ilk v3 yazmada sağlam eski ana dosya `.pre-v3` olarak korunur. V1/V2 hazırlanmış tarlalar ve blokların dünya konumları korunur. Eski exe v3 kaydı desteklemez. Kuşanılan eşya yeni isteğe bağlı `equippedItem` alanında saklanır. Eski sürüm 1 kayıtlarında bu alan yoksa tohum seçilir; iki kalıcı alet envanterde bulunur. Karakter konumu saklanmaz; açılışta pazar yakınında başlarsın. Kayıt yeniyken tohum almak ilk otomatik kaydı oluşturur. Aynı çiftliği iki uygulamada eşzamanlı açma.
+Kayıtlar Git'e girmez ve iki bilgisayar arasında otomatik taşınmaz. Önceki günlük sulama kayıtlarında büyümesi başlamış ürünün (`growth > 0`) daha önce sulandığı anlaşılır ve sulanmış olarak açılır. Şema sürümü 4; para, envanter, gün/dakika, dünya koordinatlı hazırlanmış toprak, odun ve yapı konum/dönüşlerini içerir. Dosya adı uyumluluk için `farm-v1.json` kalır. V1 geçişinde başlangıç odunu bir kez verilir; ilk v4 yazmada sağlam eski ana dosya `.pre-v4` olarak korunur. V1/V2 hazırlanmış tarlalar ve blokların dünya konumları korunur. Eski exe v4 kaydı desteklemez. Kuşanılan eşya yeni isteğe bağlı `equippedItem` alanında saklanır. Eski sürüm 1 kayıtlarında bu alan yoksa tohum seçilir; iki kalıcı alet envanterde bulunur. Karakter konumu saklanmaz; açılışta pazar yakınında başlarsın. Kayıt yeniyken tohum almak ilk otomatik kaydı oluşturur. Aynı çiftliği iki uygulamada eşzamanlı açma.
 
 ## Basılı tutarak sulama ve ses
 
@@ -162,3 +162,20 @@ Dünya grubu: yeni tarla yokluğu, yedi envanter ikonu ve dünya etiketlerinin k
 Manuel görsel kontrol: yedi resim ahşap gözlerin içinde taşmadan görünmeli, seçili göz dokuyu kapatmayan altın vurguyla ayrılmalı; sayaçlar okunmalı. İkon tıklaması dünyaya işlem göndermemeli. Gece okunabilir kalmalı; yeni hazırlanmış tarla ve yatak normal kayıt/yüklemede korunmalı.
 
 Son sonuç: `Logs/painted-inventory-delivery.log`, **168/168 geçti**, çıkış 0. Build `Logs/painted-inventory-final-build.log` başarılı. Saatin JSON round-trip testi 1e-9 dakika toleranslı; diğer kayıt alanları birebir karşılaştırılır. 76/76 EditMode sonucu `Logs/world-tests-final.xml`.
+
+
+## İlk oda ve saydam ön cephe — 8 Ekim 2026
+
+```bash
+python3 tools/art/run_player_checks.py --xvfb builds/Tools/xvfb/runtime/usr/bin/Xvfb --name house-check-unique --checks house
+```
+
+`--checks house`: UI üzerinden döşeme, duvar ve kapı yerleştirme; kaynak maliyeti; kapalı kapıda gerçek CharacterController çarpışması, açılma bölgesinde oyuncu varken ret, F ile aç/kapat, açık kapıdan geçiş, duvar engeli, kayıt/yükleme, döşeme üzerinde çapa reddi, sağ tıkla yalnızca hedef duvarın sökülmesi. 3×3 oda çevresi model kurallarıyla test fixture olarak hazırlanır, **yatak normal önizleme ve fare tıklamasıyla** içine konur. Uyuma/oda yükleme, öndeki iki cephenin saydamlaşması, arka duvarların opak kalması, saydam collider'ların etkin kalması ve dışarı çıkınca geri opaklaşma da kontrol edilir. Oyuncunun normal kaydı değişmez.
+
+86 mantık testi katmanlı yerleşim, karşı kenardan çift yapı kurmanın reddi, yatağı bölen duvarın her iki sırada reddi, tabanın üst bloklara destek olmaması, döşeme altında ekimde tohum korunması, kapı durumu ve V3→V4 geçişini kapsar.
+
+Manuel: 4 ile inşa, Q ile döşeme/duvar/kapı/yatak seç, R ile kenar/dönüş değiştir. Bir oda kur, kapı önünden biraz yana çekilip F ile aç ve içeri yürü. Ön/yan duvarlar yaklaşık %16 opaklığa düşerken arka cephe belirgin kalmalı; yatağı ve oyuncuyu görmelisin. Saydam duvara yürüyerek içinden geçilemediğini dene. Dışarı çıkınca duvarlar geri gelmeli. F5/F9 kapı ve oda durumunu korumalı.
+
+Saydamlık kontrolü gerçek URP Linux build üzerinde yapıldı; Windows ve uzun süreli büyük dünya performansı bu adımda denenmedi. Çatı henüz yoktur.
+
+Son teslim: **86/86 EditMode**, **194/194 player**, hatasız Linux build; günlükler `house-final-tests.xml`, `house-final-build.log`, `house-final-delivery.log`. İçeride ve dışarıda alınan iki görüntü incelendi.

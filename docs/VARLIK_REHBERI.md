@@ -95,3 +95,7 @@ Bu küçük prosedürel set tam gövdeli, sanatçı tarafından hazırlanmış s
 ## Envanter görselleri — 7 Ekim 2026
 
 Yedi ikon ve ahşap tepsi yerleşik ImageGen ile ayrı ayrı üretildi. Konseptteki alt envanter stil referansı olarak verildi. PNG dosyaları `Assets/_Farmer/Resources/InventoryArt` içinde; [üretim promptları ve ölçüler](art-sources/inventory-prompts.json), [entegrasyon notu](art-sources/README.md). Bu 2D arayüz varlıkları eldeki 3D alet modellerini değiştirmez.
+
+## İlk oda yapı seti — 8 Ekim 2026
+
+`wood_floor` 1×1 m ve 3 cm kalınlık; `wood_wall` / `wood_door` bir hücre kenarında 1 m genişlik ve 2,4 m yükseklik. Mevcut Wood/WoodTrim renkleriyle kontrollü tahta geometrisi; nihai boyanmış yapı seti değildir. Prefab kökü hücre merkezinin 0,5 m üstündedir; duvar/kapı yerel +Z kenarına bakar. Kapı `Hinge` alt nesnesiyle 90° açılır. AI ile yeni yapı modeli hazırlanırsa hücre/kenar ölçüsü, menteşe ve collider açıklığı korunmalı. `HouseVisibility` özgün malzemeleri değiştirmeden saydam kopyalar kullanır.

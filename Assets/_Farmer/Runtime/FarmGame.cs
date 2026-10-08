@@ -96,6 +96,16 @@ namespace Farmer
             if (!Ready || !BuildMode) return false;
             return Complete(Model.Building.Remove(x, level, z, out var message), message);
         }
+        public bool RemoveBlock(BlockRecord record)
+        {
+            if(!Ready||!BuildMode)return false;
+            return Complete(Model.Building.Remove(record,out var message),message);
+        }
+        public bool ToggleDoor(BlockRecord record)
+        {
+            if(!Ready||BuildMode)return false;
+            return Complete(Model.Building.ToggleDoor(record,out var message),message);
+        }
         public void ShowBuildFeedback(string message) => Feedback = message;
 
         private void UpdateToolInput()
@@ -172,7 +182,7 @@ namespace Farmer
                 return tilled;
             }
             if (index < 0) { Feedback = "Önce çapa (5) ile toprağı ekime hazırla."; return false; }
-            if (WorldGround.Obstructed(cell.x,cell.y,player)) { Feedback = "Toprağın üzerinde bir yapı veya engel var."; return false; }
+            if (Model.Building.Occupied(cell.x,0,cell.y) || WorldGround.Obstructed(cell.x,cell.y,player)) { Feedback = "Toprağın üzerinde bir yapı veya engel var."; return false; }
             var plot = Model.Plot(index);
             bool harvesting = Model.EquippedItem == FarmItem.Sickle;
             bool ok = Model.UseEquipped(index, ActiveCrop.id, out string message);

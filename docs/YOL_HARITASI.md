@@ -40,11 +40,11 @@ Kabul:
 - [ ] Kaynaklar harcanarak tek katlı, içine girilebilir bir ev kurulabilir.
 - [x] Ahşap bloklar yan yana/üst üste yerleşir; geçersiz çakışmalar önlenir.
 - [ ] Önizleme, döndürme, yükseklik seçimi, taşıma ve sökme çalışır.
-- [ ] Ev içinde karakter ve yerleştirilen eşya görülebilir.
+- [x] Ev içinde karakter ve yerleştirilen eşya görülebilir. (8 Ekim: kamera tarafındaki duvar/kapı saydamlığı; çatı sonraki adım.)
 - [ ] Yatakla günü bitirme ve sandık depolaması çalışır; sökme/taşıma eşya çoğaltmaz veya kaybetmez.
 - [ ] Yerleştirilen yapılar ve depolama kayıt/yüklemede korunur.
 
-7 Ekim güncel parça: ilk 6×5 inşa kısıtı kaldırıldı. Boş dünya zemini üzerinde blok/yatak yerleştirme, üç blok yüksekliği, önizleme/döndürme/yükseklik/sökme, odun maliyeti/iadesi ve pazardan odun var. Yeni tarlalar çapa ile hazırlanıyor; eski kayıtlar korunarak v3'e taşınıyor. Yatak uyutuyor, sandık/depolama henüz yok. Taşıma şimdilik söküp yeniden kurmayla yapılır; ayrı taşıma aracı yok. Ev, kapı, çatı, diğer mobilyalar ve depolama henüz yapılmadığından yukarıdaki birleşik ölçütler açık tutuldu.
+7 Ekim güncel parça: ilk 6×5 inşa kısıtı kaldırıldı. Boş dünya zemini üzerinde blok/yatak yerleştirme, üç blok yüksekliği, önizleme/döndürme/yükseklik/sökme, odun maliyeti/iadesi ve pazardan odun var. Yeni tarlalar çapa ile hazırlanıyor; eski kayıtlar korunarak v3'e taşınıyor. 8 Ekim adımı: ahşap döşeme, kenara oturan ince duvar, açılır kapı ve döşeme üstünde yatakla ilk oda. Yatak uyutuyor, sandık/depolama henüz yok. Taşıma şimdilik söküp yeniden kurmayla yapılır; ayrı taşıma aracı yok. Çatı, diğer mobilyalar ve depolama henüz yapılmadığından yukarıdaki birleşik ölçütler açık tutuldu.
 
 Kullanıcı kararı: aynı inşa ve tarla kuralları gelecekte çiftlik dışındaki düşman bölgelerinde de kullanılacak. Bölgeye özel inşa sınırı yoktur; düşman güvenliği henüz uygulanmadı.
 

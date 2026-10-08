@@ -14,7 +14,7 @@
 - Türkçe iletişim kur. Kod tanımlayıcılarında ve asset dosya adlarında İngilizce/ASCII kullan.
 - Sabit açılı izometrik kamera, stilize 3D, huzurlu çiftlik ve dışarıda basit düşmanlar temel kararlardır.
 - Çiftçilik ve oyuncunun parça parça inşa ettiği üs eşit derecede önemlidir.
-- Güncel kullanıcı kararları: inşa bölgesi/çiftlik sınırı yok; uygun dünya zemininde kurulum. Tarlayı oyuncu çapayla hazırlar. Saat kendiliğinden ilerler, tam gün 10 gerçek dakika; N yalnızca yatakta uyutur. Kompakt ikon envanteri ve dünya pazar/yatak etiketlerinin kaldırılması korunsun.
+- Güncel kullanıcı kararları: inşa bölgesi/çiftlik sınırı yok; uygun dünya zemininde kurulum. Tarlayı oyuncu çapayla hazırlar. Saat kendiliğinden ilerler, tam gün 10 gerçek dakika; N yalnızca yatakta uyutur. Kompakt ikon envanteri ve dünya pazar/yatak etiketlerinin kaldırılması korunsun. Döşeme/duvar/kapı ayrı yerleşim katmanlarıdır; içeride kameraya bakan ön/yan duvarlar ve kapı saydamlaşır, çarpışmaları korunur.
 - İlk hedef 0.1'dir; 0.5 ilk demo. Sonraki sürümlerin özelliklerini mevcut kapsamın içine sessizce ekleme.
 - Teknik yön Unity **6000.3.25f1 LTS** + C# + URP. Sürüm sabitlendi; kurulum için `docs/KURULUM.md` ve güncel doğrulama durumu için `YAZILIMCI.md` oku.
 - Kullanıcı 3D modelleri harici AI aracıyla üretebilir. Gereken asset için ölçü, stil, çıktı ve kontrol listesiyle prompt hazırla. Teslim edilen modeli doğrulamadan oyun için hazır sayma.

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9d0f4be4c6f481395603218bf233f00, type: 3}
+  m_Name: wood_floor
+  m_EditorClassIdentifier: Farmer.Runtime::Farmer.BuildDefinition
+  id: wood_floor
+  displayName: "Ah\u015Fap d\xF6\u015Feme"
+  woodCost: 1
+  prefab: {fileID: 4847185436531338226, guid: 548901d19a33c5fb1b0441656b41b9d7, type: 3}
+  isBed: 0
+  placement: 1
+  isDoor: 0

@@ -2389,6 +2389,8 @@ GameObject:
   - component: {fileID: 703771124}
   - component: {fileID: 703771128}
   - component: {fileID: 703771129}
+  - component: {fileID: 703771130}
+  - component: {fileID: 703771131}
   m_Layer: 0
   m_Name: Farming
   m_TagString: Untagged
@@ -2480,6 +2482,9 @@ MonoBehaviour:
   buildPieces:
   - {fileID: 11400000, guid: ee7188d2447b3f71ba4a8798d7f7c960, type: 2}
   - {fileID: 11400000, guid: beaff67d4296cd136b293459ba65dd10, type: 2}
+  - {fileID: 11400000, guid: 524320266b9a141f392f184d31915fc4, type: 2}
+  - {fileID: 11400000, guid: da52eb7d888497430ae9d10221ffe37e, type: 2}
+  - {fileID: 11400000, guid: f554da8593ae828c681afaf556a58a35, type: 2}
   selection: {fileID: 1968616115}
   player: {fileID: 1590656332}
   market: {fileID: 1393950083}
@@ -2531,6 +2536,30 @@ MonoBehaviour:
   game: {fileID: 703771126}
   sun: {fileID: 71967445}
   realMinutesPerDay: 10
+--- !u!114 &703771130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703771123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 989a9b5740bc11647803e858eb227e3e, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Farmer.Runtime::Farmer.DoorInteraction
+--- !u!114 &703771131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703771123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a733d351ee0c6c6db91c48cc4af6e528, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Farmer.Runtime::Farmer.HouseVisibility
 --- !u!1 &703808392
 GameObject:
   m_ObjectHideFlags: 0

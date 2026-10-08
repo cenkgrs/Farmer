@@ -129,8 +129,10 @@ birlikte kalmalıdır. Kontroller ve sorun bildirimi bilgileri paketteki rehberd
 
 ## Serbest inşa, çapa ve saat
 
-`4` inşa, `Q` blok/yatak, sol tık yerleştir, `R` döndür, tekerlek blok yüksekliği, sağ tık sök. İşaretli inşa alanı yok; uygun boş zemine yaklaş. `5` çapa ile boş toprağı hazırla, sonra 1/2/3 ile ek/sula/hasat et. Yeni oyunda hazır tarla bulunmaz; eski kayıttaki tarla korunur.
+`4` inşa, `Q` blok/yatak/döşeme/duvar/kapı, sol tık yerleştir, `R` döndür, tekerlek blok yüksekliği, sağ tık sök. İşaretli inşa alanı yok; uygun boş zemine yaklaş. `5` çapa ile boş toprağı hazırla, sonra 1/2/3 ile ek/sula/hasat et. Yeni oyunda hazır tarla bulunmaz; eski kayıttaki tarla korunur.
 
-Tam gün **10 gerçek dakika** sürer; ışık ve saat otomatik ilerler. Yalnızca yatak yakınında `N` sonraki 06:00'ya atlar. Başlangıç yatağı dışında 8 oduna yeni yatak kurulabilir. Kayıt v3'e geçer, eski sağlam ana kayıt `.pre-v3` olarak korunur. Mevcut eski Windows ZIP bu değişiklikleri içermez; güncel kaynakla yeniden build/paket gerekir.
+Tam gün **10 gerçek dakika** sürer; ışık ve saat otomatik ilerler. Yalnızca yatak yakınında `N` sonraki 06:00'ya atlar. Başlangıç yatağı dışında 8 oduna yeni yatak kurulabilir. Kayıt v4'e geçer, eski sağlam ana kayıt `.pre-v4` olarak korunur. Mevcut eski Windows ZIP bu değişiklikleri içermez; güncel kaynakla yeniden build/paket gerekir.
 
 Envanter artık ekranın altında kompakt ikon çubuğudur; eşya ikonuna tıkla veya kısayolunu kullan, kullanım bilgisi için üzerine gel. Dünyadaki pazar/yatak yazıları kaldırıldı; yaklaşınca alışveriş/uyuma paneli açılır.
+
+Kapı için yakına gel, kapıyı fareyle hedefle ve **F** ile aç/kapat. Duvarlar hücre kenarına oturur; R ile kenarı değiştir. Döşeme ve yatak birlikte yerleşebilir.

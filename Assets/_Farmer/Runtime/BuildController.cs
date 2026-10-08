@@ -69,7 +69,7 @@ namespace Farmer
             if (!game.BuildMode) { preview.SetActive(false); target = null; return; }
             if (keyboard?.qKey.wasPressedThisFrame == true) { pieceIndex = (pieceIndex+1)%game.BuildPieces.Length; level=0; CreatePreview(); }
             if (keyboard?.rKey.wasPressedThisFrame == true) rotation = (rotation + 1) % 4;
-            if (mouse != null && Mathf.Abs(mouse.scroll.ReadValue().y) > .01f)
+            if (ActiveDefinition.placement==BuildPlacement.Solid && !ActiveDefinition.isBed && mouse != null && Mathf.Abs(mouse.scroll.ReadValue().y) > .01f)
                 level = Mathf.Clamp(level + (mouse.scroll.ReadValue().y > 0 ? 1 : -1), 0, BuildingModel.Levels - 1);
             RefreshTarget();
             if (mouse?.leftButton.wasPressedThisFrame == true && target.HasValue)
@@ -84,7 +84,7 @@ namespace Farmer
             if (mouse?.rightButton.wasPressedThisFrame == true && removeTarget != null)
             {
                 var b = removeTarget;
-                if (InReach(Center(b.x, b.level, b.z))) game.RemoveBlock(b.x, b.level, b.z);
+                if (InReach(Center(b.x, b.level, b.z))) game.RemoveBlock(b);
                 else game.ShowBuildFeedback("Sökmek için bloğa yaklaş.");
             }
         }
@@ -102,7 +102,7 @@ namespace Farmer
             Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
             if (Physics.Raycast(ray, out var hit, 100f, ~0, QueryTriggerInteraction.Ignore))
             {
-                var marker = hit.collider.GetComponent<PlacedBlockView>();
+                var marker = hit.collider.GetComponentInParent<PlacedBlockView>();
                 if (marker != null) removeTarget = marker.Record;
             }
             var plane = new Plane(Vector3.up, Vector3.up * level);
@@ -112,6 +112,7 @@ namespace Farmer
             if (!BuildingModel.InBounds(x, level, z)) return;
             target = new Vector3Int(x, level, z);
             Vector3 center = Center(x, level, z);
+            preview.transform.SetPositionAndRotation(center, Quaternion.Euler(0, rotation * 90, 0));
             bool valid = game.Model.Building.CanPlace(ActiveDefinition.id, x, level, z, rotation, out string reason);
             if (!InReach(center)) { valid = false; reason = "Yerleştirmek için yaklaş."; }
             else if (valid)
@@ -121,14 +122,38 @@ namespace Farmer
                     if (!WorldGround.SupportsCell(cell.x,cell.z,false)) { valid=false; reason="Düz ve sağlam zemin gerekiyor."; break; }
                     int soilIndex = game.Model.IndexAt(cell.x,cell.z);
                     if (soilIndex >= 0 && !string.IsNullOrEmpty(game.Model.Plot(soilIndex).cropId)) { valid=false; reason="Önce buradaki ürünü hasat et."; break; }
-                    if (Physics.CheckBox(Center(cell.x,level,cell.z), Vector3.one*.48f,Quaternion.identity,~0,QueryTriggerInteraction.Ignore))
-                    { valid=false; reason="Oyuncu veya başka bir nesneyle çakışıyor."; break; }
+
                 }
             }
+            if(valid && OverlapsWorld()) { valid=false;reason="Oyuncu veya başka bir nesneyle çakışıyor."; }
             ValidPreview = valid; Status = reason;
             preview.transform.SetPositionAndRotation(center, Quaternion.Euler(0, rotation * 90, 0));
             previewMaterial.SetColor("_BaseColor", valid ? new Color(.28f, .8f, .5f) : new Color(.94f, .3f, .25f));
             preview.SetActive(true);
+        }
+        private bool OverlapsWorld()
+        {
+            foreach(var box in preview.GetComponentsInChildren<BoxCollider>(true))
+            {
+                var half=Vector3.Scale(box.size,box.transform.lossyScale)*.5f-Vector3.one*.012f;
+                half=Vector3.Max(half,Vector3.one*.005f);
+                foreach(var hit in Physics.OverlapBox(box.transform.TransformPoint(box.center),half,box.transform.rotation,~0,QueryTriggerInteraction.Ignore))
+                {
+                    if(hit.GetComponent<WorldGround>()!=null)continue;
+                    var existing=hit.GetComponentInParent<PlacedBlockView>();
+                    if(existing!=null)
+                    {
+                        var kind=game.Model.Building.Rules(existing.Record.pieceId).Placement;
+                        if(kind==BuildPlacement.Floor)continue;
+                        if(ActiveDefinition.placement==BuildPlacement.Floor)continue;
+                        if(kind==BuildPlacement.Edge && ActiveDefinition.placement==BuildPlacement.Edge)continue; // Shared corners are legal; model rejects duplicate edges.
+                    }
+                    // A ground-level floor can be laid under the player without enclosing them.
+                    if(ActiveDefinition.placement==BuildPlacement.Floor && hit.transform.IsChildOf(game.Player))continue;
+                    return true;
+                }
+            }
+            return false;
         }
         private void Rebuild()
         {
@@ -143,6 +168,8 @@ namespace Farmer
                 var obj = Instantiate(definition.prefab, Center(b.x, b.level, b.z), Quaternion.Euler(0, b.rotation * 90, 0), transform);
                 obj.name = $"Built {b.pieceId} {b.x},{b.level},{b.z}";
                 obj.AddComponent<PlacedBlockView>().Record = b;
+                if(definition.isDoor)obj.AddComponent<DoorView>().Configure(game,b);
+                if(definition.placement==BuildPlacement.Edge)obj.AddComponent<OccludingWall>();
                 placed.Add(obj);
             }
             Physics.SyncTransforms();
