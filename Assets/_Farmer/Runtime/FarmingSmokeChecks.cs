@@ -21,7 +21,7 @@ namespace Farmer
             var mouse = InputSystem.AddDevice<Mouse>();
             try
             {
-                Check(game.Ready && game.Model.Day == 1 && game.Model.Money == 60, "Fresh isolated test save starts correctly.");
+                Check(game.Ready && game.Model.Day == 1 && game.Model.Money == 60, "Explicit 60-coin regression fixture starts correctly.");
                 Teleport(controller, game.Market.position + Vector3.back * 1.8f);
                 yield return null;
                 yield return Capture(screenshot, "market");

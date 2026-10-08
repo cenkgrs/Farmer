@@ -21,7 +21,7 @@ namespace Farmer
             {
                 foreach(var d in physical) InputSystem.DisableDevice(d);
                 var fresh=new FarmModel(new[]{game.ActiveCrop.Rules},buildCatalog:game.BuildPieces.Select(d=>d.Rules));
-                fresh.BuySeeds(game.ActiveCrop.id,2,out _);
+                fresh.Building.AddBed();fresh.BuySeeds(game.ActiveCrop.id,2,out _);
                 File.WriteAllText(game.SavePath,JsonUtility.ToJson(fresh.Snapshot())); game.LoadGame(); clock.ClockPaused=true;
                 Check(Object.FindObjectsByType<InventoryIcon>(FindObjectsSortMode.None).Length==7 && GameObject.Find("Inventory Bar").GetComponent<RectTransform>().rect.width<500,"Compact inventory has seven illustrated slots.");
                 Check(!Object.FindObjectsByType<TextMesh>(FindObjectsSortMode.None).Any(t=>t.text=="PAZAR"||t.text=="YATAK"),"Market and bed have no floating world labels.");

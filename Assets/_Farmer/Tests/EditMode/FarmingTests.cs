@@ -158,7 +158,7 @@ namespace Farmer.Tests
         [Test]
         public void NewCropRulesUseSameInventoryAndGrowthTransactions()
         {
-            var m = Prepared(new FarmModel(new[] { Catalog[0], new CropRules("other", 5, 12, 6, 2) }));
+            var m = Prepared(new FarmModel(new[] { Catalog[0], new CropRules("other", 5, 12, 6, 2) },startingMoney:60));
             m.BuySeeds("other", 1, out _); m.Plant(0, "other", out _);
             m.Water(0, out _);
             for (int i = 0; i < 6; i++) m.EndDay(out _);
@@ -182,7 +182,7 @@ namespace Farmer.Tests
         [Test]
         public void AtomicSaveLoadsLatestAndKeepsPreviousBackup()
         {
-            var m = new FarmModel(Rules); Store.Save(m.Snapshot()); m.BuySeeds("turnip", 2, out _); Store.Save(m.Snapshot());
+            var m = new FarmModel(Rules,startingMoney:60); Store.Save(m.Snapshot()); m.BuySeeds("turnip", 2, out _); Store.Save(m.Snapshot());
             Assert.That(Store.Load(out bool recovered).Money, Is.EqualTo(40)); Assert.That(recovered, Is.False);
             Assert.That(JsonUtility.FromJson<FarmSnapshot>(File.ReadAllText(path + ".bak")).money, Is.EqualTo(60));
             Assert.That(File.Exists(path + ".tmp"), Is.False);
@@ -191,7 +191,7 @@ namespace Farmer.Tests
         [Test]
         public void CorruptPrimaryRecoversBackupWithoutOverwritingItWithBadData()
         {
-            var m = new FarmModel(Rules); Store.Save(m.Snapshot()); m.BuySeeds("turnip", 1, out _); Store.Save(m.Snapshot());
+            var m = new FarmModel(Rules,startingMoney:60); Store.Save(m.Snapshot()); m.BuySeeds("turnip", 1, out _); Store.Save(m.Snapshot());
             File.WriteAllText(path, "{broken");
             var recoveredModel = Store.Load(out bool recovered); Assert.That(recovered, Is.True); Assert.That(recoveredModel.Money, Is.EqualTo(60));
             Assert.That(File.ReadAllText(path), Is.EqualTo("{broken"));
@@ -211,7 +211,7 @@ namespace Farmer.Tests
         [Test]
         public void InterruptedTemporaryWriteDoesNotReplaceExistingSave()
         {
-            var m = new FarmModel(Rules); Store.Save(m.Snapshot()); string before = File.ReadAllText(path);
+            var m = new FarmModel(Rules,startingMoney:60); Store.Save(m.Snapshot()); string before = File.ReadAllText(path);
             Directory.CreateDirectory(path + ".tmp"); m.BuySeeds("turnip", 1, out _);
             Assert.Catch(() => Store.Save(m.Snapshot())); Assert.That(File.ReadAllText(path), Is.EqualTo(before));
         }

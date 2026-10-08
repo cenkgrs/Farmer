@@ -25,7 +25,7 @@ namespace Farmer.Tests
         }
         [Test] public void WorldBuildingHasNoFarmBoundaryAndBedHasRotatedFootprint()
         {
-            var b=Fresh().Building;
+            var b=Fresh().Building;b.AddBed();
             Assert.That(b.Place("wood_block",-25,0,45,0,out _),Is.True);
             Assert.That(b.Place("wood_block",-25,1,45,0,out _),Is.True);
             Assert.That(b.Place("bed",52,0,-20,1,out _),Is.True);
@@ -34,7 +34,7 @@ namespace Farmer.Tests
             Assert.That(b.Place("wood_block",52,1,-20,0,out _),Is.False);
             Assert.That(b.Place("bed",-25,2,45,0,out _),Is.False);
             int wood=b.Wood; Assert.That(b.Remove(52,0,-20,out _),Is.True);
-            Assert.That(b.Wood,Is.EqualTo(wood+8)); Assert.That(b.Occupied(53,0,-20),Is.False);
+            Assert.That(b.Wood,Is.EqualTo(wood)); Assert.That(b.Occupied(53,0,-20),Is.False);
         }
         [Test] public void MidnightGrowsOnceAndAfterMidnightSleepDoesNotGrowAgain()
         {
@@ -48,7 +48,7 @@ namespace Farmer.Tests
         }
         [Test] public void ClockAndWorldStateRoundTripWithoutOfflineAdvance()
         {
-            var m=Fresh();m.Till(-80,22,out _);m.Building.Place("bed",-77,0,23,3,out _);m.AdvanceMinutes(853.25);
+            var m=Fresh();m.Till(-80,22,out _);m.Building.AddBed();m.Building.Place("bed",-77,0,23,3,out _);m.AdvanceMinutes(853.25);
             var restored=Reload(m);Assert.That(restored.MinuteOfDay,Is.EqualTo(1213.25));Assert.That(restored.Day,Is.EqualTo(1));
             Assert.That(JsonUtility.ToJson(restored.Snapshot()),Is.EqualTo(JsonUtility.ToJson(m.Snapshot())));
         }
@@ -58,7 +58,7 @@ namespace Farmer.Tests
             var s=old.Snapshot();s.version=2;s.building=new BuildingSnapshot{wood=18,blocks=new[]{new BlockRecord{pieceId="wood_block",x=2,z=3,level=0,rotation=1}}};
             var m=FarmModel.Restore(s,Crops,6,6);
             Assert.That(m.Building.Occupied(5,0,-4),Is.True);Assert.That(m.Building.Wood,Is.EqualTo(18));Assert.That(m.IndexAt(-3,-3),Is.EqualTo(0));
-            Assert.That(m.Plot(0).watered,Is.True);Assert.That(m.Money,Is.EqualTo(40));Assert.That(m.MinuteOfDay,Is.EqualTo(360));
+            Assert.That(m.Plot(0).watered,Is.True);Assert.That(m.Money,Is.EqualTo(old.Money));Assert.That(m.MinuteOfDay,Is.EqualTo(360));
             Assert.That(Reload(m).Building.Occupied(5,0,-4),Is.True);
         }
         [TestCase("clock")] [TestCase("nan")] [TestCase("duplicate")] [TestCase("bounds")] [TestCase("overlap")]

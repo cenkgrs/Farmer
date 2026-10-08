@@ -10,3 +10,7 @@
 - UI kaynaklarının `.meta` GUID değerlerini koru. Yeni boyut/ikon üretiminde Sprite sınırlarını ve oyun içi hizalamayı birlikte kontrol et.
 
 Bu görüntüler oyun için üretilmiş 2D görsellerdir; dış stok görsel veya 3D model değildir. Görsel kalite Linux player ekran görüntüsünde değerlendirildi; özgün konseptin tüm sahne kalitesine ulaşıldığı iddia edilmez.
+
+## İnşa barı — 8 Ekim 2026
+
+Altı ayrı ikon ve sekiz gözlü çerçeve **yerleşik ImageGen** ile ayrı çağrılarda üretildi; CLI kullanılmadı. Orijinal RGBA PNG dosyaları `Assets/_Farmer/Resources/ConstructionArt` içinde. [Tam prompt seti](construction-prompts.json). `ConstructionArtwork` alfa > 128 ölçümüyle bulunan normalize Sprite sınırlarını kullanır; kaynak alfa/pikseller değiştirilmedi. Çerçeve 541×85 referans boyutunda, sekiz tıklama alanı 54×54; ilk altı dolu, ikisi boş. Miktarlar ve seçili yuva vurgusu ayrı UI öğeleridir. Bunlar 3D yapı modellerini değiştirmez.

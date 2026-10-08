@@ -7,7 +7,7 @@ namespace Farmer.Tests
 {
     public sealed class HouseTests
     {
-        private static BuildingModel Fresh()=>new BuildingModel(BuildRules.Defaults,100);
+        private static BuildingModel Fresh()=>new BuildingModel(BuildRules.Defaults,100,2);
         [Test] public void FloorBedAndPerimeterWallsShareCellsAndRefundOnlyTheHitPiece()
         {
             var b=Fresh();Assert.That(b.Place("wood_floor",0,0,0,0,out _),Is.True);
@@ -55,9 +55,9 @@ namespace Farmer.Tests
         }
         [Test] public void V3WorldSaveKeepsClockCropsAndExistingBuildings()
         {
-            var crops=new[]{new CropRules("turnip",10,18,3,1)};var f=new FarmModel(crops);f.Till(-5,4,out _);f.Building.Place("bed",2,0,3,2,out _);f.AdvanceMinutes(71.25);
+            var crops=new[]{new CropRules("turnip",10,18,3,1)};var f=new FarmModel(crops);f.Till(-5,4,out _);f.Building.AddBed();f.Building.Place("bed",2,0,3,2,out _);f.AdvanceMinutes(71.25);
             var old=f.Snapshot();old.version=3;var restored=FarmModel.Restore(old,crops,6,6);
-            Assert.That(restored.MinuteOfDay,Is.EqualTo(f.MinuteOfDay));Assert.That(restored.IndexAt(-5,4),Is.EqualTo(0));Assert.That(restored.Building.Count,Is.EqualTo(1));Assert.That(restored.Snapshot().version,Is.EqualTo(4));
+            Assert.That(restored.MinuteOfDay,Is.EqualTo(f.MinuteOfDay));Assert.That(restored.IndexAt(-5,4),Is.EqualTo(0));Assert.That(restored.Building.Count,Is.EqualTo(2));Assert.That(restored.Snapshot().version,Is.EqualTo(5));
         }
     }
 }

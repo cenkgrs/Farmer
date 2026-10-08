@@ -99,3 +99,7 @@ Yedi ikon ve ahşap tepsi yerleşik ImageGen ile ayrı ayrı üretildi. Konseptt
 ## İlk oda yapı seti — 8 Ekim 2026
 
 `wood_floor` 1×1 m ve 3 cm kalınlık; `wood_wall` / `wood_door` bir hücre kenarında 1 m genişlik ve 2,4 m yükseklik. Mevcut Wood/WoodTrim renkleriyle kontrollü tahta geometrisi; nihai boyanmış yapı seti değildir. Prefab kökü hücre merkezinin 0,5 m üstündedir; duvar/kapı yerel +Z kenarına bakar. Kapı `Hinge` alt nesnesiyle 90° açılır. AI ile yeni yapı modeli hazırlanırsa hücre/kenar ölçüsü, menteşe ve collider açıklığı korunmalı. `HouseVisibility` özgün malzemeleri değiştirmeden saydam kopyalar kullanır.
+
+## Çatı ve inşa ikonları — 8 Ekim devamı
+
+Ahşap çatı 1×1 m düz paneldir; 2,4 m ince duvar veya 3 m blok duvar üstüne oturur. Yürünebilir üst kat değildir. Altı yapı ikonu ve sekiz gözlü tepsi yerleşik ImageGen ile üretildi: `Resources/ConstructionArt`; promptlar `docs/art-sources/construction-prompts.json`. Kaynak alfa korunur, Sprite sınırları şeffaf kenarları dışarıda bırakır.

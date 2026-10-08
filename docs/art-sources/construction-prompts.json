@@ -1,0 +1,40 @@
+{
+  "generator": "built-in imagegen",
+  "assets": [
+    {
+      "name": "wood_block",
+      "prompt": "Use case: stylized-concept. Asset type: game construction inventory icon, true transparent background. Cozy painterly farming game UI, soft shaded 3D volume, warm brown outlines, honey oak wood grain, restrained earthy colors, softly worn edges. One isolated object, centered in square canvas, entirely inside with 12 percent transparent padding. Readable at 48 pixels, strong chunky silhouette, three-quarter view. No text, labels, numbers, slot frame, ground, scenery, watermark, external drop shadow. Subject: a solid chunky cube built from honey oak planks, clearly a full cubic construction block",
+      "file": "Assets/_Farmer/Resources/ConstructionArt/wood_block.png"
+    },
+    {
+      "name": "bed",
+      "prompt": "Use case: stylized-concept. Asset type: game construction inventory icon, true transparent background. Cozy painterly farming game UI, soft shaded 3D volume, warm brown outlines, honey oak wood grain, restrained earthy colors, softly worn edges. One isolated object, centered in square canvas, entirely inside with 12 percent transparent padding. Readable at 48 pixels, strong chunky silhouette, three-quarter view. No text, labels, numbers, slot frame, ground, scenery, watermark, external drop shadow. Subject: one rustic single bed with chunky oak headboard and legs, cream pillow and muted teal blanket",
+      "file": "Assets/_Farmer/Resources/ConstructionArt/bed.png"
+    },
+    {
+      "name": "wood_floor",
+      "prompt": "Use case: stylized-concept. Asset type: game construction inventory icon, true transparent background. Cozy painterly farming game UI, soft shaded 3D volume, warm brown outlines, honey oak wood grain, restrained earthy colors, softly worn edges. One isolated object, centered in square canvas, entirely inside with 12 percent transparent padding. Readable at 48 pixels, strong chunky silhouette, three-quarter view. No text, labels, numbers, slot frame, ground, scenery, watermark, external drop shadow. Subject: one square flat wooden floor tile made of five aligned honey oak boards, low perspective showing its broad top surface",
+      "file": "Assets/_Farmer/Resources/ConstructionArt/wood_floor.png"
+    },
+    {
+      "name": "wood_wall",
+      "prompt": "Use case: stylized-concept. Asset type: game construction inventory icon, true transparent background. Cozy painterly farming game UI, soft shaded 3D volume, warm brown outlines, honey oak wood grain, restrained earthy colors, softly worn edges. One isolated object, centered in square canvas, entirely inside with 12 percent transparent padding. Readable at 48 pixels, strong chunky silhouette, three-quarter view. No text, labels, numbers, slot frame, ground, scenery, watermark, external drop shadow. Subject: one upright thin wall panel of horizontal oak planks between two timber posts, open on both sides, clearly a thin vertical rectangular panel not a cube",
+      "file": "Assets/_Farmer/Resources/ConstructionArt/wood_wall.png"
+    },
+    {
+      "name": "wood_door",
+      "prompt": "Use case: stylized-concept. Asset type: game construction inventory icon, true transparent background. Cozy painterly farming game UI, soft shaded 3D volume, warm brown outlines, honey oak wood grain, restrained earthy colors, softly worn edges. One isolated object, centered in square canvas, entirely inside with 12 percent transparent padding. Readable at 48 pixels, strong chunky silhouette, three-quarter view. No text, labels, numbers, slot frame, ground, scenery, watermark, external drop shadow. Subject: one rustic closed wooden door with a dark iron handle inside a simple oak doorframe, no surrounding wall",
+      "file": "Assets/_Farmer/Resources/ConstructionArt/wood_door.png"
+    },
+    {
+      "name": "wood_roof",
+      "prompt": "Use case: stylized-concept. Asset type: game construction inventory icon, true transparent background. Cozy painterly farming game UI, soft shaded 3D volume, warm brown outlines, honey oak wood grain, restrained earthy colors, softly worn edges. One isolated object, centered in square canvas, entirely inside with 12 percent transparent padding. Readable at 48 pixels, strong chunky silhouette, three-quarter view. No text, labels, numbers, slot frame, ground, scenery, watermark, external drop shadow. Subject: one flat square wooden roof panel of overlapping warm oak shingles with visible thick supporting rafters beneath, viewed from above at three-quarter angle, recognizable as overhead roofing",
+      "file": "Assets/_Farmer/Resources/ConstructionArt/wood_roof.png"
+    },
+    {
+      "name": "construction_frame",
+      "prompt": "Use case: stylized-concept. Production game UI hotbar background, genuine transparent alpha. ONE horizontal hand painted honey oak inventory tray, perfectly front facing, no perspective. Exactly EIGHT equal square recessed empty cream parchment wells in one row, separated by narrow wood dividers. Warm carved rounded oak outer frame with flowing wood grain and small brass corner pins, softly worn edges, cozy farming game illustration. Entire tray aspect ratio 7:1, about 90 percent canvas width centered vertically, transparent padding outside. No icons, items, text, numbers, labels, ground, scenery or watermark. Ensure eight wells, all uniform square proportions.",
+      "file": "Assets/_Farmer/Resources/ConstructionArt/construction_frame.png"
+    }
+  ]
+}

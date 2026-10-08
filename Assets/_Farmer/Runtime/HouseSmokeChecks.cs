@@ -19,7 +19,7 @@ namespace Farmer
             try
             {
                 foreach(var d in physical)InputSystem.DisableDevice(d);
-                var fixture=new FarmModel(new[]{game.ActiveCrop.Rules},buildCatalog:game.BuildPieces.Select(d=>d.Rules)).Snapshot();fixture.building.wood=100;fixture.minuteOfDay=720;
+                var fixture=new FarmModel(new[]{game.ActiveCrop.Rules},buildCatalog:game.BuildPieces.Select(d=>d.Rules)).Snapshot();fixture.building.wood=100;fixture.building.beds=1;fixture.minuteOfDay=720;
                 File.WriteAllText(game.SavePath,JsonUtility.ToJson(fixture));game.LoadGame();Teleport(cc,new Vector3(4.5f,.1f,2.5f));
                 yield return Press(keyboard,Key.Digit4);
                 yield return Select(builder,keyboard,"wood_floor");while(builder.Rotation!=0)yield return Press(keyboard,Key.R);
@@ -54,7 +54,7 @@ namespace Farmer
                 Check(game.Model.Building.Count==2&&game.Model.Building.HasFloor(4,4)&&game.Model.Building.Wood==96,"Right-click removes only the hit wall and refunds it, leaving the floor and door.");
                 yield return Pointer(mouse,new Vector2(-10,-10),false);yield return Press(keyboard,Key.Escape);
                 // Build a complete room fixture using the same model rules; UI placement was exercised above.
-                var room=new FarmModel(new[]{game.ActiveCrop.Rules},buildCatalog:game.BuildPieces.Select(d=>d.Rules)).Snapshot();room.building.wood=100;room.minuteOfDay=720;
+                var room=new FarmModel(new[]{game.ActiveCrop.Rules},buildCatalog:game.BuildPieces.Select(d=>d.Rules)).Snapshot();room.building.wood=100;room.building.beds=1;room.minuteOfDay=720;
                 File.WriteAllText(game.SavePath,JsonUtility.ToJson(room));game.LoadGame();var model=game.Model.Building;
                 for(int x=0;x<3;x++)for(int z=4;z<7;z++)model.Place("wood_floor",x,0,z,0,out _);
                 for(int x=0;x<3;x++){model.Place("wood_wall",x,0,6,0,out _);model.Place(x==1?"wood_door":"wood_wall",x,0,4,2,out _);}
@@ -97,7 +97,7 @@ namespace Farmer
         }
         private static IEnumerator Select(BuildController builder,Keyboard keyboard,string id)
         {
-            for(int i=0;i<5&&builder.ActiveDefinition.id!=id;i++)yield return Press(keyboard,Key.Q);
+            for(int i=0;i<6&&builder.ActiveDefinition.id!=id;i++)yield return Press(keyboard,Key.Q);
         }
         private static void Teleport(CharacterController cc,Vector3 p){cc.enabled=false;cc.transform.position=p;cc.enabled=true;Physics.SyncTransforms();}
         private static Vector2 Cell(int x,int z)=>Camera.main.WorldToScreenPoint(new Vector3(x+.5f,.01f,z+.5f));

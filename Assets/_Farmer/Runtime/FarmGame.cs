@@ -17,7 +17,7 @@ namespace Farmer
         [SerializeField] private Transform player;
         [SerializeField] private Transform market;
         [SerializeField] private Transform camp;
-        [SerializeField] private int startingMoney = 60;
+        [SerializeField] private int startingMoney = 50;
         public FarmModel Model { get; private set; }
         public FarmSelection Selection => selection;
         public CropDefinition ActiveCrop => crops[0];
@@ -55,6 +55,7 @@ namespace Farmer
 #endif
             SavePath = Path.Combine(directory, "farm-v1.json");
             store = new FarmSaveStore(SavePath, snapshot => FarmModel.Restore(snapshot, rules, selection.Layout.Width, selection.Layout.Depth, BuildingRules()));
+            if(camp!=null)camp.gameObject.SetActive(false);
             LoadGame();
         }
         private void Update()
@@ -85,6 +86,16 @@ namespace Farmer
             if (!Ready) return false;
             if (!NearMarket) { Feedback = "Odun almak için pazara yaklaş."; return false; }
             return Complete(Model.BuyWood(out var message), message);
+        }
+        public bool BuyBed()
+        {
+            if(!Ready||!NearMarket)return false;
+            return Complete(Model.BuyBed(out var message),message);
+        }
+        public bool MoveBlock(BlockRecord record,int x,int level,int z,int rotation)
+        {
+            if(!Ready||!BuildMode)return false;
+            return Complete(Model.Building.Move(record,x,level,z,rotation,out var message),message);
         }
         public bool PlaceBlock(string id, int x, int level, int z, int rotation)
         {

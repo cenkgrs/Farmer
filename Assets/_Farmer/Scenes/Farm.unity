@@ -1769,7 +1769,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &358981036
 Transform:
   m_ObjectHideFlags: 0
@@ -2485,11 +2485,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 524320266b9a141f392f184d31915fc4, type: 2}
   - {fileID: 11400000, guid: da52eb7d888497430ae9d10221ffe37e, type: 2}
   - {fileID: 11400000, guid: f554da8593ae828c681afaf556a58a35, type: 2}
+  - {fileID: 11400000, guid: 7b4c08f5bc1ff5f7996951b6c555f342, type: 2}
   selection: {fileID: 1968616115}
   player: {fileID: 1590656332}
   market: {fileID: 1393950083}
   camp: {fileID: 358981036}
-  startingMoney: 60
+  startingMoney: 50
 --- !u!4 &703771127
 Transform:
   m_ObjectHideFlags: 0

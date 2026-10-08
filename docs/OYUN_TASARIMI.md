@@ -62,13 +62,13 @@ Tekrarlanan işleri ileride sulama/üretim sistemleri kolaylaştırmalı. Daha g
 
 Mevcut prototipin düz 20×20 arazisindeki boş ve sağlam zemin kullanılabilir. Arazinin dışı, havada kalan yapılar, mevcut nesneler/oyuncu ve ekili ürünlerle çakışma engellenir. Dünya kayıtları alan kimliğine bağlı değildir; yeni bölgelerde zemin `WorldGround` ile tanımlanır. Prototipte zemin y=0, hücre 1 m, üst üste en fazla üç ahşap blok; farklı arazi yükseklikleri ve yaşanabilir üst kat henüz yoktur.
 
-`4` inşa; `Q` ahşap blok/yatak/döşeme/duvar/kapı seçimi; sol tık yerleştir; `R` 90° döndür; tekerlek blok yüksekliği; sağ tık görünen yapıyı sök. `Esc` veya `1/2/3/5` tarıma döner. Grid sadece oyuncu çevresindeki bir hizalama yardımcısıdır, yerleşim bölgesi değildir. Yeşil/kırmızı önizleme ve yatay 3,5 m erişim korunur. Alt destek gereklidir; üstünde blok olan alt blok sökülemez.
+`4` inşa; alt inşa barındaki ikonlar veya `Q` ile blok/yatak/döşeme/duvar/kapı/çatı seçimi; sol tık yerleştir; `R` 90° döndür; tekerlek blok/çatı yüksekliği; sağ tık görünen yapıyı sök. `Esc` veya `1/2/3/5` tarıma döner. Grid sadece oyuncu çevresindeki bir hizalama yardımcısıdır, yerleşim bölgesi değildir. Yeşil/kırmızı önizleme ve yatay 3,5 m erişim korunur. Hacim blokları için alt destek gereklidir; üstünde blok olan alt blok sökülemez. Çatı ayrı parçadır: ince duvarda 2,4 m, üç blokluk duvarda 3 m; destekten aynı yükseklikte en fazla dört panel uzayabilir. Altı boş kalır. Son çatı desteği sökülemez veya taşınamaz. `M` taşıma modunda eşyayı sol tuşla tut, sürükle ve bırak; R döndürür, geçersiz bırakma/Esc işlemi kayıpsız iptal eder.
 
-Başlangıç 24 odun; blok 2, 1×2 hücrelik yatak 8 odun; sökme tam iade. Pazar 20 paraya 10 odun, çanta sınırı 999. Bunlar geçici denge değerleridir. Yatak zemine kurulur ve 1,8 m çevresinde uyuma sağlar; başlangıç minderinin kendisi de yataktır. Yatak önizlemesi uyuma sağlamaz.
+Yeni oyun 50 para, 24 odun ve yataksız başlar. Blok/çatı 2 odun; yatak pazardan 100 paraya satın alınır. 1×2 hücrelik yatağı yerleştirmek odun harcamaz, sökmek yatak eşyasını çantaya geri verir. Ahşap parçalarda sökme tam odun iadesidir. Pazar 20 paraya 10 odun, çanta sınırı 999. Bunlar geçici denge değerleridir. Yatak zemine kurulur ve 1,8 m çevresinde uyuma sağlar; başlangıçta dünyada ücretsiz yatak bulunmaz. Eski kayıttaki başlangıç yatağı taşınabilir parçaya dönüştürülür; eski konum doluysa yatak çantaya alınır. Yatak önizlemesi uyuma sağlamaz.
 
 Yeni oyunda otomatik hazırlanmış tarla yoktur. `5` ile kuşanılan çapa, yakındaki boş toprağı sol tıkla ekime hazırlar. Ardından 1/2/3 ile aynı ekim/sulama/hasat döngüsü işler. Ekili kare tekrar çapalanmaz ve kaynak kaybetmez; hasat sonrası toprak ekilebilir kalır. Yapının altında veya sert engellerde çapa kullanılmaz; boş ekilebilir karenin üzerine yapı kurulabilir, ekili ürün önce hasat edilmelidir.
 
-Saat, odun, yatak/yapı koordinatları ve hazırlanmış toprak kayıt sürümü 4'te saklanır. V1/V2 kayıtlarındaki tarlalar ve blokların dünya konumları korunur; eski çiftlik bilerek silinmez. İlk v4 yazımından önce sağlam eski ana kayıt `.pre-v4` yedeğine alınır. Saat gündüz/gece ışıklarını yumuşak değiştirir; kalıcı işlem ve gece yarısına ek olarak 30 saniyede bir kaydedilir.
+Saat, odun, yatak/yapı koordinatları ve hazırlanmış toprak kayıt sürümü 5'te saklanır. V1/V2 kayıtlarındaki tarlalar ve blokların dünya konumları korunur; eski çiftlik bilerek silinmez. İlk v5 yazımından önce sağlam eski ana kayıt `.pre-v5` yedeğine alınır. Saat gündüz/gece ışıklarını yumuşak değiştirir; kalıcı işlem ve gece yarısına ek olarak 30 saniyede bir kaydedilir.
 
 ## Dünya ve savaş
 
@@ -97,8 +97,19 @@ Kullanıcı düz vektör ikon ve tek renk kahverengi arka planı reddetti. Envan
 
 Döşeme (1 odun) 1×1 hücrenin tabanına, ince duvar (2 odun) ve kapı (3 odun) hücrenin kenarına oturur. R ile seçilen kenar döner. Komşu karenin karşı kenarı aynı yerdir; iki kez yerleştirilemez. Döşeme ile yatak aynı hücreyi paylaşır; duvar iki hücrelik yatağı ortadan bölemez. Döşeme üzerinde tarım yapılamaz. Duvar ve kapı 2,4 m yüksektir; bu parçalar şimdilik yalnızca zemin katına konur. Döşeme üst bloklara taşıyıcı değildir.
 
-Yakındaki kapıya fareyi yöneltip F ile aç/kapat. Kapı kanadı 90° döner; oyuncu veya eşya açılma alanını kapatıyorsa işlem reddedilir. Kapının açık/kapalı hali kayıt v4'te saklanır. Sağ tık, imlecin gerçekten değdiği parçayı söker; aynı hücredeki döşeme/duvar/yatağı birlikte silmez. V1/V2/V3 çiftlikler korunur; ilk v4 kayıttan önce eski sağlam ana dosya `.pre-v4` yedeği alır.
+Yakındaki kapıya fareyi yöneltip F ile aç/kapat. Kapı kanadı 90° döner; oyuncu veya eşya açılma alanını kapatıyorsa işlem reddedilir. Kapının açık/kapalı hali kayıt v5'te saklanır. Sağ tık, imlecin gerçekten değdiği parçayı söker; aynı hücredeki döşeme/duvar/yatağı birlikte silmez. V1/V2/V3/V4 çiftlikler korunur; ilk v5 kayıttan önce eski sağlam ana dosya `.pre-v5` yedeği alır.
 
 Bu parça çatısız, içine girilebilir oda iskeletidir. Çatı, sandık ve dekorasyon sonraki küçük adımlardır; 0.2 tamamlandı sayılmaz. Dünya arazi sınırları ve mevcut 10 dakikalık saat değişmez.
 
 Kullanıcının 8 Ekim görsel düzeltmesi: yalnızca tepenin açık olması yetmez. Oyuncunun bulunduğu döşemeli odanın kameraya bakan ön ve yan duvarları, kapı/çerçeve dahil, yaklaşık %16 opaklığa yumuşak geçer. Arka duvarlar korunur; karakteri doğrudan örten diğer duvar parçaları da saydamlaşır. Odadan ve görüş engelinden çıkınca eski malzeme geri gelir. Collider ve kapı etkileşimi değişmez. Oda döşemeden bulunur; duvar/kapı kenarları komşu odaları ayırır.
+
+
+## Çatı, taşıma ve inşa envanteri — 8 Ekim güncel karar
+
+İnşa modunda normal eşya barının yerini **sekiz yuvalı inşa envanteri** alır. Altı parça ImageGen ikonuyla gösterilir: blok, yatak, döşeme, ince duvar, kapı, çatı. Son iki göz şimdilik boştur; parça sayısı arttığında kategoriler eklenecek. İkon köşesi yatak adedini veya odunla yapılabilir parça sayısını gösterir. Ayrı uzun parça listesi yoktur; taşıma M veya barın yanındaki düğmeyle açılır. İnşadan çıkış normal tarım barını geri getirir.
+
+Döşemesiz, üst üste ahşap bloklardan yapılmış evler de iç mekân sayılır. Kameraya bakan blok sütunları ve iç mekânın üzerindeki çatı saydamlaşır; dışarı çıkıldığında opaklaşır. Tek hücrelik açıklık görsel oda sınırı olarak tanınabilir; bu fiziksel kapı veya güvenlik sağlamaz. Çok katlı ev, merdiven ve eğimli arazi halen kapsam dışıdır.
+
+Basılı sulamada hedef kare değişince kol, karakter yönü ve su akışı yaklaşık 0,18 saniyelik yumuşatma ile yeni hedefe yönelir. Gerçek sulama işlemi imlecin o an gösterdiği erişilebilir kareye uygulanır; animasyon işlem geciktirmez.
+
+Sonraki keşif adımı için kullanıcı fikirleri: çevrede para içeren sandık, ağaçtan odun, yabani bitkiden tohum ve başka çiftçinin hasadını alma. Hırsızlık yaptırımları daha sonraya bırakılır. Kullanıcı önce ev/taşıma/yatak işlerinin bitirilmesini seçti; bu tur keşif veya hırsızlık sistemi eklemez.

@@ -88,7 +88,7 @@ namespace Farmer
         public int PlantedCount => plots.Count(p => !string.IsNullOrEmpty(p.cropId));
         public int ReadyCount => Enumerable.Range(0, plots.Count).Count(IsReady);
 
-        public FarmModel(IEnumerable<CropRules> catalog, int width = 6, int depth = 6, int startingMoney = 60, IEnumerable<BuildRules> buildCatalog = null)
+        public FarmModel(IEnumerable<CropRules> catalog, int width = 6, int depth = 6, int startingMoney = 50, IEnumerable<BuildRules> buildCatalog = null)
         {
             if (width < 1 || width > 100 || depth < 1 || depth > 100 || startingMoney < 0 || startingMoney > MoneyLimit)
                 throw new ArgumentOutOfRangeException(nameof(width));
@@ -108,6 +108,12 @@ namespace Farmer
         public int ThirstyCount => plots.Count(p => crops.TryGetValue(p.cropId, out var c) && p.growth < c.WateredDays && !p.watered);
         private bool Valid(int index) => index >= 0 && index < plots.Count;
 
+        public bool BuyBed(out string message)
+        {
+            if(Money<BuildingModel.BedPrice)return Fail("Yatak için 100 para gerekiyor.",out message);
+            if(!Building.AddBed())return Fail("Yatak envanteri dolu.",out message);
+            Money-=BuildingModel.BedPrice;message="Yatak alındı. İnşa menüsünden yerleştir.";return true;
+        }
         public bool BuySeeds(string id, int count, out string message)
         {
             if (!crops.TryGetValue(id, out var c) || count <= 0 || count > StackLimit) return Fail("Geçersiz alış miktarı.", out message);
@@ -197,7 +203,7 @@ namespace Farmer
 
         public FarmSnapshot Snapshot() => new FarmSnapshot
         {
-            version = 4, width = Width, depth = Depth, day = Day, money = Money, minuteOfDay = MinuteOfDay, equippedItem = EquippedItem,
+            version = 5, width = Width, depth = Depth, day = Day, money = Money, minuteOfDay = MinuteOfDay, equippedItem = EquippedItem,
             seeds = seeds.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
             produce = produce.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
             plots = plots.Select(p => p.Copy()).ToArray(), building = Building.Snapshot()
@@ -205,7 +211,7 @@ namespace Farmer
 
         public static FarmModel Restore(FarmSnapshot saved, IEnumerable<CropRules> catalog, int width, int depth, IEnumerable<BuildRules> buildCatalog = null)
         {
-            if (saved == null || (saved.version < 1 || saved.version > 4) || saved.width != width || saved.depth != depth || saved.day < 1
+            if (saved == null || (saved.version < 1 || saved.version > 5) || saved.width != width || saved.depth != depth || saved.day < 1
                 || saved.day > DayLimit || saved.money < 0 || saved.money > MoneyLimit || saved.plots == null || (saved.version < 3 ? saved.plots.Length != width * depth : saved.plots.Length > PlotLimit))
                 throw new ArgumentException("Save header or grid is invalid or unsupported.");
             var rules = (buildCatalog ?? BuildRules.Defaults).ToArray();
@@ -252,6 +258,12 @@ namespace Farmer
                     copy.watered = copy.watered || copy.growth > 0;
                 }
                 model.plotIndices.Add((copy.x,copy.z), model.plots.Count); model.plots.Add(copy);
+            }
+            if(saved.version<5 && rules.Any(r=>r.IsBed))
+            {
+                model.Building.AddBed();
+                bool cropAtBed=model.plots.Any(p=>p.x==-6&&(p.z==-4||p.z==-3)&&!string.IsNullOrEmpty(p.cropId));
+                if(!cropAtBed)model.Building.Place(rules.First(r=>r.IsBed).Id,-6,0,-4,0,out _);
             }
             return model;
         }

@@ -40,11 +40,11 @@ Kabul:
 - [ ] Kaynaklar harcanarak tek katlı, içine girilebilir bir ev kurulabilir.
 - [x] Ahşap bloklar yan yana/üst üste yerleşir; geçersiz çakışmalar önlenir.
 - [ ] Önizleme, döndürme, yükseklik seçimi, taşıma ve sökme çalışır.
-- [x] Ev içinde karakter ve yerleştirilen eşya görülebilir. (8 Ekim: kamera tarafındaki duvar/kapı saydamlığı; çatı sonraki adım.)
+- [x] Ev içinde karakter ve yerleştirilen eşya görülebilir. (8 Ekim: ince duvar, blok ev ve çatı saydamlığı.)
 - [ ] Yatakla günü bitirme ve sandık depolaması çalışır; sökme/taşıma eşya çoğaltmaz veya kaybetmez.
 - [ ] Yerleştirilen yapılar ve depolama kayıt/yüklemede korunur.
 
-7 Ekim güncel parça: ilk 6×5 inşa kısıtı kaldırıldı. Boş dünya zemini üzerinde blok/yatak yerleştirme, üç blok yüksekliği, önizleme/döndürme/yükseklik/sökme, odun maliyeti/iadesi ve pazardan odun var. Yeni tarlalar çapa ile hazırlanıyor; eski kayıtlar korunarak v3'e taşınıyor. 8 Ekim adımı: ahşap döşeme, kenara oturan ince duvar, açılır kapı ve döşeme üstünde yatakla ilk oda. Yatak uyutuyor, sandık/depolama henüz yok. Taşıma şimdilik söküp yeniden kurmayla yapılır; ayrı taşıma aracı yok. Çatı, diğer mobilyalar ve depolama henüz yapılmadığından yukarıdaki birleşik ölçütler açık tutuldu.
+7 Ekim güncel parça: ilk 6×5 inşa kısıtı kaldırıldı. Boş dünya zemini üzerinde blok/yatak yerleştirme, üç blok yüksekliği, önizleme/döndürme/yükseklik/sökme, odun maliyeti/iadesi ve pazardan odun var. Yeni tarlalar çapa ile hazırlanıyor; eski kayıtlar korunarak v3'e taşınıyor. 8 Ekim adımı: ahşap döşeme, kenara oturan ince duvar, açılır kapı ve döşeme üstünde yatakla ilk oda. Yatak uyutuyor, sandık/depolama henüz yok. 8 Ekim devamında ayrı çatı parçası, M ile tutup taşıma, 50 parayla yataksız başlangıç ve 100 paraya yatak satın alma eklendi. İnşa barı sekiz yuva ve ImageGen ikonları kullanır. Diğer mobilyalar/depolama henüz yapılmadığından birleşik ölçütler açık tutuldu.
 
 Kullanıcı kararı: aynı inşa ve tarla kuralları gelecekte çiftlik dışındaki düşman bölgelerinde de kullanılacak. Bölgeye özel inşa sınırı yoktur; düşman güvenliği henüz uygulanmadı.
 
@@ -87,3 +87,5 @@ Kabul:
 ## Demo sonrası adaylar
 
 Hayvancılık, mevsimler, sera/sulama gelişimi, üst katlar, daha fazla dekorasyon ve üretim. Sıra oyuncu deneyimine göre seçilecek.
+
+Sıradaki somut adım: kullanıcı ev/taşıma/yatak sürümünü oynadıktan sonra keşif. Para sandıkları, ağaçtan odun ve yabani bitkiden tohum; başka çiftçinin hasadını alma fikri ve daha sonraki hırsızlık yaptırımları kayıtlıdır. Bu sürümde uygulanmadı.

@@ -15,7 +15,11 @@ namespace Farmer
         private Material previewMaterial;
         private Renderer[] previewRenderers;
         private Vector3Int? target;
-        private BlockRecord removeTarget;
+        private BlockRecord removeTarget,dragged;
+        private BuildingModel dragModel;
+        public bool MoveMode { get; private set; }
+        public bool IsDragging=>dragged!=null;
+        public string HeightLabel=>ActiveDefinition.placement==BuildPlacement.Roof?$"Çatı {BuildingModel.RoofHeight(level):0.0} m":$"Yükseklik {level+1}/{BuildingModel.Levels}";
         private BuildingModel displayedModel;
         private int displayedRevision = -1;
         private int level, rotation, pieceIndex;
@@ -49,8 +53,16 @@ namespace Farmer
             if (game != null) game.Changed -= Rebuild;
             if (previewMaterial != null) Destroy(previewMaterial);
         }
+        public void SelectPiece(int index)
+        {
+            if(index<0||index>=game.BuildPieces.Length)return;
+            dragged=null;MoveMode=false;pieceIndex=index;level=ActiveDefinition.placement==BuildPlacement.Roof?3:0;CreatePreview();
+        }
+        public void ToggleMoveMode(){dragged=null;MoveMode=!MoveMode;}
+        public static Vector3 Position(BuildDefinition definition,int x,int level,int z)=>new Vector3(x+.5f,(definition.placement==BuildPlacement.Roof?BuildingModel.RoofHeight(level):level)+.5f,z+.5f);
         private void OnDisable()
         {
+            dragged=null;
             if (preview != null) preview.SetActive(false);
             if (grid != null) grid.SetActive(false);
             if (game != null && game.BuildMode) game.SetBuildMode(false);
@@ -61,17 +73,39 @@ namespace Farmer
             if (preview == null) return;
             var keyboard = Keyboard.current; var mouse = Mouse.current;
             if (!Application.isFocused || !game.Ready || !game.isActiveAndEnabled)
-            { preview.SetActive(false); grid.SetActive(false); return; }
+            { dragged=null;preview.SetActive(false); grid.SetActive(false); return; }
             if (keyboard?.digit4Key.wasPressedThisFrame == true) ToggleMode();
             if (keyboard?.escapeKey.wasPressedThisFrame == true) game.SetBuildMode(false);
             grid.SetActive(game.BuildMode);
             grid.transform.position = new Vector3(Mathf.Floor(game.Player.position.x),0,Mathf.Floor(game.Player.position.z));
-            if (!game.BuildMode) { preview.SetActive(false); target = null; return; }
-            if (keyboard?.qKey.wasPressedThisFrame == true) { pieceIndex = (pieceIndex+1)%game.BuildPieces.Length; level=0; CreatePreview(); }
+            if (!game.BuildMode) { dragged=null;preview.SetActive(false); target = null; return; }
+            if(dragged!=null && dragModel!=game.Model.Building)dragged=null;
+            if(keyboard?.mKey.wasPressedThisFrame==true)ToggleMoveMode();
+            if (keyboard?.qKey.wasPressedThisFrame == true && dragged==null)SelectPiece((pieceIndex+1)%game.BuildPieces.Length);
             if (keyboard?.rKey.wasPressedThisFrame == true) rotation = (rotation + 1) % 4;
             if (ActiveDefinition.placement==BuildPlacement.Solid && !ActiveDefinition.isBed && mouse != null && Mathf.Abs(mouse.scroll.ReadValue().y) > .01f)
                 level = Mathf.Clamp(level + (mouse.scroll.ReadValue().y > 0 ? 1 : -1), 0, BuildingModel.Levels - 1);
+            if(ActiveDefinition.placement==BuildPlacement.Roof && mouse!=null && Mathf.Abs(mouse.scroll.ReadValue().y)>.01f)level=Mathf.Clamp(level+(mouse.scroll.ReadValue().y>0?1:-1),2,3);
             RefreshTarget();
+            if(MoveMode)
+            {
+                if(dragged==null)
+                {
+                    preview.SetActive(false);Status="Eşyayı sol tuşla tut, sürükle ve bırak. M: İnşaya dön.";
+                    if(mouse?.leftButton.wasPressedThisFrame==true && removeTarget!=null && InReach(Center(removeTarget.x,removeTarget.level,removeTarget.z)))
+                    {
+                        dragged=removeTarget.Copy();dragModel=game.Model.Building;
+                        pieceIndex=System.Array.FindIndex(game.BuildPieces,d=>d.id==dragged.pieceId);level=dragged.level;rotation=dragged.rotation;CreatePreview();
+                    }
+                }
+                else if(mouse?.leftButton.wasReleasedThisFrame==true)
+                {
+                    if(ValidPreview&&target.HasValue){var c=target.Value;game.MoveBlock(dragged,c.x,c.y,c.z,rotation);}
+                    else game.ShowBuildFeedback("Taşıma iptal edildi; eşya eski yerinde. "+Status);
+                    dragged=null;preview.SetActive(false);
+                }
+                return;
+            }
             if (mouse?.leftButton.wasPressedThisFrame == true && target.HasValue)
             {
                 if (ValidPreview)
@@ -105,15 +139,17 @@ namespace Farmer
                 var marker = hit.collider.GetComponentInParent<PlacedBlockView>();
                 if (marker != null) removeTarget = marker.Record;
             }
-            var plane = new Plane(Vector3.up, Vector3.up * level);
+            float planeHeight=ActiveDefinition.placement==BuildPlacement.Roof?BuildingModel.RoofHeight(level):level;
+            var plane = new Plane(Vector3.up, Vector3.up * planeHeight);
             if (!plane.Raycast(ray, out float distance)) return;
             Vector3 point = ray.GetPoint(distance);
             int x = Mathf.FloorToInt(point.x), z = Mathf.FloorToInt(point.z);
-            if (!BuildingModel.InBounds(x, level, z)) return;
+            if (!(ActiveDefinition.placement==BuildPlacement.Roof?BuildingModel.ValidCoordinate(x,z):BuildingModel.InBounds(x, level, z))) return;
             target = new Vector3Int(x, level, z);
-            Vector3 center = Center(x, level, z);
+            Vector3 center = Position(ActiveDefinition,x,level,z);
             preview.transform.SetPositionAndRotation(center, Quaternion.Euler(0, rotation * 90, 0));
-            bool valid = game.Model.Building.CanPlace(ActiveDefinition.id, x, level, z, rotation, out string reason);
+            string reason;
+            bool valid = dragged!=null?game.Model.Building.CanMove(dragged,x,level,z,rotation,out reason):game.Model.Building.CanPlace(ActiveDefinition.id, x, level, z, rotation, out reason);
             if (!InReach(center)) { valid = false; reason = "Yerleştirmek için yaklaş."; }
             else if (valid)
             {
@@ -121,7 +157,7 @@ namespace Farmer
                 {
                     if (!WorldGround.SupportsCell(cell.x,cell.z,false)) { valid=false; reason="Düz ve sağlam zemin gerekiyor."; break; }
                     int soilIndex = game.Model.IndexAt(cell.x,cell.z);
-                    if (soilIndex >= 0 && !string.IsNullOrEmpty(game.Model.Plot(soilIndex).cropId)) { valid=false; reason="Önce buradaki ürünü hasat et."; break; }
+                    if (ActiveDefinition.placement!=BuildPlacement.Roof && soilIndex >= 0 && !string.IsNullOrEmpty(game.Model.Plot(soilIndex).cropId)) { valid=false; reason="Önce buradaki ürünü hasat et."; break; }
 
                 }
             }
@@ -143,6 +179,8 @@ namespace Farmer
                     var existing=hit.GetComponentInParent<PlacedBlockView>();
                     if(existing!=null)
                     {
+                        var record=existing.Record;
+                        if(dragged!=null&&record.pieceId==dragged.pieceId&&record.x==dragged.x&&record.z==dragged.z&&record.level==dragged.level&&record.rotation==dragged.rotation)continue;
                         var kind=game.Model.Building.Rules(existing.Record.pieceId).Placement;
                         if(kind==BuildPlacement.Floor)continue;
                         if(ActiveDefinition.placement==BuildPlacement.Floor)continue;
@@ -165,11 +203,11 @@ namespace Farmer
             foreach (var b in game.Model.Building.Blocks)
             {
                 var definition = System.Array.Find(game.BuildPieces, d => d.id == b.pieceId);
-                var obj = Instantiate(definition.prefab, Center(b.x, b.level, b.z), Quaternion.Euler(0, b.rotation * 90, 0), transform);
+                var obj = Instantiate(definition.prefab, Position(definition,b.x,b.level,b.z), Quaternion.Euler(0, b.rotation * 90, 0), transform);
                 obj.name = $"Built {b.pieceId} {b.x},{b.level},{b.z}";
                 obj.AddComponent<PlacedBlockView>().Record = b;
                 if(definition.isDoor)obj.AddComponent<DoorView>().Configure(game,b);
-                if(definition.placement==BuildPlacement.Edge)obj.AddComponent<OccludingWall>();
+                if(!definition.isBed&&definition.placement!=BuildPlacement.Floor)obj.AddComponent<OccludingWall>();
                 placed.Add(obj);
             }
             Physics.SyncTransforms();

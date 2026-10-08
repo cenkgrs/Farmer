@@ -14,6 +14,7 @@ namespace Farmer
         private readonly HashSet<Vector2Int> floors=new HashSet<Vector2Int>(),room=new HashSet<Vector2Int>();
         private readonly HashSet<(int,int,int)> edges=new HashSet<(int,int,int)>();
         private readonly HashSet<OccludingWall> blockers=new HashSet<OccludingWall>();
+        private readonly HashSet<Vector2Int> solidCells=new HashSet<Vector2Int>();
         private OccludingWall[] walls=new OccludingWall[0];
         public int FadedCount=>walls.Count(w=>w!=null&&w.Opacity<.5f);
         private void Awake()=>game=GetComponent<FarmGame>();
@@ -23,10 +24,11 @@ namespace Farmer
             var model=game.Model.Building;bool changed=observed!=model||revision!=model.Revision;
             if(changed)
             {
-                observed=model;revision=model.Revision;floors.Clear();edges.Clear();
+                observed=model;revision=model.Revision;floors.Clear();edges.Clear();solidCells.Clear();
                 foreach(var b in model.Blocks)
                 {
                     var kind=model.Rules(b.pieceId).Placement;
+                    if(kind==BuildPlacement.Solid&&!model.Rules(b.pieceId).IsBed)solidCells.Add(new Vector2Int(b.x,b.z));
                     if(kind==BuildPlacement.Floor)floors.Add(new Vector2Int(b.x,b.z));
                     if(kind==BuildPlacement.Edge)edges.Add(BuildingModel.Edge(b.x,b.z,b.rotation));
                 }
@@ -49,7 +51,18 @@ namespace Farmer
             foreach(var wall in walls)
             {
                 if(wall==null)continue;
-                var b=wall.Record;var edge=BuildingModel.Edge(b.x,b.z,b.rotation);
+                var b=wall.Record;var kind=model.Rules(b.pieceId).Placement;
+                if(kind==BuildPlacement.Roof){wall.SetFaded(room.Contains(new Vector2Int(b.x,b.z))||blockers.Contains(wall));continue;}
+                if(kind==BuildPlacement.Solid)
+                {
+                    bool frontBlock=false;
+                    foreach(var direction in new[]{Vector2Int.up,Vector2Int.right,Vector2Int.down,Vector2Int.left})
+                        if(room.Contains(new Vector2Int(b.x,b.z)+direction)&&Vector3.Dot(new Vector3(-direction.x,0,-direction.y),-camera.transform.forward)>.05f)frontBlock=true;
+                    // Reveal the entire column even when only a lower block intersects a view ray.
+                    bool hitColumn=blockers.Any(v=>v.Record.x==b.x&&v.Record.z==b.z);
+                    wall.SetFaded(frontBlock||hitColumn);continue;
+                }
+                var edge=BuildingModel.Edge(b.x,b.z,b.rotation);
                 var a=edge.axis==0?new Vector2Int(edge.x,edge.z-1):new Vector2Int(edge.x-1,edge.z);
                 var c=new Vector2Int(edge.x,edge.z);
                 bool inA=room.Contains(a),inC=room.Contains(c),front=false;
@@ -63,7 +76,8 @@ namespace Farmer
         }
         private void FindRoom(Vector2Int start)
         {
-            room.Clear();if(!floors.Contains(start))return;
+            room.Clear();
+            if(!floors.Contains(start)){FindBareGroundRoom(start);return;}
             var queue=new Queue<Vector2Int>();queue.Enqueue(start);room.Add(start);
             var directions=new[]{Vector2Int.up,Vector2Int.right,Vector2Int.down,Vector2Int.left};
             while(queue.Count>0)
@@ -73,6 +87,25 @@ namespace Farmer
                 {
                     var next=cell+directions[r];
                     if(floors.Contains(next)&&!edges.Contains(BuildingModel.Edge(cell.x,cell.y,r))&&room.Add(next))queue.Enqueue(next);
+                }
+            }
+        }
+        private void FindBareGroundRoom(Vector2Int start)
+        {
+            if(solidCells.Count==0)return;
+            int minX=solidCells.Min(c=>c.x)-1,maxX=solidCells.Max(c=>c.x)+1,minZ=solidCells.Min(c=>c.y)-1,maxZ=solidCells.Max(c=>c.y)+1;
+            var queue=new Queue<Vector2Int>();queue.Enqueue(start);room.Add(start);
+            var directions=new[]{Vector2Int.up,Vector2Int.right,Vector2Int.down,Vector2Int.left};
+            while(queue.Count>0)
+            {
+                var c=queue.Dequeue();
+                if(c.x<=minX||c.x>=maxX||c.y<=minZ||c.y>=maxZ||room.Count>1024){room.Clear();return;}
+                for(int r=0;r<4;r++)
+                {
+                    var next=c+directions[r];
+                    // Treat a one-cell doorway as a visual boundary only; never add a collider.
+                    bool doorway=(solidCells.Contains(next+Vector2Int.left)&&solidCells.Contains(next+Vector2Int.right))||(solidCells.Contains(next+Vector2Int.up)&&solidCells.Contains(next+Vector2Int.down));
+                    if(!solidCells.Contains(next)&&!doorway&&!edges.Contains(BuildingModel.Edge(c.x,c.y,r))&&room.Add(next))queue.Enqueue(next);
                 }
             }
         }

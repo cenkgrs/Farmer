@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Farmer
 {
-    public enum BuildPlacement { Solid, Floor, Edge }
+    public enum BuildPlacement { Solid, Floor, Edge, Roof }
 
     public sealed class BuildRules
     {
@@ -19,7 +19,7 @@ namespace Farmer
             if (!Enum.IsDefined(typeof(BuildPlacement), placement) || (isBed && placement != BuildPlacement.Solid) || (isDoor && placement != BuildPlacement.Edge)) throw new ArgumentException("Invalid placement kind.");
             Id = id; WoodCost = woodCost; IsBed = isBed; Placement = placement; IsDoor = isDoor;
         }
-        public static BuildRules[] Defaults => new[] { new BuildRules("wood_block", 2), new BuildRules("bed", 8, true), new BuildRules("wood_floor", 1, placement: BuildPlacement.Floor), new BuildRules("wood_wall", 2, placement: BuildPlacement.Edge), new BuildRules("wood_door", 3, placement: BuildPlacement.Edge, isDoor: true) };
+        public static BuildRules[] Defaults => new[] { new BuildRules("wood_block", 2), new BuildRules("bed", 8, true), new BuildRules("wood_floor", 1, placement: BuildPlacement.Floor), new BuildRules("wood_wall", 2, placement: BuildPlacement.Edge), new BuildRules("wood_door", 3, placement: BuildPlacement.Edge, isDoor: true), new BuildRules("wood_roof", 2, placement: BuildPlacement.Roof) };
     }
     [Serializable] public sealed class BlockRecord
     {
@@ -28,26 +28,29 @@ namespace Farmer
         public bool doorOpen;
         public BlockRecord Copy() => new BlockRecord { pieceId = pieceId, x = x, level = level, z = z, rotation = rotation, doorOpen = doorOpen };
     }
-    [Serializable] public sealed class BuildingSnapshot { public int wood; public BlockRecord[] blocks; }
+    [Serializable] public sealed class BuildingSnapshot { public int wood; public int beds; public BlockRecord[] blocks; }
 
     // Sparse world cells: no farm or construction-zone boundary.
     public sealed class BuildingModel
     {
         public const int Levels = 3, StarterWood = 24, WoodLimit = 999, BlockLimit = 10000;
+        public const int BedPrice=100;
         public const int WoodPackCount = 10, WoodPackPrice = 20;
         private readonly Dictionary<string, BuildRules> catalog;
         private readonly Dictionary<(int x, int level, int z, int layer, int axis), BlockRecord> blocks = new Dictionary<(int, int, int, int, int), BlockRecord>();
         private readonly HashSet<(int,int,int)> occupied = new HashSet<(int,int,int)>();
         public int Revision { get; private set; }
         public int Wood { get; private set; }
+        public int Beds { get; private set; }
+        private bool restoring;
         public int Count => blocks.Count;
         public IEnumerable<BlockRecord> Blocks => blocks.Values.Select(b => b.Copy());
-        public BuildingModel(IEnumerable<BuildRules> rules, int wood = StarterWood)
+        public BuildingModel(IEnumerable<BuildRules> rules, int wood = StarterWood, int beds = 0)
         {
-            if (wood < 0 || wood > WoodLimit) throw new ArgumentException("Invalid wood inventory.");
+            if (wood < 0 || wood > WoodLimit || beds < 0 || beds > WoodLimit) throw new ArgumentException("Invalid wood inventory.");
             catalog = rules.ToDictionary(r => r.Id);
             if (catalog.Count == 0) throw new ArgumentException("Build catalog is empty.");
-            Wood = wood;
+            Wood = wood; Beds=beds;
         }
         public static bool ValidCoordinate(int x, int z) => x >= -100000 && x <= 100000 && z >= -100000 && z <= 100000;
         public static bool InBounds(int x, int level, int z) => ValidCoordinate(x, z) && level >= 0 && level < Levels;
@@ -94,14 +97,16 @@ namespace Farmer
         public bool CanPlace(string id,int x,int level,int z,int rotation,out string message)
         {
             if(id==null || !catalog.TryGetValue(id,out var rule))return Fail("Bu yapı parçası tanımlı değil.",out message);
-            if(!InBounds(x,level,z)||rotation<0||rotation>3)return Fail("Geçersiz dünya koordinatı veya dönüş.",out message);
+            if(!(rule.Placement==BuildPlacement.Roof ? ValidCoordinate(x,z)&&(level==2||level==3) : InBounds(x,level,z))||rotation<0||rotation>3)return Fail("Geçersiz dünya koordinatı veya dönüş.",out message);
             if(blocks.Count>=BlockLimit)return Fail("Bu kayıt için yapı sınırına ulaşıldı.",out message);
-            if((rule.IsBed||rule.Placement!=BuildPlacement.Solid)&&level!=0)return Fail("Bu parçayı zemine yerleştir.",out message);
+            if((rule.IsBed||rule.Placement==BuildPlacement.Floor||rule.Placement==BuildPlacement.Edge)&&level!=0)return Fail("Bu parçayı zemine yerleştir.",out message);
             if(Footprint(id,x,z,rotation).Any(c=>!ValidCoordinate(c.x,c.z)))return Fail("Geçersiz dünya karesi.",out message);
             if(blocks.ContainsKey(Key(id,x,level,z,rotation)) || (rule.Placement==BuildPlacement.Solid && Footprint(id,x,z,rotation).Any(c=>occupied.Contains((c.x,level,c.z)))))return Fail("Bu yer zaten dolu.",out message);
             if(level==0 && EdgeConflict(rule,x,z,rotation))return Fail("Duvar veya eşya ile çakışıyor.",out message);
-            if(level>0 && !Supported(x,level,z))return Fail("Önce altına bir blok yerleştir.",out message);
-            if(Wood<rule.WoodCost)return Fail("Odunun yetmiyor. Pazardan alabilir veya bir parçayı sökebilirsin.",out message);
+            if(rule.Placement==BuildPlacement.Solid && level>0 && !Supported(x,level,z))return Fail("Önce altına bir blok yerleştir.",out message);
+            if(!restoring && rule.IsBed && Beds<1)return Fail("Önce pazardan yatak al (100 para).",out message);
+            if(!restoring && rule.Placement==BuildPlacement.Roof && !RoofsSupported(new BlockRecord{pieceId=id,x=x,level=level,z=z,rotation=rotation}))return Fail("Çatıyı aynı yükseklikte duvar/blok kenarından başlat; en fazla 4 parça uzat.",out message);
+            if(!rule.IsBed && Wood<rule.WoodCost)return Fail("Odunun yetmiyor. Pazardan alabilir veya bir parçayı sökebilirsin.",out message);
             message="Sol tık · Yerleştir";return true;
         }
         private void Insert(BlockRecord record)
@@ -113,8 +118,8 @@ namespace Farmer
         public bool Place(string id,int x,int level,int z,int rotation,out string message)
         {
             if(!CanPlace(id,x,level,z,rotation,out message))return false;
-            Wood-=catalog[id].WoodCost;Insert(new BlockRecord{pieceId=id,x=x,level=level,z=z,rotation=rotation});Revision++;
-            message=$"Yapı yerleştirildi. −{catalog[id].WoodCost} odun.";return true;
+            if(catalog[id].IsBed)Beds--;else Wood-=catalog[id].WoodCost;Insert(new BlockRecord{pieceId=id,x=x,level=level,z=z,rotation=rotation});Revision++;
+            message=catalog[id].IsBed?"Yatak yerleştirildi.":$"Yapı yerleştirildi. −{catalog[id].WoodCost} odun.";return true;
         }
         // Legacy callers address volume blocks; runtime removal passes the exact ray-hit record.
         public bool Remove(int x,int level,int z,out string message) => Remove(blocks.TryGetValue((x,level,z,0,0),out var b)?b:null,out message);
@@ -122,12 +127,15 @@ namespace Farmer
         {
             if(requested==null||!catalog.ContainsKey(requested.pieceId)||!blocks.TryGetValue(Key(requested.pieceId,requested.x,requested.level,requested.z,requested.rotation),out var b))return Fail("Sökmek için bir parçayı hedefle.",out message);
             if(catalog[b.pieceId].Placement==BuildPlacement.Solid && occupied.Contains((b.x,b.level+1,b.z)))return Fail("Önce üstündeki bloğu sök.",out message);
-            int refund=catalog[b.pieceId].WoodCost;
+            if(!CanDetach(b,out message))return false;
+            int refund=catalog[b.pieceId].IsBed?0:catalog[b.pieceId].WoodCost;
+            if(catalog[b.pieceId].IsBed && Beds>=WoodLimit)return Fail("Yatak envanteri dolu.",out message);
             if(Wood+refund>WoodLimit)return Fail("Odun çantan dolu; önce biraz odun kullan.",out message);
             blocks.Remove(Key(b.pieceId,b.x,b.level,b.z,b.rotation));
             if(catalog[b.pieceId].Placement==BuildPlacement.Solid)
                 foreach(var c in Footprint(b.pieceId,b.x,b.z,b.rotation))occupied.Remove((c.x,b.level,c.z));
-            Wood+=refund;Revision++;message=$"Yapı söküldü. +{refund} odun geri alındı.";return true;
+            if(catalog[b.pieceId].IsBed)Beds++;
+            Wood+=refund;Revision++;message=catalog[b.pieceId].IsBed?"Yatak çantaya alındı.":$"Yapı söküldü. +{refund} odun geri alındı.";return true;
         }
         public bool DoorIsOpen(BlockRecord record) => record!=null && catalog.ContainsKey(record.pieceId) && blocks.TryGetValue(Key(record.pieceId,record.x,record.level,record.z,record.rotation),out var b) && b.doorOpen;
         public bool ToggleDoor(BlockRecord record,out string message)
@@ -135,24 +143,80 @@ namespace Farmer
             if(record==null||!catalog.TryGetValue(record.pieceId,out var rule)||!rule.IsDoor||!blocks.TryGetValue(Key(record.pieceId,record.x,record.level,record.z,record.rotation),out var b))return Fail("Kapı bulunamadı.",out message);
             b.doorOpen=!b.doorOpen;message=b.doorOpen?"Kapı açıldı.":"Kapı kapandı.";return true;
         }
+        public bool AddBed() {if(Beds>=WoodLimit)return false;Beds++;return true;}
+        private void Erase(BlockRecord b)
+        {
+            blocks.Remove(Key(b.pieceId,b.x,b.level,b.z,b.rotation));
+            if(catalog[b.pieceId].Placement==BuildPlacement.Solid)
+                foreach(var c in Footprint(b.pieceId,b.x,b.z,b.rotation))occupied.Remove((c.x,b.level,c.z));
+        }
+        public bool CanDetach(BlockRecord b,out string message)
+        {
+            if(catalog[b.pieceId].Placement==BuildPlacement.Solid && occupied.Contains((b.x,b.level+1,b.z)))return Fail("Önce üstündeki bloğu taşı veya sök.",out message);
+            Erase(b);bool supported;
+            try{supported=RoofsSupported();}finally{Insert(b);}
+            if(!supported)return Fail("Bu parça çatıyı taşıyor. Önce çatıyı taşı veya sök.",out message);
+            message="";return true;
+        }
+        public bool CanMove(BlockRecord record,int x,int level,int z,int rotation,out string message)
+        {
+            if(record==null||!catalog.ContainsKey(record.pieceId)||!blocks.TryGetValue(Key(record.pieceId,record.x,record.level,record.z,record.rotation),out var b))return Fail("Taşınacak eşya bulunamadı.",out message);
+            if(!CanDetach(b,out message))return false;
+            Erase(b);int wood=Wood,beds=Beds;Wood=WoodLimit;Beds=WoodLimit;
+            try{return CanPlace(b.pieceId,x,level,z,rotation,out message);}finally{Wood=wood;Beds=beds;Insert(b);}
+        }
+        public bool Move(BlockRecord record,int x,int level,int z,int rotation,out string message)
+        {
+            if(!CanMove(record,x,level,z,rotation,out message))return false;
+            var b=blocks[Key(record.pieceId,record.x,record.level,record.z,record.rotation)];Erase(b);
+            var moved=b.Copy();moved.x=x;moved.level=level;moved.z=z;moved.rotation=rotation;Insert(moved);Revision++;
+            message="Eşya taşındı.";return true;
+        }
+        public static float RoofHeight(int level)=>level==2?2.4f:3f;
+        private bool DirectRoofSupport(BlockRecord roof)
+        {
+            for(int r=0;r<4;r++)
+            {
+                var e=Edge(roof.x,roof.z,r);
+                if(roof.level==2 && blocks.ContainsKey((e.x,0,e.z,2,e.axis)))return true;
+            }
+            if(roof.level==3)
+                foreach(var c in new[]{(roof.x,roof.z),(roof.x-1,roof.z),(roof.x+1,roof.z),(roof.x,roof.z-1),(roof.x,roof.z+1)})
+                    if(blocks.TryGetValue((c.Item1,2,c.Item2,0,0),out var support)&&!catalog[support.pieceId].IsBed)return true;
+            return false;
+        }
+        private bool RoofsSupported(BlockRecord extra=null)
+        {
+            var roofs=blocks.Values.Where(b=>catalog[b.pieceId].Placement==BuildPlacement.Roof).ToList();if(extra!=null)roofs.Add(extra);
+            var byCell=roofs.ToDictionary(b=>(b.x,b.level,b.z));var reached=new HashSet<(int,int,int)>();var queue=new Queue<(BlockRecord roof,int distance)>();
+            foreach(var b in roofs)if(DirectRoofSupport(b)){reached.Add((b.x,b.level,b.z));queue.Enqueue((b,0));}
+            while(queue.Count>0)
+            {
+                var entry=queue.Dequeue();if(entry.distance>=4)continue;var b=entry.roof;
+                foreach(var key in new[]{(b.x-1,b.level,b.z),(b.x+1,b.level,b.z),(b.x,b.level,b.z-1),(b.x,b.level,b.z+1)})
+                    if(byCell.TryGetValue(key,out var next)&&reached.Add(key))queue.Enqueue((next,entry.distance+1));
+            }
+            return reached.Count==roofs.Count;
+        }
         internal bool AddWood(int count)
         {
             if (count < 1 || count > WoodLimit - Wood) return false;
             Wood += count; return true;
         }
-        public BuildingSnapshot Snapshot() => new BuildingSnapshot { wood = Wood, blocks = Blocks.OrderBy(b => b.level).ThenBy(b => b.z).ThenBy(b => b.x).ThenBy(b => b.pieceId,StringComparer.Ordinal).ThenBy(b => b.rotation).ToArray() };
+        public BuildingSnapshot Snapshot() => new BuildingSnapshot { wood = Wood, beds = Beds, blocks = Blocks.OrderBy(b => b.level).ThenBy(b => b.z).ThenBy(b => b.x).ThenBy(b => b.pieceId,StringComparer.Ordinal).ThenBy(b => b.rotation).ToArray() };
         public static BuildingModel Restore(BuildingSnapshot saved, IEnumerable<BuildRules> rules)
         {
             if (saved == null || saved.blocks == null || saved.blocks.Length > BlockLimit) throw new ArgumentException("Missing or oversized construction state.");
-            var model = new BuildingModel(rules, saved.wood);
+            var model = new BuildingModel(rules, saved.wood, saved.beds);
             if (saved.blocks.Any(b => b == null)) throw new ArgumentException("Null block.");
-            int wood=model.Wood;model.Wood=WoodLimit;
+            int wood=model.Wood;model.Wood=WoodLimit;model.restoring=true;
             foreach(var b in saved.blocks.OrderBy(b=>b.level))
             {
                 if(!model.CanPlace(b.pieceId,b.x,b.level,b.z,b.rotation,out _) || (b.doorOpen&&!model.catalog[b.pieceId].IsDoor))throw new ArgumentException("Invalid, duplicate or unsupported structure.");
                 model.Insert(b.Copy());
             }
-            model.Wood=wood;
+            model.Wood=wood;model.restoring=false;
+            if(!model.RoofsSupported())throw new ArgumentException("Unsupported roof.");
             return model;
         }
         private static bool Fail(string reason, out string message) { message = reason; return false; }

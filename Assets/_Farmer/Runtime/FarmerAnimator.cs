@@ -15,7 +15,9 @@ namespace Farmer
         private Transform[] fingers;
         private Quaternion[] closedFingers;
         private float gripWeight, pourWeight, harvestTime = HarvestDuration;
-        private Vector3 actionTarget, handOffset, harvestStart;
+        private Vector3 actionTarget, handOffset, harvestStart, pourTargetVelocity;
+        private bool wasPouring;
+        public Vector3 VisualActionTarget=>actionTarget;
         private Quaternion toolRotation = Quaternion.identity, harvestStartRotation, handGripBasis;
         private bool handRotationCaptured;
         private FarmModel observedModel;
@@ -74,6 +76,7 @@ namespace Farmer
         }
         private void ResetAction()
         {
+            wasPouring=false;pourTargetVelocity=Vector3.zero;
             pourWeight = 0; harvestTime = HarvestDuration;
             handOffset = RestHand; toolRotation = Quaternion.identity;
             stream?.Hide();
@@ -101,7 +104,12 @@ namespace Farmer
             if (!ready) { ResetAction(); return; }
             bool pouring = game.WateringActive && game.Model.EquippedItem == FarmItem.WateringCan;
             if (pouring && game.Selection.HoveredCell is Vector2Int cell)
-                actionTarget = game.Selection.Layout.Center(cell, .08f);
+            {
+                var desired=game.Selection.Layout.Center(cell,.08f);
+                if(!wasPouring){actionTarget=desired;pourTargetVelocity=Vector3.zero;}
+                else actionTarget=Vector3.SmoothDamp(actionTarget,desired,ref pourTargetVelocity,.18f,Mathf.Infinity,Time.deltaTime);
+            }
+            wasPouring=pouring;
             pourWeight = Mathf.MoveTowards(pourWeight, pouring ? 1 : 0, Time.deltaTime / (pouring ? .18f : .7f));
             harvestTime = Mathf.Min(HarvestDuration, harvestTime + Time.deltaTime);
             float pour = Mathf.SmoothStep(0, 1, pourWeight);

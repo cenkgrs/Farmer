@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace Farmer.Tests
     public sealed class BuildingTests
     {
         private static CropRules[] Crops => new[] { new CropRules("turnip", 10, 18, 3, 1) };
-        private static FarmModel Fresh() => FarmingTests.Prepared(new FarmModel(Crops));
+        private static FarmModel Fresh() => FarmingTests.Prepared(new FarmModel(Crops,startingMoney:60));
         private static string State(FarmModel farm) => JsonUtility.ToJson(farm.Snapshot());
         [Test] public void PlacementStackingRotationAndRemovalConserveWood()
         {
@@ -72,8 +73,8 @@ namespace Farmer.Tests
             migrated.Building.Place("wood_block", 0, 0, 0, 3, out _);
             var loaded = FarmModel.Restore(migrated.Snapshot(), Crops, 6, 6);
             Assert.That(loaded.Building.Wood, Is.EqualTo(22)); Assert.That(State(loaded), Is.EqualTo(State(migrated)));
-            var detached = loaded.Snapshot(); detached.building.blocks[0].rotation = 0;
-            Assert.That(loaded.Building.Snapshot().blocks[0].rotation, Is.EqualTo(3));
+            var detached = loaded.Snapshot(); detached.building.blocks.Single(b=>b.pieceId=="wood_block").rotation = 0;
+            Assert.That(loaded.Building.Snapshot().blocks.Single(b=>b.pieceId=="wood_block").rotation, Is.EqualTo(3));
         }
         [TestCase("missing")] [TestCase("wood")] [TestCase("unknown")] [TestCase("duplicate")]
         [TestCase("floating")] [TestCase("rotation")] [TestCase("bounds")] [TestCase("null")]
@@ -101,7 +102,7 @@ namespace Farmer.Tests
             Assert.That(farm.Building.Wood, Is.EqualTo(19));
             Assert.That(FarmModel.Restore(farm.Snapshot(), Crops, 6, 6, rules).Building.Count, Is.EqualTo(1));
         }
-        [Test] public void FirstV4WriteKeepsOriginalV1AndRecoversV4Backup()
+        [Test] public void FirstV5WriteKeepsOriginalV1AndRecoversV5Backup()
         {
             string directory = Path.Combine(Path.GetTempPath(), "farmer-building-test-" + Guid.NewGuid().ToString("N")); Directory.CreateDirectory(directory);
             string path = Path.Combine(directory, "farm-v1.json");
@@ -111,11 +112,11 @@ namespace Farmer.Tests
                 string original = JsonUtility.ToJson(old); File.WriteAllText(path, original);
                 var store = new FarmSaveStore(path, s => FarmModel.Restore(s, Crops, 6, 6));
                 var farm = store.Load(out _); farm.Building.Place("wood_block", 0, 0, 0, 0, out _); store.Save(farm.Snapshot());
-                Assert.That(File.ReadAllText(path + ".pre-v4"), Is.EqualTo(original));
+                Assert.That(File.ReadAllText(path + ".pre-v5"), Is.EqualTo(original));
                 farm.Building.Place("wood_block", 0, 1, 0, 1, out _); store.Save(farm.Snapshot());
                 File.WriteAllText(path, "broken"); var restored = store.Load(out bool recovered);
-                Assert.That(recovered, Is.True); Assert.That(restored.Building.Count, Is.EqualTo(1)); Assert.That(restored.Building.Wood, Is.EqualTo(22));
-                Assert.That(File.ReadAllText(path + ".pre-v4"), Is.EqualTo(original));
+                Assert.That(recovered, Is.True); Assert.That(restored.Building.Count, Is.EqualTo(2)); Assert.That(restored.Building.Wood, Is.EqualTo(22));
+                Assert.That(File.ReadAllText(path + ".pre-v5"), Is.EqualTo(original));
             }
             finally { Directory.Delete(directory, true); }
         }

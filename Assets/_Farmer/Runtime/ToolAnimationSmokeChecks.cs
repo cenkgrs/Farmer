@@ -47,6 +47,12 @@ namespace Farmer
                 Check(game.WateringActive && driver.PourWeight > .95f && driver.WaterVisible, "Held watering raises the arm, tips the can and starts water.");
                 Check(Vector3.Angle(driver.ToolSocket.up, Vector3.up) > 35, "Can visibly tilts from its upright carrying pose.");
                 Check(Vector2.Distance(new Vector2(body.x, body.z), new Vector2(game.Player.position.x, game.Player.position.z)) < .005f, "Action pose does not move the collision root.");
+                var oldAim=driver.VisualActionTarget;var nextAim=game.PlotCenter(2,.08f);
+                yield return Pointer(mouse,Cell(game,2),true);
+                Check(Vector3.Distance(driver.VisualActionTarget,oldAim)>.001f && Vector3.Distance(driver.VisualActionTarget,nextAim)>.02f,"Watering aim travels between cells instead of snapping to the next center.");
+                yield return new WaitForSecondsRealtime(.7f);
+                Check(Vector3.Distance(driver.VisualActionTarget,nextAim)<.025f,"Smoothed watering aim settles on the selected cell.");
+                yield return Pointer(mouse,Cell(game,1),true);yield return new WaitForSecondsRealtime(.5f);
                 yield return Capture(screenshot, "watering-wide");
                 Vector3 target = game.Player.position + Vector3.up * .8f;
                 camera.transform.position = target + new Vector3(4, 2.8f, 5); camera.transform.LookAt(target); camera.orthographicSize = 1.8f;
