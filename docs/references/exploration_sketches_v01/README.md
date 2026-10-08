@@ -55,3 +55,14 @@ Create one small stylized wild seed plant matching the reference: a cluster of b
 - Bitki mevcut tohum toplama kaynağının görselidir; yeni ürün veya tarif eklemez.
 
 ImageGen üretim promptları: [prompts.json](prompts.json). Görseller gözle incelendi; 3D import/oyun testi henüz yapılamaz. Bu teslim yalnızca referans ve dokümantasyondur.
+
+
+## Ağaç alternatif v02
+
+Kullanıcı v01 görseliyle Tripo işinin “1 saniye kaldı” aşamasında takıldığını, yalnızca metin denemesinin de kötü sonuç verdiğini bildirdi. Neden doğrulanmadı. [Daha sade v02 referansı](tree_v02_simple.png) yerleşik ImageGen ile üretildi: tek tek yapraklar yerine beş büyük yaprak kütlesi, açık gövde, beyaz arka plan. İlk görsel korunur. Bu alternatifin Tripo'da başarılı olduğu henüz doğrulanmadı. [ImageGen promptu](tree_v02_prompt.txt).
+
+Görselle birlikte kullanılabilecek kısa metin:
+
+```text
+Single stylized oak tree matching the reference. Solid simplified foliage clusters, warm wooden trunk, hand-painted colors. No individual leaf geometry, no ground or background. Keep trunk and canopy as separate meshes if supported. Textured GLB.
+```

@@ -276,3 +276,9 @@ Kullanıcı 7 Ekim'de önce kare seçme adımını kaldırmamızı, ardından WA
 - Ön açı balta tutuşu ve kütük zemine oturuşu incelendi: `docs/screenshots/exploration-axe-grip.png`, `exploration-axe-stump.png`. Meta eşleri/GUID benzersizliği kontrol edildi. Oyun mantığı değişmediğinden EditMode/genel player paketi tekrar çalıştırılmadı; Windows yeniden derlenmedi. Test süreçleri kapandı.
 - Oturum başında `Assets/_Farmer/Editor/ArtSceneSetup.cs` içinde kullanıcı düzenlemesi vardı; korunup bu commitin dışında bırakıldı. Bu nedenle çalışma ağacının tamamen temiz olduğu söylenmemeli.
 - Sıradaki somut iş: kullanıcıdan ağaç/sandık/yabani bitki modellerini alıp ayrı ayrı doğrula ve entegre et; ardından sonraki oynanabilir sürüm adımına geç.
+
+
+## 8 Ekim — alternatif ağaç eskizi
+
+- Kullanıcının Tripo'da v01 ağacının son aşamada takılma bildirimi üzerine `docs/references/exploration_sketches_v01/tree_v02_simple.png` üretildi; beş sade yaprak kütlesi, açık gövde ve beyaz arka plan. Yerleşik ImageGen, prompt dosyası yanında. Takılma nedeni ve yeni referansın Tripo sonucu henüz doğrulanmadı.
+- Sandık ve yabani bitki GLB dosyaları kullanıcı tarafından iletildi; henüz incelenip entegre edilmedi. Sonraki entegrasyon bu iki dosya, ardından ağaç teslimi. Oyun kodu/build bu eskiz turunda değişmedi.
