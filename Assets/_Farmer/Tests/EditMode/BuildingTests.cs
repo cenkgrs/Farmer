@@ -102,7 +102,7 @@ namespace Farmer.Tests
             Assert.That(farm.Building.Wood, Is.EqualTo(19));
             Assert.That(FarmModel.Restore(farm.Snapshot(), Crops, 6, 6, rules).Building.Count, Is.EqualTo(1));
         }
-        [Test] public void FirstV5WriteKeepsOriginalV1AndRecoversV5Backup()
+        [Test] public void FirstV6WriteKeepsOriginalV1AndRecoversV5Backup()
         {
             string directory = Path.Combine(Path.GetTempPath(), "farmer-building-test-" + Guid.NewGuid().ToString("N")); Directory.CreateDirectory(directory);
             string path = Path.Combine(directory, "farm-v1.json");
@@ -112,11 +112,11 @@ namespace Farmer.Tests
                 string original = JsonUtility.ToJson(old); File.WriteAllText(path, original);
                 var store = new FarmSaveStore(path, s => FarmModel.Restore(s, Crops, 6, 6));
                 var farm = store.Load(out _); farm.Building.Place("wood_block", 0, 0, 0, 0, out _); store.Save(farm.Snapshot());
-                Assert.That(File.ReadAllText(path + ".pre-v5"), Is.EqualTo(original));
+                Assert.That(File.ReadAllText(path + ".pre-v6"), Is.EqualTo(original));
                 farm.Building.Place("wood_block", 0, 1, 0, 1, out _); store.Save(farm.Snapshot());
                 File.WriteAllText(path, "broken"); var restored = store.Load(out bool recovered);
                 Assert.That(recovered, Is.True); Assert.That(restored.Building.Count, Is.EqualTo(2)); Assert.That(restored.Building.Wood, Is.EqualTo(22));
-                Assert.That(File.ReadAllText(path + ".pre-v5"), Is.EqualTo(original));
+                Assert.That(File.ReadAllText(path + ".pre-v6"), Is.EqualTo(original));
             }
             finally { Directory.Delete(directory, true); }
         }

@@ -23,7 +23,7 @@ namespace Farmer
                 var fresh=new FarmModel(new[]{game.ActiveCrop.Rules},buildCatalog:game.BuildPieces.Select(d=>d.Rules));
                 fresh.Building.AddBed();fresh.BuySeeds(game.ActiveCrop.id,2,out _);
                 File.WriteAllText(game.SavePath,JsonUtility.ToJson(fresh.Snapshot())); game.LoadGame(); clock.ClockPaused=true;
-                Check(Object.FindObjectsByType<InventoryIcon>(FindObjectsSortMode.None).Length==7 && GameObject.Find("Inventory Bar").GetComponent<RectTransform>().rect.width<500,"Compact inventory has seven illustrated slots.");
+                Check(Object.FindObjectsByType<InventoryIcon>(FindObjectsSortMode.None).Length==8 && GameObject.Find("Inventory Bar").GetComponent<RectTransform>().rect.width<550,"Compact inventory has eight illustrated slots.");
                 Check(!Object.FindObjectsByType<TextMesh>(FindObjectsSortMode.None).Any(t=>t.text=="PAZAR"||t.text=="YATAK"),"Market and bed have no floating world labels.");
                 Check(clock.RealMinutesPerDay==10,"A full 24-hour cycle lasts ten real minutes.");
                 Teleport(cc,new Vector3(-1.2f,.1f,5.5f));yield return null;

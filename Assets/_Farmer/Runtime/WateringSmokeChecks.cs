@@ -63,8 +63,11 @@ namespace Farmer
                 Check(!game.WateringActive && !source.isPlaying, "Out-of-reach target stops pouring.");
                 yield return Pointer(mouse, ScreenCell(game, 1), true);
                 Check(game.WateringActive && source.isPlaying, "Returning to reachable soil resumes an existing watering gesture.");
-                yield return Pointer(mouse, ScreenCell(game, 1), false);
-                Check(!game.WateringActive && source.isPlaying && source.volume > 0, "Release ends watering but preserves a short audio tail.");
+                // Observe the first released frame: three software-rendered frames can outlast the 0.7 s tail.
+                float releaseAt=Time.realtimeSinceStartup;
+                InputSystem.QueueStateEvent(mouse,new MouseState {position=ScreenCell(game,1)});
+                yield return null;yield return new WaitForEndOfFrame();
+                Check(!game.WateringActive && source.isPlaying && source.volume > 0, $"Release ends watering but preserves a short audio tail. elapsed={Time.realtimeSinceStartup-releaseAt:0.000}, frame={Time.unscaledDeltaTime:0.000}, playing={source.isPlaying}, volume={source.volume:0.00000}");
                 float tailStart = source.volume;
                 string releasedState = JsonUtility.ToJson(game.Model.Snapshot());
                 yield return new WaitForSecondsRealtime(0.15f);

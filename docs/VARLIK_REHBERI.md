@@ -103,3 +103,7 @@ Yedi ikon ve ahşap tepsi yerleşik ImageGen ile ayrı ayrı üretildi. Konseptt
 ## Çatı ve inşa ikonları — 8 Ekim devamı
 
 Ahşap çatı 1×1 m düz paneldir; 2,4 m ince duvar veya 3 m blok duvar üstüne oturur. Yürünebilir üst kat değildir. Altı yapı ikonu ve sekiz gözlü tepsi yerleşik ImageGen ile üretildi: `Resources/ConstructionArt`; promptlar `docs/art-sources/construction-prompts.json`. Kaynak alfa korunur, Sprite sınırları şeffaf kenarları dışarıda bırakır.
+
+## İlk kaynak geometrileri
+
+8 Ekim keşif prototipi: ağaç 3 m civarı, dar gövde collider'ı; sandık yaklaşık 0,95×0,76×0,7 m, arkadan menteşeli kapak; yabani bitki 0,65 m. `ResourceView` geçici geometrileri; nihai Tripo modelleri olarak değerlendirilmez. Elde balta `FarmPresentation` altında kısa ahşap sap/metal baştır; Humanoid prosedürel kesme hareketini kullanır. Balta ikonu yerleşik ImageGen, `docs/art-sources/axe-prompt.json`. Nihai modellerde boyut, pivot, menteşe ve collider ayrımı korunmalı.

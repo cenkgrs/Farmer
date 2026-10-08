@@ -35,6 +35,7 @@ namespace Farmer
         public event Action Changed;
         public event Action<int, string> Harvested;
         public event Action<Vector3> Hoed;
+        public event Action<Vector3> ResourceUsed;
         public void NotifyTimeAdvanced() { SaveGame(); Changed?.Invoke(); }
         public Vector3 PlotCenter(int index, float height = .06f) { var p = Model.Plot(index); return new Vector3(p.x+.5f,height,p.z+.5f); }
         private FarmSaveStore store;
@@ -46,6 +47,7 @@ namespace Farmer
 
         private void Awake()
         {
+            Application.targetFrameRate=60;
             var rules = crops.Select(c => c.Rules).ToArray();
             Model = new FarmModel(rules, selection.Layout.Width, selection.Layout.Depth, startingMoney, BuildingRules());
             string directory = Application.persistentDataPath;
@@ -68,6 +70,7 @@ namespace Farmer
             if (k?.digit2Key.wasPressedThisFrame == true) Equip(FarmItem.WateringCan);
             if (k?.digit3Key.wasPressedThisFrame == true) Equip(FarmItem.Sickle);
             if (k?.digit5Key.wasPressedThisFrame == true) Equip(FarmItem.Hoe);
+            if (k?.digit6Key.wasPressedThisFrame == true) Equip(FarmItem.Axe);
             if (BuildMode) StopWatering(); else UpdateToolInput();
             if (k?.bKey.wasPressedThisFrame == true) Buy(1);
             if (k?.vKey.wasPressedThisFrame == true) SellHarvest();
@@ -124,6 +127,9 @@ namespace Farmer
             var mouse = Mouse.current;
             if (mouse == null || !mouse.leftButton.isPressed) { StopWatering(); return; }
             selection.RefreshPointer();
+            var exploration=GetComponent<ExplorationController>();
+            if(exploration!=null&&exploration.RefreshPointer())
+            {StopWatering();if(mouse.leftButton.wasPressedThisFrame)exploration.UseTarget();return;}
             if (Model.EquippedItem != FarmItem.WateringCan)
             {
                 StopWatering();
@@ -162,9 +168,9 @@ namespace Farmer
         public Transform Player => player;
         public int HoveredIndex => selection.WorldCell is Vector2Int c ? Model.IndexAt(c.x,c.y) : -1;
         public string EquippedName => Model.EquippedItem == FarmItem.Seeds ? ActiveCrop.displayName + " tohumu"
-            : Model.EquippedItem == FarmItem.WateringCan ? "Sulama kabı" : Model.EquippedItem == FarmItem.Hoe ? "Çapa" : "Orak";
+            : Model.EquippedItem == FarmItem.WateringCan ? "Sulama kabı" : Model.EquippedItem == FarmItem.Hoe ? "Çapa" : Model.EquippedItem==FarmItem.Axe?"Balta":"Orak";
         public string ActionLabel => !selection.WorldCell.HasValue ? "Fareyi toprağa götür" : !selection.HoveredInReach ? "Kareye yaklaş"
-            : Model.EquippedItem == FarmItem.Hoe ? "Sol tık · Toprağı çapala" : HoveredIndex < 0 ? "Önce çapa ile toprağı hazırla (5)" : Model.EquippedItem == FarmItem.Seeds ? "Sol tık · Tohum ek" : Model.EquippedItem == FarmItem.WateringCan ? "Sol tuşu basılı tut · Sula" : "Sol tık · Hasat et";
+            : Model.EquippedItem == FarmItem.Axe?"Ağacı hedefle · Sol tıkla kes": Model.EquippedItem == FarmItem.Hoe ? "Sol tık · Toprağı çapala" : HoveredIndex < 0 ? "Önce çapa ile toprağı hazırla (5)" : Model.EquippedItem == FarmItem.Seeds ? "Sol tık · Tohum ek" : Model.EquippedItem == FarmItem.WateringCan ? "Sol tuşu basılı tut · Sula" : "Sol tık · Hasat et";
 
         public void Equip(FarmItem item)
         {
@@ -206,6 +212,16 @@ namespace Farmer
             return ok;
         }
 
+        public bool Gather(int id)
+        {
+            if(!Ready||BuildMode)return false;
+            var node=Model.Exploration.Node(id);if(node==null)return false;
+            var target=new Vector3(node.x+.5f,player.position.y,node.z+.5f);
+            if((target-player.position).sqrMagnitude>6.25f||GetComponent<ExplorationController>()?.InReach(node)==false)return false;
+            bool ok=Complete(Model.Gather(id,ActiveCrop.id,out var message),message);
+            if(ok&&node.kind!=ResourceKind.Chest)ResourceUsed?.Invoke(target+Vector3.up*.6f);
+            return ok;
+        }
         public bool Buy(int count)
         {
             if (!Ready) return false;
@@ -249,6 +265,7 @@ namespace Farmer
                 Ready = true;
                 SaveStatus = recovered ? "Yedek kayıt yüklendi" : loaded == null ? "Yeni çiftlik" : "Kayıt yüklendi";
                 Feedback = recovered ? "Son sağlam yedek açıldı; önceki dosya korunacak." : "5 ile çapa seç; boş toprağı hazırla. 1/2/3 ile ek, sula ve hasat et.";
+                if(!recovered&&(loaded==null||JsonUtility.FromJson<FarmSnapshot>(File.ReadAllText(SavePath)).version<6))SaveGame();
                 Changed?.Invoke(); return true;
             }
             catch (Exception e) when (e is IOException || e is UnauthorizedAccessException || e is ArgumentException)

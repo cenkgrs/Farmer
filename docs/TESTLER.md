@@ -1,6 +1,6 @@
 # Prototip doğrulaması
 
-Unity **6000.3.25f1**, Linux. 8 Ekim 2026: 93/93 EditMode testi başarılı (`Logs/roof-final-tests.xml`). Gerçek geliştirme player'ında hareket/seçim ve tam tarım döngüsü kontrol edildi. Windows henüz denenmedi.
+Unity **6000.3.25f1**, Linux. 8 Ekim 2026: 101/101 EditMode testi başarılı (`Logs/exploration-tests.xml`). Gerçek geliştirme player'ında hareket/seçim ve tam tarım döngüsü kontrol edildi. Windows henüz denenmedi.
 
 ## Mantık testleri
 
@@ -62,7 +62,7 @@ Oyuncu kaydı Unity'nin `Application.persistentDataPath` klasöründe `farm-v1.j
 
 Her başarılı işlem ve normal çıkış kaydedilir; F5 tekrar kaydeder, F9 diskten yükler. Yeni dosya önce geçici dosyaya yazılır, sonra atomik değiştirme yapılır; önceki kayıt `.bak` olarak korunur. Ana kayıt bozuksa sağlam yedek açılır; bozuk dosya üzerine yazmadan önce `.corrupt-*` kopyası korunur. İkisi de okunamazsa sessizce yeni oyuna başlanmaz: işlemler durdurulur, dosyalar korunur ve ekranda hata gösterilir. Kaydetme izni/disk sorunu olursa mevcut oturum bellekte sürer; F5 ile yeniden dene.
 
-Kayıtlar Git'e girmez ve iki bilgisayar arasında otomatik taşınmaz. Önceki günlük sulama kayıtlarında büyümesi başlamış ürünün (`growth > 0`) daha önce sulandığı anlaşılır ve sulanmış olarak açılır. Şema sürümü 5; para, envanter, gün/dakika, dünya koordinatlı hazırlanmış toprak, odun ve yapı konum/dönüşlerini içerir. Dosya adı uyumluluk için `farm-v1.json` kalır. V1 geçişinde başlangıç odunu bir kez verilir; ilk v5 yazmada sağlam eski ana dosya `.pre-v5` olarak korunur. V1/V2 hazırlanmış tarlalar ve blokların dünya konumları korunur. Eski exe v5 kaydı desteklemez. Kuşanılan eşya yeni isteğe bağlı `equippedItem` alanında saklanır. Eski sürüm 1 kayıtlarında bu alan yoksa tohum seçilir; iki kalıcı alet envanterde bulunur. Karakter konumu saklanmaz; açılışta pazar yakınında başlarsın. Kayıt yeniyken tohum almak ilk otomatik kaydı oluşturur. Aynı çiftliği iki uygulamada eşzamanlı açma.
+Kayıtlar Git'e girmez ve iki bilgisayar arasında otomatik taşınmaz. Önceki günlük sulama kayıtlarında büyümesi başlamış ürünün (`growth > 0`) daha önce sulandığı anlaşılır ve sulanmış olarak açılır. Şema sürümü 6; para, envanter, gün/dakika, dünya koordinatlı hazırlanmış toprak, odun ve yapı konum/dönüşlerini içerir. Dosya adı uyumluluk için `farm-v1.json` kalır. V1 geçişinde başlangıç odunu bir kez verilir; ilk v6 yazmada sağlam eski ana dosya `.pre-v6` olarak korunur. V1/V2 hazırlanmış tarlalar ve blokların dünya konumları korunur. Eski exe v6 kaydı desteklemez. Kuşanılan eşya yeni isteğe bağlı `equippedItem` alanında saklanır. Eski sürüm 1 kayıtlarında bu alan yoksa tohum seçilir; çapa/balta/orak/sulama kabı kalıcı envanterde bulunur. Karakter konumu saklanmaz; açılışta pazar yakınında başlarsın. Yeni dünya yerleşimi ilk açılışta otomatik kaydedilir. Aynı çiftliği iki uygulamada eşzamanlı açma.
 
 ## Basılı tutarak sulama ve ses
 
@@ -188,3 +188,12 @@ Son teslim: **86/86 EditMode**, **194/194 player**, hatasız Linux build; günl�
 Manuel: 4 ile sekiz gözlü bara geç. Yatak varsa yatak ikonunu seçip kur; M ile tut ve yeni konuma bırak, R ile döndür. Boş son iki yuva işlem yapmamalı. Çatı ikonunda tekerlek ince duvar için 2,4 m / blok duvar için 3 m seçer; duvar yanından başlayıp iç boşluk üzerine uzat. İçeri girince ön/yan bloklar ve çatı saydamlaşmalı. Esc normal yedi eşya barını geri getirmeli. 2 ve basılı sol tuşla kareler arasında gezdirirken kol/su yönü yumuşak değişmeli.
 
 8 Ekim tam tur: **219/219 player kontrolü geçti**, çıkış 0 (`Logs/roof-inventory-final.log`). Model testleri **93/93** (`Logs/roof-final-tests.xml`). Kaynak/meta eşleri ve GUID benzersizliği denetlendi; Windows bu tur test edilmedi.
+
+
+## Keşif / v6
+
+`--farmer-check-exploration` veya `run_player_checks.py --checks exploration`: yeni dünya alet/nesne sayısı, orman kamera takibi ve zemin, yanlış alet/UI/duvar/mesafe engelleri, üç vuruşta odun, kısmi kesim kayıt, yok olan kaynak collider'ı, yabani tohum, sandık ödülü, yeniden yüklemede tek seferlik ödül, dışarıda inşa modu. Mantık testleri 101/101 (`Logs/exploration-tests.xml`). Eski fixture testlerinde kamera takibi kapalıdır; yeni keşif grubu gerçek takip bileşenini açıp kontrol eder.
+
+Sınırlı CPU örneği: `taskset -c 0,3,5,9 nice -n 10 python3 tools/art/run_player_checks.py --xvfb builds/Tools/xvfb/runtime/usr/bin/Xvfb --name benzersiz-ad`. Script kendi test process grubunu kapanışta temizler, oyuncunun normal oyununu hedeflemez. 360 s üst süre ve Xvfb bağlantı beklemesi vardır. Ekran ve Mono debugger arızası görülürse test başarılı sayılmaz.
+
+8 Ekim keşif teslimi: 101/101 EditMode. Genel oyun turunda 237/239; iki kısa ses kuyruğu kontrolü düşük test FPS'inde geç örnekleniyordu (üç kare 0,565 s). İlk bırakma karesinde örnekleme düzeltildi; son hedefli tur 47/47 (27 ses + 20 keşif), exit 0 / FARMER_PLAYER_SMOKE_OK (`Logs/exploration-delivery.log`). Diğer 212 kontrol genel turda geçti; tüm tur bu test düzeltmesinden sonra tekrar koşulmadı.

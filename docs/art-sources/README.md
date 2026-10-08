@@ -14,3 +14,7 @@ Bu görüntüler oyun için üretilmiş 2D görsellerdir; dış stok görsel vey
 ## İnşa barı — 8 Ekim 2026
 
 Altı ayrı ikon ve sekiz gözlü çerçeve **yerleşik ImageGen** ile ayrı çağrılarda üretildi; CLI kullanılmadı. Orijinal RGBA PNG dosyaları `Assets/_Farmer/Resources/ConstructionArt` içinde. [Tam prompt seti](construction-prompts.json). `ConstructionArtwork` alfa > 128 ölçümüyle bulunan normalize Sprite sınırlarını kullanır; kaynak alfa/pikseller değiştirilmedi. Çerçeve 541×85 referans boyutunda, sekiz tıklama alanı 54×54; ilk altı dolu, ikisi boş. Miktarlar ve seçili yuva vurgusu ayrı UI öğeleridir. Bunlar 3D yapı modellerini değiştirmez.
+
+## Balta — 8 Ekim keşif
+
+Yerleşik ImageGen ile üretilen [balta promptu](axe-prompt.json) ve `Assets/_Farmer/Resources/InventoryArt/axe.png`; alfa korunur. Normal eşya barında balta eklenince mevcut sekiz yuvalı `ConstructionArt/construction_frame.png` arka planı kullanılır. İnşa ve eşya barları ayrı seçim durumlarını korur.

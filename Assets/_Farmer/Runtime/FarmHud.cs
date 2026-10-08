@@ -15,7 +15,7 @@ namespace Farmer
         private Text[] buildCounts;
         private bool displayedBuildMode;
         private BuildController builder;
-        private readonly Button[] slots=new Button[4];
+        private readonly Button[] slots=new Button[5];
         private Text seedCount,produceCount,woodCount;
         private string hovered,lastFeedback;
         private float feedbackUntil;
@@ -72,16 +72,16 @@ namespace Farmer
                 else {button.interactable=false;AddHover(button.gameObject,"Boş yapı yuvası");}
             }
             moveButton=Button(buildMenu,"M · Tutup taşı",551,28,150,28,()=>builder.ToggleMoveMode());
-            var bar=Panel("Inventory Bar",root.transform,new Vector2(.5f,0),new Vector2(0,20),new Vector2(476,78),Wood);
+            var bar=Panel("Inventory Bar",root.transform,new Vector2(.5f,0),new Vector2(0,20),new Vector2(541,85),Wood);
             normalBar=bar;
-            var frame=bar.GetComponent<Image>();frame.sprite=InventoryIcon.Artwork(7);frame.type=Image.Type.Simple;
+            var frame=bar.GetComponent<Image>();frame.sprite=ConstructionArtwork.Get("construction_frame");frame.type=Image.Type.Simple;
             Object.Destroy(bar.GetComponent<Outline>());
             // Display order matches the existing shortcuts, but the slots themselves show items rather than instructions.
-            int[] order={0,1,2,4,3,5,6};
+            int[] order={0,1,2,4,3,8,5,6};
             for(int i=0;i<order.Length;i++)
             {
-                int kind=order[i];float x=15+i*65;
-                var button=Button(bar,"",x,11,55,55,()=>{if(kind<4)game.Equip((FarmItem)kind);else if(kind==4)builder.ToggleMode();});
+                int kind=order[i];float x=22+i*63;
+                var button=Button(bar,"",x,14,54,54,()=>{if(kind<4)game.Equip((FarmItem)kind);else if(kind==4)builder.ToggleMode();else if(kind==8)game.Equip(FarmItem.Axe);});
                 Object.Destroy(button.GetComponentInChildren<Text>().gameObject);
                 Object.Destroy(button.GetComponent<Outline>());
                 var iconObj=new GameObject("Item Icon",typeof(RectTransform),typeof(InventoryIcon));var rect=iconObj.GetComponent<RectTransform>();rect.SetParent(button.transform,false);rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.one;rect.offsetMin=new Vector2(6,7);rect.offsetMax=new Vector2(-6,-5);
@@ -89,8 +89,9 @@ namespace Farmer
                 var count=Label(button.transform,"",12,28,36,23,17,Ink);count.alignment=TextAnchor.MiddleRight;
                 if(kind<4){slots[kind]=button;button.name="Inventory Slot "+kind;}
                 if(kind==4){buildButton=button;button.name="Build Mode Button";}
+                if(kind==8){slots[4]=button;button.name="Inventory Slot 4";}
                 if(kind==0)seedCount=count;if(kind==5)produceCount=count;if(kind==6)woodCount=count;
-                string hint=kind==0?"Turp tohumu · 1\nHazır toprağa sol tıkla ek.":kind==1?"Sulama kabı · 2\nSol tuşu basılı tutarak sula.":kind==2?"Orak · 3\nOlgun ürünü sol tıkla hasat et.":kind==3?"Çapa · 5\nBoş toprağı sol tıkla hazırla.":kind==4?"İnşa · 4\nYapı kurmak için seç.":kind==5?"Turp\nHasadını pazarda satabilirsin.":"Odun\nYapı malzemesi · Pazardan alınır.";
+                string hint=kind==0?"Turp tohumu · 1\nHazır toprağa sol tıkla ek.":kind==1?"Sulama kabı · 2\nSol tuşu basılı tutarak sula.":kind==2?"Orak · 3\nOlgun ürünü sol tıkla hasat et.":kind==3?"Çapa · 5\nBoş toprağı sol tıkla hazırla.":kind==4?"İnşa · 4\nYapı kurmak için seç.":kind==5?"Turp\nHasadını pazarda satabilirsin.":kind==8?"Balta · 6\nAğaca sol tıkla odun topla.":"Odun\nAğaç keserek veya pazardan alınır.";
                 AddHover(button.gameObject,hint);
                 button.GetComponent<Image>().color=Color.clear;
             }
@@ -133,6 +134,7 @@ namespace Farmer
             }
             moveButton.GetComponentInChildren<Text>().text=builder.MoveMode?"M · İnşaya dön":"M · Tutup taşı";
             string hint=hovered;
+            if(hint==null&&!game.BuildMode)hint=game.GetComponent<ExplorationController>()?.Hint;
             if(hint==null&&!game.BuildMode)hint=game.GetComponent<DoorInteraction>()?.Hint;
             if(hint==null&&game.BuildMode)hint=builder.MoveMode?"Sol tuşla tut, sürükle ve bırak · R Döndür\nGeçersiz bırakma / Esc: Eski yerinde kalır":$"{builder.ActiveDefinition.displayName}\nQ Parça   R Döndür   M Taşı   Sağ tık Sök";
             tooltip.gameObject.SetActive(hint!=null);tooltipText.text=hint??"";

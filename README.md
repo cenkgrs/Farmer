@@ -58,4 +58,7 @@ Normal devirde kodla birlikte devir notları da commit/push edilir. **İlk push 
 
 Güncel inşa: **4** sekiz gözlü yapı barını açar; ikona tıkla veya Q ile parça seç. **M** ile eşyayı tutup sürükleyerek taşı, **R** ile döndür, **Esc** ile çık/iptal et. Çatı altını bloklarla doldurmadan kurulabilir; tekerlek 2,4 m ince duvar / 3 m blok duvar yüksekliğini seçer. Kamera tarafındaki bloklar ve çatı içeride saydamlaşır.
 
-Yeni oyun **50 para ve yataksız** başlar; yatak pazarda **100 para**. Eski kayıtlar gün/para/yapılar korunarak v5'e taşınır; eski başlangıç yatağı taşınabilir. Keşif ve kaynak toplama sonraki adımdır.
+Yeni oyun **50 para ve yataksız** başlar; yatak pazarda **100 para**. Eski kayıtlar gün/para/yapılar korunarak v6'ya taşınır; eski başlangıç yatağı taşınabilir. Keşif ve kaynak toplama sonraki adımdır.
+
+
+Keşif: **6 · Balta** ile ağaçlara üç sol tık → 8 odun. **3 · Orak** ile yabani bitkiye sol tık → 2 tohum. **Sandığa sol tık** → para. Yaklaşman ve arada engel olmaması gerekir. Çiftlik çevresine yürüdüğünde kamera sabit açısını koruyarak takip eder. Kaynaklar geçici modellerdir; bu sürümde düşman/kılıç yoktur. Sandıklar yeni dünya başına rastgele, aynı kayıtta kalıcıdır; açılmış sandık yeniden ödül vermez. Kayıt v6 ve `.pre-v6` yükseltme yedeği kullanılır.

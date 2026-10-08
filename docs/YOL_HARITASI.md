@@ -89,3 +89,6 @@ Kabul:
 Hayvancılık, mevsimler, sera/sulama gelişimi, üst katlar, daha fazla dekorasyon ve üretim. Sıra oyuncu deneyimine göre seçilecek.
 
 Sıradaki somut adım: kullanıcı ev/taşıma/yatak sürümünü oynadıktan sonra keşif. Para sandıkları, ağaçtan odun ve yabani bitkiden tohum; başka çiftçinin hasadını alma fikri ve daha sonraki hırsızlık yaptırımları kayıtlıdır. Bu sürümde uygulanmadı.
+
+
+8 Ekim keşif ara adımı tamamlanan kapsam: ağaçtan odun, başlangıç baltası, yabani bitkiden tohum ve her yeni dünyada rastgele sandık. Kaynaklar ve toplanma durumları v6 kayıtta kalır. 0.2'nin kaynak toplama kısmı ilerledi; kişisel depolama sandığı, diğer mobilyalar ve 0.4 savaş/düşman hâlâ açık. Kullanıcı başlangıçta kılıç istemiyor; kılıç edinme yolu henüz seçilmedi.

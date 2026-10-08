@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Farmer
 {
-    public enum FarmItem { Seeds = 0, WateringCan = 1, Sickle = 2, Hoe = 3 }
+    public enum FarmItem { Seeds = 0, WateringCan = 1, Sickle = 2, Hoe = 3, Axe = 4 }
 
     public sealed class CropRules
     {
@@ -44,6 +44,7 @@ namespace Farmer
         public InventoryRecord[] produce;
         public PlotRecord[] plots;
         public BuildingSnapshot building;
+        public ExplorationSnapshot exploration;
     }
 
     // No scene, input, filesystem or clock dependencies: all transactions validate before mutating.
@@ -66,12 +67,13 @@ namespace Farmer
         public int Money { get; private set; }
         public FarmItem EquippedItem { get; private set; }
         public BuildingModel Building { get; private set; }
-        // The two reusable starter tools are permanent inventory items in the 0.1 prototype.
+        public ExplorationModel Exploration { get; private set; }
+        // All work tools are permanent starter items; there is no starter weapon.
         public int ItemCount(FarmItem item, string cropId) => item == FarmItem.Seeds ? Seeds(cropId)
-            : item == FarmItem.WateringCan || item == FarmItem.Sickle || item == FarmItem.Hoe ? 1 : 0;
+            : item == FarmItem.WateringCan || item == FarmItem.Sickle || item == FarmItem.Hoe || item == FarmItem.Axe ? 1 : 0;
         public bool Equip(FarmItem item)
         {
-            if (item < FarmItem.Seeds || item > FarmItem.Hoe) return false;
+            if (item < FarmItem.Seeds || item > FarmItem.Axe) return false;
             EquippedItem = item; return true;
         }
         public bool UseEquipped(int index, string seedId, out string message)
@@ -88,7 +90,7 @@ namespace Farmer
         public int PlantedCount => plots.Count(p => !string.IsNullOrEmpty(p.cropId));
         public int ReadyCount => Enumerable.Range(0, plots.Count).Count(IsReady);
 
-        public FarmModel(IEnumerable<CropRules> catalog, int width = 6, int depth = 6, int startingMoney = 50, IEnumerable<BuildRules> buildCatalog = null)
+        public FarmModel(IEnumerable<CropRules> catalog, int width = 6, int depth = 6, int startingMoney = 50, IEnumerable<BuildRules> buildCatalog = null, int? worldSeed = null)
         {
             if (width < 1 || width > 100 || depth < 1 || depth > 100 || startingMoney < 0 || startingMoney > MoneyLimit)
                 throw new ArgumentOutOfRangeException(nameof(width));
@@ -96,6 +98,8 @@ namespace Farmer
             if (crops.Count == 0) throw new ArgumentException("A crop catalog is required.");
             Width = width; Depth = depth; Money = startingMoney;
             Building = new BuildingModel(buildCatalog ?? BuildRules.Defaults);
+            int seed=worldSeed??Guid.NewGuid().GetHashCode();
+            Exploration=ExplorationModel.Generate(seed==0?1:seed);
             foreach (string id in crops.Keys) { seeds[id] = 0; produce[id] = 0; }
         }
 
@@ -203,15 +207,15 @@ namespace Farmer
 
         public FarmSnapshot Snapshot() => new FarmSnapshot
         {
-            version = 5, width = Width, depth = Depth, day = Day, money = Money, minuteOfDay = MinuteOfDay, equippedItem = EquippedItem,
+            version = 6, width = Width, depth = Depth, day = Day, money = Money, minuteOfDay = MinuteOfDay, equippedItem = EquippedItem,
             seeds = seeds.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
             produce = produce.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
-            plots = plots.Select(p => p.Copy()).ToArray(), building = Building.Snapshot()
+            plots = plots.Select(p => p.Copy()).ToArray(), building = Building.Snapshot(), exploration=Exploration.Snapshot()
         };
 
         public static FarmModel Restore(FarmSnapshot saved, IEnumerable<CropRules> catalog, int width, int depth, IEnumerable<BuildRules> buildCatalog = null)
         {
-            if (saved == null || (saved.version < 1 || saved.version > 5) || saved.width != width || saved.depth != depth || saved.day < 1
+            if (saved == null || (saved.version < 1 || saved.version > 6) || saved.width != width || saved.depth != depth || saved.day < 1
                 || saved.day > DayLimit || saved.money < 0 || saved.money > MoneyLimit || saved.plots == null || (saved.version < 3 ? saved.plots.Length != width * depth : saved.plots.Length > PlotLimit))
                 throw new ArgumentException("Save header or grid is invalid or unsupported.");
             var rules = (buildCatalog ?? BuildRules.Defaults).ToArray();
@@ -265,7 +269,36 @@ namespace Farmer
                 bool cropAtBed=model.plots.Any(p=>p.x==-6&&(p.z==-4||p.z==-3)&&!string.IsNullOrEmpty(p.cropId));
                 if(!cropAtBed)model.Building.Place(rules.First(r=>r.IsBed).Id,-6,0,-4,0,out _);
             }
+            model.Exploration=saved.version>=6?ExplorationModel.Restore(saved.exploration):ExplorationModel.Generate(
+                unchecked(saved.day*7919+saved.money*31+20261008)|1,
+                (x,z)=>model.IndexAt(x,z)>=0||model.Building.Blocks.Any(b=>Math.Abs((long)b.x-x)<=1&&Math.Abs((long)b.z-z)<=1));
             return model;
+        }
+
+        public bool Gather(int id,string cropId,out string message)
+        {
+            var node=Exploration.Node(id);
+            if(node==null||node.collected)return Fail("Buradan zaten topladın.",out message);
+            var rule=ResourceRules.For(node.kind);
+            if(rule.Tool.HasValue&&EquippedItem!=rule.Tool.Value)return Fail(node.kind==ResourceKind.Tree?"Ağaç için baltayı kuşan (6).":"Yabani bitki için orağı kuşan (3).",out message);
+            bool final=node.hits+1==rule.Hits;
+            if(final)
+            {
+                if(node.kind==ResourceKind.Tree&&!Building.AddWood(rule.Reward))return Fail("Odun çantan dolu.",out message);
+                if(node.kind==ResourceKind.WildPlant)
+                {
+                    if(!seeds.ContainsKey(cropId)||seeds[cropId]>StackLimit-rule.Reward)return Fail("Tohum çantan dolu veya tohum tanımsız.",out message);
+                    seeds[cropId]+=rule.Reward;
+                }
+                if(node.kind==ResourceKind.Chest)
+                {
+                    if(Money>MoneyLimit-node.coins)return Fail("Para sınırına ulaştın.",out message);
+                    Money+=node.coins;
+                }
+            }
+            Exploration.Hit(id);
+            message=!final?$"Ağaç · {node.hits+1}/{rule.Hits} vuruş":node.kind==ResourceKind.Tree?$"+{rule.Reward} odun toplandı.":node.kind==ResourceKind.WildPlant?$"+{rule.Reward} tohum toplandı.":$"Sandıktan +{node.coins} para buldun!";
+            return true;
         }
 
         private void RestoreInventory(InventoryRecord[] records, Dictionary<string, int> inventory)

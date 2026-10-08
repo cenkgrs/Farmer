@@ -45,12 +45,12 @@ namespace Farmer
                 Check(motor.transform.position.z > -1.4f && motor.transform.position.z < -0.7f,
                     "CharacterController stops at the solid crate.");
 
-                Teleport(controller, new Vector3(9.25f, 0.1f, 6));
+                Teleport(controller, new Vector3(27.25f, 0.1f, 6));
                 InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.W, Key.D));
                 yield return new WaitForSecondsRealtime(0.3f);
                 InputSystem.QueueStateEvent(keyboard, new KeyboardState());
                 yield return null;
-                Check(motor.transform.position.x <= 9.31f && motor.transform.position.y > -0.1f,
+                Check(motor.transform.position.x <= 27.31f && motor.transform.position.y > -0.1f,
                     "Player remains on the ground at the world boundary.");
 
                 Teleport(controller, new Vector3(-4, 0.1f, -4));
@@ -77,7 +77,7 @@ namespace Farmer
                 Check(!selection.HoveredCell.HasValue,
                     "Leaving the viewport clears the target.");
                 Check(camera.transform.position == cameraPosition && Quaternion.Angle(cameraRotation, camera.transform.rotation) < 0.001f,
-                    "Camera stays fixed while moving and targeting.");
+                    "Camera angle and farm fixture framing stay fixed while targeting.");
                 Debug.Log("FARMER_CONTROLS_CHECKS_FINISHED");
             }
             finally

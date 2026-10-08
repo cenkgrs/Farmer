@@ -52,6 +52,7 @@ namespace Farmer
             }
             yield return new WaitForSecondsRealtime(3f);
             var farm = FindFirstObjectByType<FarmGame>();
+            Camera.main.GetComponent<ExplorationCamera>().enabled=false;
             farm.GetComponent<DayNightCycle>().ClockPaused = true;
             // Legacy farming regression keeps its explicit 60-coin economy and a test-only rest point.
             var fixture=farm.Model.Snapshot();fixture.money=60;fixture.building.beds=5;
@@ -78,6 +79,8 @@ namespace Farmer
                 yield return HouseSmokeChecks.Run(outputPath);
             if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-roof") >= 0)
                 yield return RoofMoveSmokeChecks.Run(outputPath);
+            if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-exploration") >= 0)
+                yield return ExplorationSmokeChecks.Run(outputPath);
             yield return new WaitForEndOfFrame();
             ScreenCapture.CaptureScreenshot(outputPath);
             float deadline = Time.realtimeSinceStartup + 15f;

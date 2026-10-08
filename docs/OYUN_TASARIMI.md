@@ -113,3 +113,12 @@ Döşemesiz, üst üste ahşap bloklardan yapılmış evler de iç mekân sayıl
 Basılı sulamada hedef kare değişince kol, karakter yönü ve su akışı yaklaşık 0,18 saniyelik yumuşatma ile yeni hedefe yönelir. Gerçek sulama işlemi imlecin o an gösterdiği erişilebilir kareye uygulanır; animasyon işlem geciktirmez.
 
 Sonraki keşif adımı için kullanıcı fikirleri: çevrede para içeren sandık, ağaçtan odun, yabani bitkiden tohum ve başka çiftçinin hasadını alma. Hırsızlık yaptırımları daha sonraya bırakılır. Kullanıcı önce ev/taşıma/yatak işlerinin bitirilmesini seçti; bu tur keşif veya hırsızlık sistemi eklemez.
+
+
+## İlk keşif — 8 Ekim uygulanmış güncel kararlar
+
+Yeni dünyada 50 para ve kalıcı çapa/balta/orak/sulama kabı vardır; kılıç yoktur. Yeni dünya için rastgele seed üretilir, dış halkaya 24 ağaç/12 yabani tohum bitkisi/5 keşif sandığı dağıtılır. Sandıklar 30–65 para içerir. Yerleşim ve ödül ilk açılışta kaydedilir; aynı kayıt yeniden açıldığında konum/açılmış durum değişmez. Yalnızca yeni dünya yeni dağılım üretir. Kaynaklar bu adımda yeniden doğmaz.
+
+6 veya balta ikonu ile kuşan, ağaca üç sol tık vur → 8 odun. 3/orakla yabani bitkiye sol tık → 2 turp tohumu. Sandığa herhangi bir aletle sol tık → kayıtlı para. 2,5 m mesafe ve arada engel olmaması gerekir; dolu çanta son kaynak vuruşunu tüketmez. Kısmi ağaç kesimi de kaydedilir. Başlangıç silahı yoktur; balta bu adımda savaş silahı değildir. Gerçek düşman riski savaş adımında eklenecek.
+
+Arazi 56×56 m, merkez çiftlik aynı konumda; dış halkada kaynaklar arasında yürünebilir aralık bulunur. İzometrik açı değişmez; kamera çiftlikten uzaklaşırken takip eder. Mevcut yapı/çapa/10 dakikalık saat kuralları sürer. Kayıt v6, eski sağlam kayıt `.pre-v6` yedeğiyle korunur. Normal envanter sekiz göze çıktı; inşa barı kendi sekiz yuvasını korur.

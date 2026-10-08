@@ -542,6 +542,7 @@ GameObject:
   - component: {fileID: 144183763}
   - component: {fileID: 144183762}
   - component: {fileID: 144183761}
+  - component: {fileID: 144183765}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -667,6 +668,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &144183765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144183760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2022bfe76b1220998c31a24cf1617c2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Farmer.Runtime::Farmer.ExplorationCamera
+  player: {fileID: 1590656332}
 --- !u!1 &154920767
 GameObject:
   m_ObjectHideFlags: 0
@@ -1908,7 +1922,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.25, z: 0}
-  m_LocalScale: {x: 20, y: 0.5, z: 20}
+  m_LocalScale: {x: 56, y: 0.5, z: 56}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -2391,6 +2405,7 @@ GameObject:
   - component: {fileID: 703771129}
   - component: {fileID: 703771130}
   - component: {fileID: 703771131}
+  - component: {fileID: 703771132}
   m_Layer: 0
   m_Name: Farming
   m_TagString: Untagged
@@ -2561,6 +2576,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a733d351ee0c6c6db91c48cc4af6e528, type: 3}
   m_Name:
   m_EditorClassIdentifier: Farmer.Runtime::Farmer.HouseVisibility
+--- !u!114 &703771132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703771123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e179cb25d0745c2d8ae69c99ca2801e3, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Farmer.Runtime::Farmer.ExplorationController
+  baseMaterial: {fileID: 2100000, guid: ebf13526795294ac4b14856f55071a1b, type: 2}
 --- !u!1 &703808392
 GameObject:
   m_ObjectHideFlags: 0
@@ -6915,7 +6943,7 @@ MonoBehaviour:
   viewCamera: {fileID: 144183763}
   model: {fileID: 154920768}
   speed: 3.8
-  walkableHalfExtent: 9.3
+  walkableHalfExtent: 27.3
 --- !u!143 &1590656334
 CharacterController:
   m_ObjectHideFlags: 0
