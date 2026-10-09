@@ -4430,6 +4430,7 @@ GameObject:
   - component: {fileID: 577512418}
   - component: {fileID: 577512420}
   - component: {fileID: 577512419}
+  - component: {fileID: 577512421}
   m_Layer: 0
   m_Name: Valley path
   m_TagString: Untagged
@@ -4446,7 +4447,7 @@ Transform:
   m_GameObject: {fileID: 577512417}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -55, y: 0.003, z: 91}
+  m_LocalPosition: {x: -55, y: 0.009, z: 91}
   m_LocalScale: {x: 3, y: 0.004, z: 10.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4477,7 +4478,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 66f2b91273c4abe4e8aa6d839c75a60d, type: 2}
+  - {fileID: 2100000, guid: d0bf239683eaa7f81991917d077bb884, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4509,6 +4510,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 577512417}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &577512421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 577512417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccfae77731c8570969a38e38c9a71dad, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Farmer.Runtime::Farmer.PavingTiling
 --- !u!1001 &617118595
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4910,6 +4923,7 @@ GameObject:
   - component: {fileID: 682815290}
   - component: {fileID: 682815292}
   - component: {fileID: 682815291}
+  - component: {fileID: 682815293}
   m_Layer: 0
   m_Name: Valley path
   m_TagString: Untagged
@@ -4926,7 +4940,7 @@ Transform:
   m_GameObject: {fileID: 682815289}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -55, y: 0.003, z: 96}
+  m_LocalPosition: {x: -55, y: 0.015, z: 96}
   m_LocalScale: {x: 16, y: 0.004, z: 16.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4957,7 +4971,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 66f2b91273c4abe4e8aa6d839c75a60d, type: 2}
+  - {fileID: 2100000, guid: d0bf239683eaa7f81991917d077bb884, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4989,6 +5003,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 682815289}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &682815293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682815289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccfae77731c8570969a38e38c9a71dad, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Farmer.Runtime::Farmer.PavingTiling
 --- !u!1001 &684872410
 PrefabInstance:
   m_ObjectHideFlags: 0

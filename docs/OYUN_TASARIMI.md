@@ -154,3 +154,11 @@ Oda tespiti döşeme bütünlüğüne bağlı değildir: blok duvar, ince duvar 
 9 Ekim büyük harita kararı: pazar/esnaf oyuncunun çiftliğinde olmayacak; ayrı köy merkezi ve meydanda toplanacak. Etkileşimli karakterler sonraki adım. [Vadi tasarımı](HARITA_TASARIMI.md) ve [ilk sekiz model paketi](references/valley_v01/README.md) hazır; mevcut küçük oyun sahnesi bu tur büyük haritaya dönüşmedi.
 
 9 Ekim ilk köy kesiti uygulanması: pazar çiftlikten (-60,88) köy noktasına taşındı; mevcut alışveriş kataloğu korunuyor. Köydeki üç yeni cephe şu an dekor; ayrı esnaf/NPC değil. Yeni yol, kuyu ve çevre dekoru eklendi, tam vadi/nehir henüz tamamlanmadı. Ayrıntılar HARITA_TASARIMI.md uygulama bölümünde.
+
+## 9 Ekim — menü ve daha sessiz arayüz
+
+Oyun açılış menüsünden başlar; kayıt varsa **Devam Et**, ilk açılışta **Başla**. Kayıt sıfırlayan Yeni Oyun düğmesi bu adımda yok. Esc normal oyunda menüyü açar; çanta/inşa açıksa önce ilgili görünümü kapatır. Menüde dünya saati ve oyuncu girdisi durur; Devam Et geri döndürür. Tam Ekran düğmesi veya F11 pencere/kenarlıksız tam ekran arasında geçer. Menüde Kaydet ve Çık vardır; kayıt başarısızsa çıkış durdurulur.
+
+Dünya hedeflerine sürekli çıkan tuş/alet talimatları ve rutin işlem bildirimleri kaldırıldı. Eşya barında yalnız imleçle üzerine gelinen eşyanın kısa adı/tuşu görünür; alışveriş ve depolama arayüzü işlevleri korunur. Tutorial ayrı tasarlanacak. Tekerlek hem Linux birimlik hem 120 değerli girdilerle hızlı, kısa yumuşatmalı zoom yapar. Saydam duvar/çatı sandık hedefleme ışınını kesmez; oyuncuyla sandık arasındaki gerçek duvar ve mesafe kontrolü sürer.
+
+Köy meydanı/giriş yolunda taş döşeme. Kullanıcı geniş haritanın seyrekliğini ve konseptten uzaklığını kabul etmedi; çevre dizilimini Unity'de kendisi yapacak. Otomatik yerleşim yeniden üretilmeyecek. [Proje özelinde harita düzenleme rehberi](UNITY_HARITA_DUZENLEME.md).

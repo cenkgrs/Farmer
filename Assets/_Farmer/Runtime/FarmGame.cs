@@ -14,6 +14,8 @@ namespace Farmer
         public BuildDefinition[] BuildPieces => buildPieces;
         public bool BuildMode { get; private set; }
         public bool InventoryOpen { get; set; }
+        public bool MenuOpen { get; set; }
+        public bool HadSaveAtStartup { get; private set; }
         [SerializeField] private FarmSelection selection;
         [SerializeField] private Transform player;
         [SerializeField] private Transform market;
@@ -60,12 +62,14 @@ namespace Farmer
             SavePath = Path.Combine(directory, "farm-v1.json");
             store = new FarmSaveStore(SavePath, snapshot => FarmModel.Restore(snapshot, rules, selection.Layout.Width, selection.Layout.Depth, BuildingRules()));
             if(camp!=null)camp.gameObject.SetActive(false);
+            HadSaveAtStartup=File.Exists(SavePath)||File.Exists(SavePath+".bak");
             LoadGame();
+            gameObject.AddComponent<SessionMenu>();
         }
         private void Update()
         {
             var k = Keyboard.current;
-            if (!Application.isFocused) { StopWatering(); return; }
+            if (MenuOpen || !Application.isFocused) { StopWatering(); return; }
             if (k?.f9Key.wasPressedThisFrame == true) LoadGame();
             if (!Ready || InventoryOpen) { StopWatering(); return; }
             if (k?.digit1Key.wasPressedThisFrame == true) Equip(FarmItem.Seeds);
@@ -195,7 +199,7 @@ namespace Farmer
 
         public bool UseHovered()
         {
-            if (!Ready || BuildMode || !Application.isFocused) return false;
+            if (!Ready || MenuOpen || BuildMode || !Application.isFocused) return false;
             selection.RefreshPointer();
             int index = HoveredIndex;
             if (!selection.WorldCell.HasValue) return false;
@@ -210,7 +214,7 @@ namespace Farmer
                 if (tilled) Hoed?.Invoke(new Vector3(cell.x+.5f,.06f,cell.y+.5f));
                 return tilled;
             }
-            if (index < 0) { Feedback = "Önce çapa (5) ile toprağı ekime hazırla."; return false; }
+            if (index < 0) return false;
             if (Model.Building.Occupied(cell.x,0,cell.y) || WorldGround.Obstructed(cell.x,cell.y,player)) { Feedback = "Toprağın üzerinde bir yapı veya engel var."; return false; }
             var plot = Model.Plot(index);
             bool harvesting = Model.EquippedItem == FarmItem.Sickle;

@@ -27,7 +27,7 @@ namespace Farmer
         {
             Vector2 input = Vector2.zero;
             var keyboard = Keyboard.current;
-            if (Application.isFocused && keyboard != null && (game==null||!game.InventoryOpen))
+            if (Application.isFocused && keyboard != null && (game==null||(!game.InventoryOpen&&!game.MenuOpen)))
             {
                 input.x = (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed ? 1 : 0)
                     - (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed ? 1 : 0);

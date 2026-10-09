@@ -46,7 +46,7 @@ namespace Farmer
         }
         private void Update()
         {
-            Hint=null;if(game==null||!game.Ready||!Application.isFocused||overlay==null)return;
+            Hint=null;if(game==null||!game.Ready||game.MenuOpen||!Application.isFocused||overlay==null)return;
             var k=Keyboard.current;
             if(k?.tabKey.wasPressedThisFrame==true){if(IsOpen)Close();else Open(null);return;}
             if(IsOpen)
@@ -56,11 +56,24 @@ namespace Farmer
             }
             if(game.BuildMode||Mouse.current==null)return;
             game.Selection.RefreshPointer();if(game.Selection.PointerBlocked)return;
-            if(!Physics.Raycast(Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue()),out var hit,100,~0,QueryTriggerInteraction.Ignore))return;
-            var view=hit.collider.GetComponentInParent<PlacedBlockView>();
+            var view=PickChest(Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue()));
             if(view==null||view.Record.pieceId!="home_chest")return;
             bool near=CanUse(view.Record.instanceId);Hint=near?"F · Sandığı aç":"Sandığı açmak için yaklaş.";
             if(near&&k?.fKey.wasPressedThisFrame==true)Open(view.Record.instanceId);
+        }
+        // Visual occluders must not intercept pointing into an already visible room.
+        // CanUse still tests the physical player-to-chest line independently.
+        public PlacedBlockView PickChest(Ray ray)
+        {
+            foreach(var hit in Physics.RaycastAll(ray,150,~0,QueryTriggerInteraction.Ignore).OrderBy(h=>h.distance))
+            {
+                if(hit.collider.transform.IsChildOf(game.Player))continue;
+                var faded=hit.collider.GetComponentInParent<OccludingWall>();
+                if(faded!=null&&faded.Opacity<.99f)continue;
+                var piece=hit.collider.GetComponentInParent<PlacedBlockView>();
+                return piece!=null&&piece.Record.pieceId=="home_chest"?piece:null;
+            }
+            return null;
         }
         public bool CanUse(string id)
         {
@@ -78,7 +91,7 @@ namespace Farmer
         public void Open(string id)
         {
             if(!game.Ready||overlay==null||(id!=null&&!CanUse(id)))return;
-            game.SetBuildMode(false);ChestId=id;openedModel=game.Model;game.InventoryOpen=true;game.Selection.ModalBlocked=true;
+            game.SetBuildMode(false);game.ShowBuildFeedback("");ChestId=id;openedModel=game.Model;game.InventoryOpen=true;game.Selection.ModalBlocked=true;
             bagPanel.anchoredPosition=new Vector2(id==null?0:-215,0);chestPanel.gameObject.SetActive(id!=null);overlay.SetActive(true);Refresh();
         }
         public void Close(){game.InventoryOpen=false;game.Selection.ModalBlocked=false;ChestId=null;if(overlay!=null)overlay.SetActive(false);}

@@ -54,6 +54,8 @@ namespace Farmer
             var farm = FindFirstObjectByType<FarmGame>();
             Camera.main.GetComponent<ExplorationCamera>().enabled=false;
             farm.GetComponent<DayNightCycle>().ClockPaused = true;
+            if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-menu") >= 0)
+                yield return MenuSmokeChecks.Run(outputPath);
             // Legacy farming regression keeps its explicit 60-coin economy and a test-only rest point.
             var fixture=farm.Model.Snapshot();fixture.money=60;fixture.building.beds=5;
             Directory.CreateDirectory(Path.GetDirectoryName(farm.SavePath));

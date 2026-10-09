@@ -61,3 +61,9 @@ Sekiz teslim prefabı hazır. Dünya zemini 256×256 m'ye açıldı; yaklaşık 
 Pazar (-60,88) civarında köye taşındı, mevcut alış/satış ve mobilya işlevleri aynı tezgâhta çalışır. Yeni dükkân cepheleri henüz ayrı satıcılar değildir. Eski kaynak düğümleri ve rastgele sandık düzeni korunur; yeni çam/çalı/kayalar şu an sabit çevre dekorudur, kaynak toplama sistemine eklenmedi. Nehir ve köprü geçişi, ayrı esnaf/NPC ve dekorun kaynak sistemine bağlanması sonraki somut işlerdir. Köprü prefabı teslim edildi ama sahnede geçit olarak henüz kullanılmıyor.
 
 Yeni dekor kayıtlı yapı/tarla ile çakışırsa renderer/collider'ı gizlenir, kayıtlı oyuncu verisi silinmez. Başlangıçtaki 56 m alan yeni büyük dekorla doldurulmadı. Yollar geçici düz renkli geometridir; son boyanmış zemin veya tamamlanmış çevre sanatı değildir.
+
+## 9 Ekim kullanıcı değerlendirmesi ve yeni çalışma yönü
+
+Mevcut düz/seyrek yerleşim görsel konsepti karşılamıyor; kullanıcı harita dizilimini şimdilik mevcut prefablarla kendisi yapmayı seçti. Önce Unity'de köy çevresini düzenleyecek. [Adım adım rehber](UNITY_HARITA_DUZENLEME.md), prefab tablosu, sahne menüsü, taş yol düzenleme ve mevcut teknik sınırları içerir. Sonraki oturumlarda ValleyArtSetup ile sahneyi otomatik yeniden üretme; kullanıcının elle düzenlemesini koru. Nehir/şelale/yürünebilir yükseltiler hâlâ yapılmış değil.
+
+Meydan ve köy girişindeki son yol dilimi ImageGen taş döşemeyle değiştirildi; taş ölçeği dilim büyüklüğüne göre korunur. Kırsal patika toprak olarak kalır. Menü arka planında önceden onaylanan vadi konsept illüstrasyonu kullanılır; oyun haritasının tamamlandığı anlamına gelmez.

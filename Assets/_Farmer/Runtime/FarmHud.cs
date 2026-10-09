@@ -24,8 +24,8 @@ namespace Farmer
         private BuildController builder;
         private readonly Button[] slots=new Button[5];
         private Text seedCount,produceCount,woodCount;
-        private string hovered,lastFeedback;
-        private float feedbackUntil;
+        private string hovered;
+        private CanvasGroup visibility;
         private static Sprite rounded;
         private static readonly Color Cream=new Color(.94f,.85f,.66f),Ink=new Color(.25f,.19f,.12f),Wood=Color.white,Gold=new Color(1f,.63f,.08f,.32f);
         public void Configure(FarmGame source)=>game=source;
@@ -34,6 +34,7 @@ namespace Farmer
             builder=game.GetComponent<BuildController>();
             var root=new GameObject("Farm HUD",typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));root.transform.SetParent(transform,false);
             root.GetComponent<Canvas>().renderMode=RenderMode.ScreenSpaceOverlay;
+            visibility=root.AddComponent<CanvasGroup>();
             var scaler=root.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1280,720);scaler.matchWidthOrHeight=.5f;
             if(EventSystem.current==null)
             {
@@ -100,7 +101,7 @@ namespace Farmer
                 if(kind==8){slots[4]=button;button.name="Inventory Slot 4";}
                 if(kind==0)seedCount=count;if(kind==5)produceCount=count;if(kind==6)woodCount=count;
                 string hint=kind==0?"Turp tohumu · 1\nHazır toprağa sol tıkla ek.":kind==1?"Sulama kabı · 2\nSol tuşu basılı tutarak sula.":kind==2?"Orak · 3\nOlgun ürünü sol tıkla hasat et.":kind==3?"Çapa · 5\nBoş toprağı sol tıkla hazırla.":kind==4?"İnşa · 4\nYapı kurmak için seç.":kind==5?"Turp\nHasadını pazarda satabilirsin.":kind==8?"Balta · 6\nAğaca sol tıkla odun topla.":"Odun\nAğaç keserek veya pazardan alınır.";
-                AddHover(button.gameObject,hint);
+                AddHover(button.gameObject,hint.Split('\n')[0]);
                 button.GetComponent<Image>().color=Color.clear;
             }
             tooltip=Panel("Item Tooltip",root.transform,new Vector2(.5f,0),new Vector2(0,106),new Vector2(440,56),Cream);
@@ -129,14 +130,14 @@ namespace Farmer
         private void LateUpdate(){if(summary!=null)Refresh();}
         private void Refresh()
         {
+            visibility.alpha=game.MenuOpen?0:1;visibility.interactable=!game.MenuOpen;visibility.blocksRaycasts=!game.MenuOpen;
             var model=game.Model;var crop=game.ActiveCrop;
             if(displayedBuildMode!=game.BuildMode){hovered=null;displayedBuildMode=game.BuildMode;}
             normalBar.gameObject.SetActive(!game.BuildMode&&!game.InventoryOpen);
             tooltip.anchoredPosition=new Vector2(0,game.BuildMode?148:106);
             toast.anchoredPosition=new Vector2(0,game.BuildMode?214:172);
-            summary.text=$"Gün {model.Day}   ·   {model.ClockText}";money.text=$"{model.Money} para";saveStatus.text=game.SaveStatus=="Kaydedildi"?"Kaydedildi":game.Ready?"F5 · Kaydet":"Kayıt hatası";
-            if(lastFeedback!=game.Feedback){lastFeedback=game.Feedback;feedbackUntil=Time.unscaledTime+3.5f;}
-            feedback.text=game.Feedback;toast.gameObject.SetActive(!game.InventoryOpen&&(Time.unscaledTime<feedbackUntil||!game.Ready));
+            summary.text=$"Gün {model.Day}   ·   {model.ClockText}";money.text=$"{model.Money} para";saveStatus.text=game.SaveStatus=="Kaydedildi"?"Kaydedildi":game.Ready?"":"Kayıt hatası";
+            feedback.text=game.Feedback;toast.gameObject.SetActive(!game.Ready&&!game.InventoryOpen);
             seedCount.text=model.Seeds(crop.id).ToString();produceCount.text=model.Produce(crop.id).ToString();woodCount.text=model.Building.Wood.ToString();
             for(int i=0;i<slots.Length;i++)
             {
@@ -156,19 +157,9 @@ namespace Farmer
             }
             moveButton.GetComponentInChildren<Text>().text=builder.MoveMode?"M · İnşaya dön":"M · Tutup taşı";
             string hint=hovered;
-            if(hint==null&&!game.BuildMode)hint=game.GetComponent<ExplorationController>()?.Hint;
-            if(hint==null&&!game.BuildMode)hint=game.GetComponent<StorageInteraction>()?.Hint;
-            if(hint==null&&!game.BuildMode)hint=game.GetComponent<DoorInteraction>()?.Hint;
-            if(hint==null&&game.BuildMode)hint=builder.MoveMode?"Sol tuşla tut, sürükle ve bırak · R Döndür\nGeçersiz bırakma / Esc: Eski yerinde kalır":$"{builder.ActiveDefinition.displayName}\nQ Parça   R Döndür   M Taşı   Sağ tık Sök";
             tooltip.gameObject.SetActive(!game.InventoryOpen&&hint!=null);tooltipText.text=hint??"";
-            int index=game.HoveredIndex;detail.gameObject.SetActive(!game.InventoryOpen&&(game.BuildMode||index>=0));
-            if(game.BuildMode)selectionStatus.text=$"{builder.ActiveDefinition.displayName}\n{builder.HeightLabel} · {builder.Rotation*90}°\n{builder.Status}";
-            else if(index>=0)
-            {
-                var plot=model.Plot(index);
-                selectionStatus.text=string.IsNullOrEmpty(plot.cropId)?"Ekime hazır toprak":model.IsReady(index)?"Hasada hazır!":$"{game.Definition(plot.cropId).displayName} · Aşama {model.Stage(index)+1}/4\n"+(plot.watered?"Sulandı":"Su bekliyor");
-                selectionStatus.text+="\n"+(game.Selection.HoveredInReach?game.ActionLabel:"Biraz yaklaş");
-            }
+            detail.gameObject.SetActive(!game.InventoryOpen&&game.BuildMode);
+            selectionStatus.text=$"{builder.ActiveDefinition.displayName}\n{builder.HeightLabel} · {builder.Rotation*90}°";
             shop.gameObject.SetActive(game.NearMarket&&!game.InventoryOpen);shopFurniture.gameObject.SetActive(game.NearMarket&&!game.InventoryOpen);
             for(int i=0;i<furnitureBuy.Length;i++)furnitureBuy[i].interactable=game.Ready&&model.Money>=furnitureSale[i].price&&model.Building.FurnitureCount(furnitureSale[i].id)<BuildingModel.WoodLimit;
             camp.gameObject.SetActive(game.NearCamp&&!game.NearMarket&&!game.InventoryOpen);

@@ -52,7 +52,7 @@ namespace Farmer
         public bool RefreshPointer()
         {
             target=null;Hint=null;
-            if(game==null||!game.Ready||game.BuildMode||!Application.isFocused||Mouse.current==null)return false;
+            if(game==null||!game.Ready||game.MenuOpen||game.BuildMode||!Application.isFocused||Mouse.current==null)return false;
             game.Selection.RefreshPointer();if(game.Selection.PointerBlocked)return false;
             var ray=Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
             if(Physics.Raycast(ray,out var hit,150,~0,QueryTriggerInteraction.Ignore))

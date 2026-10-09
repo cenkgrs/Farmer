@@ -1,7 +1,7 @@
 """Isolated Linux graphics test; requires Xvfb and xwininfo. No desktop focus changes."""
 import argparse, ctypes as c, os, re, signal, subprocess, time
 from pathlib import Path
-p=argparse.ArgumentParser();p.add_argument('--xvfb',default='Xvfb');p.add_argument('--name',required=True);p.add_argument('--checks',nargs='+',choices=['controls','farming','watering','art','tool-animation','building','world','house','roof','exploration','storage','valley'],default=['controls','farming','watering','art','tool-animation','building','world','house','roof','exploration','storage','valley']);args=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--xvfb',default='Xvfb');p.add_argument('--name',required=True);p.add_argument('--checks',nargs='+',choices=['controls','farming','watering','art','tool-animation','building','world','house','roof','exploration','storage','valley','menu'],default=['controls','farming','watering','art','tool-animation','building','world','house','roof','exploration','storage','valley','menu']);args=p.parse_args()
 root=Path(__file__).resolve().parents[2];os.chdir(root)
 server_log=open(root/'Logs'/f'{args.name}-xvfb.log','w')
 read,write=os.pipe()

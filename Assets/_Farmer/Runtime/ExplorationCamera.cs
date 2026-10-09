@@ -21,14 +21,14 @@ namespace Farmer
             int context=game!=null&&game.BuildMode?2:house!=null&&house.Indoors?1:0;
             var mouse=Mouse.current;var keyboard=Keyboard.current;
             bool control=keyboard!=null&&(keyboard.leftCtrlKey.isPressed||keyboard.rightCtrlKey.isPressed);
-            if(game!=null&&game.Ready&&Application.isFocused&&!game.InventoryOpen&&mouse!=null)
+            if(game!=null&&game.Ready&&Application.isFocused&&!game.InventoryOpen&&!game.MenuOpen&&mouse!=null)
             {
                 game.Selection.RefreshPointer();
                 if(!game.Selection.PointerBlocked&&(context!=2||control))
                 {
                     float scroll=mouse.scroll.ReadValue().y;
                     if(Mathf.Abs(scroll)>.01f)
-                        zoom[context]=Mathf.Clamp(zoom[context]*Mathf.Exp(-Mathf.Clamp(scroll/120f,-3,3)*.16f),.5f,1.8f);
+                        zoom[context]=Mathf.Clamp(zoom[context]*Mathf.Exp(-Mathf.Clamp(Mathf.Abs(scroll)>=120f?scroll/120f:scroll,-3,3)*.22f),.5f,1.8f);
                 }
             }
             var focus=player.position+Vector3.up*.8f;
@@ -49,7 +49,7 @@ namespace Farmer
             }
             size=Mathf.Clamp(size*zoom[context],1.8f,24f);
             transform.position=desired;
-            view.orthographicSize=Mathf.SmoothDamp(view.orthographicSize,size,ref sizeVelocity,.35f);
+            view.orthographicSize=Mathf.SmoothDamp(view.orthographicSize,size,ref sizeVelocity,.12f);
         }
     }
 }

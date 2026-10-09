@@ -87,6 +87,21 @@ namespace Farmer
                 for(int x=0;x<3;x++)for(int z=4;z<7;z++)model.Place("wood_roof",x,2,z,0,out _);
                 game.NotifyTimeAdvanced();yield return new WaitForSecondsRealtime(.6f);
                 Check(visibility.Indoors&&visibility.FadedCount>=15,"A room with a floor gap reveals all nine roof panels and front walls.");
+                // A chest inside a fully roofed room must be pickable through faded structures.
+                var chestFixture=game.Model.Snapshot();chestFixture.money=500;
+                File.WriteAllText(game.SavePath,JsonUtility.ToJson(chestFixture));game.LoadGame();
+                game.Model.BuyFurniture("home_chest",out _);
+                game.Model.Building.Place("home_chest",2,0,6,0,out _);game.NotifyTimeAdvanced();
+                yield return new WaitForSecondsRealtime(.6f);
+                var storage=game.GetComponent<StorageInteraction>();
+                var chest=game.Model.Building.Blocks.Single(b=>b.pieceId=="home_chest");
+                yield return Pointer(mouse,camera.WorldToScreenPoint(new Vector3(2.5f,.4f,6.5f)),false);
+                yield return Press(keyboard,Key.F);
+                Check(storage.IsOpen&&storage.ChestId==chest.instanceId,"F opens an indoor chest through faded roof and walls.");
+                yield return Capture(screenshot,"indoor-chest");storage.Close();
+                Teleport(cc,new Vector3(3.5f,.1f,6.5f));
+                Check(!storage.CanUse(chest.instanceId),"An actual separating wall still blocks chest access at close range.");
+                Teleport(cc,new Vector3(1.5f,.1f,5.5f));yield return new WaitForSecondsRealtime(.5f);
                 var follow=camera.GetComponent<ExplorationCamera>();follow.enabled=true;
                 yield return new WaitForSecondsRealtime(1.5f);
                 float indoorSize=camera.orthographicSize;
@@ -98,6 +113,9 @@ namespace Farmer
                 yield return Wheel(mouse,-120);
                 yield return new WaitForSecondsRealtime(1.2f);
                 Check(Mathf.Abs(camera.orthographicSize-indoorSize)<.05f,"Reverse wheel restores the previous interior zoom.");
+                yield return Wheel(mouse,1);yield return new WaitForSecondsRealtime(.6f);
+                Check(camera.orthographicSize<indoorSize-.2f,"Linux unit wheel input produces an immediately visible zoom step.");
+                yield return Wheel(mouse,-1);yield return new WaitForSecondsRealtime(.6f);
                 float uiSize=camera.orthographicSize;
                 InputSystem.QueueStateEvent(mouse,new MouseState {position=new Vector2(50,Screen.height-50),scroll=new Vector2(0,120)});
                 yield return null;yield return null;
@@ -120,6 +138,19 @@ namespace Farmer
                 screen=camera.WorldToViewportPoint(game.Player.position+Vector3.up*.8f);
                 Check(!visibility.Indoors&&Vector2.Distance(new Vector2(screen.x,screen.y),Vector2.one*.5f)<.005f,"Outdoor camera follows immediately and stays centered.");
                 follow.enabled=false;
+                var menu=game.GetComponent<SessionMenu>();var clock=game.GetComponent<DayNightCycle>();
+                clock.ClockPaused=false;menu.SetOpen(true);double minute=game.Model.MinuteOfDay;var beforeMenu=game.Player.position;
+                yield return Press(keyboard,Key.W);yield return Press(keyboard,Key.Digit4);yield return Press(keyboard,Key.Tab);
+                yield return new WaitForSecondsRealtime(.4f);
+                Check(game.Model.MinuteOfDay==minute&&Vector3.Distance(beforeMenu,game.Player.position)<.01f&&!game.BuildMode&&!game.InventoryOpen,"Menu pauses the clock and blocks movement, build and bag input.");
+                yield return Capture(screenshot,"menu");
+                var resume=Object.FindObjectsByType<UnityEngine.UI.Button>(FindObjectsSortMode.None).Single(b=>b.GetComponentInChildren<UnityEngine.UI.Text>()?.text=="Devam Et");
+                var buttonPoint=RectTransformUtility.WorldToScreenPoint(null,((RectTransform)resume.transform).TransformPoint(((RectTransform)resume.transform).rect.center));
+                yield return Pointer(mouse,buttonPoint,true);yield return Pointer(mouse,buttonPoint,false);
+                yield return new WaitForSecondsRealtime(.2f);
+                Check(!menu.IsOpen&&game.Model.MinuteOfDay>minute,"Clicking Continue resumes the loaded world and clock.");
+                clock.ClockPaused=true;
+
                 Debug.Log("FARMER_HOUSE_CHECKS_FINISHED");
             }
             finally
