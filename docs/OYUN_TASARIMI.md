@@ -124,3 +124,10 @@ Yeni dünyada 50 para ve kalıcı çapa/balta/orak/sulama kabı vardır; kılı�
 Arazi 56×56 m, merkez çiftlik aynı konumda; dış halkada kaynaklar arasında yürünebilir aralık bulunur. İzometrik açı değişmez; kamera çiftlikten uzaklaşırken takip eder. Mevcut yapı/çapa/10 dakikalık saat kuralları sürer. Kayıt v6, eski sağlam kayıt `.pre-v6` yedeğiyle korunur. Normal envanter sekiz göze çıktı; inşa barı kendi sekiz yuvasını korur.
 
 9 Ekim görsel kararı: oyuncu ağaca yaklaşınca yaprakları veya üst gövdesi gizlenmez. Ağaç yalnızca kesildiğinde kütüğe dönüşür. Bu karar ev duvarlarının/çatısının iç mekân saydamlığını değiştirmez.
+
+
+## Satın alınan mobilyalar — 9 Ekim kararı
+
+Kişisel depolama sandığı, masa, sandalye ve lamba dükkândan satın alınır; yatak da mevcut satın alma düzenini korur. Mobilya çantada bir eşyadır: yerleştirme adedi tüketir, sökme mobilyayı geri verir; odun veya para iadesine dönüşmez. Dolu sandığı taşıma içeriği korur; sökme/toplama kayıp veya çoğaltma yaratmamalıdır. Fiyatlar geçici denge değerleriyle belirlenecek, henüz kesinleşmedi.
+
+Önce Tab ile çanta ve kişisel sandık, sonra masa/sandalye/zemine konan ayaklı lamba. Alt sekiz yuva hızlı erişim barı olarak kalır. Çanta ve sandık arasında sürükle-bırak, Shift+tık ile yığın aktarımı hedefleniyor. Bu bölüm onaylı sıradaki kapsamdır; henüz uygulanmış özellik listesi değildir. [Model eskizleri ve teslim rehberi](references/furniture_sketches_v01/README.md).

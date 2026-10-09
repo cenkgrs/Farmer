@@ -126,3 +126,5 @@ Kullanıcının balta ve kesilmiş kütük modelleri oyuna entegre edildi. [Kayn
 Balta tutuşunda yalnızca socket yakınlığı doğal el pozu için yeterli değildi: kullanıcı ters bilek ve açık avuç görünümünü reddetti. `FarmerAnimator` artık balta için Humanoid IK hedefi ile ithal bilek kemiğinin eksen farkını kalibre eder; ayrı parmak kavraması, sapın avuç içi ofseti ve yanda taşıma/vuruş/toparlanma pozu kullanır. Bu düzeltme sulama kabı/orak/çapanın mevcut bilek yönünü değiştirmez. Yakın çekim ve ön kol–bilek açı kontrolü birlikte değerlendirilir.
 
 9 Ekim kullanıcı düzeltmesi: Trunk/Canopy ayrımı dosyalarda korunur fakat yakınlıkla taç gizleme kaldırıldı. Kesilmemiş ağaç her mesafede bütün görünür; kesilince iki bölüm de kapanır ve kütük görünür.
+
+9 Ekim satın alınabilir mobilya seti: [dört ayrı eskiz, ölçü ve kısa model promptları](references/furniture_sketches_v01/README.md). İlk teslim önceliği ev sandığı; mevcut yatak korunur. Görseller 2D referanstır, 3D import henüz yapılmadı.

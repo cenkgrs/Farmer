@@ -92,3 +92,5 @@ Sıradaki somut adım: kullanıcı ev/taşıma/yatak sürümünü oynadıktan so
 
 
 8 Ekim keşif ara adımı tamamlanan kapsam: ağaçtan odun, başlangıç baltası, yabani bitkiden tohum ve her yeni dünyada rastgele sandık. Kaynaklar ve toplanma durumları v6 kayıtta kalır. 0.2'nin kaynak toplama kısmı ilerledi; kişisel depolama sandığı, diğer mobilyalar ve 0.4 savaş/düşman hâlâ açık. Kullanıcı başlangıçta kılıç istemiyor; kılıç edinme yolu henüz seçilmedi.
+
+9 Ekim sıradaki onaylı adım: Tab çantası + satın alınabilir kişisel depolama sandığı, ardından dükkândan alınan masa/sandalye/ayaklı lamba. Satın alma→çanta→yerleştirme→eşya olarak geri toplama; dolu sandıkta içerik korunumu. Kullanıcı için model eskizleri hazır, bu mekanikler henüz uygulanmadı.

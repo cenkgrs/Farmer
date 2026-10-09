@@ -311,3 +311,11 @@ Kullanıcı 7 Ekim'de önce kare seçme adımını kaldırmamızı, ardından WA
 
 - Son Linux build `Logs/roof-depth-build.log`: FARMER_BUILD_OK. Son gerçek-player turu **66/66 geçti** (30 çatı/taşıma + 36 keşif), hata/exception yok, çıkış 0 ve FARMER_PLAYER_SMOKE_OK (`Logs/roof-tree-delivery.log`). İnce duvar/kapı üzerine gerçek fare tıklaması, 2,4→3 m geçişi, desteksiz çatı reddi, eski ev saydamlığı/kayıt/taşıma ve yakın/uzak/kesilmiş ağaç doğrulandı. `automatic-wall-roof.png` ve `tree-nearby-visible.png` görsel olarak incelendi. Normal oyuncu kaydı kullanılmadı; test işlemleri sonlandı.
 - Windows paketi bu tur yenilenmedi. Sonraki somut iş: kullanıcının kendi evinde otomatik çatı yerleşimini denemesi; ardından onaylı 0.2 depolama/mobilya adımı. Dal main, hedef origin/main; kesin commit/push için Git durumuna bak.
+
+
+## 9 Ekim — satın alınabilir mobilya kararı ve eskiz teslimi
+
+- Kullanıcı sıradaki çanta/envanter + kişisel depolama sandığı adımını onayladı. **Sandık, masa, sandalye ve lamba dükkândan alınacak**; yatak mevcut satın alma sistemiyle sürer. Mobilyalar odunla üretilmeyecek. Alınan eşya çantaya girer, yerleştirince düşer, sökünce eşya olarak döner. Dolu sandığın taşınması içeriği korumalı; kayıp/çoğaltma önlenmeli. Fiyatlar henüz kesin değil.
+- Kullanıcı üretime başlayabilmek için önce eskizleri istedi. `docs/references/furniture_sketches_v01/`: dört ayrı ImageGen referansı, tam üretim promptları, Tripo için kısa promptlar, ölçü/üçgen hedefleri ve teslim kontrol listesi. Görseller incelendi: düz kapaklı ev sandığı, sade masa, sandalye, zemine konan ayaklı lamba. Mevcut yatak modeli yeniden istenmedi.
+- Bunlar 2D referanslar; bu tur oyun kodu/build değişmedi, Unity/test çalıştırılmadı. Kullanıcı 3D üretimi kendi yapacak; ücretli Tripo çağrısı yapılmadı. Kullanıcının `ArtSceneSetup.cs` biçim değişikliği korunuyor.
+- Sıradaki somut uygulama: mevcut sekiz gözlü hızlı barı koruyarak Tab çantası, dükkândan satın alınan kişisel sandık, çanta/sandık arası sürükle-bırak ve Shift+tık aktarımı, kayıt/yükleme. İlk model önceliği ev sandığı. Sonra masa/sandalye/lamba. Henüz bu özelliklerin uygulandığı iddia edilmez.
