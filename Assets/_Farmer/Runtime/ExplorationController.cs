@@ -48,7 +48,6 @@ namespace Farmer
         private void Update()
         {
             if(game==null)return;RefreshPointer();
-            foreach(var view in views.Values)view.UpdateCanopy(game.Player.position);
         }
         public bool RefreshPointer()
         {

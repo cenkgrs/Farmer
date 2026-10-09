@@ -19,7 +19,7 @@ namespace Farmer
         private BuildingModel dragModel;
         public bool MoveMode { get; private set; }
         public bool IsDragging=>dragged!=null;
-        public string HeightLabel=>ActiveDefinition.placement==BuildPlacement.Roof?$"Çatı {BuildingModel.RoofHeight(level):0.0} m":$"Yükseklik {level+1}/{BuildingModel.Levels}";
+        public string HeightLabel=>ActiveDefinition.placement==BuildPlacement.Roof?$"Çatı {BuildingModel.RoofHeight(level):0.0} m · Otomatik":$"Yükseklik {level+1}/{BuildingModel.Levels}";
         private BuildingModel displayedModel;
         private int displayedRevision = -1;
         private int level, rotation, pieceIndex;
@@ -85,7 +85,6 @@ namespace Farmer
             if (keyboard?.rKey.wasPressedThisFrame == true) rotation = (rotation + 1) % 4;
             if (ActiveDefinition.placement==BuildPlacement.Solid && !ActiveDefinition.isBed && mouse != null && Mathf.Abs(mouse.scroll.ReadValue().y) > .01f)
                 level = Mathf.Clamp(level + (mouse.scroll.ReadValue().y > 0 ? 1 : -1), 0, BuildingModel.Levels - 1);
-            if(ActiveDefinition.placement==BuildPlacement.Roof && mouse!=null && Mathf.Abs(mouse.scroll.ReadValue().y)>.01f)level=Mathf.Clamp(level+(mouse.scroll.ReadValue().y>0?1:-1),2,3);
             RefreshTarget();
             if(MoveMode)
             {
@@ -139,10 +138,13 @@ namespace Farmer
                 var marker = hit.collider.GetComponentInParent<PlacedBlockView>();
                 if (marker != null) removeTarget = marker.Record;
             }
+            Vector3? roofPoint = null;
+            if (ActiveDefinition.placement==BuildPlacement.Roof)
+                roofPoint = ResolveRoofTarget(ray);
             float planeHeight=ActiveDefinition.placement==BuildPlacement.Roof?BuildingModel.RoofHeight(level):level;
             var plane = new Plane(Vector3.up, Vector3.up * planeHeight);
             if (!plane.Raycast(ray, out float distance)) return;
-            Vector3 point = ray.GetPoint(distance);
+            Vector3 point = roofPoint ?? ray.GetPoint(distance);
             int x = Mathf.FloorToInt(point.x), z = Mathf.FloorToInt(point.z);
             if (!(ActiveDefinition.placement==BuildPlacement.Roof?BuildingModel.ValidCoordinate(x,z):BuildingModel.InBounds(x, level, z))) return;
             target = new Vector3Int(x, level, z);
@@ -166,6 +168,38 @@ namespace Farmer
             preview.transform.SetPositionAndRotation(center, Quaternion.Euler(0, rotation * 90, 0));
             previewMaterial.SetColor("_BaseColor", valid ? new Color(.28f, .8f, .5f) : new Color(.94f, .3f, .25f));
             preview.SetActive(true);
+        }
+        private Vector3? ResolveRoofTarget(Ray ray)
+        {
+            int preferred = level;
+            if (removeTarget != null)
+            {
+                var rule = game.Model.Building.Rules(removeTarget.pieceId);
+                if (rule.Placement==BuildPlacement.Edge) preferred=2;
+                else if (rule.Placement==BuildPlacement.Roof) preferred=removeTarget.level;
+                else if (rule.Placement==BuildPlacement.Solid && !rule.IsBed) preferred=3;
+            }
+            // Search direct supports front-to-back along the downward camera ray.
+            // A lower wall behind a valid tall support must not steal the cursor.
+            for (int pass=0; pass<2; pass++)
+            foreach (int candidate in pass==0 ? new[] { 3, 2 } : new[] { preferred, preferred==2 ? 3 : 2 })
+            {
+                var plane = new Plane(Vector3.up, Vector3.up * BuildingModel.RoofHeight(candidate));
+                if (!plane.Raycast(ray, out float distance)) continue;
+                var point = ray.GetPoint(distance);
+                int x=Mathf.FloorToInt(point.x), z=Mathf.FloorToInt(point.z);
+                if (pass==0 && !game.Model.Building.HasDirectRoofSupport(x,candidate,z)) continue;
+                if (!game.Model.Building.CanSupportRoof(x,candidate,z)) continue;
+                level=candidate;
+                return point;
+            }
+            // Pointing at the face of a wall should still snap onto its top edge.
+            if (removeTarget!=null && game.Model.Building.CanSupportRoof(removeTarget.x,preferred,removeTarget.z))
+            {
+                level=preferred;
+                return new Vector3(removeTarget.x+.5f,BuildingModel.RoofHeight(level),removeTarget.z+.5f);
+            }
+            return null;
         }
         private bool OverlapsWorld()
         {

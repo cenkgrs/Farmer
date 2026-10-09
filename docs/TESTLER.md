@@ -185,7 +185,7 @@ Son teslim: **86/86 EditMode**, **194/194 player**, hatasız Linux build; günl�
 
 `--farmer-check-roof` grubu: gerçek yeni oyun 50 para/yataksız, N ile yataksız uyuyamama, yatak satın alma, sekiz inşa yuvası/altı üretilmiş ikon, ikon seçimi/boş yuva UI engeli, yatağı tutup taşıma, UI/Esc iptal, döşemesiz blok ev saydamlığı, altı boş çatı kurulumu, iç/dış çatı görünürlüğü ve v5 yükleme. Normal save kullanılmaz. Eski tarım test fixture'ı 60 para ve açık test Camp kullanır; üretim açılışı bu değildir. `--farmer-check-tool-animation` ayrıca sulama hedefinin kareler arasında kademeli ilerleyip yeni merkeze oturmasını doğrular.
 
-Manuel: 4 ile sekiz gözlü bara geç. Yatak varsa yatak ikonunu seçip kur; M ile tut ve yeni konuma bırak, R ile döndür. Boş son iki yuva işlem yapmamalı. Çatı ikonunda tekerlek ince duvar için 2,4 m / blok duvar için 3 m seçer; duvar yanından başlayıp iç boşluk üzerine uzat. İçeri girince ön/yan bloklar ve çatı saydamlaşmalı. Esc normal yedi eşya barını geri getirmeli. 2 ve basılı sol tuşla kareler arasında gezdirirken kol/su yönü yumuşak değişmeli.
+Manuel: 4 ile sekiz gözlü bara geç. Yatak varsa yatak ikonunu seçip kur; M ile tut ve yeni konuma bırak, R ile döndür. Boş son iki yuva işlem yapmamalı. Çatı ikonunda yükseklik hedef desteğe otomatik oturur: ince duvar/kapı için 2,4 m, blok duvar için 3 m; duvar yanından başlayıp iç boşluk üzerine uzat. İçeri girince ön/yan bloklar ve çatı saydamlaşmalı. Esc normal yedi eşya barını geri getirmeli. 2 ve basılı sol tuşla kareler arasında gezdirirken kol/su yönü yumuşak değişmeli.
 
 8 Ekim tam tur: **219/219 player kontrolü geçti**, çıkış 0 (`Logs/roof-inventory-final.log`). Model testleri **93/93** (`Logs/roof-final-tests.xml`). Kaynak/meta eşleri ve GUID benzersizliği denetlendi; Windows bu tur test edilmedi.
 
@@ -197,3 +197,10 @@ Manuel: 4 ile sekiz gözlü bara geç. Yatak varsa yatak ikonunu seçip kur; M i
 Sınırlı CPU örneği: `taskset -c 0,3,5,9 nice -n 10 python3 tools/art/run_player_checks.py --xvfb builds/Tools/xvfb/runtime/usr/bin/Xvfb --name benzersiz-ad`. Script kendi test process grubunu kapanışta temizler, oyuncunun normal oyununu hedeflemez. 360 s üst süre ve Xvfb bağlantı beklemesi vardır. Ekran ve Mono debugger arızası görülürse test başarılı sayılmaz.
 
 8 Ekim keşif teslimi: 101/101 EditMode. Genel oyun turunda 237/239; iki kısa ses kuyruğu kontrolü düşük test FPS'inde geç örnekleniyordu (üç kare 0,565 s). İlk bırakma karesinde örnekleme düzeltildi; son hedefli tur 47/47 (27 ses + 20 keşif), exit 0 / FARMER_PLAYER_SMOKE_OK (`Logs/exploration-delivery.log`). Diğer 212 kontrol genel turda geçti; tüm tur bu test düzeltmesinden sonra tekrar koşulmadı.
+
+
+## 9 Ekim — ağaç görünürlüğü / otomatik çatı yüksekliği
+
+`--checks roof exploration`: çatıyı yeniden seçip tekerlek kullanmadan ince duvar/kapı üzerinde 2,4 m, blok duvar yanında 3 m önizleme ve gerçek sol tık yerleştirme. İzometrik ışında arkadaki alçak duvar öndeki yüksek desteğin hedefini çalmamalı. Ağaç yaklaşınca/uzaklaşınca bütün kalmalı, yalnız kesildiğinde kütüğe dönüşmeli.
+
+Son doğrulama: 15/15 ilgili EditMode (`roof-auto-final-tests.xml`), 66/66 player (30 çatı + 36 keşif, `roof-tree-delivery.log`), çıkış 0 ve hata yok. Son build `roof-depth-build.log`. Önceki yüksek/alçak destek seçimi başarısızlıkları YAZILIMCI.md içinde kayıtlıdır; son tekrar bunları kapattı. Windows bu tur denenmedi.

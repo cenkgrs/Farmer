@@ -8,7 +8,6 @@ namespace Farmer
         private Transform crown,lid,trunk,plant;
         private GameObject stump;
         private Collider obstacle;
-        private bool collected;
         private float shake;
         public void Configure(ResourceRecord record,Material[] materials)
         {
@@ -36,7 +35,7 @@ namespace Farmer
         }
         public void SetState(ResourceRecord record)
         {
-            collected=record.collected;
+            bool collected=record.collected;
             if(Kind==ResourceKind.Tree)
             {
                 crown.gameObject.SetActive(!collected);trunk.gameObject.SetActive(!collected);stump.SetActive(collected);
@@ -46,8 +45,6 @@ namespace Farmer
             else lid.localRotation=Quaternion.Euler(collected?-105:0,0,0);
         }
         public void Pulse()=>shake=.25f;
-        public void UpdateCanopy(Vector3 player)
-        {if(crown!=null&&!collected){var d=transform.position-player;d.y=0;crown.gameObject.SetActive(d.sqrMagnitude>7f);}}
         private void Update()
         {
             if(shake<=0)return;shake=Mathf.Max(0,shake-Time.deltaTime);transform.localRotation=Quaternion.Euler(0,0,Mathf.Sin(shake*65)*shake*12);

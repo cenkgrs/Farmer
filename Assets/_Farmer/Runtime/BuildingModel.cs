@@ -173,6 +173,15 @@ namespace Farmer
             message="Eşya taşındı.";return true;
         }
         public static float RoofHeight(int level)=>level==2?2.4f:3f;
+        public bool CanSupportRoof(int x, int level, int z)
+        {
+            if (!ValidCoordinate(x,z) || (level!=2 && level!=3)) return false;
+            // An existing panel also supplies its height when extending the roof.
+            if (blocks.Values.Any(b=>b.x==x && b.z==z && b.level==level && catalog[b.pieceId].Placement==BuildPlacement.Roof)) return true;
+            return RoofsSupported(new BlockRecord { pieceId="wood_roof", x=x, level=level, z=z });
+        }
+        public bool HasDirectRoofSupport(int x, int level, int z) =>
+            ValidCoordinate(x,z) && (level==2 || level==3) && DirectRoofSupport(new BlockRecord { x=x, level=level, z=z });
         private bool DirectRoofSupport(BlockRecord roof)
         {
             for(int r=0;r<4;r++)

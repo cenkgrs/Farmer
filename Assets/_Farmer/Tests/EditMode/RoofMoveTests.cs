@@ -23,7 +23,11 @@ namespace Farmer.Tests
         {
             var b=Fresh();Assert.That(b.Place("wood_roof",0,3,0,0,out _),Is.False);
             for(int y=0;y<3;y++)b.Place("wood_block",-1,y,0,0,out _);
+            Assert.That(b.HasDirectRoofSupport(0,3,0),Is.True);
+            Assert.That(b.HasDirectRoofSupport(0,2,0),Is.False);
             Assert.That(b.Place("wood_roof",0,3,0,0,out _),Is.True);
+            Assert.That(b.HasDirectRoofSupport(1,3,0),Is.False);
+            Assert.That(b.CanSupportRoof(1,3,0),Is.True);
             for(int x=1;x<=4;x++)Assert.That(b.Place("wood_roof",x,3,0,0,out _),Is.True);
             Assert.That(b.Place("wood_roof",5,3,0,0,out _),Is.False);
             Assert.That(b.Remove(-1,2,0,out _),Is.False);
@@ -36,6 +40,22 @@ namespace Farmer.Tests
             b.Place("wood_roof",1,2,0,0,out _);var s=b.Snapshot();Array.Reverse(s.blocks);
             Assert.That(BuildingModel.Restore(s,BuildRules.Defaults).Count,Is.EqualTo(3));
             s.blocks=s.blocks.Where(r=>r.pieceId!="wood_wall").ToArray();Assert.Throws<ArgumentException>(()=>BuildingModel.Restore(s,BuildRules.Defaults));
+        }
+        [TestCase("wood_wall",0)] [TestCase("wood_wall",1)]
+        [TestCase("wood_wall",2)] [TestCase("wood_wall",3)]
+        [TestCase("wood_door",0)] [TestCase("wood_door",1)]
+        [TestCase("wood_door",2)] [TestCase("wood_door",3)]
+        public void RoofSupportsBothSidesOfEveryWallAndDoor(string id,int rotation)
+        {
+            var b=Fresh();Assert.That(b.Place(id,0,0,0,rotation,out _),Is.True);
+            int x=rotation==1?1:rotation==3?-1:0, z=rotation==0?1:rotation==2?-1:0;
+            Assert.That(b.HasDirectRoofSupport(0,2,0),Is.True);
+            Assert.That(b.CanSupportRoof(0,2,0),Is.True);
+            Assert.That(b.CanSupportRoof(x,2,z),Is.True);
+            Assert.That(b.CanSupportRoof(0,3,0),Is.False);
+            Assert.That(b.Place("wood_roof",x,2,z,0,out _),Is.True);
+            Assert.That(b.CanSupportRoof(x,2,z),Is.True);
+            Assert.That(b.Remove(b.Blocks.Single(r=>r.pieceId==id),out _),Is.False);
         }
         [Test] public void MoveIsAtomicAndPreservesWoodBedsAndDoorState()
         {

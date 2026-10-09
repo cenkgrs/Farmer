@@ -27,12 +27,14 @@ namespace Farmer
                 var treeView=Object.FindObjectsByType<ResourceView>(FindObjectsSortMode.None).Single(v=>v.Id==tree.id);
                 var canopy=treeView.GetComponentsInChildren<Transform>(true).Single(t=>t.name=="Canopy");
                 var trunk=treeView.GetComponentsInChildren<Transform>(true).Single(t=>t.name=="Trunk");
-                Check(!canopy.gameObject.activeSelf&&trunk.gameObject.activeSelf,"Nearby tree hides only its separated canopy.");
-                treeView.UpdateCanopy(game.Player.position+Vector3.one*20);
-                Check(canopy.gameObject.activeSelf&&trunk.GetComponent<MeshFilter>().sharedMesh.vertexCount>1000,"Distant tree restores delivered canopy and trunk.");
-                // Freeze resource visibility for a complete-tree art capture.
-                var explorer=game.GetComponent<ExplorationController>();explorer.enabled=false;
-                try{yield return Closeup(screenshot,"tree-full",treeView.transform.position+Vector3.up*1.5f);}finally{explorer.enabled=true;}
+                Check(canopy.gameObject.activeSelf&&trunk.gameObject.activeSelf,"Approaching a tree keeps both its canopy and trunk visible.");
+                var nearTreePosition=cc.transform.position;
+                cc.enabled=false;cc.transform.position=treeView.transform.position+Vector3.right*6;cc.enabled=true;
+                yield return null;yield return null;
+                Check(canopy.gameObject.activeSelf&&trunk.GetComponent<MeshFilter>().sharedMesh.vertexCount>1000,"Moving away also keeps the complete delivered tree visible.");
+                cc.enabled=false;cc.transform.position=nearTreePosition;cc.enabled=true;Physics.SyncTransforms();
+                yield return null;
+                yield return Closeup(screenshot,"tree-full",treeView.transform.position+Vector3.up*1.5f);
 
                 int wood=game.Model.Building.Wood;yield return Click(mouse,Point(tree));Check(game.Model.Exploration.Node(tree.id).hits==0,"Seeds cannot cut trees.");
                 yield return Press(keyboard,Key.Digit6);Check(game.Model.EquippedItem==FarmItem.Axe&&GameObject.Find("Held Axe")!=null,"Shortcut six equips and displays the axe.");
@@ -57,6 +59,7 @@ namespace Farmer
                 yield return Click(mouse,Point(tree));yield return Click(mouse,Point(tree));Check(game.Model.Building.Wood==wood+8&&game.Model.Exploration.Node(tree.id).collected,"Three hits fell the tree and give eight wood.");
                 Check(!Object.FindObjectsByType<ResourceView>(FindObjectsSortMode.None).Single(v=>v.Id==tree.id).GetComponent<Collider>().enabled,"Felled tree no longer blocks movement or construction.");
                 var stump=Object.FindObjectsByType<ResourceView>(FindObjectsSortMode.None).Single(v=>v.Id==tree.id).transform.Find("Felled Oak Stump");
+                Check(!stump.parent.GetComponentsInChildren<Transform>(true).Single(t=>t.name=="Canopy").gameObject.activeSelf,"Only felling a tree removes its canopy.");
                 Check(stump.gameObject.activeInHierarchy&&stump.GetComponentInChildren<MeshFilter>().sharedMesh.vertexCount>1000,"Felling reveals the supplied stump model.");
                 Check(stump.GetComponentInChildren<Renderer>().bounds.size.y>.29f&&stump.GetComponentInChildren<Renderer>().bounds.size.y<.31f&&stump.GetComponentsInChildren<Collider>().Length==0,"Stump is grounded at 0.3m and has no blocking collider.");
                 yield return Closeup(screenshot,"axe-stump",new Vector3(tree.x+.5f,.65f,tree.z));
