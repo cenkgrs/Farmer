@@ -57,7 +57,7 @@ namespace Farmer.Tests
         {
             var crops=new[]{new CropRules("turnip",10,18,3,1)};var f=new FarmModel(crops);f.Till(-5,4,out _);f.Building.AddBed();f.Building.Place("bed",2,0,3,2,out _);f.AdvanceMinutes(71.25);
             var old=f.Snapshot();old.version=3;var restored=FarmModel.Restore(old,crops,6,6);
-            Assert.That(restored.MinuteOfDay,Is.EqualTo(f.MinuteOfDay));Assert.That(restored.IndexAt(-5,4),Is.EqualTo(0));Assert.That(restored.Building.Count,Is.EqualTo(2));Assert.That(restored.Snapshot().version,Is.EqualTo(6));
+            Assert.That(restored.MinuteOfDay,Is.EqualTo(f.MinuteOfDay));Assert.That(restored.IndexAt(-5,4),Is.EqualTo(0));Assert.That(restored.Building.Count,Is.EqualTo(2));Assert.That(restored.Snapshot().version,Is.EqualTo(7));
         }
     }
 }

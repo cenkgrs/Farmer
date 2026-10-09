@@ -13,6 +13,7 @@ namespace Farmer
         [SerializeField] private BuildDefinition[] buildPieces;
         public BuildDefinition[] BuildPieces => buildPieces;
         public bool BuildMode { get; private set; }
+        public bool InventoryOpen { get; set; }
         [SerializeField] private FarmSelection selection;
         [SerializeField] private Transform player;
         [SerializeField] private Transform market;
@@ -48,6 +49,7 @@ namespace Farmer
         private void Awake()
         {
             Application.targetFrameRate=60;
+            if(GetComponent<StorageInteraction>()==null)gameObject.AddComponent<StorageInteraction>();
             var rules = crops.Select(c => c.Rules).ToArray();
             Model = new FarmModel(rules, selection.Layout.Width, selection.Layout.Depth, startingMoney, BuildingRules());
             string directory = Application.persistentDataPath;
@@ -65,7 +67,7 @@ namespace Farmer
             var k = Keyboard.current;
             if (!Application.isFocused) { StopWatering(); return; }
             if (k?.f9Key.wasPressedThisFrame == true) LoadGame();
-            if (!Ready) { StopWatering(); return; }
+            if (!Ready || InventoryOpen) { StopWatering(); return; }
             if (k?.digit1Key.wasPressedThisFrame == true) Equip(FarmItem.Seeds);
             if (k?.digit2Key.wasPressedThisFrame == true) Equip(FarmItem.WateringCan);
             if (k?.digit3Key.wasPressedThisFrame == true) Equip(FarmItem.Sickle);
@@ -94,6 +96,16 @@ namespace Farmer
         {
             if(!Ready||!NearMarket)return false;
             return Complete(Model.BuyBed(out var message),message);
+        }
+        public bool BuyFurniture(string id)
+        {
+            if(!Ready||!NearMarket)return false;
+            return Complete(Model.BuyFurniture(id,out var message),message);
+        }
+        public bool TransferStorage(string chest,string item,int count,bool withdraw)
+        {
+            if(!Ready||!GetComponent<StorageInteraction>().CanUse(chest))return false;
+            return Complete(Model.TransferStorage(chest,item,count,withdraw,out var message),message);
         }
         public bool MoveBlock(BlockRecord record,int x,int level,int z,int rotation)
         {
@@ -265,7 +277,7 @@ namespace Farmer
                 Ready = true;
                 SaveStatus = recovered ? "Yedek kayıt yüklendi" : loaded == null ? "Yeni çiftlik" : "Kayıt yüklendi";
                 Feedback = recovered ? "Son sağlam yedek açıldı; önceki dosya korunacak." : "5 ile çapa seç; boş toprağı hazırla. 1/2/3 ile ek, sula ve hasat et.";
-                if(!recovered&&(loaded==null||JsonUtility.FromJson<FarmSnapshot>(File.ReadAllText(SavePath)).version<6))SaveGame();
+                if(!recovered&&(loaded==null||JsonUtility.FromJson<FarmSnapshot>(File.ReadAllText(SavePath)).version<7))SaveGame();
                 Changed?.Invoke(); return true;
             }
             catch (Exception e) when (e is IOException || e is UnauthorizedAccessException || e is ArgumentException)

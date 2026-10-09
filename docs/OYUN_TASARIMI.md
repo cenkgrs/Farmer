@@ -131,3 +131,14 @@ Arazi 56×56 m, merkez çiftlik aynı konumda; dış halkada kaynaklar arasında
 Kişisel depolama sandığı, masa, sandalye ve lamba dükkândan satın alınır; yatak da mevcut satın alma düzenini korur. Mobilya çantada bir eşyadır: yerleştirme adedi tüketir, sökme mobilyayı geri verir; odun veya para iadesine dönüşmez. Dolu sandığı taşıma içeriği korur; sökme/toplama kayıp veya çoğaltma yaratmamalıdır. Fiyatlar geçici denge değerleriyle belirlenecek, henüz kesinleşmedi.
 
 Önce Tab ile çanta ve kişisel sandık, sonra masa/sandalye/zemine konan ayaklı lamba. Alt sekiz yuva hızlı erişim barı olarak kalır. Çanta ve sandık arasında sürükle-bırak, Shift+tık ile yığın aktarımı hedefleniyor. Bu bölüm onaylı sıradaki kapsamdır; henüz uygulanmış özellik listesi değildir. [Model eskizleri ve teslim rehberi](references/furniture_sketches_v01/README.md).
+
+
+### 9 Ekim uygulanan mobilya ve depolama adımı
+
+Dükkân: depolama sandığı 80, masa 60, sandalye 25, ayaklı lamba 45 para; yatak 100 para. Bunlar ilk oynanış için geçici denge değerleridir. Mobilya odun harcamaz. İnşa barı sekiz yuva olarak kalır; **Yapı / Mobilya** sekmeleriyle kategori seçilir. Masa ve yatak iki hücre, diğer mobilyalar tek hücre kaplar; zemine/döşeme üstüne konur, üst yapı taşıyıcısı değildir.
+
+**Tab** çantayı açar. Yakındaki kişisel sandığı hedefleyip **F** ile çanta/sandık paneli açılır. Tık bir adet, Shift+tık tüm yığın, karşı panele sürükle-bırak tüm yığını aktarır. Geçersiz bırakma kayıpsız iptaldir. Çalışma aletleri kalıcıdır ve sandığa bırakılamaz; odun, tohum, hasat ve satın alınan mobilyalar saklanabilir. Sandık 16 farklı eşya yığını tutar; yığın sınırı 999. Bu ilk çanta görünümü mevcut eşya türlerini gösterir; serbest yuva düzenleme veya ağırlık sistemi eklenmedi.
+
+Dolu sandık **M** ile içeriğiyle taşınır. Çantaya geri toplamak için önce boşaltılır; dolu sandığı sökmek reddedilir ve M bilgisi gösterilir. F9/yükleme veya erişim kaybı açık sandık panelini kapatır. Panel açıkken hareket, tarım ve inşa girdileri engellenir; saat akmaya devam eder.
+
+Lamba 18:00–19:00 arasında yanar, 06:00–07:00 arasında söner. Masa/sandalye yerleştirilebilir mobilyadır; oturma animasyonu yok. Sandık bu adımda kapalı modelle depolama panelini açar; kapak animasyonu yok. Kayıt v7, eski kayıtlar ilk yazımdan önce `.pre-v7` ile korunur.

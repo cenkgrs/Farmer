@@ -2501,6 +2501,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: da52eb7d888497430ae9d10221ffe37e, type: 2}
   - {fileID: 11400000, guid: f554da8593ae828c681afaf556a58a35, type: 2}
   - {fileID: 11400000, guid: 7b4c08f5bc1ff5f7996951b6c555f342, type: 2}
+  - {fileID: 11400000, guid: 369daaa746ca99efc8e1f61687c18ff8, type: 2}
+  - {fileID: 11400000, guid: e4617199412a2df56a8f589cc437a27a, type: 2}
+  - {fileID: 11400000, guid: 2751675e2cee8d85583ce0962d5396cb, type: 2}
+  - {fileID: 11400000, guid: ed9cd19258bc5ca8bac3c70c493a180b, type: 2}
   selection: {fileID: 1968616115}
   player: {fileID: 1590656332}
   market: {fileID: 1393950083}

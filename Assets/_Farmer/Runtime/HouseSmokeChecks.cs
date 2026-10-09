@@ -97,7 +97,7 @@ namespace Farmer
         }
         private static IEnumerator Select(BuildController builder,Keyboard keyboard,string id)
         {
-            for(int i=0;i<6&&builder.ActiveDefinition.id!=id;i++)yield return Press(keyboard,Key.Q);
+            for(int i=0;i<builder.GetComponent<FarmGame>().BuildPieces.Length&&builder.ActiveDefinition.id!=id;i++)yield return Press(keyboard,Key.Q);
         }
         private static void Teleport(CharacterController cc,Vector3 p){cc.enabled=false;cc.transform.position=p;cc.enabled=true;Physics.SyncTransforms();}
         private static Vector2 Cell(int x,int z)=>Camera.main.WorldToScreenPoint(new Vector3(x+.5f,.01f,z+.5f));

@@ -32,8 +32,11 @@ namespace Farmer
                 Teleport(cc,new Vector3(1.5f,.1f,3.5f));yield return Press(keyboard,Key.Digit4);yield return null;
                 var buildSlots=Object.FindObjectsByType<Button>(FindObjectsSortMode.None).Where(b=>b.name.StartsWith("Construction Slot ")).OrderBy(b=>b.name).ToArray();
                 Check(buildSlots.Length==8&&!Object.FindObjectsByType<Button>(FindObjectsSortMode.None).Any(b=>b.name=="Inventory Slot 0"),"Build mode replaces the farming bar with eight construction slots.");
-                Check(buildSlots.Take(6).All(b=>b.GetComponentsInChildren<Image>().Any(i=>i.gameObject.name=="Construction Icon"&&i.sprite!=null)),"Every available construction piece has its generated icon.");
-                var slotPoint=RectTransformUtility.WorldToScreenPoint(null,buildSlots[1].transform.position+(Vector3)((RectTransform)buildSlots[1].transform).rect.center);
+                Check(buildSlots.Take(5).All(b=>b.GetComponentsInChildren<Image>().Any(i=>i.gameObject.name=="Construction Icon"&&i.sprite!=null)),"Every available construction piece has its generated icon.");
+                var furnitureTab=Object.FindObjectsByType<Button>(FindObjectsSortMode.None).Single(b=>b.GetComponentInChildren<Text>()?.text=="Mobilya");
+                var categoryPoint=RectTransformUtility.WorldToScreenPoint(null,furnitureTab.transform.position+(Vector3)((RectTransform)furnitureTab.transform).rect.center);
+                yield return Pointer(mouse,categoryPoint,true);yield return Pointer(mouse,categoryPoint,false);
+                var slotPoint=RectTransformUtility.WorldToScreenPoint(null,buildSlots[0].transform.position+(Vector3)((RectTransform)buildSlots[0].transform).rect.center);
                 yield return Pointer(mouse,slotPoint,true);yield return Pointer(mouse,slotPoint,false);
                 Check(builder.ActiveDefinition.isBed&&game.Model.Building.Count==0,"Clicking the bed icon selects it without placing through the UI.");
                 var emptyPoint=RectTransformUtility.WorldToScreenPoint(null,buildSlots[7].transform.position+(Vector3)((RectTransform)buildSlots[7].transform).rect.center);

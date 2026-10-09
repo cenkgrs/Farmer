@@ -1,0 +1,22 @@
+{
+  "tool": "built-in ImageGen",
+  "transparent_background": true,
+  "prompts": [
+    {
+      "id": "home_chest",
+      "prompt": "Create one cozy hand-painted 3D farming game inventory icon: flat-lidded honey oak storage chest with dark iron bands and brass latch. Warm honey wood palette, softly beveled chunky shapes, front three-quarter view, centered full object fills 85% of square image, strong silhouette readable at 48 pixels. Consistent warm rustic game art. Transparent background. No frame, text, ground, cast shadow, scenery, extra objects or watermark."
+    },
+    {
+      "id": "home_table",
+      "prompt": "Create one cozy hand-painted 3D farming game inventory icon: simple honey oak four leg farmhouse rectangular plank table. Warm honey wood palette, softly beveled chunky shapes, front three-quarter view, centered full object fills 85% of square image, strong silhouette readable at 48 pixels. Consistent warm rustic game art. Transparent background. No frame, text, ground, cast shadow, scenery, extra objects or watermark."
+    },
+    {
+      "id": "home_chair",
+      "prompt": "Create one cozy hand-painted 3D farming game inventory icon: honey oak four leg chair with two broad backrest slats. Warm honey wood palette, softly beveled chunky shapes, front three-quarter view, centered full object fills 85% of square image, strong silhouette readable at 48 pixels. Consistent warm rustic game art. Transparent background. No frame, text, ground, cast shadow, scenery, extra objects or watermark."
+    },
+    {
+      "id": "home_lantern",
+      "prompt": "Create one cozy hand-painted 3D farming game inventory icon: freestanding wooden post lamp, square broad base, short top arm and warm amber bronze lantern. Warm honey wood palette, softly beveled chunky shapes, front three-quarter view, centered full object fills 85% of square image, strong silhouette readable at 48 pixels. Consistent warm rustic game art. Transparent background. No frame, text, ground, cast shadow, scenery, extra objects or watermark."
+    }
+  ]
+}

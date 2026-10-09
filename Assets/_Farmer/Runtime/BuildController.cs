@@ -43,6 +43,8 @@ namespace Farmer
             if (preview != null) { preview.SetActive(false); Destroy(preview); }
             preview = Instantiate(ActiveDefinition.prefab, transform); preview.name = "Build Preview";
             foreach (var collider in preview.GetComponentsInChildren<Collider>()) collider.enabled = false;
+            foreach (var lamp in preview.GetComponentsInChildren<FurnitureLighting>()) lamp.enabled=false;
+            foreach (var light in preview.GetComponentsInChildren<Light>()) light.enabled=false;
             foreach (var bed in preview.GetComponentsInChildren<Bed>()) { bed.enabled=false; Destroy(bed); }
             previewRenderers = preview.GetComponentsInChildren<Renderer>();
             foreach (var renderer in previewRenderers) { renderer.sharedMaterial = previewMaterial; renderer.shadowCastingMode = ShadowCastingMode.Off; }
@@ -74,6 +76,7 @@ namespace Farmer
             var keyboard = Keyboard.current; var mouse = Mouse.current;
             if (!Application.isFocused || !game.Ready || !game.isActiveAndEnabled)
             { dragged=null;preview.SetActive(false); grid.SetActive(false); return; }
+            if (game.InventoryOpen) { preview.SetActive(false);grid.SetActive(false);return; }
             if (keyboard?.digit4Key.wasPressedThisFrame == true) ToggleMode();
             if (keyboard?.escapeKey.wasPressedThisFrame == true) game.SetBuildMode(false);
             grid.SetActive(game.BuildMode);
@@ -83,7 +86,7 @@ namespace Farmer
             if(keyboard?.mKey.wasPressedThisFrame==true)ToggleMoveMode();
             if (keyboard?.qKey.wasPressedThisFrame == true && dragged==null)SelectPiece((pieceIndex+1)%game.BuildPieces.Length);
             if (keyboard?.rKey.wasPressedThisFrame == true) rotation = (rotation + 1) % 4;
-            if (ActiveDefinition.placement==BuildPlacement.Solid && !ActiveDefinition.isBed && mouse != null && Mathf.Abs(mouse.scroll.ReadValue().y) > .01f)
+            if (ActiveDefinition.placement==BuildPlacement.Solid && !ActiveDefinition.IsFurniture && mouse != null && Mathf.Abs(mouse.scroll.ReadValue().y) > .01f)
                 level = Mathf.Clamp(level + (mouse.scroll.ReadValue().y > 0 ? 1 : -1), 0, BuildingModel.Levels - 1);
             RefreshTarget();
             if(MoveMode)
@@ -177,7 +180,7 @@ namespace Farmer
                 var rule = game.Model.Building.Rules(removeTarget.pieceId);
                 if (rule.Placement==BuildPlacement.Edge) preferred=2;
                 else if (rule.Placement==BuildPlacement.Roof) preferred=removeTarget.level;
-                else if (rule.Placement==BuildPlacement.Solid && !rule.IsBed) preferred=3;
+                else if (rule.Placement==BuildPlacement.Solid && !rule.IsFurniture) preferred=3;
             }
             // Search direct supports front-to-back along the downward camera ray.
             // A lower wall behind a valid tall support must not steal the cursor.
@@ -241,7 +244,7 @@ namespace Farmer
                 obj.name = $"Built {b.pieceId} {b.x},{b.level},{b.z}";
                 obj.AddComponent<PlacedBlockView>().Record = b;
                 if(definition.isDoor)obj.AddComponent<DoorView>().Configure(game,b);
-                if(!definition.isBed&&definition.placement!=BuildPlacement.Floor)obj.AddComponent<OccludingWall>();
+                if(!definition.IsFurniture&&definition.placement!=BuildPlacement.Floor)obj.AddComponent<OccludingWall>();
                 placed.Add(obj);
             }
             Physics.SyncTransforms();

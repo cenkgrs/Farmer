@@ -28,7 +28,7 @@ namespace Farmer
                 foreach(var b in model.Blocks)
                 {
                     var kind=model.Rules(b.pieceId).Placement;
-                    if(kind==BuildPlacement.Solid&&!model.Rules(b.pieceId).IsBed)solidCells.Add(new Vector2Int(b.x,b.z));
+                    if(kind==BuildPlacement.Solid&&!model.Rules(b.pieceId).IsFurniture)solidCells.Add(new Vector2Int(b.x,b.z));
                     if(kind==BuildPlacement.Floor)floors.Add(new Vector2Int(b.x,b.z));
                     if(kind==BuildPlacement.Edge)edges.Add(BuildingModel.Edge(b.x,b.z,b.rotation));
                 }

@@ -11,6 +11,7 @@ namespace Farmer
         [SerializeField] private float speed = 3.8f;
         [SerializeField] private float walkableHalfExtent = 9.3f;
         private CharacterController controller;
+        private FarmGame game;
         private float verticalSpeed;
 
         public float Speed => speed;
@@ -20,13 +21,13 @@ namespace Farmer
         public Vector3? FacingTarget { get; set; }
         public void Configure(Camera camera, Transform visual) { viewCamera = camera; model = visual; }
 
-        private void Awake() => controller = GetComponent<CharacterController>();
+        private void Awake() { controller = GetComponent<CharacterController>();game=FindFirstObjectByType<FarmGame>(); }
 
         private void Update()
         {
             Vector2 input = Vector2.zero;
             var keyboard = Keyboard.current;
-            if (Application.isFocused && keyboard != null)
+            if (Application.isFocused && keyboard != null && (game==null||!game.InventoryOpen))
             {
                 input.x = (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed ? 1 : 0)
                     - (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed ? 1 : 0);

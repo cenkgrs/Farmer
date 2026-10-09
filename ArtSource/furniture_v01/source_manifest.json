@@ -1,0 +1,102 @@
+{
+  "home_chest": {
+    "sha256": "bcdfc508e0471726b8155650a5dec64646b30c8bd23e880eec7bf3c7942e95f4",
+    "source_texture_sizes": [
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ]
+    ],
+    "working_texture_size": 1024,
+    "base_color_factor": [
+      0.800000011920929,
+      0.800000011920929,
+      0.800000011920929,
+      1.0
+    ],
+    "triangles": 9763
+  },
+  "home_table": {
+    "sha256": "19c706aaf4b10d1c99e8cb8bfe46f4a16fb5b9bc6aae4ee8eab5ceaeb00d8a5f",
+    "source_texture_sizes": [
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ]
+    ],
+    "working_texture_size": 1024,
+    "base_color_factor": [
+      0.800000011920929,
+      0.800000011920929,
+      0.800000011920929,
+      1.0
+    ],
+    "triangles": 4742
+  },
+  "home_chair": {
+    "sha256": "c0e13dc5ac2aa9c609abb267f45c911c6516814311393bf65b78f74920208395",
+    "source_texture_sizes": [
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ]
+    ],
+    "working_texture_size": 1024,
+    "base_color_factor": [
+      0.800000011920929,
+      0.800000011920929,
+      0.800000011920929,
+      1.0
+    ],
+    "triangles": 4584
+  },
+  "home_lantern": {
+    "sha256": "c631cc86b7dd0658217c81132912c509823bfd58b7ba41be850cadc0a0a55247",
+    "source_texture_sizes": [
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ]
+    ],
+    "working_texture_size": 1024,
+    "base_color_factor": [
+      0.800000011920929,
+      0.800000011920929,
+      0.800000011920929,
+      1.0
+    ],
+    "triangles": 6578
+  }
+}

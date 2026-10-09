@@ -18,7 +18,7 @@ namespace Farmer
         public static Sprite Get(string id)
         {
             if(Cache.TryGetValue(id,out var sprite))return sprite;
-            if(!Bounds.TryGetValue(id,out var b))return null;
+            if(!Bounds.TryGetValue(id,out var b))b=new Rect(0,0,1,1);
             var texture=Resources.Load<Texture2D>("ConstructionArt/"+id);
             if(texture==null){Debug.LogError("Missing construction icon: "+id);return null;}
             sprite=Sprite.Create(texture,new Rect(b.x*texture.width,b.y*texture.height,b.width*texture.width,b.height*texture.height),Vector2.one*.5f,100,0,SpriteMeshType.FullRect);

@@ -48,7 +48,7 @@ namespace Farmer
     }
 
     // No scene, input, filesystem or clock dependencies: all transactions validate before mutating.
-    public sealed class FarmModel
+    public sealed partial class FarmModel
     {
         public const int StackLimit = 999;
         public const int MoneyLimit = 1000000000;
@@ -207,7 +207,7 @@ namespace Farmer
 
         public FarmSnapshot Snapshot() => new FarmSnapshot
         {
-            version = 6, width = Width, depth = Depth, day = Day, money = Money, minuteOfDay = MinuteOfDay, equippedItem = EquippedItem,
+            version = 7, width = Width, depth = Depth, day = Day, money = Money, minuteOfDay = MinuteOfDay, equippedItem = EquippedItem,
             seeds = seeds.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
             produce = produce.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
             plots = plots.Select(p => p.Copy()).ToArray(), building = Building.Snapshot(), exploration=Exploration.Snapshot()
@@ -215,9 +215,10 @@ namespace Farmer
 
         public static FarmModel Restore(FarmSnapshot saved, IEnumerable<CropRules> catalog, int width, int depth, IEnumerable<BuildRules> buildCatalog = null)
         {
-            if (saved == null || (saved.version < 1 || saved.version > 6) || saved.width != width || saved.depth != depth || saved.day < 1
+            if (saved == null || (saved.version < 1 || saved.version > 7) || saved.width != width || saved.depth != depth || saved.day < 1
                 || saved.day > DayLimit || saved.money < 0 || saved.money > MoneyLimit || saved.plots == null || (saved.version < 3 ? saved.plots.Length != width * depth : saved.plots.Length > PlotLimit))
                 throw new ArgumentException("Save header or grid is invalid or unsupported.");
+            if(saved.version>=7 && (saved.building==null || saved.building.furniture==null))throw new ArgumentException("Missing furniture inventory.");
             var rules = (buildCatalog ?? BuildRules.Defaults).ToArray();
             var model = new FarmModel(catalog, width, depth, saved.money, rules) { Day = saved.day };
             if (saved.version >= 2)
@@ -272,6 +273,7 @@ namespace Farmer
             model.Exploration=saved.version>=6?ExplorationModel.Restore(saved.exploration):ExplorationModel.Generate(
                 unchecked(saved.day*7919+saved.money*31+20261008)|1,
                 (x,z)=>model.IndexAt(x,z)>=0||model.Building.Blocks.Any(b=>Math.Abs((long)b.x-x)<=1&&Math.Abs((long)b.z-z)<=1));
+            model.ValidateStorage(saved.version);
             return model;
         }
 

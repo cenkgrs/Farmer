@@ -204,3 +204,11 @@ Sınırlı CPU örneği: `taskset -c 0,3,5,9 nice -n 10 python3 tools/art/run_pl
 `--checks roof exploration`: çatıyı yeniden seçip tekerlek kullanmadan ince duvar/kapı üzerinde 2,4 m, blok duvar yanında 3 m önizleme ve gerçek sol tık yerleştirme. İzometrik ışında arkadaki alçak duvar öndeki yüksek desteğin hedefini çalmamalı. Ağaç yaklaşınca/uzaklaşınca bütün kalmalı, yalnız kesildiğinde kütüğe dönüşmeli.
 
 Son doğrulama: 15/15 ilgili EditMode (`roof-auto-final-tests.xml`), 66/66 player (30 çatı + 36 keşif, `roof-tree-delivery.log`), çıkış 0 ve hata yok. Son build `roof-depth-build.log`. Önceki yüksek/alçak destek seçimi başarısızlıkları YAZILIMCI.md içinde kayıtlıdır; son tekrar bunları kapattı. Windows bu tur denenmedi.
+
+
+## 9 Ekim — mobilya ve depolama
+
+118/118 EditMode testi geçti (`Logs/furniture-tests.xml`). Linux build başarılı.
+Gerçek player: `python3 tools/art/run_player_checks.py --name furniture-regression --checks controls house roof storage --xvfb builds/Tools/xvfb/runtime/usr/bin/Xvfb`; çıkış 0 ve `FARMER_PLAYER_SMOKE_OK`.
+Satın alma, Yapı/Mobilya sekmeleri, yerleştirme, Tab çantası, F sandığı, tekli/Shift-tüm yığın ve sürükle-bırak aktarımı, dışarı bırakmada iptal, kayıt/yükleme, dolu sandığı M ile taşıma, uzak erişimin reddi ve gece lambası doğrulandı.
+Sandık kapak/oturma animasyonları yok; Windows doğrulanmadı. Görseller: `screenshots/furniture-storage.png`, `furniture-day.png`, `furniture-night.png`.

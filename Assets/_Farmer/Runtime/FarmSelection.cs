@@ -19,6 +19,7 @@ namespace Farmer
         public FarmGridLayout Layout => layout ??= new FarmGridLayout(origin, width, depth, cellSize, true);
         public Vector2Int? HoveredCell { get; private set; }
         public Vector2Int? WorldCell => HoveredCell.HasValue ? new Vector2Int(Mathf.FloorToInt(Layout.Center(HoveredCell.Value).x), Mathf.FloorToInt(Layout.Center(HoveredCell.Value).z)) : (Vector2Int?)null;
+        public bool ModalBlocked { get; set; }
         public bool HideOutline { get; set; }
         public bool PointerBlocked { get; private set; } = true;
         public bool HoveredInReach => HoveredCell.HasValue && InReach(HoveredCell.Value);
@@ -47,7 +48,7 @@ namespace Farmer
         public void UpdatePointer(Vector2 screenPosition)
         {
             HoveredCell = null;
-            bool blocked = screenPosition.x < 0 || screenPosition.y < 0 || screenPosition.x >= Screen.width || screenPosition.y >= Screen.height;
+            bool blocked = ModalBlocked || screenPosition.x < 0 || screenPosition.y < 0 || screenPosition.x >= Screen.width || screenPosition.y >= Screen.height;
             if (hudPanels != null)
                 foreach (var panel in hudPanels)
                     blocked |= panel != null && panel.gameObject.activeInHierarchy && RectTransformUtility.RectangleContainsScreenPoint(panel, screenPosition);
