@@ -358,3 +358,13 @@ Kullanıcı 7 Ekim'de önce kare seçme adımını kaldırmamızı, ardından WA
 - Kullanıcının ArtSceneSetup.cs düzenlemesi korunup commit dışı bırakılır. Sıradaki iş kullanıcı evinde görüş ve kamera geçişinin değerlendirilmesi.
 
 - Son gerçek-player turu `Logs/interior-camera.log`: {'HOUSE': 30, 'ROOF': 30}, tümü geçti; çıkış 0 ve FARMER_PLAYER_SMOKE_OK. Test süreci sonlandı.
+
+## 9 Ekim — manuel zoom, büyük vadi ve ayrı köy konsepti
+
+- Kullanıcı zoom + büyük harita tasarımı ve üretilecek model referansları istedi. Devam mesajıyla pazar/dükkânların çiftlikten ayrı köy merkezinde bulunmasını kesinleştirdi; etkileşimli karakterler daha sonra.
+- ExplorationCamera tekerlekle yumuşak manuel zoom kullanır; iç/dış/inşa bağlamında ayrı 0,5–1,8 katsayı, nihai ortografik boyut 1,8–24. İnşa modunda Ctrl+tekerlek zoom, normal tekerlek blok yüksekliği. BuildController Ctrl sırasında yükseklik değiştirmez. HUD/çanta üzerinde zoom yok. Tercih oturumluk, dünya kayıt şeması değişmedi. Merkezleme ve otomatik iç/dış geçiş korunur.
+- Linux build `Logs/manual-zoom-build.log` başarılı. İzole gerçek-player `Logs/manual-zoom.log`: **35/35 house kontrolü geçti**, çıkış 0/FARMER_PLAYER_SMOKE_OK. Beş yeni kontrol: yakınlaşma, ters tekerlekle önceki ölçeğe dönüş, HUD engeli, inşada yükseklik/zoom ayrımı, Ctrl+tekerlek. EditMode ve Windows tekrarlanmadı. Test süreci sonlandı.
+- `docs/HARITA_TASARIMI.md`: 384×384 m vadi önerisi, boş başlangıç açıklığı, 120–150 m yol ile ayrı köy, meydanda esnaf, iki keşif rotası, orman/dere/kalıntı/gölet. Konseptteki çok yükseklikli arazi mevcut y=0 inşa sisteminde henüz desteklenmiyor; ilk geçilebilir kesit düzlemde, kayalık/şelale manzaradır. Eski kayıtları koruyacak dünya geçişi harita uygulamasından önce tasarlanmalı.
+- `docs/references/valley_v01`: revize büyük harita görseli + sekiz ayrı ImageGen eskizi, tam prompt manifesti, kısa model promptları/ölçüler/teslim listesi. İlk orijinal harita yakın köy içeriyordu; kullanıcı mesajı üzerine ayrı ve daha uzaktaki köy meydanı olarak revize edildi. Teslim dosyası `valley_concept.png`; kaynak ilk prompt ayrı tutuldu. Tüm görseller incelendi. Ücretli Tripo çağrısı yok; henüz 3D teslim yok.
+- Mevcut oyun sahnesine yeni harita, köy, NPC veya dükkân taşınması eklenmedi. Sıradaki somut iş kullanıcıdan dükkân/kaya/çalı modellerini alıp doğrulamak; ardından başlangıç–köy yolunun ilk oynanabilir kesitini kurmak. Mevcut ağaç/kütük/pazar/sandık/bitki tekrar kullanılacak.
+- Kullanıcının ArtSceneSetup.cs düzenlemesi korunur ve commit dışında. Unity'nin yalnızca boşluk üreten ayar farkları temizlendi.

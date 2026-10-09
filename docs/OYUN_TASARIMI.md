@@ -148,3 +148,7 @@ Lamba 18:00–19:00 arasında yanar, 06:00–07:00 arasında söner. Masa/sandal
 Kamera her konumda karakterin gövde merkezini ekran ortasında tutar; dış dünyada kenara yaklaşma eşiği veya gecikmeli kayma yoktur. Sabit izometrik dönüş korunur. Kapalı odaya girince oda ölçülerine uygun yakın ölçeğe yumuşak geçer; inşa modunda ve dışarı çıkınca eski geniş ölçeğe döner. Yakın görünümde de merkez karakterdir, oda merkezi değildir.
 
 Oda tespiti döşeme bütünlüğüne bağlı değildir: blok duvar, ince duvar ve kapı sınırları kullanılır. İçeride odanın üstündeki çatılar, kameraya bakan çevre duvarları ve oda içini örten yapı parçaları saydamlaşır. Çarpışma ve arka duvar görünümü korunur. Döşemesi eksik veya toprak zeminli kapalı ev de aynı davranışı kullanır; yalnızca açık bir döşeme platformu yakın kamera başlatmaz.
+
+9 Ekim manuel zoom: normal oyunda fare tekerleği yakınlaştırır/uzaklaştırır; inşa modunda Ctrl+tekerlek zoom, düz tekerlek blok yüksekliği olarak kalır. HUD üstünde ve çanta/sandık açıkken zoom engellenir. İç/dış/inşa ölçek tercihleri oturum boyunca ayrı tutulur; kayıt dosyasına yazılmaz. Karakter merkezde ve açı sabit kalır.
+
+9 Ekim büyük harita kararı: pazar/esnaf oyuncunun çiftliğinde olmayacak; ayrı köy merkezi ve meydanda toplanacak. Etkileşimli karakterler sonraki adım. [Vadi tasarımı](HARITA_TASARIMI.md) ve [ilk sekiz model paketi](references/valley_v01/README.md) hazır; mevcut küçük oyun sahnesi bu tur büyük haritaya dönüşmedi.

@@ -135,3 +135,5 @@ Balta tutuşunda yalnızca socket yakınlığı doğal el pozu için yeterli de�
 9 Ekim çapa/orak: baltanın kalibre bilek/parmak kavraması iki alete de uygulandı, yakın çekimler incelendi. [Yeni çapa eskizi ve teslim ölçütleri](references/hoe_v01/README.md); GLB bekleniyor.
 
 9 Ekim çapa teslimi entegre edildi: [kaynak ve dönüşüm raporu](../ArtSource/hoe_v01/README.md). Mevcut avuç kavramasını kullanır; geçici geometri kaldırıldı.
+
+9 Ekim büyük vadi/köy: [harita konsepti ve sekiz ayrı model eskizi](references/valley_v01/README.md). Dükkân, kaya, çalı, çam, köprü, kuyu, kayalık, kemer; ölçü/üçgen hedefleri ve kısa üretim promptları aynı rehberde. Yerleşik ImageGen kullanıldı; 3D modeller kullanıcı tarafından üretilecek. Mevcut varlıklar yeniden kullanılır.

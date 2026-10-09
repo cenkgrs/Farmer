@@ -86,7 +86,7 @@ namespace Farmer
             if(keyboard?.mKey.wasPressedThisFrame==true)ToggleMoveMode();
             if (keyboard?.qKey.wasPressedThisFrame == true && dragged==null)SelectPiece((pieceIndex+1)%game.BuildPieces.Length);
             if (keyboard?.rKey.wasPressedThisFrame == true) rotation = (rotation + 1) % 4;
-            if (ActiveDefinition.placement==BuildPlacement.Solid && !ActiveDefinition.IsFurniture && mouse != null && Mathf.Abs(mouse.scroll.ReadValue().y) > .01f)
+            if (ActiveDefinition.placement==BuildPlacement.Solid && !ActiveDefinition.IsFurniture && keyboard?.leftCtrlKey.isPressed != true && keyboard?.rightCtrlKey.isPressed != true && mouse != null && Mathf.Abs(mouse.scroll.ReadValue().y) > .01f)
                 level = Mathf.Clamp(level + (mouse.scroll.ReadValue().y > 0 ? 1 : -1), 0, BuildingModel.Levels - 1);
             RefreshTarget();
             if(MoveMode)

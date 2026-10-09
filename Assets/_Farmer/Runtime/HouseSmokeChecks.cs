@@ -92,9 +92,29 @@ namespace Farmer
                 float indoorSize=camera.orthographicSize;
                 var screen=camera.WorldToViewportPoint(game.Player.position+Vector3.up*.8f);
                 Check(Vector2.Distance(new Vector2(screen.x,screen.y),Vector2.one*.5f)<.005f,"Indoor camera keeps the character centered.");
+                yield return Wheel(mouse,120);
+                yield return new WaitForSecondsRealtime(1.2f);
+                Check(camera.orthographicSize<indoorSize-.2f,"Mouse wheel zooms into the occupied room.");
+                yield return Wheel(mouse,-120);
+                yield return new WaitForSecondsRealtime(1.2f);
+                Check(Mathf.Abs(camera.orthographicSize-indoorSize)<.05f,"Reverse wheel restores the previous interior zoom.");
+                float uiSize=camera.orthographicSize;
+                InputSystem.QueueStateEvent(mouse,new MouseState {position=new Vector2(50,Screen.height-50),scroll=new Vector2(0,120)});
+                yield return null;yield return null;
+                InputSystem.QueueStateEvent(mouse,new MouseState {position=new Vector2(50,Screen.height-50)});
+                yield return new WaitForSecondsRealtime(.6f);
+                Check(Mathf.Abs(camera.orthographicSize-uiSize)<.05f,"Scrolling over the HUD does not zoom the world.");
                 yield return Capture(screenshot,"interior-camera");
                 game.SetBuildMode(true);yield return new WaitForSecondsRealtime(1.5f);
                 Check(camera.orthographicSize>indoorSize+.5f,"Build mode restores the wide camera inside the house.");
+                builder.SelectPiece(System.Array.FindIndex(game.BuildPieces,d=>d.id=="wood_block"));
+                float wide=camera.orthographicSize;int oldLevel=builder.Level;
+                yield return Wheel(mouse,120);yield return new WaitForSecondsRealtime(.6f);
+                Check(builder.Level==oldLevel+1&&Mathf.Abs(camera.orthographicSize-wide)<.05f,"Build wheel changes height without zooming.");
+                InputSystem.QueueStateEvent(keyboard,new KeyboardState(Key.LeftCtrl));yield return null;
+                int height=builder.Level;yield return Wheel(mouse,120);yield return new WaitForSecondsRealtime(1.2f);
+                Check(builder.Level==height&&camera.orthographicSize<wide-.2f,"Ctrl plus wheel zooms in build mode without changing height.");
+                InputSystem.QueueStateEvent(keyboard,new KeyboardState());yield return null;
                 yield return Capture(screenshot,"interior-build-camera");
                 game.SetBuildMode(false);Teleport(cc,new Vector3(8.5f,.1f,2.5f));yield return new WaitForSecondsRealtime(1.5f);
                 screen=camera.WorldToViewportPoint(game.Player.position+Vector3.up*.8f);
@@ -122,6 +142,13 @@ namespace Farmer
         private static void Teleport(CharacterController cc,Vector3 p){cc.enabled=false;cc.transform.position=p;cc.enabled=true;Physics.SyncTransforms();}
         private static Vector2 Cell(int x,int z)=>Camera.main.WorldToScreenPoint(new Vector3(x+.5f,.01f,z+.5f));
         private static IEnumerator Press(Keyboard k,Key key){InputSystem.QueueStateEvent(k,new KeyboardState(key));yield return null;yield return null;InputSystem.QueueStateEvent(k,new KeyboardState());yield return null;yield return null;}
+        private static IEnumerator Wheel(Mouse mouse,float amount)
+        {
+            InputSystem.QueueStateEvent(mouse,new MouseState {position=new Vector2(Screen.width*.5f,Screen.height*.5f),scroll=new Vector2(0,amount)});
+            yield return null;yield return null;
+            InputSystem.QueueStateEvent(mouse,new MouseState {position=new Vector2(Screen.width*.5f,Screen.height*.5f)});
+            yield return null;
+        }
         private static IEnumerator Pointer(Mouse mouse,Vector2 p,bool left,bool right=false){InputSystem.QueueStateEvent(mouse,new MouseState{position=p,buttons=(ushort)((left?1:0)|(right?2:0))});yield return null;yield return null;yield return null;}
         private static IEnumerator Capture(string path,string label){yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(Path.GetDirectoryName(path),Path.GetFileNameWithoutExtension(path)+"-"+label+".png"));yield return new WaitForSecondsRealtime(.3f);}
         private static void Check(bool ok,string message){if(ok)Debug.Log("FARMER_HOUSE_CHECK_OK: "+message);else Debug.LogError("FARMER_HOUSE_CHECK_FAILED: "+message);}

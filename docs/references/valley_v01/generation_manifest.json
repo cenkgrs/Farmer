@@ -1,0 +1,56 @@
+[
+  {
+    "id": "valley_concept",
+    "source": "exec-b1da7a90-1fa9-42b1-8db2-6a39900a46e7.png",
+    "prompt": "Edit this farming game master map concept. Keep its painterly stylized 3D art direction, elevated isometric composition, river, forest, waterfall, stone ruins, orchard and broad empty southern starting meadow. Make the village a distinctly SEPARATE destination from the player's empty starting meadow. Expand the small cluster of cottages in the left-center into a compact village square a little farther north: 5 small terracotta-roof timber-and-plaster buildings arranged around an open cobbled plaza, a seed merchant's green-and-cream canopy stall and a carpenter's honey-wood workshop frontage, 3 cottage homes, one small stone well in the plaza. A visible winding dirt road across a generous strip of open countryside connects the southern empty meadow to the village; they do not touch, no shop in the player's meadow. Keep the meadow empty for free player building, remove fences that surround this meadow. Village should remain a small part of the large wilderness map, not a giant city. Keep traversable open glades and forest paths. No text, no labels, no icons, no characters or UI.",
+    "tool": "builtin_imagegen"
+  },
+  {
+    "id": "pine_tree",
+    "source": "exec-5b5fab2b-ae5a-4c91-a0e0-a4ce48661775.png",
+    "prompt": "Use case: stylized-concept. Asset type: single reference for image-to-3D game prop modeling. One mature stylized pine tree, about 5m tall, one exposed warm brown trunk with three chunky tiers of deep green needle foliage. Broad simple foliage masses, no individual needles, no roots spreading far, visible trunk below canopy, low-poly rounded planes. Cozy hand-painted stylized 3D farming game aesthetic, warm natural colors, softly beveled low-poly forms, readable simple silhouette, restrained detail matching a rustic farm with honey-colored wood and soft forest greens. One complete object centered with generous margin, full 3/4 view, plain pure white background, even soft studio lighting. No text, labels, dimension lines, border, other objects, people, ground plane or cast shadow. This is a clean production reference, not a scene or multi-view sheet.",
+    "tool": "builtin_imagegen"
+  },
+  {
+    "id": "granite_boulder",
+    "source": "exec-abc1b7a0-f158-4837-a6a7-02a6be5f0dc3.png",
+    "prompt": "Use case: stylized-concept. Asset type: single reference for image-to-3D game prop modeling. One broad irregular granite boulder, about 1.6m wide and 1m tall, soft blue-grey weathered rock with chunky broad facets, a little muted green moss on top only, flat ground-contact bottom. No cluster of separate stones. Cozy hand-painted stylized 3D farming game aesthetic, warm natural colors, softly beveled low-poly forms, readable simple silhouette, restrained detail matching a rustic farm with honey-colored wood and soft forest greens. One complete object centered with generous margin, full 3/4 view, plain pure white background, even soft studio lighting. No text, labels, dimension lines, border, other objects, people, ground plane or cast shadow. This is a clean production reference, not a scene or multi-view sheet.",
+    "tool": "builtin_imagegen"
+  },
+  {
+    "id": "cliff_module",
+    "source": "exec-46aade45-e291-4551-92cb-4b344d9e1af2.png",
+    "prompt": "Use case: stylized-concept. Asset type: single reference for image-to-3D game prop modeling. One modular natural cliff rock section, about 4m wide, 2m tall and 2m deep. Weathered warm grey stone, broad stepped cracked rock faces, relatively flat horizontal top with a thin muted green grassy cap. Simple chunky solid geometry, closed back and underside, suitable for repeating in a valley boundary. No overhang, cave or trees. Cozy hand-painted stylized 3D farming game aesthetic, warm natural colors, softly beveled low-poly forms, readable simple silhouette, restrained detail matching a rustic farm with honey-colored wood and soft forest greens. One complete object centered with generous margin, full 3/4 view, plain pure white background, even soft studio lighting. No text, labels, dimension lines, border, other objects, people, ground plane or cast shadow. This is a clean production reference, not a scene or multi-view sheet.",
+    "tool": "builtin_imagegen"
+  },
+  {
+    "id": "wood_bridge",
+    "source": "exec-c8a478b5-485a-48e6-964c-34c8f8b75949.png",
+    "prompt": "Use case: stylized-concept. Asset type: single reference for image-to-3D game prop modeling. One simple straight rustic wooden footbridge, 4m long by 2m wide, flat walkable plank deck, low wooden post-and-two-rail guards along both sides, four support legs underneath. Honey brown weathered wood, chunky strong proportions, small restrained iron nails. No stairs, no rope, no arch. Fully isolated object, no river, terrain or stone banks. Cozy hand-painted stylized 3D farming game aesthetic, warm natural colors, softly beveled low-poly forms, readable simple silhouette, restrained detail matching a rustic farm with honey-colored wood and soft forest greens. One complete object centered with generous margin, full 3/4 view, plain pure white background, even soft studio lighting. No text, labels, dimension lines, border, other objects, people, ground plane or cast shadow. This is a clean production reference, not a scene or multi-view sheet.",
+    "tool": "builtin_imagegen"
+  },
+  {
+    "id": "meadow_bush",
+    "source": "exec-411ae529-1bc4-42be-8250-155815fe2d8c.png",
+    "prompt": "Use case: stylized-concept. Asset type: single reference for image-to-3D game prop modeling. One compact rounded wild meadow bush, 0.9m wide and 0.7m tall. Three overlapping chunky rounded clumps of olive green leaves, a few readable broad individual leaves on the silhouette, dark woody base barely visible. No berries, flowers or fruit. Simple solid low-poly game foliage, no thin alpha-card leaves. Cozy hand-painted stylized 3D farming game aesthetic, warm natural colors, softly beveled low-poly forms, readable simple silhouette, restrained detail matching a rustic farm with honey-colored wood and soft forest greens. One complete object centered with generous margin, full 3/4 view, plain pure white background, even soft studio lighting. No text, labels, dimension lines, border, other objects, people, ground plane or cast shadow. This is a clean production reference, not a scene or multi-view sheet.",
+    "tool": "builtin_imagegen"
+  },
+  {
+    "id": "ruin_arch",
+    "source": "exec-55211594-44a2-4879-9c96-9dfc168cfeb0.png",
+    "prompt": "Use case: stylized-concept. Asset type: single reference for image-to-3D game prop modeling. One small freestanding ruined stone archway, 3m wide and 3.3m high, doorway opening 1.6m wide. Two short thick square pillars and a stable rounded arch of chunky weathered blue-grey blocks, some chipped corners and sparse moss. Rustic ancient countryside ruin, closed solid stone surfaces. No door, roof, adjoining walls, stairs, terrain or symbols. Cozy hand-painted stylized 3D farming game aesthetic, warm natural colors, softly beveled low-poly forms, readable simple silhouette, restrained detail matching a rustic farm with honey-colored wood and soft forest greens. One complete object centered with generous margin, full 3/4 view, plain pure white background, even soft studio lighting. No text, labels, dimension lines, border, other objects, people, ground plane or cast shadow. This is a clean production reference, not a scene or multi-view sheet.",
+    "tool": "builtin_imagegen"
+  },
+  {
+    "id": "village_shop",
+    "source": "exec-3982153b-88b9-4482-88c0-2ee5b5e38883.png",
+    "prompt": "Use case: stylized-concept. Asset type: single image-to-3D model reference. One small rustic village shop building exterior, footprint 5m wide and 4m deep, height 4.5m. Cream plaster walls framed in chunky dark honey-brown timbers, simple terracotta tiled gable roof, front wooden door, two small shuttered windows and one broad front sales window with a green and cream striped canvas awning above it. Blank small wooden hanging sign, no lettering. An empty built-in wooden counter below the sales window; no products, no furniture, no people, no chimney smoke. Standalone modular facade building, one storey, closed exterior mesh, no ground slab. Cozy hand-painted stylized 3D farming game art, warm natural palette, rounded beveled low-poly chunky forms, restrained detail, consistent rustic village style. One complete isolated object, full three-quarter view centered with margins against pure white background, soft even studio illumination. No landscape, extra objects, text, labels, dimensions, grid, border or characters.",
+    "tool": "builtin_imagegen"
+  },
+  {
+    "id": "village_well",
+    "source": "exec-d22cc0dc-e3c9-41a6-81da-464d9c45d1b8.png",
+    "prompt": "Use case: stylized-concept. Asset type: single image-to-3D model reference. One small rustic village well, 1.5m wide stone circular base 0.8m tall, thick chunky blue-grey stacked stones, two short honey-brown timber posts supporting a simple wooden crossbeam and spindle, one wooden bucket hanging on a thick short rope above the well opening. Total height 2m, no tiled roof, no water splash, no ground slab. Simple cozy hand-painted game asset. Cozy hand-painted stylized 3D farming game art, warm natural palette, rounded beveled low-poly chunky forms, restrained detail, consistent rustic village style. One complete isolated object, full three-quarter view centered with margins against pure white background, soft even studio illumination. No landscape, extra objects, text, labels, dimensions, grid, border or characters.",
+    "tool": "builtin_imagegen"
+  }
+]

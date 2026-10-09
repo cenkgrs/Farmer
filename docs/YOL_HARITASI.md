@@ -98,3 +98,5 @@ Sıradaki somut adım: kullanıcı ev/taşıma/yatak sürümünü oynadıktan so
 9 Ekim mobilya uygulaması: satın alınan sandık/masa/sandalye/ayaklı lamba, Tab çantası, 16 yığınlı kişisel sandık ve v7 içerik kaydı eklendi. Teslim doğrulamaları YAZILIMCI.md içinde. Oturma ve sandık kapak animasyonu bu adımda yok; büyük yerleşim performansı ve Windows doğrulaması açık.
 
 9 Ekim kamera geri bildirimi: karakter merkezli sürekli takip, oda içinde yakın ölçek/inşa modunda geniş ölçek ve eksik döşemeden bağımsız oda saydamlığı. Doğrulama sonuçları YAZILIMCI.md içinde.
+
+9 Ekim kullanıcı büyük harita tasarımını istedi: 384×384 m vadi ana konsepti, ayrı köy meydanı/esnaf ve ilk 128×128 m kesitle uygulama önerisi `HARITA_TASARIMI.md` içinde. Bu bir tasarım teslimi; mevcut dünyayı büyütme, pazar taşıma, NPC ve savaş bu tur uygulanmadı. İlk yeni model önceliği dükkân/kaya/çalı. Manuel zoom mevcut oyunda eklendi.
