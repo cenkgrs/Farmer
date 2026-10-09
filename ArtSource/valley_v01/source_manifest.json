@@ -1,0 +1,202 @@
+{
+  "village_shop": {
+    "sha256": "84d7ecadffcb74ff260771532631d026175eb2a6178d667a50ab636b12329a49",
+    "source_texture_sizes": [
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ]
+    ],
+    "working_texture_size": 1024,
+    "base_color_factor": [
+      0.800000011920929,
+      0.800000011920929,
+      0.800000011920929,
+      1.0
+    ],
+    "triangles": 24720
+  },
+  "ruin_arch": {
+    "sha256": "139af953c9a8cba27538e780494652dab0dbfbc15174578b3cbeeeeb9db799e6",
+    "source_texture_sizes": [
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ]
+    ],
+    "working_texture_size": 1024,
+    "base_color_factor": [
+      0.800000011920929,
+      0.800000011920929,
+      0.800000011920929,
+      1.0
+    ],
+    "triangles": 11070
+  },
+  "village_well": {
+    "sha256": "79d03f73e29b9ce8ba8b3e823c40559a0f3ec95650a7336d6b0d4253e7d6e3cf",
+    "source_texture_sizes": [
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ]
+    ],
+    "working_texture_size": 1024,
+    "base_color_factor": [
+      0.800000011920929,
+      0.800000011920929,
+      0.800000011920929,
+      1.0
+    ],
+    "triangles": 15532
+  },
+  "cliff_module": {
+    "sha256": "da00f2366c651f8de7d8a0a9146f69127e0e4f267db3aae655399672dd0b30e4",
+    "source_texture_sizes": [
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ]
+    ],
+    "working_texture_size": 1024,
+    "base_color_factor": [
+      0.800000011920929,
+      0.800000011920929,
+      0.800000011920929,
+      1.0
+    ],
+    "triangles": 16528
+  },
+  "granite_boulder": {
+    "sha256": "a511cc467cce469a24481a43d30806e96110fe0ae164685c68dc64b913132c7d",
+    "source_texture_sizes": [
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ]
+    ],
+    "working_texture_size": 1024,
+    "base_color_factor": [
+      0.800000011920929,
+      0.800000011920929,
+      0.800000011920929,
+      1.0
+    ],
+    "triangles": 14247
+  },
+  "pine_tree": {
+    "sha256": "19bf9ae84baac4bfcfb05e78183be4bb48863420e4f633b80313c03831454309",
+    "source_texture_sizes": [
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ]
+    ],
+    "working_texture_size": 1024,
+    "base_color_factor": [
+      0.800000011920929,
+      0.800000011920929,
+      0.800000011920929,
+      1.0
+    ],
+    "triangles": 16328
+  },
+  "wood_bridge": {
+    "sha256": "0bbb47cc9e4c84d3440dd984f511271630a653d9f4fc9c3fec278598f41702f7",
+    "source_texture_sizes": [
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ]
+    ],
+    "working_texture_size": 1024,
+    "base_color_factor": [
+      0.800000011920929,
+      0.800000011920929,
+      0.800000011920929,
+      1.0
+    ],
+    "triangles": 12476
+  },
+  "meadow_bush": {
+    "sha256": "0ef2127137d0933d69ee68361ec86c0fe213938c276e1e45a541881a5c644975",
+    "source_texture_sizes": [
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ]
+    ],
+    "working_texture_size": 1024,
+    "base_color_factor": [
+      0.800000011920929,
+      0.800000011920929,
+      0.800000011920929,
+      1.0
+    ],
+    "triangles": 7637
+  }
+}

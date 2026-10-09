@@ -81,6 +81,8 @@ namespace Farmer
                 yield return RoofMoveSmokeChecks.Run(outputPath);
             if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-exploration") >= 0)
                 yield return ExplorationSmokeChecks.Run(outputPath);
+            if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-valley") >= 0)
+                yield return ValleySmokeChecks.Run(outputPath);
             if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-storage") >= 0)
                 yield return StorageSmokeChecks.Run(outputPath);
             yield return new WaitForEndOfFrame();

@@ -100,3 +100,5 @@ Sıradaki somut adım: kullanıcı ev/taşıma/yatak sürümünü oynadıktan so
 9 Ekim kamera geri bildirimi: karakter merkezli sürekli takip, oda içinde yakın ölçek/inşa modunda geniş ölçek ve eksik döşemeden bağımsız oda saydamlığı. Doğrulama sonuçları YAZILIMCI.md içinde.
 
 9 Ekim kullanıcı büyük harita tasarımını istedi: 384×384 m vadi ana konsepti, ayrı köy meydanı/esnaf ve ilk 128×128 m kesitle uygulama önerisi `HARITA_TASARIMI.md` içinde. Bu bir tasarım teslimi; mevcut dünyayı büyütme, pazar taşıma, NPC ve savaş bu tur uygulanmadı. İlk yeni model önceliği dükkân/kaya/çalı. Manuel zoom mevcut oyunda eklendi.
+
+9 Ekim sekiz model tesliminden sonra ilk köy/yol kesiti uygulandı: 256 m taban, yaklaşık 128 m koridor, ayrı pazar, 3 cephe/kuyu/çevre modelleri. Tam vadi hedefi 384 m olarak duruyor; su/köprü yerleşimi, yeni dekoru kaynak sistemine bağlama ve esnaf/NPC sonraki işler. Kaynak/geometri doğrulaması ArtSource/valley_v01, oyun testi sonuçları YAZILIMCI.md içinde.

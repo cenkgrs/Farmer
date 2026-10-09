@@ -137,3 +137,5 @@ Balta tutuşunda yalnızca socket yakınlığı doğal el pozu için yeterli de�
 9 Ekim çapa teslimi entegre edildi: [kaynak ve dönüşüm raporu](../ArtSource/hoe_v01/README.md). Mevcut avuç kavramasını kullanır; geçici geometri kaldırıldı.
 
 9 Ekim büyük vadi/köy: [harita konsepti ve sekiz ayrı model eskizi](references/valley_v01/README.md). Dükkân, kaya, çalı, çam, köprü, kuyu, kayalık, kemer; ölçü/üçgen hedefleri ve kısa üretim promptları aynı rehberde. Yerleşik ImageGen kullanıldı; 3D modeller kullanıcı tarafından üretilecek. Mevcut varlıklar yeniden kullanılır.
+
+9 Ekim vadi GLB teslimi: [sekiz modelin kaynak/dönüşüm raporu](../ArtSource/valley_v01/README.md). Çalı alternatif v02 referansı da saklandı. Çam ve çalı sadeleştirmede siluet bozulduğu için kaynak geometriyi kullanır. Köprü prefabı var, nehir geçişi henüz yok.

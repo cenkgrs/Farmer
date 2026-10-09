@@ -76,3 +76,9 @@ Yürüyüş hattı düz ve boş olmalı; giriş/çıkışta enine korkuluk bulun
 ## Sonraya bırakılan görsel tamamlayıcılar
 
 Saz kümesi, söğüt ağacı, meyve ağacı, kırık taş duvar ve köy ev varyantları ikinci pakettir. Bunlar ana konsepti birebir zenginleştirir fakat ilk oynanabilir harita kesiti için sekiz modelin üzerine hemen üretim yükü getirmiyoruz. Çim/çiçek serpiştirme, zemin, yol, su ve şelale efektlerini Unity tarafında hazırlayacağız. Mevcut meşe, kütük, pazar, keşif sandığı ve yabani bitki yeniden kullanılacak.
+
+## Çalı v02 ve ilk GLB teslimi
+
+İlk çalı referansının Tripo'da son saniyede takılması üzerine [çok sade üç kütleli alternatif](meadow_bush_v02.png) yerleşik ImageGen ile üretildi; tam prompt `meadow_bush_v02_prompt.txt`. Takılmanın nedeni doğrulanmadı. Ardından kullanıcı yapraklı bir çalı GLB'si iletti; bu dosya mevcut teslimde kullanıldı, alternatif referans ilerisi için korunuyor.
+
+Sekiz GLB alındı ve yerel olarak dönüştürüldü: [kaynak/geometri raporu](../../../ArtSource/valley_v01/README.md). `wooden bench` adlı dosya köprü çıktı. İlk köy/yol kesiti uygulandı; tam vadi ve su sistemi hâlâ sonraki aşama.

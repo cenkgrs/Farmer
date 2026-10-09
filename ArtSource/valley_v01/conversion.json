@@ -1,0 +1,74 @@
+{
+  "village_shop": {
+    "source_triangles": 24720,
+    "triangles": 12000,
+    "size_blender_xyz": [
+      5.0,
+      4.0,
+      4.5
+    ]
+  },
+  "ruin_arch": {
+    "source_triangles": 11069,
+    "triangles": 4000,
+    "size_blender_xyz": [
+      3.0,
+      1.0,
+      3.2999999999999994
+    ]
+  },
+  "village_well": {
+    "source_triangles": 15532,
+    "triangles": 4000,
+    "size_blender_xyz": [
+      1.5,
+      1.5,
+      1.9999999999999998
+    ]
+  },
+  "cliff_module": {
+    "source_triangles": 16528,
+    "triangles": 4000,
+    "size_blender_xyz": [
+      4.0,
+      2.0,
+      2.0
+    ]
+  },
+  "granite_boulder": {
+    "source_triangles": 14247,
+    "triangles": 2500,
+    "size_blender_xyz": [
+      1.6000000000000003,
+      1.2,
+      1.0
+    ]
+  },
+  "pine_tree": {
+    "source_triangles": 16328,
+    "triangles": 16328,
+    "size_blender_xyz": [
+      3.0,
+      3.0,
+      5.0
+    ]
+  },
+  "wood_bridge": {
+    "source_triangles": 12476,
+    "triangles": 6000,
+    "size_blender_xyz": [
+      2.0,
+      4.0,
+      1.5
+    ]
+  },
+  "meadow_bush": {
+    "source_triangles": 7637,
+    "triangles": 7637,
+    "size_blender_xyz": [
+      0.9,
+      0.9,
+      0.7
+    ]
+  }
+}

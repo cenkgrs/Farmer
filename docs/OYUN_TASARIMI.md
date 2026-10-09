@@ -152,3 +152,5 @@ Oda tespiti döşeme bütünlüğüne bağlı değildir: blok duvar, ince duvar 
 9 Ekim manuel zoom: normal oyunda fare tekerleği yakınlaştırır/uzaklaştırır; inşa modunda Ctrl+tekerlek zoom, düz tekerlek blok yüksekliği olarak kalır. HUD üstünde ve çanta/sandık açıkken zoom engellenir. İç/dış/inşa ölçek tercihleri oturum boyunca ayrı tutulur; kayıt dosyasına yazılmaz. Karakter merkezde ve açı sabit kalır.
 
 9 Ekim büyük harita kararı: pazar/esnaf oyuncunun çiftliğinde olmayacak; ayrı köy merkezi ve meydanda toplanacak. Etkileşimli karakterler sonraki adım. [Vadi tasarımı](HARITA_TASARIMI.md) ve [ilk sekiz model paketi](references/valley_v01/README.md) hazır; mevcut küçük oyun sahnesi bu tur büyük haritaya dönüşmedi.
+
+9 Ekim ilk köy kesiti uygulanması: pazar çiftlikten (-60,88) köy noktasına taşındı; mevcut alışveriş kataloğu korunuyor. Köydeki üç yeni cephe şu an dekor; ayrı esnaf/NPC değil. Yeni yol, kuyu ve çevre dekoru eklendi, tam vadi/nehir henüz tamamlanmadı. Ayrıntılar HARITA_TASARIMI.md uygulama bölümünde.

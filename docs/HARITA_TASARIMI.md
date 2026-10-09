@@ -53,3 +53,11 @@ Tek dev mesh yok. 32–64 m yerleşim parçaları, tekrarlı prefab ve paylaşı
 Sabit izometrik açı ve oyuncu merkezleme korunur. Ağaç tacı yaklaşınca gizlenmez. Yolun kamera tarafındaki ağaç sıklığı azaltılarak görünürlük sağlanır. Ev görüş engelleri mevcut saydamlık sistemini kullanır.
 
 Kabul: köy çiftlikten belirgin ayrı; boş başlangıç; tek bir zorunlu güzergâh yok; keşif sandıkları yeni dünyada değişiyor; mevcut kayıtta yapılar/ürünler korunuyor; zoom uçlarında yol/hedef okunuyor; orman yoğunluğunda gerçek Linux/Windows performansı ölçülüyor. Bunlar harita uygulamasının gelecek kabul ölçütleridir, bu tasarım turunda geçtiği iddia edilmez.
+
+## 9 Ekim — ilk uygulanan kesit
+
+Sekiz teslim prefabı hazır. Dünya zemini 256×256 m'ye açıldı; yaklaşık 128 m uzunluğundaki başlangıç–köy koridoru, 3 dükkân/ev cephesi, kuyu, taş kemer, kayalık ve çevre dekoru kuruldu. 384×384 m tam konsept henüz uygulanmadı. 256 m taban seçimi mevcut merkezdeki 56 m dünyayı ve (-55,95) köyünü aynı anda korur; ilk görsel yoğunluk köy/yol çevresiyle sınırlıdır.
+
+Pazar (-60,88) civarında köye taşındı, mevcut alış/satış ve mobilya işlevleri aynı tezgâhta çalışır. Yeni dükkân cepheleri henüz ayrı satıcılar değildir. Eski kaynak düğümleri ve rastgele sandık düzeni korunur; yeni çam/çalı/kayalar şu an sabit çevre dekorudur, kaynak toplama sistemine eklenmedi. Nehir ve köprü geçişi, ayrı esnaf/NPC ve dekorun kaynak sistemine bağlanması sonraki somut işlerdir. Köprü prefabı teslim edildi ama sahnede geçit olarak henüz kullanılmıyor.
+
+Yeni dekor kayıtlı yapı/tarla ile çakışırsa renderer/collider'ı gizlenir, kayıtlı oyuncu verisi silinmez. Başlangıçtaki 56 m alan yeni büyük dekorla doldurulmadı. Yollar geçici düz renkli geometridir; son boyanmış zemin veya tamamlanmış çevre sanatı değildir.
