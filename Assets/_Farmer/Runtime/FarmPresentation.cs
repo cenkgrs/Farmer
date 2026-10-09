@@ -145,11 +145,8 @@ namespace Farmer
             heldItems[1].transform.localRotation = Quaternion.Euler(0, 180, 0);
             heldItems[1].name = "Held WateringCan";
             heldItems[2].name = "Held Sickle";
-            heldItems[3] = new GameObject("Held Hoe"); heldItems[3].transform.SetParent(heldItemSocket,false);
-            Part(3, PrimitiveType.Cylinder, new Vector3(0,-.22f,.03f), new Vector3(.038f,.48f,.038f),0);
-            Part(3, PrimitiveType.Cube, new Vector3(0,-.67f,.13f), new Vector3(.27f,.055f,.25f),2);
-            // Match the shaft direction of the axe/sickle: working head above the grip in socket space.
-            heldItems[3].transform.localRotation = Quaternion.Euler(0, 0, 180);
+            heldItems[3] = Instantiate(Resources.Load<GameObject>("ExplorationArt/hoe"), heldItemSocket, false);
+            heldItems[3].name = "Held Hoe";
             heldItems[4] = Instantiate(Resources.Load<GameObject>("ExplorationArt/axe"), heldItemSocket, false);
             heldItems[4].name = "Held Axe";
         }

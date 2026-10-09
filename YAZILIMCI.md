@@ -339,3 +339,11 @@ Kullanıcı 7 Ekim'de önce kare seçme adımını kaldırmamızı, ardından WA
 - Linux build başarılı: `Logs/shaft-grip-build.log`. Gerçek-player `Logs/shaft-grip.log`: {'TOOL_ANIMATION': 26, 'EXPLORATION': 36}, tümü geçti, çıkış 0 / FARMER_PLAYER_SMOKE_OK. Taşıma bilek açıları orak 31,5°, çapa 22,6°, balta 24,5°. Taşıma/el yakın planı/savurma görüntüleri incelendi ve `docs/screenshots/{sickle,hoe}-{carry,grip,swing}.png` altında. Yeni görsel pozlar yanında mevcut sulama/hasat/keşif kontrolleri de koştu. Model kuralları değişmediğinden EditMode tekrarlanmadı; Windows yenilenmedi. Test işlemi sonlandı.
 - `docs/references/hoe_v01/hoe.png` yerleşik ImageGen eskizi; tam prompt ve GLB teslim ölçütleri aynı klasörde. Ücretli Tripo üretimi yok. Çapa hâlâ geçici geometri; sonraki iş kullanıcının GLB teslimini doğrulayıp sap pivotuna hizalamak.
 - Kullanıcının `ArtSceneSetup.cs` biçim değişikliği korunup commit dışı bırakıldı. Açık eski oyun süreci yeni derlemeyi kendiliğinden kullanmaz; yeniden başlatılınca yeni tutuş görünür.
+
+
+## 9 Ekim — teslim edilen çapa modeli
+
+- `wooden axe 3d model.glb` dosyası görsel olarak çapa doğrulandı; değişmeden `ArtSource/hoe_v01/hoe.glb` içine alındı. 6.074 üçgen, tek mesh/materyal, 4K kaynak dokuları korunuyor; çalışma dokuları 1K. 1,05 m uzun eksen, dipten 0,28 m kavrama. Kaynak hash ve dönüşüm raporları yanında.
+- `HoeArtSetup.ApplyAndBuild` el prefabını üretir. `FarmPresentation` artık geçici silindir/küp yerine bu modeli kullanır. Mevcut balta/orak/çapa kavrama kodu, tarım ve kayıt kuralları değişmedi.
+- Linux build `Logs/hoe-art-build.log` başarılı. Gerçek-player `Logs/hoe-delivery.log`: 26/26 alet animasyonu kontrolü geçti; çıkış 0, FARMER_PLAYER_SMOKE_OK. `docs/screenshots/hoe-model-{carry,grip,swing}.png` yakın plan ve savurma görselleri incelendi. Windows ve EditMode bu salt görsel değişiklikte tekrar çalıştırılmadı. Test süreçleri kapandı.
+- Kaynak/dönüşüm betikleri ve Unity metaları sürümlü. Kullanıcının ArtSceneSetup.cs düzenlemesi korunur ve commit dışında. Sonraki somut iş kullanıcı değerlendirmesi; yeni özellik kapsamı eklenmedi.
