@@ -130,3 +130,6 @@ Balta tutuşunda yalnızca socket yakınlığı doğal el pozu için yeterli de�
 9 Ekim satın alınabilir mobilya seti: [dört ayrı eskiz, ölçü ve kısa model promptları](references/furniture_sketches_v01/README.md). İlk teslim önceliği ev sandığı; mevcut yatak korunur. Görseller 2D referanstır, 3D import henüz yapılmadı.
 
 9 Ekim dört mobilya GLB teslimi: [kaynak/dönüşüm kaydı](../ArtSource/furniture_v01/README.md). Özgün GLB ve 4K doku kaynakları korundu, Unity çalışma dokuları 1K. Masa iki hücreye uygun döndürüldü/ölçeklendi. Yeni dört inşa ikonu yerleşik ImageGen ile şeffaf üretildi; [promptlar](art-sources/furniture-icon-prompts.json). Sandık bu sürümde tek kapalı mesh; lamba gerçek Unity ışığı kullanır.
+
+
+9 Ekim çapa/orak: baltanın kalibre bilek/parmak kavraması iki alete de uygulandı, yakın çekimler incelendi. [Yeni çapa eskizi ve teslim ölçütleri](references/hoe_v01/README.md); GLB bekleniyor.

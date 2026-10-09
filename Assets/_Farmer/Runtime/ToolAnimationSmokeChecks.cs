@@ -124,6 +124,29 @@ namespace Farmer
                 game.enabled = false; yield return null; yield return new WaitForEndOfFrame();
                 Check(!driver.WaterVisible && driver.PourWeight == 0, "Disabling gameplay clears the visual action.");
                 game.enabled = true;
+                foreach (var item in new[] { FarmItem.Sickle, FarmItem.Hoe })
+                {
+                    game.Equip(item);
+                    yield return new WaitForSecondsRealtime(.8f);
+                    var hand = animator.GetBoneTransform(HumanBodyBones.RightHand);
+                    float wrist = Vector3.Angle(hand.position - animator.GetBoneTransform(HumanBodyBones.RightLowerArm).position,
+                        animator.GetBoneTransform(HumanBodyBones.RightMiddleProximal).position - hand.position);
+                    Check(wrist < 55, $"{item} relaxed wrist follows the forearm ({wrist:F1} degrees).");
+                    Check(Vector3.Distance(driver.ToolSocket.position, hand.position) < .12f, $"{item} grip stays in the palm.");
+                    target = game.Player.position + Vector3.up * .85f;
+                    camera.transform.position = target + new Vector3(4, 2.8f, 5); camera.transform.LookAt(target); camera.orthographicSize = 1.35f;
+                    yield return Capture(screenshot, item.ToString().ToLowerInvariant() + "-carry");
+                    camera.transform.position = driver.ToolSocket.position + new Vector3(3, 1.6f, 4); camera.transform.LookAt(driver.ToolSocket.position); camera.orthographicSize = .48f;
+                    yield return Capture(screenshot, item.ToString().ToLowerInvariant() + "-grip");
+                    driver.SendMessage("OnHoe", game.Player.position + motor.Visual.forward);
+                    Time.timeScale = .1f;
+                    yield return new WaitForSeconds(.16f);
+                    camera.transform.position = target + new Vector3(4, 2.8f, 5); camera.transform.LookAt(target); camera.orthographicSize = 1.35f;
+                    yield return Capture(screenshot, item.ToString().ToLowerInvariant() + "-swing");
+                    Time.timeScale = originalTimeScale;
+                    yield return new WaitForSecondsRealtime(.7f);
+                    Check(!driver.HarvestActive, $"{item} returns to carry after the action.");
+                }
                 Debug.Log("FARMER_TOOL_ANIMATION_CHECKS_FINISHED");
             }
             finally
