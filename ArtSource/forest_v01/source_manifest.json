@@ -1,0 +1,77 @@
+{
+  "tree_oak": {
+    "sha256": "9bde526a7d7062369263309e6b2e8b1bc63221d791b0bd88dd46ff9ab377e93d",
+    "source_texture_sizes": [
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ]
+    ],
+    "working_texture_size": 1024,
+    "base_color_factor": [
+      0.800000011920929,
+      0.800000011920929,
+      0.800000011920929,
+      1.0
+    ],
+    "triangles": 15884
+  },
+  "treasure_chest": {
+    "sha256": "310cfc58bae03d9fd6cffd67e5303493a73b17c7359099f34be1ea0786b890d2",
+    "source_texture_sizes": [
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ]
+    ],
+    "working_texture_size": 1024,
+    "base_color_factor": [
+      0.800000011920929,
+      0.800000011920929,
+      0.800000011920929,
+      1.0
+    ],
+    "triangles": 9078
+  },
+  "wild_plant": {
+    "sha256": "a4fb78cc8d5ac9c8d540d682c779ec777493f5b3a538177f9d74528cdd44d669",
+    "source_texture_sizes": [
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ],
+      [
+        4096,
+        4096
+      ]
+    ],
+    "working_texture_size": 1024,
+    "base_color_factor": [
+      0.800000011920929,
+      0.800000011920929,
+      0.800000011920929,
+      1.0
+    ],
+    "triangles": 3047
+  }
+}

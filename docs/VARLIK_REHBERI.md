@@ -117,3 +117,10 @@ Meşe, kütük, balta, keşif sandığı ve yabani tohum bitkisi için [eskizler
 ## Balta/kütük teslimi — 8 Ekim 2026
 
 Kullanıcının balta ve kesilmiş kütük modelleri oyuna entegre edildi. [Kaynak/dönüşüm kaydı](../ArtSource/exploration_v01/README.md): 0,70 m balta, 0,30 m kütük; 1K URP dokular. Balta sağ el kavramasına, kütük ağacın kesilmiş durumuna bağlıdır. Ağaç, sandık ve yabani bitki modelleri bekleniyor.
+
+
+## 9 Ekim — orman seti ve balta kavraması
+
+[Ağaç, keşif sandığı ve yabani bitki teslim/dönüşüm kaydı](../ArtSource/forest_v01/README.md). Ağaç alt gövde ve üst bölüm olarak ayrıldı; sandık kapağı ve iç yüzeyleri yerel olarak hazırlandı. Bitkinin metalik görünümü kaldırıldı. Kaynak GLB'ler ve 4K dokular korunur; oyunda 1K dokular kullanılır.
+
+Balta tutuşunda yalnızca socket yakınlığı doğal el pozu için yeterli değildi: kullanıcı ters bilek ve açık avuç görünümünü reddetti. `FarmerAnimator` artık balta için Humanoid IK hedefi ile ithal bilek kemiğinin eksen farkını kalibre eder; ayrı parmak kavraması, sapın avuç içi ofseti ve yanda taşıma/vuruş/toparlanma pozu kullanır. Bu düzeltme sulama kabı/orak/çapanın mevcut bilek yönünü değiştirmez. Yakın çekim ve ön kol–bilek açı kontrolü birlikte değerlendirilir.

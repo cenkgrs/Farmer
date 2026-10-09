@@ -1,6 +1,6 @@
 # Yazılımcı — proje hafızası ve devir
 
-Son güncelleme: **8 Ekim 2026 — Europe/Istanbul**.
+Son güncelleme: **9 Ekim 2026 — Europe/Istanbul**.
 
 ## Şu an nerede kaldık?
 
@@ -282,3 +282,19 @@ Kullanıcı 7 Ekim'de önce kare seçme adımını kaldırmamızı, ardından WA
 
 - Kullanıcının Tripo'da v01 ağacının son aşamada takılma bildirimi üzerine `docs/references/exploration_sketches_v01/tree_v02_simple.png` üretildi; beş sade yaprak kütlesi, açık gövde ve beyaz arka plan. Yerleşik ImageGen, prompt dosyası yanında. Takılma nedeni ve yeni referansın Tripo sonucu henüz doğrulanmadı.
 - Sandık ve yabani bitki GLB dosyaları kullanıcı tarafından iletildi; henüz incelenip entegre edilmedi. Sonraki entegrasyon bu iki dosya, ardından ağaç teslimi. Oyun kodu/build bu eskiz turunda değişmedi.
+
+
+## 9 Ekim — orman modelleri ve balta tutuşu düzeltmesi
+
+- Kullanıcının üç GLB'si `ArtSource/forest_v01` içinde değişmeden korundu; SHA-256, doku/geometri sayımları, dönüşüm betikleri ve README var. Ağaç 3 m, bitki 0,65 m, sandık yaklaşık 0,95×0,66×0,643 m. Üçü de tek mesh geldi; yeni ücretli üretim yapılmadı.
+- Ağaç yerel olarak 0,90 m sınırından alt gövde ve üst taç/dallar olarak ayrıldı. Yakında üst bölüm gizlenir; kesimde ikisi de kapanıp mevcut kütük görünür. İlk renk maskesi boyanmış gövdeyi deldi; daha yüksek yatay kesim alt yaprak parçaları bıraktı. İkisi de teslim sürümü değil; düşük düzlem ve kapalı kesim yüzeyi kullanılıyor.
+- Sandık kapak/gövde ayrımı, kapalı kapak altı ve iç duvar kalınlığı eklendi. Menteşe modelin arka -Z kenarında; -105° ile yukarı açılır. İlk ters menteşe görsel kontrolde yakalandı, düzeltildi; test artık kapak yüksekliğini de ölçer. Bitki kaynaktaki metalik parlamadan arındırıldı. Materyal/prefab/FBX/metalar sürümlü, ana sahne yeniden üretilmedi. Kayıt v6 ve kaynak kuralları aynı.
+- Kullanıcı balta tutuşunu iki kez reddetti; önceki görsel onay yeterli değildi. Temel hata Humanoid IK hedef eksenlerinin bilek kemiğiyle aynı sanılmasıydı. Balta için el-kemik/IK dönüş farkı ilk pozda kalibre edilir. Daha kapalı parmak pozu, avuç içi sap ofseti, rahat yan taşıma ve buna dönen savurma var. Son teşhiste bilek–ön kol açısı 103,2° yerine 23,4°; yakın çekimde sap parmakların içinde ve bilek düz devam ediyor. Diğer aletlerin IK dönüşü korunur.
+- İlk birleşik tur üç eski kısa animasyon örneklemesini kaçırdı (sulama hedef geçişi, orak savurması, sonraki hasat), `Logs/forest-axe-pose.log`. Yazılım renderer'da kare aralıkları kısa pozu atladığı için yalnızca bu test pencerelerinde Time.timeScale=0,1 ve oyun-zamanı bekleme kullanıldı; finally asıl hız geri yüklenir. Normal oyun hızına/mekaniğine müdahale edilmedi.
+- Önceki yalnız keşif teşhis turu `Logs/axe-ik-basis.log` çıkış 0 ve FARMER_PLAYER_SMOKE_OK ile tamamlandı. Son teslim turunun sonucu aşağıda. Windows ve büyük orman performansı doğrulanmadı.
+- Başlangıçtaki kullanıcı `ArtSceneSetup.cs` düzenlemesi korundu ve commit kapsamına alınmadı. Sıradaki somut adım: bu model/tutuş sürümünün kullanıcı değerlendirmesi; sonra 0.2 kişisel depolama sandığı ve mobilya kapsamının küçük oynanabilir adımı. Düşman/kılıç/hırsızlık eklenmedi.
+
+- Son birleşik tur **55/55 geçti** (20 alet animasyonu + 35 keşif/model/kavrama), çıkış 0 ve FARMER_PLAYER_SMOKE_OK: `Logs/forest-delivery.log`. Bu turda bilek açısı animasyon örneğine bağlı olarak 36,2° ölçüldü; önceki yalnız keşif turu 23,4° idi, ikisi de 55° sınırının altında. Linux build `Logs/forest-delivery-build.log` başarılı.
+- Son görsel kontrolde ağaç alt gövdesinin kapatma yüzeyinde UV çizgileri görüldü: Unity Trunk alt-mesh sırası Blender slot sırasının tersiydi (408/12426 indeks). Ağaçta küçük kapatma alt-mesh'i indeks sayısıyla seçilip iç ahşap malzemesi atanır. `Logs/forest-surface-build.log` başarılı; bu değişiklik animasyon/oynanış kurallarını değiştirmez. Son dar tekrar aşağıda.
+
+- Materyal düzeltmesi sonrası dar gerçek-player tekrar **35/35 geçti**, çıkış 0/FARMER_PLAYER_SMOKE_OK (`Logs/forest-surface-final.log`). Önceki 20/20 alet animasyonu kontrolleri bu son materyal değişikliğinden etkilenmedi; tekrar edilmedi. `docs/screenshots/forest-*.png`: tam ağaç, bitki, açık/kapalı sandık, balta taşıma/el yakın planı/savurma. Görseller incelendi, son test süreçleri kapandı. Meta eşleri/GUID benzersizliği temiz. EditMode mantık değişmediğinden tekrar koşulmadı.

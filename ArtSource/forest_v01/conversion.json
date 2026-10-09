@@ -1,0 +1,38 @@
+{
+  "tree_oak": {
+    "height_m": 3.0,
+    "parts_triangles": {
+      "Trunk": 4278,
+      "Canopy": 12154
+    },
+    "size_blender_xyz": [
+      2.8070505135675208,
+      2.175118461491343,
+      3.0
+    ]
+  },
+  "chest_seam_m": 0.386,
+  "treasure_chest": {
+    "height_m": 0.643,
+    "parts_triangles": {
+      "Body": 13236,
+      "Lid": 3992
+    },
+    "size_blender_xyz": [
+      0.9495103744094376,
+      0.6621903167684705,
+      0.643
+    ]
+  },
+  "wild_plant": {
+    "height_m": 0.65,
+    "parts_triangles": {
+      "Plant": 3047
+    },
+    "size_blender_xyz": [
+      0.5403886002206351,
+      0.44633218149713855,
+      0.65
+    ]
+  }
+}

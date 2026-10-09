@@ -13,19 +13,23 @@ namespace Farmer
         [SerializeField] private Transform toolSocket;
         private Animator animator;
         private Transform[] fingers;
-        private Quaternion[] closedFingers;
+        private Quaternion[] closedFingers, axeFingers;
         private float gripWeight, pourWeight, harvestTime = HarvestDuration;
         private Vector3 actionTarget, handOffset, harvestStart, pourTargetVelocity;
         private bool wasPouring;
         public Vector3 VisualActionTarget=>actionTarget;
         private Quaternion toolRotation = Quaternion.identity, harvestStartRotation, handGripBasis;
         private bool handRotationCaptured;
+        private Quaternion handToIkGoal;
         private FarmModel observedModel;
         private FarmItem observedItem;
         private FarmPresentation presentation;
         private WateringStream stream;
         private const float HarvestDuration = .52f;
         private static readonly Vector3 RestHand = new Vector3(.4f, .98f, .32f);
+        private bool HoldingAxe => game != null && game.Ready && game.Model.EquippedItem == FarmItem.Axe;
+        private Vector3 RestHandForItem => HoldingAxe ? new Vector3(.48f,.79f,.16f) : RestHand;
+        private Quaternion RestRotationForItem => HoldingAxe ? Quaternion.Euler(85,0,-8) : Quaternion.identity;
         private static readonly int MoveSpeed = Animator.StringToHash("MoveSpeed");
         public float PourWeight => pourWeight;
         public bool HarvestActive => harvestTime < HarvestDuration;
@@ -51,6 +55,11 @@ namespace Farmer
                         closed.muscles[i] = HumanTrait.MuscleName[i].Contains("Thumb") ? -.35f : -.8f;
                 handler.SetHumanPose(ref closed);
                 closedFingers = fingers.Select(b => b.localRotation).ToArray();
+                for (int i = 0; i < HumanTrait.MuscleCount; i++)
+                    if (HumanTrait.MuscleName[i].StartsWith("Right ") && HumanTrait.MuscleName[i].Contains("Stretched"))
+                        closed.muscles[i] = HumanTrait.MuscleName[i].Contains("Thumb") ? -.6f : -1f;
+                handler.SetHumanPose(ref closed);
+                axeFingers = fingers.Select(b => b.localRotation).ToArray();
                 handler.SetHumanPose(ref original);
             }
             handOffset = RestHand;
@@ -78,7 +87,7 @@ namespace Farmer
         {
             wasPouring=false;pourTargetVelocity=Vector3.zero;
             pourWeight = 0; harvestTime = HarvestDuration;
-            handOffset = RestHand; toolRotation = Quaternion.identity;
+            handOffset = RestHandForItem; toolRotation = RestRotationForItem;
             stream?.Hide();
             if (motor != null) motor.FacingTarget = null;
         }
@@ -113,8 +122,8 @@ namespace Farmer
             pourWeight = Mathf.MoveTowards(pourWeight, pouring ? 1 : 0, Time.deltaTime / (pouring ? .18f : .7f));
             harvestTime = Mathf.Min(HarvestDuration, harvestTime + Time.deltaTime);
             float pour = Mathf.SmoothStep(0, 1, pourWeight);
-            handOffset = Vector3.Lerp(RestHand, new Vector3(.32f, 1.14f, .57f), pour);
-            toolRotation = Quaternion.Euler(48f * pour, 0, -6f * pour);
+            handOffset = Vector3.Lerp(RestHandForItem, new Vector3(.32f, 1.14f, .57f), pour);
+            toolRotation = HoldingAxe ? RestRotationForItem : Quaternion.Euler(48f * pour, 0, -6f * pour);
             if (HarvestActive) SampleHarvest();
             motor.FacingTarget = pouring || HarvestActive ? actionTarget : (Vector3?)null;
         }
@@ -127,6 +136,11 @@ namespace Farmer
             {
                 raised = new Vector3(.36f,1.42f,.38f); cut = new Vector3(.32f,.83f,.58f);
                 raisedRotation = Quaternion.Euler(-65,0,0); cutRotation = Quaternion.Euler(30,0,0);
+            }
+            if (HoldingAxe)
+            {
+                raised = new Vector3(.43f,1.32f,.32f); cut = new Vector3(.43f,1.0f,.52f);
+                raisedRotation = Quaternion.Euler(-25,0,-12); cutRotation = Quaternion.Euler(80,0,-12);
             }
             if (harvestTime < .1f)
             {
@@ -143,8 +157,8 @@ namespace Farmer
             else
             {
                 float t = Mathf.SmoothStep(0, 1, (harvestTime - .28f) / .24f);
-                handOffset = Vector3.Lerp(cut, RestHand, t);
-                toolRotation = Quaternion.Slerp(cutRotation, Quaternion.identity, t);
+                handOffset = Vector3.Lerp(cut, RestHandForItem, t);
+                toolRotation = Quaternion.Slerp(cutRotation, RestRotationForItem, t);
             }
         }
         private void OnAnimatorIK(int layerIndex)
@@ -161,6 +175,8 @@ namespace Farmer
                 Vector3 across = hand.InverseTransformDirection(index.position - little.position).normalized;
                 Vector3 palmNormal = Vector3.Cross(fingers, across).normalized;
                 handGripBasis = Quaternion.Inverse(Quaternion.LookRotation(fingers, palmNormal));
+                // Humanoid IK goal axes differ from the imported wrist bone axes.
+                handToIkGoal = Quaternion.Inverse(hand.rotation) * animator.GetIKRotation(AvatarIKGoal.RightHand);
                 handRotationCaptured = true;
             }
             float actionWeight = Mathf.Max(pourWeight, HarvestActive ? Mathf.Sin(Mathf.PI * harvestTime / HarvestDuration) : 0);
@@ -169,7 +185,7 @@ namespace Farmer
             animator.SetIKPosition(AvatarIKGoal.RightHand, visual.TransformPoint(handOffset));
             Vector3 palmDirection = game.Model.EquippedItem == FarmItem.WateringCan ? Vector3.down : Vector3.left;
             Quaternion gripRotation = Quaternion.LookRotation(Vector3.forward, palmDirection) * handGripBasis;
-            animator.SetIKRotation(AvatarIKGoal.RightHand, visual.rotation * toolRotation * gripRotation);
+            animator.SetIKRotation(AvatarIKGoal.RightHand, visual.rotation * toolRotation * gripRotation * (HoldingAxe ? handToIkGoal : Quaternion.identity));
             animator.SetIKHintPositionWeight(AvatarIKHint.RightElbow, gripWeight * .65f);
             animator.SetIKHintPosition(AvatarIKHint.RightElbow, visual.TransformPoint(new Vector3(.65f, 1.05f, -.1f)));
             animator.SetLookAtWeight(actionWeight * .35f, .12f, .65f, 0, .65f);
@@ -179,10 +195,11 @@ namespace Farmer
         {
             if (toolSocket == null || motor == null) return;
             for (int i = 0; i < fingers.Length; i++)
-                fingers[i].localRotation = Quaternion.Slerp(fingers[i].localRotation, closedFingers[i], gripWeight);
+                fingers[i].localRotation = Quaternion.Slerp(fingers[i].localRotation, (HoldingAxe ? axeFingers : closedFingers)[i], gripWeight);
             var hand = animator.GetBoneTransform(HumanBodyBones.RightHand);
             var middle = animator.GetBoneTransform(HumanBodyBones.RightMiddleProximal);
             Vector3 palm = middle == null ? hand.position : Vector3.Lerp(hand.position, middle.position, .6f);
+            if (HoldingAxe) palm += motor.Visual.rotation * toolRotation * new Vector3(-.018f,0,.012f);
             toolSocket.SetPositionAndRotation(palm, motor.Visual.rotation * toolRotation);
             if (stream == null) stream = new WateringStream(motor.transform);
             float flow = presentation != null && game.Model.EquippedItem == FarmItem.WateringCan && pourWeight > .02f

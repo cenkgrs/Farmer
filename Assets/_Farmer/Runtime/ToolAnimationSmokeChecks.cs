@@ -15,6 +15,7 @@ namespace Farmer
             var game = Object.FindFirstObjectByType<FarmGame>();
             if (!game.SavePath.Contains("FarmerQA")) throw new System.InvalidOperationException("Expected isolated save.");
             var original = game.Model.Snapshot();
+            float originalTimeScale=Time.timeScale;
             var motor = game.Player.GetComponent<PlayerMotor>();
             var driver = game.Player.GetComponentInChildren<FarmerAnimator>();
             var animator = driver.GetComponent<Animator>();
@@ -47,9 +48,11 @@ namespace Farmer
                 Check(game.WateringActive && driver.PourWeight > .95f && driver.WaterVisible, "Held watering raises the arm, tips the can and starts water.");
                 Check(Vector3.Angle(driver.ToolSocket.up, Vector3.up) > 35, "Can visibly tilts from its upright carrying pose.");
                 Check(Vector2.Distance(new Vector2(body.x, body.z), new Vector2(game.Player.position.x, game.Player.position.z)) < .005f, "Action pose does not move the collision root.");
+                Time.timeScale=.1f;
                 var oldAim=driver.VisualActionTarget;var nextAim=game.PlotCenter(2,.08f);
                 yield return Pointer(mouse,Cell(game,2),true);
                 Check(Vector3.Distance(driver.VisualActionTarget,oldAim)>.001f && Vector3.Distance(driver.VisualActionTarget,nextAim)>.02f,"Watering aim travels between cells instead of snapping to the next center.");
+                Time.timeScale=originalTimeScale;
                 yield return new WaitForSecondsRealtime(.7f);
                 Check(Vector3.Distance(driver.VisualActionTarget,nextAim)<.025f,"Smoothed watering aim settles on the selected cell.");
                 yield return Pointer(mouse,Cell(game,1),true);yield return new WaitForSecondsRealtime(.5f);
@@ -86,13 +89,14 @@ namespace Farmer
                 int produce = game.Model.Produce(game.ActiveCrop.id);
                 target = game.Player.position + Vector3.up * .8f;
                 camera.transform.position = target + new Vector3(4, 2.8f, 5); camera.transform.LookAt(target); camera.orthographicSize = 1.8f;
+                Time.timeScale=.1f;
                 yield return Pointer(mouse, Cell(game, 1), true);
                 Check(driver.HarvestActive && game.Model.Produce(game.ActiveCrop.id) == produce + 1, "Successful harvest starts one swing and grants one crop immediately.");
-                yield return new WaitForSecondsRealtime(.11f);
+                yield return new WaitForSeconds(.11f);
                 Check(Vector3.Angle(driver.ToolSocket.up, Vector3.up) > 15, "Sickle rotates through its cutting arc.");
                 yield return Capture(screenshot, "harvest-cut");
                 camera.transform.SetPositionAndRotation(position, rotation); camera.orthographicSize = size;
-                yield return new WaitForSecondsRealtime(.6f);
+                yield return new WaitForSeconds(.6f);
                 Check(!driver.HarvestActive && game.Model.Produce(game.ActiveCrop.id) == produce + 1, "Held mouse cannot repeat harvest or the swing.");
                 yield return Pointer(mouse, Cell(game, 1), false);
                 yield return Pointer(mouse, Cell(game, 1), true);
@@ -100,6 +104,7 @@ namespace Farmer
                 yield return Pointer(mouse, Cell(game, 0), false);
                 yield return Pointer(mouse, Cell(game, 0), true);
                 Check(driver.HarvestActive, "Next ripe cell can be harvested with a fresh click.");
+                Time.timeScale=originalTimeScale;
                 game.LoadGame(); yield return null;
                 Check(!driver.HarvestActive && !driver.WaterVisible, "Loading a save clears transient action poses.");
                 yield return Pointer(mouse, Cell(game, 0), false);
@@ -123,6 +128,7 @@ namespace Farmer
             }
             finally
             {
+                Time.timeScale=originalTimeScale;
                 game.enabled = true;
                 InputSystem.RemoveDevice(keyboard); InputSystem.RemoveDevice(mouse);
                 foreach (var device in physical) InputSystem.EnableDevice(device);
