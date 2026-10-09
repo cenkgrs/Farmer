@@ -96,3 +96,5 @@ Sıradaki somut adım: kullanıcı ev/taşıma/yatak sürümünü oynadıktan so
 9 Ekim sıradaki onaylı adım: Tab çantası + satın alınabilir kişisel depolama sandığı, ardından dükkândan alınan masa/sandalye/ayaklı lamba. Satın alma→çanta→yerleştirme→eşya olarak geri toplama; dolu sandıkta içerik korunumu. Kullanıcı için model eskizleri hazır, bu mekanikler henüz uygulanmadı.
 
 9 Ekim mobilya uygulaması: satın alınan sandık/masa/sandalye/ayaklı lamba, Tab çantası, 16 yığınlı kişisel sandık ve v7 içerik kaydı eklendi. Teslim doğrulamaları YAZILIMCI.md içinde. Oturma ve sandık kapak animasyonu bu adımda yok; büyük yerleşim performansı ve Windows doğrulaması açık.
+
+9 Ekim kamera geri bildirimi: karakter merkezli sürekli takip, oda içinde yakın ölçek/inşa modunda geniş ölçek ve eksik döşemeden bağımsız oda saydamlığı. Doğrulama sonuçları YAZILIMCI.md içinde.

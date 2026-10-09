@@ -17,6 +17,8 @@ namespace Farmer
         private readonly HashSet<Vector2Int> solidCells=new HashSet<Vector2Int>();
         private OccludingWall[] walls=new OccludingWall[0];
         public int FadedCount=>walls.Count(w=>w!=null&&w.Opacity<.5f);
+        public bool Indoors => room.Count > 0;
+        public Bounds RoomBounds { get; private set; }
         private void Awake()=>game=GetComponent<FarmGame>();
         private void LateUpdate()
         {
@@ -41,6 +43,17 @@ namespace Farmer
             for(int sample=0;sample<3;sample++)
             {
                 var target=game.Player.position+Vector3.up*(.25f+sample*.7f);
+                var origin=camera.orthographic?target-camera.transform.forward*40:camera.transform.position;
+                var delta=target-origin;
+                foreach(var hit in Physics.RaycastAll(origin,delta.normalized,delta.magnitude,~0,QueryTriggerInteraction.Ignore))
+                {
+                    var wall=hit.collider.GetComponentInParent<OccludingWall>();if(wall!=null)blockers.Add(wall);
+                }
+            }
+            // Reveal obstructions across the occupied room, not just three rays through the player.
+            foreach(var c in room)
+            {
+                var target=new Vector3(c.x+.5f,.6f,c.y+.5f);
                 var origin=camera.orthographic?target-camera.transform.forward*40:camera.transform.position;
                 var delta=target-origin;
                 foreach(var hit in Physics.RaycastAll(origin,delta.normalized,delta.magnitude,~0,QueryTriggerInteraction.Ignore))
@@ -77,23 +90,12 @@ namespace Farmer
         private void FindRoom(Vector2Int start)
         {
             room.Clear();
-            if(!floors.Contains(start)){FindBareGroundRoom(start);return;}
-            var queue=new Queue<Vector2Int>();queue.Enqueue(start);room.Add(start);
-            var directions=new[]{Vector2Int.up,Vector2Int.right,Vector2Int.down,Vector2Int.left};
-            while(queue.Count>0)
-            {
-                var cell=queue.Dequeue();
-                for(int r=0;r<4;r++)
-                {
-                    var next=cell+directions[r];
-                    if(floors.Contains(next)&&!edges.Contains(BuildingModel.Edge(cell.x,cell.y,r))&&room.Add(next))queue.Enqueue(next);
-                }
-            }
-        }
-        private void FindBareGroundRoom(Vector2Int start)
-        {
-            if(solidCells.Count==0)return;
-            int minX=solidCells.Min(c=>c.x)-1,maxX=solidCells.Max(c=>c.x)+1,minZ=solidCells.Min(c=>c.y)-1,maxZ=solidCells.Max(c=>c.y)+1;
+            // Interior membership follows structural boundaries, not the patchwork of floor tiles.
+            // Edge walls/doors also enclose rooms on bare ground.
+            var boundary = solidCells.Concat(edges.Select(e => new Vector2Int(e.Item1,e.Item2))).ToArray();
+            if(boundary.Length==0 || solidCells.Contains(start))return;
+            int minX=boundary.Min(c=>c.x)-2,maxX=boundary.Max(c=>c.x)+2;
+            int minZ=boundary.Min(c=>c.y)-2,maxZ=boundary.Max(c=>c.y)+2;
             var queue=new Queue<Vector2Int>();queue.Enqueue(start);room.Add(start);
             var directions=new[]{Vector2Int.up,Vector2Int.right,Vector2Int.down,Vector2Int.left};
             while(queue.Count>0)
@@ -103,10 +105,14 @@ namespace Farmer
                 for(int r=0;r<4;r++)
                 {
                     var next=c+directions[r];
-                    // Treat a one-cell doorway as a visual boundary only; never add a collider.
                     bool doorway=(solidCells.Contains(next+Vector2Int.left)&&solidCells.Contains(next+Vector2Int.right))||(solidCells.Contains(next+Vector2Int.up)&&solidCells.Contains(next+Vector2Int.down));
                     if(!solidCells.Contains(next)&&!doorway&&!edges.Contains(BuildingModel.Edge(c.x,c.y,r))&&room.Add(next))queue.Enqueue(next);
                 }
+            }
+            RoomBounds=new Bounds(new Vector3(start.x+.5f,1.2f,start.y+.5f),new Vector3(1,2.4f,1));
+            foreach(var c in room)
+            {
+                var bounds=RoomBounds;bounds.Encapsulate(new Bounds(new Vector3(c.x+.5f,1.2f,c.y+.5f),new Vector3(1,2.4f,1)));RoomBounds=bounds;
             }
         }
         private void OnDisable(){foreach(var wall in walls)if(wall!=null)wall.RestoreOpaque();}

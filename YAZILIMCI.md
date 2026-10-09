@@ -347,3 +347,14 @@ Kullanıcı 7 Ekim'de önce kare seçme adımını kaldırmamızı, ardından WA
 - `HoeArtSetup.ApplyAndBuild` el prefabını üretir. `FarmPresentation` artık geçici silindir/küp yerine bu modeli kullanır. Mevcut balta/orak/çapa kavrama kodu, tarım ve kayıt kuralları değişmedi.
 - Linux build `Logs/hoe-art-build.log` başarılı. Gerçek-player `Logs/hoe-delivery.log`: 26/26 alet animasyonu kontrolü geçti; çıkış 0, FARMER_PLAYER_SMOKE_OK. `docs/screenshots/hoe-model-{carry,grip,swing}.png` yakın plan ve savurma görselleri incelendi. Windows ve EditMode bu salt görsel değişiklikte tekrar çalıştırılmadı. Test süreçleri kapandı.
 - Kaynak/dönüşüm betikleri ve Unity metaları sürümlü. Kullanıcının ArtSceneSetup.cs düzenlemesi korunur ve commit dışında. Sonraki somut iş kullanıcı değerlendirmesi; yeni özellik kapsamı eklenmedi.
+
+
+## 9 Ekim — tüm oda görüşü ve sürekli merkezli kamera
+
+- Kullanıcı eksik duvar/çatı saydamlığını bildirdi; ardından kameranın yalnızca dünya kenarında kaymasını kaldırıp her yerde karakteri ortalamasını istedi. İkinci istek oda merkezine kilitlenme önerisinin yerine geçer.
+- HouseVisibility oda üyeliğini döşeme adacıkları yerine yapısal sınırlar üzerinden bulur; ince duvar/kapı ve blok duvar, eksik/olmayan döşemede de desteklenir. Karakter ışınlarına ek olarak odanın hücreleri boyunca görüş engelleri bulunur; tüm oda çatısı ve kameraya dönük çevre duvarları saydamlaşır. Fizik collider'ları değişmez. Açık platform oda sayılmaz. Mevcut 1024 hücre flood-fill sınırı korunur; büyük yapı performansı ayrıca ölçülmedi.
+- ExplorationCamera LateUpdate'te oyuncunun gövde merkezini doğrudan izler, kenar eşiği ve konumsal gecikme kaldırıldı. Sabit izometrik açı korunur. Kapalı odada ölçülere göre yakın ölçek, inşa modunda/dışarıda eski geniş ölçek; ölçek .35 sn SmoothDamp ile geçer. Karakter her iki ölçekte merkezde. Oda büyükse yakın ölçek buna göre genişler.
+- Linux build `Logs/interior-camera-build.log` başarılı. Döşeme boşluğu, dokuz çatı paneli, iç merkezleme/inşa modu/dış merkezleme testleri HouseSmokeChecks'e eklendi; görseller `docs/screenshots/interior-camera.png` ve `interior-build-camera.png` incelendi. Son player sonucu aşağıda. Model/kayıt şeması değişmedi; EditMode ve Windows tekrar çalıştırılmadı.
+- Kullanıcının ArtSceneSetup.cs düzenlemesi korunup commit dışı bırakılır. Sıradaki iş kullanıcı evinde görüş ve kamera geçişinin değerlendirilmesi.
+
+- Son gerçek-player turu `Logs/interior-camera.log`: {'HOUSE': 30, 'ROOF': 30}, tümü geçti; çıkış 0 ve FARMER_PLAYER_SMOKE_OK. Test süreci sonlandı.

@@ -81,10 +81,30 @@ namespace Farmer
                 yield return Capture(screenshot,"exterior");Teleport(cc,new Vector3(1.5f,.1f,5.5f));yield return new WaitForSecondsRealtime(.5f);
                 string roomSaved=JsonUtility.ToJson(game.Model.Snapshot());game.SaveGame();yield return Press(keyboard,Key.F9);
                 Check(builder.VisibleBlockCount==22&&JsonUtility.ToJson(game.Model.Snapshot())==roomSaved,"The complete room and furniture restore together.");
+                model=game.Model.Building;
+                // Missing floor tiles must not fragment the detected room.
+                model.Remove(model.Blocks.First(b=>b.pieceId=="wood_floor"&&b.x==1&&b.z==5),out _);
+                for(int x=0;x<3;x++)for(int z=4;z<7;z++)model.Place("wood_roof",x,2,z,0,out _);
+                game.NotifyTimeAdvanced();yield return new WaitForSecondsRealtime(.6f);
+                Check(visibility.Indoors&&visibility.FadedCount>=15,"A room with a floor gap reveals all nine roof panels and front walls.");
+                var follow=camera.GetComponent<ExplorationCamera>();follow.enabled=true;
+                yield return new WaitForSecondsRealtime(1.5f);
+                float indoorSize=camera.orthographicSize;
+                var screen=camera.WorldToViewportPoint(game.Player.position+Vector3.up*.8f);
+                Check(Vector2.Distance(new Vector2(screen.x,screen.y),Vector2.one*.5f)<.005f,"Indoor camera keeps the character centered.");
+                yield return Capture(screenshot,"interior-camera");
+                game.SetBuildMode(true);yield return new WaitForSecondsRealtime(1.5f);
+                Check(camera.orthographicSize>indoorSize+.5f,"Build mode restores the wide camera inside the house.");
+                yield return Capture(screenshot,"interior-build-camera");
+                game.SetBuildMode(false);Teleport(cc,new Vector3(8.5f,.1f,2.5f));yield return new WaitForSecondsRealtime(1.5f);
+                screen=camera.WorldToViewportPoint(game.Player.position+Vector3.up*.8f);
+                Check(!visibility.Indoors&&Vector2.Distance(new Vector2(screen.x,screen.y),Vector2.one*.5f)<.005f,"Outdoor camera follows immediately and stays centered.");
+                follow.enabled=false;
                 Debug.Log("FARMER_HOUSE_CHECKS_FINISHED");
             }
             finally
             {
+                camera.GetComponent<ExplorationCamera>().enabled=false;
                 camera.transform.position=oldCamera;camera.orthographicSize=oldSize;
                 InputSystem.RemoveDevice(keyboard);InputSystem.RemoveDevice(mouse);foreach(var d in physical)InputSystem.EnableDevice(d);
                 File.WriteAllText(game.SavePath,JsonUtility.ToJson(original));game.LoadGame();

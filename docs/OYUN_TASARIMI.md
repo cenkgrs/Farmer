@@ -142,3 +142,9 @@ Dükkân: depolama sandığı 80, masa 60, sandalye 25, ayaklı lamba 45 para; y
 Dolu sandık **M** ile içeriğiyle taşınır. Çantaya geri toplamak için önce boşaltılır; dolu sandığı sökmek reddedilir ve M bilgisi gösterilir. F9/yükleme veya erişim kaybı açık sandık panelini kapatır. Panel açıkken hareket, tarım ve inşa girdileri engellenir; saat akmaya devam eder.
 
 Lamba 18:00–19:00 arasında yanar, 06:00–07:00 arasında söner. Masa/sandalye yerleştirilebilir mobilyadır; oturma animasyonu yok. Sandık bu adımda kapalı modelle depolama panelini açar; kapak animasyonu yok. Kayıt v7, eski kayıtlar ilk yazımdan önce `.pre-v7` ile korunur.
+
+## İç mekân ve karakter merkezli kamera — 9 Ekim
+
+Kamera her konumda karakterin gövde merkezini ekran ortasında tutar; dış dünyada kenara yaklaşma eşiği veya gecikmeli kayma yoktur. Sabit izometrik dönüş korunur. Kapalı odaya girince oda ölçülerine uygun yakın ölçeğe yumuşak geçer; inşa modunda ve dışarı çıkınca eski geniş ölçeğe döner. Yakın görünümde de merkez karakterdir, oda merkezi değildir.
+
+Oda tespiti döşeme bütünlüğüne bağlı değildir: blok duvar, ince duvar ve kapı sınırları kullanılır. İçeride odanın üstündeki çatılar, kameraya bakan çevre duvarları ve oda içini örten yapı parçaları saydamlaşır. Çarpışma ve arka duvar görünümü korunur. Döşemesi eksik veya toprak zeminli kapalı ev de aynı davranışı kullanır; yalnızca açık bir döşeme platformu yakın kamera başlatmaz.
