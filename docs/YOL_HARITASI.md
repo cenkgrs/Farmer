@@ -72,13 +72,13 @@ Yaklaşık bir saatlik başlangıç deneyimi hedefi, birleşik görsel dil, yön
 
 Kabul:
 
-- [ ] Temiz klondan belgelenen adımlarla açılır; kullanılan motor/SDK/paket sürümleri sabittir.
+- [x] Temiz klondan belgelenen adımlarla açılır; kullanılan motor/SDK/paket sürümleri sabittir.
 - [ ] Linux ve Windows geliştirme akışı denenir; yayınlanacak işletim sistemleri ayrıca seçilir.
 - [ ] Oyuncu tarım, satış, ev kurma ve keşif döngüsünü dışarıdan sözlü yardım almadan tamamlar.
 - [ ] Kamera engelleri, giriş/çıkışlar, kayıt/yükleme ve temel performans gerçek donanımda incelenir.
 - [ ] Kalan sorunlar ve oynanış geri bildirimi kaydedilir; demo tamamlanmadan yeni büyük sistem eklenmez.
 
-11 Ekim: **0.5 demo adayı** için defter/yönlendirme, ses ve görüntü ayarları, v12 kayıt ve paketleme akışı eklendi. Nihai kabul; gerçek Windows/Linux donanım denemesi, yaklaşık bir saatlik oyuncu turu ve görsel geri bildirim sonrası verilecek. Teknik sonuçlar YAZILIMCI.md sonunda.
+11 Ekim: **0.5 demo adayı** için defter/yönlendirme, ses ve görüntü ayarları, v12 kayıt ve paketleme akışı eklendi. Nihai kabul; gerçek Windows/Linux donanım denemesi, yaklaşık bir saatlik oyuncu turu ve görsel geri bildirim sonrası verilecek. Temiz klon 186/186 mantık ve 8/8 sahne testini geçti; Windows/Linux release ZIP’leri ve CRC/hash kontrolleri hazır. Native Mac’te 16 giriş/menü kontrolü geçti. Teknik sonuçlar YAZILIMCI.md sonunda.
 
 ## Demo sonrası adaylar
 

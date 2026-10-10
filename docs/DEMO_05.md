@@ -49,16 +49,17 @@ saldırıyı iptal eder; geri dönünce hazırlıksız ani hasar verilmez. Kayna
 
 Unity **6000.3.25f1** ve `Packages/packages-lock.json` kullanılır. Temiz bir
 klonda `Assets`, `Packages`, `ProjectSettings` yeterlidir; `Library` kopyalanmaz.
-İlgili platformun Mono build desteği aynı editör sürümüne kurulmalıdır.
+İlgili platformun Mono build desteği aynı editör sürümüne kurulmalıdır. Modüller
+[Unity 6000.3.25f1 resmi sürüm sayfasında](https://unity.com/releases/editor/whats-new/6000.3.25f1) bulunur.
 
 ```bash
 # UNITY_EDITOR değişkenini bu makinedeki editör yürütülebilir dosyasına ayarla.
-"$UNITY_EDITOR" -batchmode -quit -projectPath "$PWD" -buildTarget Win64 \
+"$UNITY_EDITOR" -batchmode -quit -job-worker-count 4 -projectPath "$PWD" -buildTarget Win64 \
   -executeMethod Farmer.Editor.DemoBuild.Build --farmer-demo-target windows \
   -logFile "$PWD/Logs/demo-windows-build.log"
 python3 tools/build/package_demo.py --platform windows
 
-"$UNITY_EDITOR" -batchmode -quit -projectPath "$PWD" -buildTarget Linux64 \
+"$UNITY_EDITOR" -batchmode -quit -job-worker-count 4 -projectPath "$PWD" -buildTarget Linux64 \
   -executeMethod Farmer.Editor.DemoBuild.Build --farmer-demo-target linux \
   -logFile "$PWD/Logs/demo-linux-build.log"
 python3 tools/build/package_demo.py --platform linux
@@ -73,6 +74,35 @@ geliştirme build'ini reddeder; teknik test paketi açıkça `--allow-developmen
 `FARMER_DEMO_BUILD_OK` ve çıkış 0 olmadan paketleme yapılmaz. Paketleyici platform
 başlığını, sürüm bilgisini, gerekli dosyaları, ZIP CRC ve SHA-256'yı kontrol eder;
 `MANIFEST.json` içerik hash'lerini ve `BENI_OKU.txt` kontrolleri taşır.
+
+## Doğrulanan aday
+
+Kaynak `f9c8804`; yerel sahne ve temiz klonda 186/186 EditMode, 8/8 PlayMode.
+Native Mac development oyuncusunda 8 demo giriş kontrolü ve 8 menü/tam ekran
+kontrolü geçti. Defter ve savaş görüntüleri:
+
+![Çiftlik defteri — native Mac oyuncusu](screenshots/demo-journal.png)
+
+![Taş böceği saldırı hazırlığı — temiz klon PlayMode](screenshots/demo-combat.png)
+
+Temiz klonun ilk PlayMode açılışı Unity asset garbage collector'da bekledi;
+yalnızca o batch süreç durduruldu ve dört işçiyle tekrar 8/8 geçti. Bu ilk deneme
+başarılı sayılmadı. Standalone çalışmasında aynı durum görülmedi.
+
+## Hazır paketler
+
+`f9c8804` kaynağından Windows x64 ve Linux x64 StrictMode release build üretildi.
+ZIP'ler yerel `builds/Releases/` içindedir; Git'e eklenmez. Her paketin yanında
+`.zip.sha256`, içinde `MANIFEST.json`, `build-info.json` ve `BENI_OKU.txt` vardır.
+
+| Paket | Boyut | Runtime dosyası |
+|---|---:|---:|
+| Farmer-0.5.0-windows.zip | 122,9 MiB | 168 |
+| Farmer-0.5.0-linux.zip | 122,0 MiB | 166 |
+
+CRC, bütün içerik hash'leri ve release/sourceRevision bilgileri doğrulandı.
+Linux yürütülebilir dosyasının çalıştırma izni ZIP'te korunuyor. Gerçek Windows
+ve Linux donanımında bu paketler henüz açılmadı; native giriş testi Mac'te yapıldı.
 
 ## Açık kabul noktaları
 

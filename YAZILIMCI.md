@@ -4,7 +4,7 @@ Son güncelleme: **11 Ekim 2026 — Europe/Istanbul**.
 
 ## Şu an nerede kaldık?
 
-**Güncel (11 Ekim): 0.4'ün iki isteğe bağlı karşılaşması ve savaş/iyileşme/yenilgi/kaynak döngüsü uygulandı. 0.5 demo adayı için J defteri, kalıcı ilerleme, yönlendirme, ses/FPS ayarları ve paketleme araçları hazır. Kayıt v12; 186/186 EditMode, 8/8 PlayMode geçti. İlk native Mac giriş testi 8 kontrolü geçti; HUD katmanı düzeltmesinden sonraki native tekrar, temiz klon ve platform paketleri hazırlanıyor. Gerçek Windows/Linux donanım ve bir saatlik oyuncu kabulü açık. Ayrıntı dosya sonunda.**
+**Güncel (11 Ekim): 0.4 özellikleri tamam. 0.5 demo adayı: J defteri, yönlendirme, ayarlar, v12 kayıt ve Windows/Linux release ZIP'leri hazır. Yerel sahnede ve temiz klonda 186/186 EditMode, 8/8 PlayMode; native Mac'te 8 demo + 8 menü/giriş kontrolü geçti. Paketlerin kaynak commit'i f9c8804. Gerçek Windows/Linux donanım ve yaklaşık bir saatlik oyuncu kabulü hâlâ açık; 0.5 nihai kabul verilmedi. Ayrıntı dosya sonunda.**
 
 **Unity 6000.3.25f1 LTS (e1dba0a9aba4)** Linux makinesine kuruldu ve `Unity -version` ile doğrulandı. Resmi URP şablonunun kaynak dosyaları depoya alındı. 7 Ekim tarihinde aktif lisans doğrulandı; ilk paket importu, C# derlemesi ve başlangıç sahnesi üretimi başarıyla tamamlandı. Linux build ve görsel kontrol sonucu aşağıdaki doğrulama kaydında tutulur. **0.1 çekirdek prototipi Linux üzerinde tamamlandı:** hareket, kare seçimi, tohum satın alma, ekim/sulama, dört görünür büyüme aşaması, hasat/satış, gün ilerletme ve kayıt/yükleme çalışıyor. **Görsel ara aşama Linux üzerinde entegre edildi:** kullanıcının Tripo çiftçi/sulama kabı/orak/pazar modelleri ve Mixamo Idle/Walk animasyonları sahnede. Kullanıcı yeni görselleri beğendi; arkadaşına göndermek için Windows deneme paketi hazırlandı. Sulama/hasat için prosedürel alet hareketleri ve su akışı da eklendi; kullanıcının ters el tutuşu geri bildirimi düzeltilip son Linux player turunda 121 kontrol geçti. 0.2 dünya düzenleme adımı hazır: inşa alanı sınırı kaldırıldı, çapa ve yerleştirilebilir yatak eklendi, saat/gece–gündüz kullanıcı kararıyla 10 gerçek dakikalık döngüye geçti. Yeni kompakt ikon envanteri ve kaldırılan dünya etiketleri aşağıdaki güncel kayıtta açıklanır. **8 Ekim ilk oda adımı:** döşeme, ince duvar, açılıp kapanan kapı ve içeride kamera tarafındaki cephelerin saydamlaşması eklendi; kayıt v4. 8 Ekim devamındaki güncel çatı/taşıma/yatak ve sekiz yuvalı inşa barı kaydı dosyanın sonundadır; kayıt v5. 8 Ekim keşif adımı dosyanın sonundadır: balta, ağaç, yabani bitki ve dünyaya özel rastgele sandıklar; kayıt v6. Kullanıcının ilk oynanış geri bildirimi uygulandı: tıkla-seç adımı kaldırıldı, fare hedefi üzerinde eldeki eşya ile doğrudan sol tık etkileşimine geçildi. Sulama kabıyla sol tuşu basılı tutup kareler arasında gezdirilir; su sesi döngüsü eklenmiştir. Her ekimde tek sulama yeterli; hasat süresi üç gece olarak korundu. Karakter/iki alet/pazar teslim edilen modelleri kullanıyor; zemin, bitkiler, kamp ve tohum torbası hâlâ geçici. Windows x64 paketi Linux üzerinde derlendi; gerçek Windows açılış/oynanış doğrulaması açık.
 
@@ -567,3 +567,49 @@ render/texture meta serileştirme farkı üretti; kaynak/paket sürümü değiş
 İlk temiz klon PlayMode denemesi testlere ulaşmadan asset garbage collector'da
 bekledi (main thread `GarbageCollectSharedAssets`, örnek `demo-clean-playmode.sample.txt`).
 Yalnızca o izole batch süreci durduruldu; yeniden deneme ve paketler takip ediliyor.
+
+
+### Release paketleri ve son sonuçlar
+
+- Temiz klon tekrarındaki `Logs/demo-clean-playmode-retry.xml`: **8/8 geçti**.
+  `-job-worker-count 4` kullanıldı. İlk takılmanın motor kök nedeni çözülmüş sayılmadı.
+- `Logs/demo-menu-native.log`: **8/8**; normal açılış, Başla, ilk defter, tam ekran,
+  pencereye dönüş, Esc ve Devam Et. `FARMER_PLAYER_SMOKE_OK`.
+- Son yön kutusu boşluğu temiz klon görüntüsünde doğrulandı: `builds/QA/demo-navigation.png`.
+- Kaynak **f9c8804**, Unity **6000.3.25f1**, StrictMode ve development=false:
+  `Logs/demo-windows-build.log` / `Logs/demo-linux-build.log`, ikisinde de
+  `FARMER_DEMO_BUILD_OK` ve başarılı çıkış.
+- `builds/Releases/Farmer-0.5.0-windows.zip`: **122,9 MiB**, 168 runtime dosyası.
+  SHA-256 `7317bf442fb1de395d9128f448fc34fe4b9d9441082a96f8cf7018317f9ec33a`.
+- `builds/Releases/Farmer-0.5.0-linux.zip`: **122,0 MiB**, 166 runtime dosyası.
+  SHA-256 `48c376b576dd6a4e6688b4a688aea53fcbb70a7f055c2b15a5b1a92a2fb691f6`.
+- Her iki ZIP'te CRC, bütün MANIFEST SHA-256 değerleri, sürüm/sourceRevision,
+  development=false ve BENI_OKU doğrulandı. Linux çalıştırma izni arşivde korunuyor.
+  Mac development build'ini release gibi paketleme denemesi beklendiği gibi reddedildi.
+- Meta eşleri/bütün GUID'ler ve manifest–lock sürüm eşliği statik olarak doğrulandı.
+  Kod/doküman diff whitespace kontrolü geçti; kullanıcıya ait önceden kirli
+  sahne/metalar bu kontrole/düzeltmeye dahil edilmedi.
+
+**Kalan somut iş:** Windows veya Linux gerçek cihazda ZIP'i açıp yaklaşık bir
+saatlik tarım → satış → ev → isteğe bağlı keşif turunu oynamak; ses/giriş/kamera,
+kayıt ve performans geri bildirimini almak. Sonrasında geçici düşman/maden ve
+bitki modellerini değiştirmek. Demo kabulü gelmeden yeni büyük sistem eklenmez.
+
+Paketler Git'e alınmaz; kaynak, doküman ve iki kanıt görüntüsü sürümlenir.
+`docs/DEMO_05.md` ve `docs/playtest/DEMO_README.txt` devir/kontrol rehberidir.
+
+
+### Git devir durumu
+
+Uygulama `93dcd88`, yön kutusu boşluğu `f9c8804`, dal `main`.
+Push denemeleri Homebrew ve sistem Git'in `git-credential-osxkeychain get`
+aşamasında kullanıcı anahtarlık erişimini bekledi; tamamlanmış push sonucu yok.
+Bilgisayar kullanım aracı SecurityAgent erişimini güvenlik nedeniyle reddetti;
+anahtarlık/global Git izinleri değiştirilmedi. Kullanıcıya sistem onayı soruldu.
+Son devir commit'i de dahil `git status --short --branch` ile ahead durumuna bakıp
+`origin/main` push'unu tamamlamak gerekir; remote URL değiştirilmedi.
+
+Temiz klonun üretilen önbellekleri ve geçici klon disk alanı için kaldırıldı.
+Doğrulanmış Windows/Linux ZIP'leri, SHA-256 dosyaları, XML/loglar ve ekran görüntüleri
+ana çalışma alanında korundu. Kullanıcıya ait başlangıçtaki kirli dosyalar hâlâ
+commit dışında; onları bu işin parçası sayıp topluca stage etme.
