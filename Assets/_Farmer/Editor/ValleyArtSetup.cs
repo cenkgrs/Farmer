@@ -37,10 +37,13 @@ namespace Farmer.Editor
             var motor=new SerializedObject(game.Player.GetComponent<PlayerMotor>());motor.FindProperty("walkableHalfExtent").floatValue=127.3f;motor.ApplyModifiedPropertiesWithoutUndo();
             var rootWorld=new GameObject("Valley First Slice");
             var grass=ground.GetComponent<Renderer>().sharedMaterial;
-            var pathMaterial=new Material(grass);pathMaterial.SetColor("_BaseColor",new Color(.56f,.43f,.25f));
+            var pathTexture=AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/_Farmer/Art/Textures/old_paving_stone_albedo.jpg");
+            var pathMaterial=new Material(grass);pathMaterial.SetTexture("_BaseMap",pathTexture);pathMaterial.SetTexture("_MainTex",pathTexture);
+            pathMaterial.SetColor("_BaseColor",Color.white);pathMaterial.SetColor("_Color",Color.white);pathMaterial.SetFloat("_Smoothness",.08f);
             string matPath="Assets/_Farmer/Art/Materials/valley_path.mat";
             var savedMat=AssetDatabase.LoadAssetAtPath<Material>(matPath);
             if(savedMat==null){AssetDatabase.CreateAsset(pathMaterial,matPath);savedMat=pathMaterial;}else{EditorUtility.CopySerialized(pathMaterial,savedMat);UnityEngine.Object.DestroyImmediate(pathMaterial);}
+            var squareMaterial=AssetDatabase.LoadAssetAtPath<Material>("Assets/_Farmer/Art/Materials/village_paving.mat");
             GameObject Prop(string name,Vector3 position,float yaw=0,float scale=1)
             {
                 var obj=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>($"Assets/_Farmer/Resources/ValleyArt/{name}.prefab"));
@@ -51,10 +54,11 @@ namespace Farmer.Editor
             {
                 var obj=GameObject.CreatePrimitive(PrimitiveType.Cube);obj.name="Valley path";obj.transform.SetParent(rootWorld.transform,false);
                 UnityEngine.Object.DestroyImmediate(obj.GetComponent<Collider>());obj.transform.position=(a+b)*.5f+Vector3.up*.003f;
-                obj.transform.rotation=Quaternion.LookRotation(b-a);obj.transform.localScale=new Vector3(width,.004f,Vector3.Distance(a,b)+.3f);obj.GetComponent<Renderer>().sharedMaterial=savedMat;
+                obj.transform.rotation=Quaternion.LookRotation(b-a);obj.transform.localScale=new Vector3(width,.004f,Vector3.Distance(a,b)+.3f);
+                obj.GetComponent<Renderer>().sharedMaterial=width<10?savedMat:squareMaterial;obj.AddComponent<PavingTiling>();
             }
             var points=new[]{new Vector3(-5,0,8),new Vector3(-12,0,32),new Vector3(-30,0,48),new Vector3(-34,0,68),new Vector3(-55,0,86),new Vector3(-55,0,96)};
-            for(int i=1;i<points.Length;i++)PathSegment(points[i-1],points[i],3);
+            MapEditingTools.CreateOrUpdateMainRoad(rootWorld.transform,points,3,savedMat);
             PathSegment(new Vector3(-63,0,96),new Vector3(-47,0,96),16);
             Prop("village_shop",new Vector3(-64,0,101),90);
             Prop("village_shop",new Vector3(-46,0,101),180);
