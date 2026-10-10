@@ -100,11 +100,11 @@ namespace Farmer
                 AddHover(button.gameObject,hint.Split('\n')[0]);
                 button.GetComponent<Image>().color=Color.clear;
             }
-            seedPicker=Panel("Seed selection",root.transform,new Vector2(.5f,0),new Vector2(0,108),new Vector2(game.Crops.Length*120+12,36),Cream);
+            seedPicker=Panel("Seed selection",root.transform,new Vector2(.5f,0),new Vector2(0,108),new Vector2(Mathf.Min(3,game.Crops.Length)*120+12,Mathf.CeilToInt(game.Crops.Length/3f)*36),Cream);
             cropChoices=new Button[game.Crops.Length];
             for(int i=0;i<game.Crops.Length;i++)
             {
-                var crop=game.Crops[i];cropChoices[i]=Button(seedPicker,crop.displayName,6+i*120,4,114,28,()=>game.SelectCrop(crop.id));
+                var crop=game.Crops[i];cropChoices[i]=Button(seedPicker,crop.displayName,6+(i%3)*120,4+(i/3)*36,114,28,()=>game.SelectCrop(crop.id));
                 cropChoices[i].name="Select crop "+crop.id;
             }
             tooltip=Panel("Item Tooltip",root.transform,new Vector2(.5f,0),new Vector2(0,106),new Vector2(440,56),Cream);
@@ -147,8 +147,8 @@ namespace Farmer
                 cropChoices[i].GetComponent<Image>().color=definition==crop?new Color(.97f,.78f,.39f):new Color(.78f,.66f,.43f);
                 cropChoices[i].interactable=game.Ready;
             }
-            tooltip.anchoredPosition=new Vector2(0,game.BuildMode||chooseSeeds?148:106);
-            toast.anchoredPosition=new Vector2(0,game.BuildMode?214:172);
+            tooltip.anchoredPosition=new Vector2(0,chooseSeeds?112+seedPicker.sizeDelta.y:game.BuildMode?148:106);
+            toast.anchoredPosition=new Vector2(0,chooseSeeds?178+seedPicker.sizeDelta.y:game.BuildMode?214:172);
             summary.text=$"Gün {model.Day}   ·   {model.ClockText}";money.text=model.Money.ToString();saveStatus.text=game.SaveStatus=="Kaydedildi"?"Kaydedildi":game.Ready?"":"Kayıt hatası";
             feedback.text=game.Feedback;toast.gameObject.SetActive(!game.Ready&&!game.InventoryOpen);
             seedCount.text=model.Seeds(crop.id).ToString();woodCount.text=model.Building.Wood.ToString();

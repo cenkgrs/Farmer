@@ -251,3 +251,31 @@ aynı sistemi kullanır. Taş miktarı, parçalar ve kapı durumu v10 kaydında 
 Sol üst saat/cüzdan, envanterin ahşap çerçevesi ve pazarın para simgesiyle
 aynı görsel dili kullanır. Kullanıcının padding geri bildirimiyle metin ve
 simge içeri alındı, panel 280×116 olarak genişletildi.
+
+
+## 11 Ekim — 0.3'ün kalan üç ürünü
+
+Kullanıcı son üç ürün önerisiyle devam edilmesini istedi. Seçilen uygulama:
+marul (6 para tohum, 2 gece, 1 ürün, satış 10), buğday (12 para tohum,
+3 gece, 3 ürün, birim satış 7), balkabağı (40 para tohum, 8 gece, 1 ürün,
+satış 85). Üçü tek hasatlıdır; domates tekrar hasat rolünü korur. Marul
+ilk 20 dakikaya satış getirir; buğday toplu girdi, balkabağı uzun yatırım olur.
+Mevcut üç ürün ve gün uzunluğu korunur. [Denge hesabı](DENGE_03.md).
+
+Yeni tarif: 1 marul + 3 buğday + 1 balkabağı + 2 odun → 1 hasat sepeti;
+satış 145. Pazardaki veri tanımlı üretim sistemini kullanır; yeni tezgâh,
+açlık/yemek etkisi veya yetişme kuralı yoktur. Tohum menüsü iki satırda üçer
+seçenek gösterir; pazar alış üçlü, satış dörtlü sayfalarla genişler. Satış
+sayfası değişince görünen ilk tür seçilir; gizli önceki tür satılmaz. Tohumun
+ikinci sayfada seçili olması pazar yeniden açılınca doğru sayfayı getirir.
+
+Kayıt v11 ilk eski kayıt yazımında `.pre-v11` yedeği alır; yeni türlerin
+stokları sıfır başlar. Eski bitki, bahçe, para, taş, alet ve sandıklar korunur.
+Yeni CropDefinition/RecipeDefinition kayıtları için davranış kodu kopyalanmadı;
+katalog sırası veri alanıdır. En kısa büyüme 1 geceye izin verir; marul 2 gece
+değerini kullanır ve görsel aşaması 0 → 1 → 3 olur.
+
+Kullanıcı üç yeni tohumu da mevcut pazar gibi ImageGen çizimleriyle istedi.
+Pazardaki kart/detay görselleri kâğıt tohum paketi illüstrasyonlarıdır; dünya
+bitkilerinin renderları bu alanlarda kullanılmaz. Tarla bitkileri geçici,
+düşük poligonlu native geometri; ileride GLB teslimiyle değiştirilebilir.

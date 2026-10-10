@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 932c993bb1fc95ae39930499e4b041e1, type: 3}
+  m_Name: pumpkin
+  m_EditorClassIdentifier: Farmer.Runtime::Farmer.CropDefinition
+  id: pumpkin
+  displayName: "Balkaba\u011F\u0131"
+  catalogOrder: 202
+  seedPrice: 40
+  salePrice: 85
+  wateredDays: 8
+  harvestYield: 1
+  regrowDays: 0
+  visualScale: 1
+  growthStages:
+  - {fileID: 7166249543663296978, guid: a5eecfad653af4d11a32500b5285c927, type: 3}
+  - {fileID: 3795973249961205224, guid: 42550d094ef724949a48903c619bd5df, type: 3}
+  - {fileID: 2829896066269238066, guid: e80bc2ac675104848acc76cd34c665fa, type: 3}
+  - {fileID: 4156379285897650318, guid: 5173a4eb58e0f4f70850d654ae729c7b, type: 3}

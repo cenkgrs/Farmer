@@ -54,8 +54,10 @@ namespace Farmer.Tests
             Click("Market category Üretim");yield return null;Click("Market quantity plus");Click("Market purchase");
             Assert.That(game.Model.BagCount("crafted:vegetable_crate"),Is.EqualTo(9));Assert.That(game.Model.Produce("tomato"),Is.EqualTo(14));
             CropExpansionPlayModeTests.Capture("market-design-production",true);
+            Click("Next sale page");yield return null;
             Click("Market sell item crafted:vegetable_crate");int before=game.Model.Money;Click("Market sell");Assert.That(game.Model.Money,Is.EqualTo(before+810));Assert.That(game.Model.BagCount("crafted:vegetable_crate"),Is.Zero);
             Assert.That(ui.SellSelected(),Is.False);Assert.That(game.Model.SelectedCropId,Is.EqualTo("tomato"));
+            Click("Previous sale page");yield return null;
             Click("Market sell item crop:carrot");Click("Market sell");Assert.That(game.Model.Produce("carrot"),Is.Zero);Assert.That(game.Model.SelectedCropId,Is.EqualTo("tomato"));
             game.SaveGame();Assert.That(game.LoadGame(),Is.True);yield return null;Assert.That(game.MarketOpen,Is.False);Assert.That(ui.PurchaseSelected(),Is.False);
             Assert.That(game.Model.OwnsPickaxe,Is.True);Assert.That(game.Model.Building.FurnitureCount("home_chair"),Is.EqualTo(1));

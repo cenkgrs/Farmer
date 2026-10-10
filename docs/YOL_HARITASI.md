@@ -1,6 +1,6 @@
 # Sürüm planı ve kabul ölçütleri
 
-Tarihler/tahmini geliştirme süreleri henüz yok. Her sürüm oynanabilir bir adım olmalı. 0.1 çekirdeği doğrulandı. Kullanıcı 10 Ekim 2026'da 0.2 son kontrollerini tamam kabul edip 0.3'e geçiş istedi. 0.3 kaynak/kazma ve ilk üç ürün/tekrar hasat/sebze kasası adımı uygulandı; çit/bahçe kapısı/taş yol da eklendi; altı ürün hedefi açık. Windows doğrulaması ayrı takip ediliyor.
+Tarihler/tahmini geliştirme süreleri henüz yok. Her sürüm oynanabilir bir adım olmalı. 0.1 çekirdeği doğrulandı. Kullanıcı 10 Ekim 2026'da 0.2 son kontrollerini tamam kabul edip 0.3'e geçiş istedi. 0.3 kaynak/kazma ve ilk üç ürün/tekrar hasat/sebze kasası adımı uygulandı; çit/bahçe kapısı/taş yol ve altı ürün/iki tarif kataloğu uygulandı. Windows doğrulaması ayrı takip ediliyor.
 
 ## 0.1 — Çekirdek prototip
 
@@ -44,13 +44,14 @@ Altı ürün, tekrar hasat, pazar çeşitliliği, basit işleme/tarifler, çit/b
 
 Kabul:
 
+- [x] Altı ürün: turp, havuç, domates, marul, buğday, balkabağı.
 - [x] Ürünler kullanım ve büyüme davranışıyla farklılaşır; yeni ürün veri tanımıyla eklenebilir.
 - [x] Ürün satılabilir veya en az bir anlamlı üretim tarifinde tüketilebilir.
 - [x] Girdi/çıktı miktarları, yetersiz malzeme ve envanter kapasitesi tutarlıdır.
 - [x] Çit, açılır bahçe kapısı ve taş tüketen döşenebilir yol; sökme/taşıma/kayıt.
 - [x] İlk 10–20 oyun dakikasındaki gelir/gider örneği kaydedilir ve kilitlenme açısından incelenir; bu süre tasarım denemesidir.
 
-10 Ekim: bu ölçütler ilk üç ürün (turp, havuç, domates) ve tek sebze kasası tarifiyle doğrulandı. **0.3 tamamlanmadı:** kalan üç ürün açıktır; 11 Ekimde çit/bahçe kapısı/taş yol eklendi. İlk 10–20 dakika [denge hesabı](DENGE_03.md) gerçek oyuncu oturumu ölçümü değildir; ilk mahsul gelirinin 20 dakikayı aştığı kaydedildi.
+10 Ekim: bu ölçütler ilk üç ürün (turp, havuç, domates) ve tek sebze kasası tarifiyle doğrulandı. 11 Ekimde çit/bahçe kapısı/taş yol, ardından marul/buğday/balkabağı ve hasat sepetiyle **0.3 özellik kapsamı uygulandı**. Nihai yeni bitki modelleri ve gerçek oyuncu denge değerlendirmesi açık; 0.4 otomatik başlatılmadı. İlk 10–20 dakika [denge hesabı](DENGE_03.md) gerçek oyuncu oturumu ölçümü değildir; ilk mahsul gelirinin 20 dakikayı aştığı kaydedildi.
 
 ## 0.4 — Ormanın ötesi
 

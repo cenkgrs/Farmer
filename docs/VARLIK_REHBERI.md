@@ -160,3 +160,37 @@ Görsel geometri ve bağımsız kutu collider'ları ayrı tutulur. Malzemeler
 sıcak mat ahşap/koyu metal/üç doğal taş rengi. İkonlar bu prefabların 256 px
 şeffaf renderlarıdır. Bunlar harici GLB teslimi değildir; ileride GLB ile
 birebir değiştirilirken bu ölçü, kök ve menteşe sözleşmesi korunmalıdır.
+
+
+11 Ekim altı ürün kataloğu: `HarvestCropSetup.Apply` yalnız yeni marul/buğday/
+balkabağı dört aşamalı prefablarını ve hasat sepetini üretir; eski crop assetleri
+ve kullanıcı sahnesine yazmaz. Paylaşılan yuvarlak mesh 48 üçgendir; küçük
+organların her biri yoğun Unity küre mesh'i kullanmaz. Dünya modelleri geçici
+native geometridir. Son bitki GLB'leri için stil: mat, sıcak renkli, sabit açılı
+izometrik kamerada okunur; her bitki 1×1 m hücreye sığmalı, kök taban merkezinde,
+Y yukarı, 1 birim = 1 metre. Bitkilerde collider/animasyon gerekmez.
+
+Teslim promptları (her tür için ayrı dört aşama: filiz, genç, gelişmiş, olgun):
+
+- Marul: kıvrımlı dış yeşil yapraklar, daha açık yeşil sık göbek; olgun genişlik
+  0,55 m, yükseklik 0,30 m, en çok 2000 üçgen. Kök yumrusu veya lahana görünümü
+  olmasın. İki gece nedeniyle oyunda 0 → 1 → 3 aşamaları kullanılır.
+- Buğday: tek hücrede yedi saplık küçük küme; genç yeşil, olgun altın başaklar;
+  genişlik 0,40 m, yükseklik 0,80 m, en çok 3500 üçgen. İnce parçalar kamerada
+  kaybolmayacak kadar kalın, rüzgâr animasyonu bu teslimde gerekmez.
+- Balkabağı: yerde kısa sarmaşık/yapraklar ve tek belirgin dilimli turuncu meyve;
+  meyve genişliği 0,48 m, tüm küme 0,75 m, yükseklik 0,40 m; en çok 3000 üçgen.
+  Erken aşamalarda yalnız filiz/yaprak, gelişmiş aşamada küçük yeşil meyve.
+
+Çıktı GLB; gömülü en fazla 1K base-color doku, mat roughness, metaller yok.
+Kontrol: gerçek ölçü/taban, okunur tür silüeti, dört ayrı prefab/model,
+malzemede pembe/eksik doku olmaması, iki yüzlü yaprak gerekiyorsa açık belirtme.
+
+Kullanıcı yeni tohum kartlarında dünya modeli renderı istemedi.
+`Resources/SeedArt/{lettuce,wheat,pumpkin}.png` yerleşik ImageGen ile, onaylı
+pazar görselinin yalnız çizim dili referans alınarak üretildi. Şeffaf, yazısız
+kâğıt paket + ürün illüstrasyonu; kart ve detayda kullanılır. Kaynaklar depoda,
+[üç tam prompt](art-sources/harvest-seeds-prompts.json) kayıtlıdır. Bunlar 3D
+model veya teslim referansı değildir. `SeedArtImport` alfa, NPOT boyut ve
+sıkıştırmasız UI görünümünü korur. Hasat/çanta ikonları yeni prefab renderlarıdır;
+tohum kartları bunlardan bağımsız `SeedArtwork` kullanır.

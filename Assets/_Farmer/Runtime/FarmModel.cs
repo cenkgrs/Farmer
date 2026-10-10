@@ -17,7 +17,7 @@ namespace Farmer
         public CropRules(string id, int seedPrice, int salePrice, int wateredDays, int yield, int regrowDays = 0)
         {
             if (string.IsNullOrWhiteSpace(id) || seedPrice < 1 || salePrice < 1 || seedPrice > 100000 || salePrice > 100000
-                || wateredDays < 3 || wateredDays > 100 || yield < 1 || yield > FarmModel.StackLimit || regrowDays < 0 || regrowDays > wateredDays)
+                || wateredDays < 1 || wateredDays > 100 || yield < 1 || yield > FarmModel.StackLimit || regrowDays < 0 || regrowDays > wateredDays)
                 throw new ArgumentException("Invalid crop rules.");
             Id = id; SeedPrice = seedPrice; SalePrice = salePrice; WateredDays = wateredDays; Yield = yield; RegrowDays = regrowDays;
         }
@@ -56,7 +56,7 @@ namespace Farmer
     // No scene, input, filesystem or clock dependencies: all transactions validate before mutating.
     public sealed partial class FarmModel
     {
-        public const int SaveVersion = 10;
+        public const int SaveVersion = 11;
         public const int PickaxePrice = 80;
         public bool OwnsPickaxe { get; private set; }
         public int Stone { get; private set; }

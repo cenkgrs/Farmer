@@ -67,10 +67,10 @@ namespace Farmer
             sceneryBounds=FindObjectsByType<ValleyScenery>(FindObjectsSortMode.None)
                 .SelectMany(v=>v.GetComponentsInChildren<Renderer>()).Select(r=>r.bounds).ToArray();
             // Additional definitions extend the authored scene catalog without rewriting the user's scene.
-            crops = crops.Concat(Resources.LoadAll<CropDefinition>("Crops").OrderBy(c=>c.id,StringComparer.Ordinal))
+            crops = crops.Concat(Resources.LoadAll<CropDefinition>("Crops").OrderBy(c=>c.catalogOrder).ThenBy(c=>c.id,StringComparer.Ordinal))
                 .GroupBy(c=>c.id).Select(g=>g.First()).ToArray();
             buildPieces=buildPieces.Concat(Resources.LoadAll<BuildDefinition>("GardenPieces").OrderBy(b=>b.id,StringComparer.Ordinal)).GroupBy(b=>b.id).Select(g=>g.First()).ToArray();
-            Recipes = Resources.LoadAll<RecipeDefinition>("Recipes").OrderBy(r=>r.id,StringComparer.Ordinal).ToArray();
+            Recipes = Resources.LoadAll<RecipeDefinition>("Recipes").OrderBy(r=>r.catalogOrder).ThenBy(r=>r.id,StringComparer.Ordinal).ToArray();
             var recipeRules = Recipes.Select(r=>r.Rules).ToArray();
             var rules = crops.Select(c => c.Rules).ToArray();
             Model = new FarmModel(rules, selection.Layout.Width, selection.Layout.Depth, startingMoney, BuildingRules(), resourceBlocked: ResourceBlockedByScenery, recipeCatalog: recipeRules);

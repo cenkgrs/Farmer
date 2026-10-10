@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-11",
+  "mode": "built-in image_gen",
+  "reference": "Assets/_Farmer/Resources/MarketArt/approved.png",
+  "transparent_background": true,
+  "outputDirectory": "Assets/_Farmer/Resources/SeedArt",
+  "prompts": [
+    {
+      "id": "lettuce",
+      "prompt": "Use case: stylized-concept. Asset type: transparent UI illustration for a cozy farming game's seed shop. Input image is STYLE REFERENCE ONLY: match the hand-painted seed packet illustrations in the three central cards of the provided market image. Create ONE standalone illustration, NOT a screenshot or UI card. Warm tan folded kraft paper seed bag in three-quarter view, charming ink contours, soft painted gouache shading, warm highlights, crisp clean silhouette. The bag has a painted picture of the crop, NO text or letters. A little of the real harvested crop rests beside the bag and a few tiny seeds at its foot. Center the composition and fill 85% of a square canvas with 7% transparent margins. True transparent background, no colored backdrop, no card frame, no prices, no interface, no scenery, no 3D render, no photorealism. Consistent viewpoint/proportions with the reference turnip/carrot/tomato packets. Subject: a lettuce seed packet, with a lush ruffled green lettuce head painted on its front and a small fresh lettuce head with broad ruffled leaves beside it. Green lettuce must be immediately recognizable, not cabbage."
+    },
+    {
+      "id": "wheat",
+      "prompt": "Use case: stylized-concept. Asset type: transparent UI illustration for a cozy farming game's seed shop. Input image is STYLE REFERENCE ONLY: match the hand-painted seed packet illustrations in the three central cards of the provided market image. Create ONE standalone illustration, NOT a screenshot or UI card. Warm tan folded kraft paper seed bag in three-quarter view, charming ink contours, soft painted gouache shading, warm highlights, crisp clean silhouette. The bag has a painted picture of the crop, NO text or letters. A little of the real harvested crop rests beside the bag and a few tiny seeds at its foot. Center the composition and fill 85% of a square canvas with 7% transparent margins. True transparent background, no colored backdrop, no card frame, no prices, no interface, no scenery, no 3D render, no photorealism. Consistent viewpoint/proportions with the reference turnip/carrot/tomato packets. Subject: a wheat seed packet, with a golden wheat ear painted on its front and a small tied bunch of three golden wheat ears beside it, a few wheat grains at its foot."
+    },
+    {
+      "id": "pumpkin",
+      "prompt": "Use case: stylized-concept. Asset type: transparent UI illustration for a cozy farming game's seed shop. Input image is STYLE REFERENCE ONLY: match the hand-painted seed packet illustrations in the three central cards of the provided market image. Create ONE standalone illustration, NOT a screenshot or UI card. Warm tan folded kraft paper seed bag in three-quarter view, charming ink contours, soft painted gouache shading, warm highlights, crisp clean silhouette. The bag has a painted picture of the crop, NO text or letters. A little of the real harvested crop rests beside the bag and a few tiny seeds at its foot. Center the composition and fill 85% of a square canvas with 7% transparent margins. True transparent background, no colored backdrop, no card frame, no prices, no interface, no scenery, no 3D render, no photorealism. Consistent viewpoint/proportions with the reference turnip/carrot/tomato packets. Subject: a pumpkin seed packet, with a round ribbed orange pumpkin painted on its front and a small ripe ribbed orange pumpkin with a curved green stem beside it, a few pale oval pumpkin seeds at its foot."
+    }
+  ]
+}

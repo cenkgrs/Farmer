@@ -7,9 +7,10 @@ namespace Farmer
     {
         public string id = "turnip";
         public string displayName = "Turp";
+        public int catalogOrder = 100;
         [Min(1)] public int seedPrice = 10;
         [Min(1)] public int salePrice = 18;
-        [Min(3)] public int wateredDays = 3;
+        [Min(1)] public int wateredDays = 3;
         [Min(1)] public int harvestYield = 1;
         [Min(0)] public int regrowDays;
         [Range(.1f,2f)] public float visualScale = 1f;

@@ -26,8 +26,8 @@ namespace Farmer.Tests
             game=Object.FindFirstObjectByType<FarmGame>();Assert.That(game.SavePath,Does.Contain("FarmerQA"));
             game.GetComponent<SessionMenu>().SetOpen(false);game.GetComponent<DayNightCycle>().ClockPaused=true;
             Camera.main.GetComponent<ExplorationCamera>().enabled=false;
-            Assert.That(game.Crops.Select(c=>c.id),Is.EquivalentTo(new[]{"turnip","carrot","tomato"}));
-            Assert.That(game.Recipes.Single().id,Is.EqualTo("vegetable_crate"));
+            Assert.That(game.Crops.Select(c=>c.id),Is.EquivalentTo(new[]{"turnip","carrot","tomato","lettuce","wheat","pumpkin"}));
+            Assert.That(game.Recipes.First().id,Is.EqualTo("vegetable_crate"));
             Assert.That(game.Craft("vegetable_crate"),Is.False,"Remote crafting is blocked.");
             var snapshot=game.Model.Snapshot();snapshot.money=500;snapshot.minuteOfDay=720;
             File.WriteAllText(game.SavePath,JsonUtility.ToJson(snapshot));Assert.That(game.LoadGame(),Is.True);yield return null;
@@ -43,13 +43,13 @@ namespace Farmer.Tests
             Frame(game.Market.position,5);yield return null;Capture("crop-market",true);
             // Expose the three species and four visible stages without using the player's save.
             int x=0;
-            foreach(var crop in game.Crops)
+            foreach(var crop in game.Crops.Take(3))
                 for(int stage=0;stage<4;stage++)
                 {
                     game.Model.Till(x,0,out _);game.Model.Plant(game.Model.IndexAt(x,0),crop.id,out _);x++;
                 }
             snapshot=game.Model.Snapshot();x=0;
-            foreach(var crop in game.Crops)
+            foreach(var crop in game.Crops.Take(3))
                 for(int stage=0;stage<4;stage++)
                 {
                     int column=x++;var plot=snapshot.plots.Single(p=>p.x==column&&p.z==0);plot.growth=(int)Math.Ceiling(stage*crop.wateredDays/3.0);plot.watered=true;
@@ -72,10 +72,10 @@ namespace Farmer.Tests
             Assert.That(game.Model.BagCount("crafted:vegetable_crate"),Is.EqualTo(1));Assert.That(craft.interactable,Is.False);
             game.GetComponent<MarketInteraction>().Close();yield return null;
             var storage=game.GetComponent<StorageInteraction>();storage.Open(null);yield return null;
-            Assert.That(Object.FindObjectsByType<StorageSlot>(FindObjectsSortMode.None).Any(s=>s.ItemId=="crafted:vegetable_crate"&&s.Count==1),Is.True);
             Frame(game.Market.position,5);Capture("crop-bag-page1",true);
             Assert.That(FindButton("›").interactable,Is.True);FindButton("›").onClick.Invoke();yield return null;
             Assert.That(Object.FindObjectsByType<StorageSlot>(FindObjectsSortMode.None).Any(s=>s.ItemId=="furniture:home_lantern"),Is.True);
+            Assert.That(Object.FindObjectsByType<StorageSlot>(FindObjectsSortMode.None).Any(s=>s.ItemId=="crafted:vegetable_crate"&&s.Count==1),Is.True);
             Frame(game.Market.position,5);Capture("crop-bag-page2",true);storage.Close();
             game.SaveGame();Assert.That(game.LoadGame(),Is.True);yield return null;
             Assert.That(game.ActiveCrop.id,Is.EqualTo("tomato"));Assert.That(game.Model.BagCount("crafted:vegetable_crate"),Is.EqualTo(1));

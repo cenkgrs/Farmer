@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 932c993bb1fc95ae39930499e4b041e1, type: 3}
+  m_Name: wheat
+  m_EditorClassIdentifier: Farmer.Runtime::Farmer.CropDefinition
+  id: wheat
+  displayName: "Bu\u011Fday"
+  catalogOrder: 201
+  seedPrice: 12
+  salePrice: 7
+  wateredDays: 3
+  harvestYield: 3
+  regrowDays: 0
+  visualScale: 1
+  growthStages:
+  - {fileID: 2961775236647572618, guid: 6ba28d73e02fd4bfd9ac3ad9d8f72d48, type: 3}
+  - {fileID: 8469077182401809952, guid: 43e3b37c4051b4706b0f4daea0ad399c, type: 3}
+  - {fileID: 6856192215993908933, guid: 49f6496b092f540008b14542031488cd, type: 3}
+  - {fileID: 8656437754263313355, guid: d631252ecbbd847e98e3e13c9d3d36e0, type: 3}

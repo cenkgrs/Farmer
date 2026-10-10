@@ -83,12 +83,15 @@ namespace Farmer
             visible=offers.Where(o=>o.Category==category).ToArray();
             Selected=visible.FirstOrDefault();Quantity=1;
             if(category==MarketCategory.Seeds)Selected=visible.FirstOrDefault(o=>o.Id==game.ActiveCrop.id)??Selected;
+            page=Selected==null?0:Array.IndexOf(visible,Selected)/3;
             BuildNavigation();BuildCatalog();BuildDetails();RefreshValues();
         }
         public bool SelectOffer(string id)
         {
             var offer=visible.FirstOrDefault(o=>o.Id==id);if(offer==null)return false;
             Selected=offer;Quantity=1;
+            int targetPage=Array.IndexOf(visible,offer)/3;
+            if(page!=targetPage){page=targetPage;BuildCatalog();}
             if(offer.Kind==MarketOfferKind.Seed)game.SelectCrop(id);
             BuildDetails();RefreshValues();return true;
         }
@@ -133,7 +136,7 @@ namespace Farmer
                 }
                 else
                 {
-                    Icon(catalog,offer,new Rect(r.x+28,255,170,180));
+                    Icon(catalog,offer,offer.Kind==MarketOfferKind.Seed?new Rect(r.x+9,243,208,208):new Rect(r.x+28,255,170,180));
                     Label(catalog,"Name "+offer.Id,new Rect(r.x+10,455,r.width-20, 40),26,true).text=offer.Name;
                     if(offer.Price>0)Raw(catalog,"Coin",approved,new Rect(488,506,38,40),new Rect(r.x+58,507,38,40));
                     Label(catalog,"Price "+offer.Id,new Rect(r.x+99,501,116,48),32,true).text=offer.Price>0?offer.Price.ToString():"Tarif";
@@ -197,7 +200,7 @@ namespace Farmer
         private GameObject disabledPurchase,disabledSell,disabledMinus,disabledPlus;
         private string Description(MarketOffer o)
         {
-            if(o.Crop!=null)return $"İlk hasat: {o.Crop.wateredDays} gün\n"+(o.Crop.regrowDays>0?$"Tekrar hasat: {o.Crop.regrowDays} gün":"Tek hasat · Yeniden ekilir");
+            if(o.Crop!=null)return $"İlk hasat: {o.Crop.wateredDays} gün\nHasat başına {o.Crop.harvestYield} adet\n"+(o.Crop.regrowDays>0?$"Tekrar hasat: {o.Crop.regrowDays} gün":"Tek hasat · Yeniden ekilir");
             if(o.Recipe!=null)return string.Join(" + ",o.Recipe.ingredients.Select(i=>$"{i.count*Quantity} {game.GetComponent<StorageInteraction>().Name(i.id)}"));
             switch(o.Kind)
             {
@@ -221,19 +224,25 @@ namespace Farmer
         private void BuildSales()
         {
             saleIds=game.Crops.Select(c=>"crop:"+c.id).Concat(game.Recipes.Select(r=>"crafted:"+r.id)).ToArray();
-            // Current catalog has four sale types; additional types get their own page rather than overlapping.
+            // Four sale slots per page preserve the approved layout as the catalog grows.
             BuildSalePage(0);
         }
         private int salePage;
         public void BuildSalePage(int pageIndex)
         {
             salePage=Mathf.Clamp(pageIndex,0,Math.Max(0,(saleIds.Length-1)/4));Clear(sales);saleCounts.Clear();saleButtons.Clear();saleHighlights.Clear();
+            if(selectedSale/4!=salePage)selectedSale=salePage*4;
             Patch(sales,new Rect(440,663,488,113));
             for(int n=0;n<4&&salePage*4+n<saleIds.Length;n++)
             {
                 int index=salePage*4+n;string id=saleIds[index];float x=442+n*123;
                 int original=id=="crop:turnip"?0:id=="crop:carrot"?1:id=="crop:tomato"?2:id=="crafted:vegetable_crate"?3:-1;
                 if(original>=0)Raw(sales,"Harvest art",approved,new Rect(449+original*123,676,91,85),new Rect(x+7,676,91,85));
+                else
+                {
+                    var image=Rect(sales,"Harvest icon "+id,new Rect(x+13,681,84,74)).gameObject.AddComponent<Image>();
+                    image.sprite=CropArtwork.Get(id.Substring(id.IndexOf(':')+1));image.preserveAspect=true;image.raycastTarget=false;
+                }
                 Patch(sales,new Rect(x+70,738,36,30));
                 var count=Label(sales,"Sale count "+id,new Rect(x+68,735, 40,32),27,true);count.alignment=TextAnchor.MiddleRight;saleCounts.Add(count);
                 var h=Rect(sales,"Sale selection "+id,new Rect(x,667,111,107));Border(h,new Rect(0,0,111,107),true,3);saleHighlights.Add(h.gameObject);
@@ -244,9 +253,11 @@ namespace Farmer
             saleSummary=Label(sales,"Sale summary",new Rect(650,612,467,40),21,false);saleSummary.alignment=TextAnchor.MiddleRight;
             if(saleIds.Length>4)
             {
+                Label(sales,"Sale page",new Rect(968,670,107,25),18,false).text=$"{salePage+1} / {(saleIds.Length+3)/4}";
                 TextButton(sales,"Previous sale page","‹",new Rect(928,670,32,25),()=>BuildSalePage(salePage-1));
                 TextButton(sales,"Next sale page","›",new Rect(1085,670,32,25),()=>BuildSalePage(salePage+1));
             }
+            RefreshValues();
         }
         public bool SellSelected()
         {
@@ -279,7 +290,7 @@ namespace Farmer
         }
         private void Icon(Transform parent,MarketOffer offer,Rect r)
         {
-            Sprite sprite=offer.Kind==MarketOfferKind.Pickaxe?InventoryIcon.Artwork(9):offer.Kind==MarketOfferKind.Wood?InventoryIcon.Artwork(6):offer.Kind==MarketOfferKind.Recipe?CropArtwork.Get(offer.Id):offer.Kind==MarketOfferKind.Seed?CropArtwork.Get(offer.Id):ConstructionArtwork.Get(offer.Id);
+            Sprite sprite=offer.Kind==MarketOfferKind.Pickaxe?InventoryIcon.Artwork(9):offer.Kind==MarketOfferKind.Wood?InventoryIcon.Artwork(6):offer.Kind==MarketOfferKind.Recipe?CropArtwork.Get(offer.Id):offer.Kind==MarketOfferKind.Seed?SeedArtwork.Get(offer.Id):ConstructionArtwork.Get(offer.Id);
             var img=Rect(parent,"Product icon",r).gameObject.AddComponent<Image>();img.sprite=sprite;img.preserveAspect=true;img.raycastTarget=false;
         }
         private void Patch(Transform parent,Rect r)=>Raw(parent,"Clean surface",clean,r,r);

@@ -54,10 +54,10 @@ namespace Farmer.Tests
             var gate=f.Building.Blocks.Single(b=>b.pieceId=="garden_gate");f.Building.ToggleDoor(gate,out _);string saved=Json(f);
             var restored=Restore(JsonUtility.FromJson<FarmSnapshot>(saved));Assert.That(Json(restored),Is.EqualTo(saved));Assert.That(restored.Building.DoorIsOpen(gate),Is.True);
         }
-        [Test] public void V9SaveIsBackedUpBeforeFirstV10Write()
+        [Test] public void V9SaveIsBackedUpBeforeFirstCurrentVersionWrite()
         {
             string dir=Path.Combine(Path.GetTempPath(),"FarmerQA-Garden-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(dir);string path=Path.Combine(dir,"farm.json");
-            try {var s=Fresh().Snapshot();s.version=9;string old=JsonUtility.ToJson(s);File.WriteAllText(path,old);var store=new FarmSaveStore(path,Restore);var f=store.Load(out _);Assert.That(f.Stone,Is.EqualTo(10));store.Save(f.Snapshot());Assert.That(File.ReadAllText(path+".pre-v10"),Is.EqualTo(old));Assert.That(store.Load(out _).Snapshot().version,Is.EqualTo(10));}
+            try {var s=Fresh().Snapshot();s.version=9;string old=JsonUtility.ToJson(s);File.WriteAllText(path,old);var store=new FarmSaveStore(path,Restore);var f=store.Load(out _);Assert.That(f.Stone,Is.EqualTo(10));store.Save(f.Snapshot());Assert.That(File.ReadAllText(path+".pre-v"+FarmModel.SaveVersion),Is.EqualTo(old));Assert.That(store.Load(out _).Snapshot().version,Is.EqualTo(FarmModel.SaveVersion));}
             finally {Directory.Delete(dir,true);}
         }
     }
