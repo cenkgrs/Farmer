@@ -50,7 +50,7 @@ namespace Farmer
         }
         private void Update()
         {
-            Hint=null;if(game==null||!game.Ready||game.MenuOpen||!Application.isFocused||overlay==null)return;
+            Hint=null;if(game==null||!game.Ready||game.MenuOpen||game.MarketOpen||game.MarketInputConsumed||!Application.isFocused||overlay==null)return;
             var k=Keyboard.current;
             if(k?.tabKey.wasPressedThisFrame==true){if(IsOpen)Close();else Open(null);return;}
             if(IsOpen)
@@ -94,11 +94,11 @@ namespace Farmer
         }
         public void Open(string id)
         {
-            if(!game.Ready||overlay==null||(id!=null&&!CanUse(id)))return;
+            if(!game.Ready||game.MenuOpen||game.MarketOpen||game.MarketInputConsumed||overlay==null||(id!=null&&!CanUse(id)))return;
             game.SetBuildMode(false);game.ShowBuildFeedback("");ChestId=id;openedModel=game.Model;game.InventoryOpen=true;game.Selection.ModalBlocked=true;
             bagPanel.anchoredPosition=new Vector2(id==null?0:-215,0);chestPanel.gameObject.SetActive(id!=null);overlay.SetActive(true);Refresh();
         }
-        public void Close(){game.InventoryOpen=false;game.Selection.ModalBlocked=false;ChestId=null;if(overlay!=null)overlay.SetActive(false);}
+        public void Close(){game.InventoryOpen=false;game.Selection.ModalBlocked=game.MenuOpen||game.MarketOpen;ChestId=null;if(overlay!=null)overlay.SetActive(false);}
         private void OnDisable(){if(game!=null)Close();}
         private void Refresh()
         {

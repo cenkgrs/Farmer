@@ -42,7 +42,7 @@ Tekrarlanan işleri ileride sulama/üretim sistemleri kolaylaştırmalı. Daha g
 
 0.1 için uygulanan geçici denge: turp tohumu 10 para, ürün satışı 18 para, hasat verimi 1, olgunlaşma ilk sulamadan sonraki üç gece. Başlangıç 60 para, sıfır tohum/ürün, sulama kabı, orak ve çapa. Dört aşama ekildiği gün filiz, ilk sulamadan bir gece sonra gelişen bitki, ikinci gece olgunlaşan bitki ve üçüncü gece hasada hazır bitkidir. Diğer ürünlerin değerleri henüz belirlenmedi.
 
-Ürün değerleri `Assets/_Farmer/Data/Turnip.asset` tanımındadır. Saat normal akışta ilerler; tam 24 oyun saati kullanıcı kararıyla **10 gerçek dakika** sürer. Gece yarısında gün ve sulanmış ürünlerin büyümesi bir kez ilerler. Yalnızca bir yatağın yanında N veya uyuma düğmesi saati sonraki 06:00'ya taşır; 00:00–05:59 arasında bu aynı günün sabahıdır ve yeniden büyüme vermez. Uyku zorunlu değildir; gece kendiliğinden sabaha döner. Odak kaybında zaman durur, oyun kapalıyken ilerlemez. Pazar tezgâhına yaklaşarak tohum alınır ve ürün satılır. Başarılı işlemler otomatik kaydedilir. Bu ilk denge oynanış geri bildirimiyle değişebilir.
+Ürün değerleri `Assets/_Farmer/Data/Turnip.asset` tanımındadır. Saat normal akışta ilerler; tam 24 oyun saati kullanıcı kararıyla **10 gerçek dakika** sürer. Gece yarısında gün ve sulanmış ürünlerin büyümesi bir kez ilerler. Yalnızca bir yatağın yanında N veya uyuma düğmesi saati sonraki 06:00'ya taşır; 00:00–05:59 arasında bu aynı günün sabahıdır ve yeniden büyüme vermez. Uyku zorunlu değildir; gece kendiliğinden sabaha döner. Odak kaybında zaman durur, oyun kapalıyken ilerlemez. Pazar tezgâhına yaklaşıp F ile açılan panelde tohum alınır ve ürün satılır. Başarılı işlemler otomatik kaydedilir. Bu ilk denge oynanış geri bildirimiyle değişebilir.
 
 ## Üs kurma
 
@@ -89,7 +89,7 @@ Odun → yapı parçaları; keten → lif/kumaş → yatak/ekipman; maden → ge
 
 ## Oyun içi arayüz — güncel kullanıcı tercihi
 
-Pazar ve yatağın üstünde dünya yazısı yoktur; yaklaşınca etkileşim paneli açılır. Alt arayüz referanstaki gibi ortalanmış ahşap çerçeveli küçük eşya gözlerinden oluşur: tohum, sulama kabı, orak, inşa, çapa, hasat ve odun. Tohum/hasat/odun miktarları ikon köşesinde görünür; seçili eşya altın renkle ayrılır. Sürekli geniş tuş listesi kaldırıldı. Ad/kısayol/kullanım açıklaması yalnızca ikonun üzerine gelince; inşa komutları inşa modundayken gösterilir. İşlem geri bildirimi kısa süreli görünür. Saat ve para sol üstte küçük karttadır. Bu hızlı envanter çubuğudur; genel çanta/sürükle-bırak/depolama sistemi değildir.
+Pazar ve yatağın üstünde dünya yazısı yoktur. Pazar yakınında HUD üzerinde F ipucu çıkar; panel F ile açılır, F/Esc/× ile kapanır. Yatağa yaklaşınca uyuma paneli görünür. Alt arayüz referanstaki gibi ortalanmış ahşap çerçeveli küçük eşya gözlerinden oluşur: tohum, sulama kabı, orak, inşa, çapa, hasat ve odun. Tohum/hasat/odun miktarları ikon köşesinde görünür; seçili eşya altın renkle ayrılır. Sürekli geniş tuş listesi kaldırıldı. Ad/kısayol/kullanım açıklaması yalnızca ikonun üzerine gelince; inşa komutları inşa modundayken gösterilir. İşlem geri bildirimi kısa süreli görünür. Saat ve para sol üstte küçük karttadır. Bu hızlı envanter çubuğudur; genel çanta/sürükle-bırak/depolama sistemi değildir.
 
 Kullanıcı düz vektör ikon ve tek renk kahverengi arka planı reddetti. Envanterde konseptle eşleşen ImageGen boyanmış eşya resimleri, ahşap damarları ve krem dokulu oyuklar kullanılır; miktar ve seçim vurgusu ayrı UI katmanıdır.
 
@@ -196,7 +196,7 @@ kendiliğinden madencilik kaynağına dönüştürülmez.
 
 ## 0.3 ürün seçimi ve sebze kasası — 10 Ekim
 
-Kullanıcı havuç, tekrar hasat veren domates ve sebze kasasıyla devam edilmesini seçti. Turp korunur; tohum kuşanıldığında veya pazara yaklaşınca alt sekizli barın üstünde ürün seçimi görünür. Seçilen tür ekimde, B ile alımda ve V ile hasat satışında kullanılır, kayda girer. Yabani bitkiler eskisi gibi turp tohumu verir; seçimi değiştirerek pahalı tohum kazanılmaz.
+Kullanıcı havuç, tekrar hasat veren domates ve sebze kasasıyla devam edilmesini seçti. Turp korunur; tohum kuşanıldığında veya pazar paneli açıkken alt sekizli barın üstünde ürün seçimi görünür. Seçilen tür ekimde, B ile alımda ve V ile hasat satışında kullanılır, kayda girer. Yabani bitkiler eskisi gibi turp tohumu verir; seçimi değiştirerek pahalı tohum kazanılmaz.
 
 Havuç: tohum 14, dört gece, bir ürün, satış 27. Domates: tohum 24, ilk beş gece, iki ürün, birim satış 12; hasattan sonra iki gecede tekrar iki ürün. Tek ekimlik sulama tekrar hasatta sürer. Turp/havuç hasadı toprağı boşaltır, domates bitkisi yerinde kalır. Çapa kuşanıp sağ tık, hedefteki bitkiyi ürün/tohum iadesi olmadan kaldırır; hazırlanmış toprak korunur. Erişim, UI ve engel kontrolleri geçerlidir.
 
@@ -205,3 +205,16 @@ Pazarda bir turp, bir havuç, iki domates ve iki odunla bir sebze kasası hazır
 Çanta 16 gözlük sayfalar halinde tüm eşya türlerini gösterir; kişisel sandığın kapasitesi 16 farklı yığın olarak kalır. Kayıt v9 seçili ürünü, tekrar büyüme durumunu ve işlenmiş ürünleri saklar; ilk eski kayıt yazımında `.pre-v9` yedeği alınır. Yeni ürün/alet sahiplikleri eski kayda ücretsiz eklenmez.
 
 Havuç/domates dört aşamalı geçici geometri ve bu geometrilerin render edilmiş ikonlarını kullanır. Kazma/kaya kullanıcının teslim modelleridir. Taşın kullanım tarifi ve kalan üç ürün henüz seçilmedi. İlk denge hesabı: [DENGE_03.md](DENGE_03.md).
+
+
+## Pazar ekranı — etkileşim ve tasarım önerisi
+
+Genel bağlamsal etkileşim tuşu F'dir (pazar, kapı, sandık). Yaklaşmak pazar
+panelini kendiliğinden açmaz. Pazar açıkken dünya hareketi/alet/inşa/çanta/zoom
+engellenir, saat devam eder. B/V yalnız açık pazarda çalışır. F/Esc/× kapatır;
+menü açılması, kayıt yükleme ve erişim kaybı da kapatır. Aynı F basışı başka
+bir dünya etkileşimini tetiklemez. İnşa veya çanta açıkken pazar açılamaz.
+
+[Ahşap çerçeveli pazar konsepti](references/market_ui_v01/README.md) kullanıcı
+onayına sunuldu, yeni görsel düzen uygulanmadı. Olgun turp son aşaması mevcut
+boyutundan ek %5 küçültüldü; önceki büyüme aşamaları ve ürün kuralları korundu.

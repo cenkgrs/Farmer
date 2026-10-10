@@ -33,6 +33,7 @@ namespace Farmer.Tests
             File.WriteAllText(game.SavePath,JsonUtility.ToJson(snapshot));Assert.That(game.LoadGame(),Is.True);yield return null;
             GenerateIcons();
             Teleport(game.Market.position+new Vector3(0,.1f,-1.8f));yield return null;
+            Assert.That(game.GetComponent<MarketInteraction>().TryOpen(),Is.True);yield return null;
             foreach(string id in new[]{"turnip","carrot","tomato"})
             {
                 FindButton("Select crop "+id).onClick.Invoke();Assert.That(game.ActiveCrop.id,Is.EqualTo(id));
@@ -65,8 +66,10 @@ namespace Farmer.Tests
             game.Model.AdvanceMinutes(1440);Assert.That(game.Model.IsReady(tomato),Is.False);
             game.Model.AdvanceMinutes(1440);Assert.That(game.Model.IsReady(tomato),Is.True);
             Teleport(game.Market.position+new Vector3(0,.1f,-1.8f));yield return null;
+            Assert.That(game.GetComponent<MarketInteraction>().TryOpen(),Is.True);yield return null;
             var craft=FindButton("Craft vegetable_crate");Assert.That(craft.interactable,Is.True);craft.onClick.Invoke();yield return null;
             Assert.That(game.Model.BagCount("crafted:vegetable_crate"),Is.EqualTo(1));Assert.That(craft.interactable,Is.False);
+            game.GetComponent<MarketInteraction>().Close();yield return null;
             var storage=game.GetComponent<StorageInteraction>();storage.Open(null);yield return null;
             Assert.That(Object.FindObjectsByType<StorageSlot>(FindObjectsSortMode.None).Any(s=>s.ItemId=="crafted:vegetable_crate"&&s.Count==1),Is.True);
             Frame(game.Market.position,5);Capture("crop-bag-page1",true);
@@ -75,6 +78,7 @@ namespace Farmer.Tests
             Frame(game.Market.position,5);Capture("crop-bag-page2",true);storage.Close();
             game.SaveGame();Assert.That(game.LoadGame(),Is.True);yield return null;
             Assert.That(game.ActiveCrop.id,Is.EqualTo("tomato"));Assert.That(game.Model.BagCount("crafted:vegetable_crate"),Is.EqualTo(1));
+            Assert.That(game.GetComponent<MarketInteraction>().TryOpen(),Is.True);
             int money=game.Model.Money;Assert.That(game.SellCrafted("vegetable_crate"),Is.True);Assert.That(game.Model.Money,Is.EqualTo(money+90));
             game.Model.Equip(FarmItem.Hoe);Assert.That(game.Model.Uproot(tomato,out _),Is.True);Assert.That(game.Model.Stage(tomato),Is.EqualTo(-1));
             Debug.Log("FARMER_CROP_PLAYMODE_OK: selection, market, stages, regrowth, processing, pagination, persistence, sale, uproot.");
@@ -82,7 +86,7 @@ namespace Farmer.Tests
         private static Button FindButton(string name)=>Object.FindObjectsByType<Button>(FindObjectsSortMode.None).Single(b=>b.name==name);
         private void Teleport(Vector3 point)
         {var c=game.Player.GetComponent<CharacterController>();c.enabled=false;game.Player.position=point;c.enabled=true;Physics.SyncTransforms();}
-        private static void Frame(Vector3 point,float size)
+        internal static void Frame(Vector3 point,float size)
         {Camera.main.transform.position=point+new Vector3(8,7,9);Camera.main.transform.LookAt(point);Camera.main.orthographicSize=size;}
         private static Texture2D Render(Camera camera,int sizeX,int sizeY)
         {
@@ -112,7 +116,7 @@ namespace Farmer.Tests
             }
             Object.Destroy(cameraObject);
         }
-        private static void Capture(string name,bool includeUI)
+        internal static void Capture(string name,bool includeUI)
         {
             var canvas=includeUI?Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None).Where(c=>c.renderMode==RenderMode.ScreenSpaceOverlay).ToArray():Array.Empty<Canvas>();
             float near=Camera.main.nearClipPlane;Camera.main.nearClipPlane=.001f;

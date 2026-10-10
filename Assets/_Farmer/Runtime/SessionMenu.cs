@@ -50,13 +50,14 @@ namespace Farmer
         private void Update()
         {
             if(Keyboard.current?.f11Key.wasPressedThisFrame==true)ToggleFullscreen();
-            if(Keyboard.current?.escapeKey.wasPressedThisFrame==true&&!game.InventoryOpen&&!game.BuildMode)
+            if(Keyboard.current?.escapeKey.wasPressedThisFrame==true&&!game.InventoryOpen&&!game.MarketOpen&&!game.BuildMode)
             {if(IsOpen&&started)Continue();else SetOpen(true);}
             if(screenLabel!=null)screenLabel.text="Tam Ekran: "+(Screen.fullScreen?"Açık":"Kapalı");
         }
         public void SetOpen(bool open)
         {
-            game.MenuOpen=open;game.Selection.ModalBlocked=open||game.InventoryOpen;
+            if(open)game.GetComponent<MarketInteraction>()?.Close();
+            game.MenuOpen=open;game.Selection.ModalBlocked=open||game.InventoryOpen||game.MarketOpen;
             if(overlay!=null)overlay.SetActive(open);if(illustration!=null)illustration.SetActive(open);
             if(subtitle!=null)subtitle.text=game.Ready?$"Gün {game.Model.Day} · {game.Model.ClockText}\n"+(started?"Biraz soluklan.":game.HadSaveAtStartup?"Çiftliğin seni bekliyor.":"Yeni bir başlangıç."):game.SaveStatus;
             if(resume!=null){resume.interactable=game.Ready;resume.GetComponentInChildren<Text>().text=started||game.HadSaveAtStartup?"Devam Et":"Başla";}

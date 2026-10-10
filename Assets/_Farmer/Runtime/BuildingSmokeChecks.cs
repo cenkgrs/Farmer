@@ -94,7 +94,9 @@ namespace Farmer
                 Check(game.Player.position.x > before.x + .02f && game.Player.position.x < 4.1f, "Placed blocks participate in player collision.");
                 Teleport(cc, game.Market.position + new Vector3(0,.1f,-1.7f));
                 int wood = game.Model.Building.Wood, money = game.Model.Money;
+                game.GetComponent<MarketInteraction>().TryOpen();
                 Check(game.BuyWood() && game.Model.Building.Wood == wood + 10 && game.Model.Money == money - 20, "Market supplies wood through the shared economy.");
+                game.GetComponent<MarketInteraction>().Close();
                 Debug.Log("FARMER_BUILDING_CHECKS_FINISHED");
             }
             finally

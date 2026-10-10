@@ -38,10 +38,10 @@ Kontrol, Input System'e geçici sanal klavye/fare olayları göndererek normal h
 3. Sağdaki sandığa doğru yürü; içinden geçmemelisin. Arazi kenarına yürü; düşmemelisin.
 4. Yeni oyunda hazır tarla yoktur. 5/çapa ikonuyla boş zemine sol tıkla toprak hazırla. Fareyi tarlada gezdir; tıklamadan hedef çerçevesi gelmeli. Uzak kare turuncu olmalı ve sol tık işlem yapmamalı.
 5. Fare HUD üzerindeyken/pencere dışındayken hedef kaybolmalı; sol tık önceki karede işlem yapmamalı. 1/2/3 veya eşya çubuğu düğmeleri eldeki eşyayı değiştirmeli.
-6. Pazar tezgâhına yaklaş, B veya düğmelerle tohum al. Paran ve tohum sayın doğru değişmeli.
+6. Pazar tezgâhına yaklaş, F ile aç, B veya düğmelerle tohum al. Paran ve tohum sayın doğru değişmeli.
 7. 1 ile tohumu kuşan, yakın boş kareyi fareyle hedefle ve sol tıkla ek. Aynı eşyayla tekrar sol tık sulamamalı. 2 ile sulama kabını kuşan ve sol tıkla sula; toprak koyulaşmalı. 1 ile ikinci bir kareye ekip kuru bırak.
 8. Yatağa yaklaş ve N ile sonraki 06:00'ya uyu. Yataktan uzakta N işlem yapmamalı. Saat normal akışta ilerlemeli; tam döngü 10 gerçek dakika. Sulanan ürün büyümeli, kuru ürün aynı aşamada kalmalı. Yeniden sulamadan üç kez geceyi geçir; üçüncü geceden sonra hasat hazır olmalı. Hasat sonrası tekrar ekilen bitki bir kez yeniden sulanmalı.
-9. Sulama kabıyla olgun ürünü hasat edememelisin. 3 ile orağı kuşan ve sol tıkla hasat et; pazara gidip V ile sat ve kazançla tekrar tohum al.
+9. Sulama kabıyla olgun ürünü hasat edememelisin. 3 ile orağı kuşan ve sol tıkla hasat et; pazara gidip F ile aç, V ile sat ve kazançla tekrar tohum al.
 10. Bir kareyi suladıktan sonra oyunu kapat/aç veya F9'a bas. Para, tohum, hasat envanteri, gün, bitki, sulama ve kuşanılan eşya korunmalı.
 
 ## Tarım döngüsünün otomatik player denemesi
@@ -266,3 +266,26 @@ Sabit 6000.3.25f1 editörle, `Assets/Packages/ProjectSettings` kopyalanmış ayr
 PlayMode çağrısı: `-batchmode -projectPath <izole-qa-projesi> -runTests -testPlatform PlayMode -testResults <xml> -logFile <log> --farmer-smoke-capture <qa-png>`; grafik gerekir, `-nographics` verilmez. EditMode için aynı projenin `-testPlatform EditMode -nographics` çağrısı kullanılır. İzole projede `Farmer.Editor.MiningArtSetup.Apply` ve `CropExpansionSetup.Apply` assetleri tekrar üretebilir; kaynak sahne setup'ını çalıştırmak gerekmez.
 
 Yeni ürün ikonları testin `GenerateIcons` yardımcısıyla kendi geçici geometrilerinden, 256 px şeffaf PNG olarak render edilir. `Resources/CropIcons` varlıkları/metaları depoda hazır; diğer bilgisayarda tekrar üretim şart değildir.
+
+
+## Pazarın F ile açılması ve son turp ölçeği
+
+`Logs/market-interaction-playmode.xml/log`: izole Mac/Metal Unity 6000.3.25f1
+projesinde **3/3 PlayMode**, çıkış 0. Mevcut ürün/üretim ve madencilik testleri
+pazar açma/kapama gereksinimine uyarlandı. `MarketInteractionPlayModeTests`
+yaklaşınca kapalı kalmayı, uzaktan açma engelini, kapalıyken işlem reddini,
+F/Esc/× geçişlerini, aynı karede girdi tüketimini, çanta/inşa/tarım engelini,
+menü/yükleme/erişim kaybında kapanmayı denetler. Girdi karar metodu ve UI
+callback'leri kullanılır; fiziksel tuş enjeksiyonu veya standalone turu değildir.
+`MiningPlayModeTests` son turp prefab ölçeğinin 1,425 olmasını da doğrular.
+
+Görsel çıktılar: `builds/QA/market-closed.png` (F ipucu), `crop-market.png`
+(mevcut açık pazar ve ×), `turnip-scale.png` (dört aşama). Yeni eskiz oyun
+renderı değildir ve tasarımı henüz uygulanmadı. Bu tur EditMode/build çalışmadı.
+Eski standalone farming/building/valley yardımcıları pazar erişimine uyarlandı;
+bunlar yeniden koşturulmuş sayılmamalı.
+
+Manuel takip: pazar yakınında F ile aç; WASD, Tab, alet ve kamera tekerleğinin
+engellendiğini dene; B/V alış-satış yap; F veya Esc ile kapat ve aynı basışın
+kapı/sandığı tetiklemediğini kontrol et. Esc önce pazarı kapatmalı, sonraki
+Esc ana menüyü açmalı. Turpun hasada hazır aşamasını önceki görünümle karşılaştır.

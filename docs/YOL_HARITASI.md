@@ -111,3 +111,8 @@ güncel öncelik bu bölüm ve YAZILIMCI.md'nin son kaydıdır.
 ## 10 Ekim — model teslimi ve ürün genişletmesi
 
 Kazma/kaya kullanıcı GLB modellerine bağlandı. Kullanıcı havuç + tekrar hasat veren domates ve sebze kasası seçti. Ürün seçimi, pazar fiyatları, veri tanımlı tarif, çanta sayfaları ve v9 kayıt geçişi uygulandı. Yeni bitkiler geçici geometridir. Taş tarifi eklenmedi. Güncel değerler DENGE_03.md; kontroller YAZILIMCI.md son kaydındadır.
+
+
+0.3 devamı: pazarın F ile açılması, F/Esc/× ile kapanması ve son turp aşamasının
+%5 küçültülmesi uygulandı. [Pazar ekranı eskizi](references/market_ui_v01/README.md)
+hazır; yeni arayüz tasarımı kullanıcı onayı sonrası ayrı adımda uygulanacak.

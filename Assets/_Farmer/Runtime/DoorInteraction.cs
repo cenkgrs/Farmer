@@ -11,7 +11,7 @@ namespace Farmer
         private void Update()
         {
             Hint=null;
-            if(!game.Ready||game.MenuOpen||game.InventoryOpen||game.BuildMode||!game.isActiveAndEnabled||!Application.isFocused||Mouse.current==null)return;
+            if(!game.Ready||game.WorldInputBlocked||game.BuildMode||!game.isActiveAndEnabled||!Application.isFocused||Mouse.current==null)return;
             game.Selection.RefreshPointer();
             if(game.Selection.PointerBlocked)return;
             var ray=Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());

@@ -16,6 +16,7 @@ namespace Farmer
         private RectTransform seedPicker,processing;
         private Button[] cropChoices,craftButtons,craftedSellButtons;
         private Text marketCrop;
+        private RectTransform marketHint;
         private bool furnitureCategory;
         private int[] categoryIndices;
         private Image[] buildIcons;
@@ -50,7 +51,8 @@ namespace Farmer
             detail=Panel("Cell Details",root.transform,new Vector2(1,1),new Vector2(-24,-20),new Vector2(244,110),Cream);
             selectionStatus=Label(detail,"",15,14,12,216,90,Ink);
             shop=Panel("Market",root.transform,new Vector2(0,1),new Vector2(24,-112),new Vector2(250,354),Cream);
-            Label(shop,"Tohum & malzeme",20,14,10,224,28,Ink);
+            Label(shop,"Tohum & malzeme",20,14,10,185,28,Ink);
+            var closeMarket=Button(shop,"×",209,10,28,28,()=>game.GetComponent<MarketInteraction>().Close());closeMarket.name="Close Market";
             marketCrop=Label(shop,"",13,14,41,224,22,Ink);
             buyOne=Button(shop,$"B · 1 tohum al ({game.ActiveCrop.seedPrice})",14,72,222,36,()=>game.Buy(1));
             buyFive=Button(shop,$"5 tohum al ({game.ActiveCrop.seedPrice*5})",14,116,222,36,()=>game.Buy(5));
@@ -72,6 +74,8 @@ namespace Farmer
                 craftedSellButtons[i]=Button(processing,$"Hepsini sat ({recipe.salePrice}/adet)",14,y+98,262,36,()=>game.SellCrafted(recipe.id));
                 craftedSellButtons[i].name="Sell "+recipe.id;
             }
+            marketHint=Panel("Market interaction hint",root.transform,new Vector2(.5f,0),new Vector2(0,157),new Vector2(190,32),Cream);
+            Label(marketHint,"F · Pazarı aç",14,8,5,174,24,Ink).alignment=TextAnchor.MiddleCenter;
             camp=Panel("Sleep",root.transform,new Vector2(0,1),new Vector2(24,-112),new Vector2(250,140),Cream);
             Label(camp,"Biraz dinlen",20,14,10,224,28,Ink);
             campWarning=Label(camp,"",13,14,43,224,44,Ink);
@@ -134,7 +138,7 @@ namespace Farmer
             tooltipText=Label(tooltip,"",14,12,8,416,44,Ink);tooltipText.alignment=TextAnchor.MiddleCenter;
             toast=Panel("Feedback Toast",root.transform,new Vector2(.5f,0),new Vector2(0,172),new Vector2(570,36),new Color(.20f,.24f,.17f,.92f));
             feedback=Label(toast,"",13,10,7,550,25,Cream);feedback.alignment=TextAnchor.MiddleCenter;
-            game.Selection.SetHudPanels(new[]{header,detail,shop,camp,bar,tooltip,toast,buildMenu,buildTabs,shopFurniture,seedPicker,processing,(RectTransform)moveButton.transform});Refresh();
+            game.Selection.SetHudPanels(new[]{header,detail,shop,camp,bar,tooltip,toast,buildMenu,buildTabs,shopFurniture,seedPicker,processing,marketHint,(RectTransform)moveButton.transform});Refresh();
         }
         private void SetCategory(bool furniture)
         {
@@ -158,9 +162,10 @@ namespace Farmer
         {
             visibility.alpha=game.MenuOpen?0:1;visibility.interactable=!game.MenuOpen;visibility.blocksRaycasts=!game.MenuOpen;
             var model=game.Model;var crop=game.ActiveCrop;
+            marketHint.gameObject.SetActive(game.Ready&&game.NearMarket&&!game.WorldInputBlocked&&!game.BuildMode&&hovered==null);
             if(displayedBuildMode!=game.BuildMode){hovered=null;displayedBuildMode=game.BuildMode;}
-            normalBar.gameObject.SetActive(!game.BuildMode&&!game.InventoryOpen);
-            bool chooseSeeds=!game.BuildMode&&!game.InventoryOpen&&(model.EquippedItem==FarmItem.Seeds||game.NearMarket);
+            normalBar.gameObject.SetActive(!game.BuildMode&&!game.InventoryOpen&&!game.MarketOpen);
+            bool chooseSeeds=!game.BuildMode&&!game.InventoryOpen&&(model.EquippedItem==FarmItem.Seeds||game.MarketOpen);
             seedPicker.gameObject.SetActive(chooseSeeds);
             for(int i=0;i<cropChoices.Length;i++)
             {
@@ -198,7 +203,7 @@ namespace Farmer
             tooltip.gameObject.SetActive(!game.InventoryOpen&&hint!=null);tooltipText.text=hint??"";
             detail.gameObject.SetActive(!game.InventoryOpen&&game.BuildMode);
             selectionStatus.text=$"{builder.ActiveDefinition.displayName}\n{builder.HeightLabel} · {builder.Rotation*90}°";
-            processing.gameObject.SetActive(game.NearMarket&&!game.InventoryOpen);
+            processing.gameObject.SetActive(game.MarketOpen&&!game.InventoryOpen);
             for(int i=0;i<game.Recipes.Length;i++)
             {
                 var recipe=game.Recipes[i];craftButtons[i].interactable=game.Ready&&model.CanCraft(recipe.id);
@@ -208,9 +213,9 @@ namespace Farmer
             buyOne.GetComponentInChildren<Text>().text=$"B · 1 tohum al ({crop.seedPrice})";
             buyFive.GetComponentInChildren<Text>().text=$"5 tohum al ({crop.seedPrice*5})";
             sell.GetComponentInChildren<Text>().text=$"V · {crop.displayName} hasadını sat";
-            shop.gameObject.SetActive(game.NearMarket&&!game.InventoryOpen);shopFurniture.gameObject.SetActive(game.NearMarket&&!game.InventoryOpen);
+            shop.gameObject.SetActive(game.MarketOpen&&!game.InventoryOpen);shopFurniture.gameObject.SetActive(game.MarketOpen&&!game.InventoryOpen);
             for(int i=0;i<furnitureBuy.Length;i++)furnitureBuy[i].interactable=game.Ready&&model.Money>=furnitureSale[i].price&&model.Building.FurnitureCount(furnitureSale[i].id)<BuildingModel.WoodLimit;
-            camp.gameObject.SetActive(game.NearCamp&&!game.NearMarket&&!game.InventoryOpen);
+            camp.gameObject.SetActive(game.NearCamp&&!game.MarketOpen&&!game.InventoryOpen);
             buyOne.interactable=game.Ready&&model.Money>=crop.seedPrice&&model.Seeds(crop.id)<FarmModel.StackLimit;
             buyFive.interactable=game.Ready&&model.Money>=crop.seedPrice*5&&model.Seeds(crop.id)<=FarmModel.StackLimit-5;
             sell.interactable=game.Ready&&model.Produce(crop.id)>0;

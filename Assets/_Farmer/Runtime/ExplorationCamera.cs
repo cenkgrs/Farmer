@@ -21,7 +21,7 @@ namespace Farmer
             int context=game!=null&&game.BuildMode?2:house!=null&&house.Indoors?1:0;
             var mouse=Mouse.current;var keyboard=Keyboard.current;
             bool control=keyboard!=null&&(keyboard.leftCtrlKey.isPressed||keyboard.rightCtrlKey.isPressed);
-            if(game!=null&&game.Ready&&Application.isFocused&&!game.InventoryOpen&&!game.MenuOpen&&mouse!=null)
+            if(game!=null&&game.Ready&&Application.isFocused&&!game.WorldInputBlocked&&mouse!=null)
             {
                 game.Selection.RefreshPointer();
                 if(!game.Selection.PointerBlocked&&(context!=2||control))

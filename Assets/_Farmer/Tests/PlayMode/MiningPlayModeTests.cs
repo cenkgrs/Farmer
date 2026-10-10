@@ -38,10 +38,12 @@ namespace Farmer.Tests
             File.WriteAllText(game.SavePath,JsonUtility.ToJson(fixture));Assert.That(game.LoadGame(),Is.True);yield return null;
             Assert.That(game.BuyPickaxe(),Is.False,"Cannot buy remotely.");
             Teleport(game.Market.position+new Vector3(0,.1f,-1.8f));yield return null;
+            Assert.That(game.GetComponent<MarketInteraction>().TryOpen(),Is.True);yield return null;
             var purchase=Object.FindObjectsByType<Button>(FindObjectsSortMode.None).Single(b=>b.name=="Buy Pickaxe");
             Assert.That(purchase.interactable,Is.True);purchase.onClick.Invoke();yield return null;
             Assert.That(game.Model.OwnsPickaxe,Is.True);Assert.That(game.Model.Money,Is.EqualTo(420));
             Assert.That(purchase.interactable,Is.False);Assert.That(slot.interactable,Is.True);
+            game.GetComponent<MarketInteraction>().Close();yield return null;
             slot.onClick.Invoke();yield return null;
             Assert.That(game.Model.EquippedItem,Is.EqualTo(FarmItem.Pickaxe));
             var driver=game.Player.GetComponentInChildren<FarmerAnimator>();
@@ -85,6 +87,7 @@ namespace Farmer.Tests
                 var plant=game.transform.Find($"turnip {game.Model.IndexAt(i,0)} stage {i}");Assert.That(plant,Is.Not.Null);
                 Assert.That(plant.localScale.x,Is.EqualTo(game.ActiveCrop.growthStages[i].transform.localScale.x*.8f).Within(.001f));
             }
+            Assert.That(game.ActiveCrop.growthStages[3].transform.localScale.x,Is.EqualTo(1.425f).Within(.0001f));
             Frame(new Vector3(2,.2f,.5f),3.4f);yield return null;Capture("turnip-scale");
             var tree=game.Model.Exploration.Nodes.First(n=>n.kind==ResourceKind.Tree&&n.id>41);
             Frame(new Vector3(tree.x,1,tree.z),18);yield return null;Capture("expanded-resources");

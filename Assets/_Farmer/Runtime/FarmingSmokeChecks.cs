@@ -24,6 +24,7 @@ namespace Farmer
                 Check(game.Ready && game.Model.Day == 1 && game.Model.Money == 60, "Explicit 60-coin regression fixture starts correctly.");
                 Teleport(controller, game.Market.position + Vector3.back * 1.8f);
                 yield return null;
+                yield return KeyPress(keyboard, Key.F);
                 yield return Capture(screenshot, "market");
                 yield return KeyPress(keyboard, Key.B);
                 Check(game.Model.Seeds("turnip") == 1 && game.Model.Money == 50, "B buys one seed at the market.");
@@ -35,6 +36,7 @@ namespace Farmer
                 Check(game.Model.Seeds("turnip") == 6 && game.Model.Money == 0, "Market button buys five seeds through UI input.");
                 yield return KeyPress(keyboard, Key.B);
                 Check(game.Model.Money == 0 && game.Model.Seeds("turnip") == 6, "Unaffordable purchase is rejected.");
+                yield return KeyPress(keyboard, Key.F);
 
                 yield return KeyPress(keyboard, Key.Digit1);
                 yield return Hover(game, controller, mouse, 0);
@@ -91,6 +93,7 @@ namespace Farmer
                     "Harvest triggers a floating item label and an audio cue.");
                 Check(!game.Model.Harvest(0, out _) && game.Model.Produce("turnip") == 1, "Harvest cannot be duplicated.");
                 Teleport(controller, game.Market.position + Vector3.back * 1.8f);
+                yield return KeyPress(keyboard, Key.F);
                 yield return KeyPress(keyboard, Key.V);
                 Check(game.Model.Produce("turnip") == 0 && game.Model.Money == 18, "V sells the harvest for its configured price.");
                 yield return KeyPress(keyboard, Key.B);

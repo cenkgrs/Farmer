@@ -76,7 +76,7 @@ namespace Farmer
             var keyboard = Keyboard.current; var mouse = Mouse.current;
             if (!Application.isFocused || !game.Ready || !game.isActiveAndEnabled)
             { dragged=null;preview.SetActive(false); grid.SetActive(false); return; }
-            if (game.InventoryOpen||game.MenuOpen) { preview.SetActive(false);grid.SetActive(false);return; }
+            if (game.WorldInputBlocked) { preview.SetActive(false);grid.SetActive(false);return; }
             if (keyboard?.digit4Key.wasPressedThisFrame == true) ToggleMode();
             if (keyboard?.escapeKey.wasPressedThisFrame == true) game.SetBuildMode(false);
             grid.SetActive(game.BuildMode);

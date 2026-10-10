@@ -26,6 +26,7 @@ namespace Farmer
                 Teleport(cc,new Vector3(0,.1f,0));yield return null;
                 Check(!game.NearMarket&&!game.Buy(1),"The starting farm no longer provides remote market shopping.");
                 Teleport(cc,game.Market.position+new Vector3(0,.1f,-1.8f));yield return null;
+                game.GetComponent<MarketInteraction>().TryOpen();
                 int seeds=game.Model.Seeds(game.ActiveCrop.id);Check(game.NearMarket&&game.Buy(1)&&game.Model.Seeds(game.ActiveCrop.id)==seeds+1,"Seeds can be purchased at the relocated village market.");
                 game.Model.AdvanceMinutes(360);
                 Teleport(cc,new Vector3(-55,.1f,93));yield return null;

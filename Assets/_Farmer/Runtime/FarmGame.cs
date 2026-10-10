@@ -15,6 +15,11 @@ namespace Farmer
         public bool BuildMode { get; private set; }
         public bool InventoryOpen { get; set; }
         public bool MenuOpen { get; set; }
+        private MarketInteraction marketInteraction;
+        public bool MarketOpen => marketInteraction != null && marketInteraction.IsOpen;
+        public bool MarketInputConsumed => marketInteraction != null && marketInteraction.ConsumedThisFrame;
+        public bool WorldInputBlocked => MenuOpen || InventoryOpen || MarketOpen || MarketInputConsumed;
+        public bool CanTrade => Ready && MarketOpen && NearMarket && !MenuOpen && !InventoryOpen;
         public bool HadSaveAtStartup { get; private set; }
         [SerializeField] private FarmSelection selection;
         [SerializeField] private Transform player;
@@ -55,6 +60,8 @@ namespace Farmer
         {
             Application.targetFrameRate=60;
             if(GetComponent<StorageInteraction>()==null)gameObject.AddComponent<StorageInteraction>();
+            marketInteraction=GetComponent<MarketInteraction>();
+            if(marketInteraction==null)marketInteraction=gameObject.AddComponent<MarketInteraction>();
             // Capture authored scenery once; never include runtime resource/building views.
             sceneryBounds=FindObjectsByType<ValleyScenery>(FindObjectsSortMode.None)
                 .SelectMany(v=>v.GetComponentsInChildren<Renderer>()).Select(r=>r.bounds).ToArray();
@@ -87,7 +94,15 @@ namespace Farmer
             var k = Keyboard.current;
             if (MenuOpen || !Application.isFocused) { StopWatering(); return; }
             if (k?.f9Key.wasPressedThisFrame == true) LoadGame();
-            if (!Ready || InventoryOpen) { StopWatering(); return; }
+            if (!Ready || InventoryOpen || MarketInputConsumed) { StopWatering(); return; }
+            if(MarketOpen)
+            {
+                StopWatering();
+                if(k?.bKey.wasPressedThisFrame==true)Buy(1);
+                if(k?.vKey.wasPressedThisFrame==true)SellHarvest();
+                if(k?.f5Key.wasPressedThisFrame==true)SaveGame();
+                return;
+            }
             if (k?.digit1Key.wasPressedThisFrame == true) Equip(FarmItem.Seeds);
             if (k?.digit2Key.wasPressedThisFrame == true) Equip(FarmItem.WateringCan);
             if (k?.digit3Key.wasPressedThisFrame == true) Equip(FarmItem.Sickle);
@@ -99,8 +114,6 @@ namespace Farmer
                 UpdateToolInput();
                 if (Model.EquippedItem == FarmItem.Hoe && Mouse.current?.rightButton.wasPressedThisFrame == true) UprootHovered();
             }
-            if (k?.bKey.wasPressedThisFrame == true) Buy(1);
-            if (k?.vKey.wasPressedThisFrame == true) SellHarvest();
             if (k?.nKey.wasPressedThisFrame == true) Rest();
             if (k?.f5Key.wasPressedThisFrame == true) SaveGame();
         }
@@ -108,28 +121,27 @@ namespace Farmer
         private BuildRules[] BuildingRules() => buildPieces != null && buildPieces.Length > 0 ? buildPieces.Select(b => b.Rules).ToArray() : BuildRules.Defaults;
         public void SetBuildMode(bool active)
         {
-            if (!Ready && active) return;
+            if (active && (!Ready || WorldInputBlocked)) return;
             BuildMode = active; selection.HideOutline = active; StopWatering(); Changed?.Invoke();
         }
         public bool BuyWood()
         {
-            if (!Ready) return false;
-            if (!NearMarket) { Feedback = "Odun almak için pazara yaklaş."; return false; }
+            if (!CanTrade) return false;
             return Complete(Model.BuyWood(out var message), message);
         }
         public bool BuyPickaxe()
         {
-            if(!Ready||!NearMarket||InventoryOpen||MenuOpen)return false;
+            if(!CanTrade)return false;
             return Complete(Model.BuyPickaxe(out var message),message);
         }
         public bool BuyBed()
         {
-            if(!Ready||!NearMarket)return false;
+            if(!CanTrade)return false;
             return Complete(Model.BuyBed(out var message),message);
         }
         public bool BuyFurniture(string id)
         {
-            if(!Ready||!NearMarket)return false;
+            if(!CanTrade)return false;
             return Complete(Model.BuyFurniture(id,out var message),message);
         }
         public bool TransferStorage(string chest,string item,int count,bool withdraw)
@@ -216,7 +228,7 @@ namespace Farmer
 
         public void Equip(FarmItem item)
         {
-            if (!Ready || !Model.Equip(item)) return;
+            if (!Ready || WorldInputBlocked || !Model.Equip(item)) return;
             SetBuildMode(false);
             Feedback = item == FarmItem.WateringCan ? "Sulama kabı: sol tuşu basılı tutarak fareyi tarlada gezdir."
                 : EquippedName + " seçildi. Fareyi yakındaki kareye götür ve sol tıkla.";
@@ -225,7 +237,7 @@ namespace Farmer
 
         public bool UprootHovered()
         {
-            if(!Ready||MenuOpen||InventoryOpen||BuildMode||!Application.isFocused)return false;
+            if(!Ready||WorldInputBlocked||BuildMode||!Application.isFocused)return false;
             selection.RefreshPointer();int index=HoveredIndex;
             if(index<0||!selection.HoveredInReach||selection.PointerBlocked)return false;
             var plot=Model.Plot(index);
@@ -235,7 +247,7 @@ namespace Farmer
         }
         public bool UseHovered()
         {
-            if (!Ready || MenuOpen || BuildMode || !Application.isFocused) return false;
+            if (!Ready || WorldInputBlocked || BuildMode || !Application.isFocused) return false;
             selection.RefreshPointer();
             int index = HoveredIndex;
             if (!selection.WorldCell.HasValue) return false;
@@ -266,7 +278,7 @@ namespace Farmer
 
         public bool Gather(int id)
         {
-            if(!Ready||BuildMode)return false;
+            if(!Ready||WorldInputBlocked||BuildMode)return false;
             var node=Model.Exploration.Node(id);if(node==null)return false;
             var target=new Vector3(node.x+.5f,player.position.y,node.z+.5f);
             if((target-player.position).sqrMagnitude>6.25f||GetComponent<ExplorationController>()?.InReach(node)==false)return false;
@@ -281,29 +293,27 @@ namespace Farmer
         }
         public bool Craft(string id)
         {
-            if(!Ready||!NearMarket||InventoryOpen||MenuOpen)return false;
+            if(!CanTrade)return false;
             return Complete(Model.Craft(id,1,out var message),message);
         }
         public bool SellCrafted(string id)
         {
-            if(!Ready||!NearMarket||InventoryOpen||MenuOpen)return false;
+            if(!CanTrade)return false;
             return Complete(Model.SellCrafted(id,Model.BagCount("crafted:"+id),out var message),message);
         }
         public bool Buy(int count)
         {
-            if (!Ready) return false;
-            if (!NearMarket) { Feedback = "Tohum almak için pazar tezgâhına yaklaş."; return false; }
+            if (!CanTrade) return false;
             bool ok = Model.BuySeeds(ActiveCrop.id, count, out var message); return Complete(ok, message);
         }
         public bool SellHarvest()
         {
-            if (!Ready) return false;
-            if (!NearMarket) { Feedback = "Satış yapmak için pazar tezgâhına yaklaş."; return false; }
+            if (!CanTrade) return false;
             bool ok = Model.Sell(ActiveCrop.id, Model.Produce(ActiveCrop.id), out var message); return Complete(ok, message);
         }
         public bool Rest()
         {
-            if (!Ready) return false;
+            if (!Ready || WorldInputBlocked) return false;
             if (!NearCamp) { Feedback = "Uyumak için bir yatağa yaklaş."; return false; }
             bool ok = Model.EndDay(out var message); return Complete(ok, message);
         }
@@ -323,6 +333,7 @@ namespace Farmer
         }
         public bool LoadGame()
         {
+            marketInteraction?.Close();
             BuildMode = false; selection.HideOutline = false;
             StopWatering();
             try
