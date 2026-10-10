@@ -216,5 +216,18 @@ menü açılması, kayıt yükleme ve erişim kaybı da kapatır. Aynı F bası�
 bir dünya etkileşimini tetiklemez. İnşa veya çanta açıkken pazar açılamaz.
 
 [Ahşap çerçeveli pazar konsepti](references/market_ui_v01/README.md) kullanıcı
-onayına sunuldu, yeni görsel düzen uygulanmadı. Olgun turp son aşaması mevcut
+tarafından 11 Ekim 2026 tarihinde onaylandı ve uygulandı. Olgun turp son aşaması mevcut
 boyutundan ek %5 küçültüldü; önceki büyüme aşamaları ve ürün kuralları korundu.
+
+
+### Onaylanan pazar görünümü — 11 Ekim
+
+Pazar tek ahşap pencere oldu: Tohumlar, Aletler, Malzemeler, Mobilyalar, Üretim.
+Solda kategoriler, ortada üç ürün kartı (gerekince sayfalama), sağda açıklama ve
+alım/üretim, altta seçilebilir satış türleri. Ürün seçimi/adet/para/envanter canlıdır.
+Tohum ve tarif adedi 1–999; kazma tek seferliktir, diğer alımlar tek eşya veya
+10 odunluk paket olarak yapılır. B sağdaki seçili işlemi, V altta seçilen ürünün
+tüm çanta miktarını uygular. Satış için seçilen tür ekilecek ürün seçimini değiştirmez.
+Yetersiz para/malzeme veya dolu yığında düğme pasiftir ve işlem kaynak tüketmez.
+Açılış seçili tohum türünü getirir; yeni açılışta adet 1'e döner. F/Esc/× ve
+modal dünya engelleri korunur. Sabit resimli köy arka planı eskizden gelir.

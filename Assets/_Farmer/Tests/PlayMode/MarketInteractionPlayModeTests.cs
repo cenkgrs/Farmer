@@ -29,13 +29,13 @@ namespace Farmer.Tests
             CropExpansionPlayModeTests.Frame(game.Market.position,5);yield return null;
             CropExpansionPlayModeTests.Capture("market-closed",true);
             Assert.That(game.NearMarket,Is.True);Assert.That(game.MarketOpen,Is.False);
-            var panel=game.transform.Find("Farm HUD/Market");Assert.That(panel.gameObject.activeSelf,Is.False);
+            var panel=game.transform.Find("Market Canvas/Market");Assert.That(panel.gameObject.activeInHierarchy,Is.False);
             Assert.That(game.Buy(1),Is.False);Assert.That(game.BuyPickaxe(),Is.False);Assert.That(game.BuyWood(),Is.False);Assert.That(game.BuyBed(),Is.False);Assert.That(game.BuyFurniture("home_chair"),Is.False);
             Assert.That(game.Model.Money,Is.EqualTo(500));
             Assert.That(market.HandleInput(true,false),Is.True);Assert.That(game.MarketOpen,Is.True);Assert.That(game.WorldInputBlocked,Is.True);
             Assert.That(game.Selection.ModalBlocked,Is.True);Assert.That(market.ConsumedThisFrame,Is.True);
             yield return null;
-            Assert.That(panel.gameObject.activeSelf,Is.True);Assert.That(game.Buy(1),Is.True);Assert.That(game.Model.Money,Is.EqualTo(490));
+            Assert.That(panel.gameObject.activeInHierarchy,Is.True);Assert.That(game.Buy(1),Is.True);Assert.That(game.Model.Money,Is.EqualTo(490));
             bag.Open(null);Assert.That(game.InventoryOpen,Is.False);
             game.SetBuildMode(true);Assert.That(game.BuildMode,Is.False);
             Assert.That(game.UseHovered(),Is.False);Assert.That(game.UprootHovered(),Is.False);Assert.That(game.Rest(),Is.False);

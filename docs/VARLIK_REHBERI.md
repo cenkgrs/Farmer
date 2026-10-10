@@ -148,4 +148,4 @@ Balta tutuşunda yalnızca socket yakınlığı doğal el pozu için yeterli de�
 
 [Pazar arayüz eskizi v01](references/market_ui_v01/README.md): yerleşik ImageGen
 ile mevcut oyun ve onaylı çiftlik konsepti referans alınarak üretildi. Prompt
-aynı klasörde. Tasarım kullanıcı değerlendirmesindedir; oyun UI varlığı değildir.
+aynı klasörde. Kullanıcı 11 Ekimde onayladı; [çalışma dokuları, canlı metin fontları ve aktarım kaydı](art-sources/market_ui_v01/README.md) hazır.

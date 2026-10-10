@@ -36,7 +36,7 @@ namespace Farmer.Tests
             Assert.That(game.GetComponent<MarketInteraction>().TryOpen(),Is.True);yield return null;
             foreach(string id in new[]{"turnip","carrot","tomato"})
             {
-                FindButton("Select crop "+id).onClick.Invoke();Assert.That(game.ActiveCrop.id,Is.EqualTo(id));
+                FindButton("Market offer "+id).onClick.Invoke();Assert.That(game.ActiveCrop.id,Is.EqualTo(id));
                 Assert.That(game.Buy(4),Is.True);
             }
             Assert.That(game.Model.Seeds("carrot"),Is.EqualTo(4));Assert.That(game.Model.Seeds("tomato"),Is.EqualTo(4));
@@ -67,7 +67,8 @@ namespace Farmer.Tests
             game.Model.AdvanceMinutes(1440);Assert.That(game.Model.IsReady(tomato),Is.True);
             Teleport(game.Market.position+new Vector3(0,.1f,-1.8f));yield return null;
             Assert.That(game.GetComponent<MarketInteraction>().TryOpen(),Is.True);yield return null;
-            var craft=FindButton("Craft vegetable_crate");Assert.That(craft.interactable,Is.True);craft.onClick.Invoke();yield return null;
+            game.GetComponent<MarketHud>().ChooseCategory(MarketCategory.Production);yield return null;
+            var craft=FindButton("Market purchase");Assert.That(craft.interactable,Is.True);craft.onClick.Invoke();yield return null;
             Assert.That(game.Model.BagCount("crafted:vegetable_crate"),Is.EqualTo(1));Assert.That(craft.interactable,Is.False);
             game.GetComponent<MarketInteraction>().Close();yield return null;
             var storage=game.GetComponent<StorageInteraction>();storage.Open(null);yield return null;
@@ -116,21 +117,49 @@ namespace Farmer.Tests
             }
             Object.Destroy(cameraObject);
         }
-        internal static void Capture(string name,bool includeUI)
+        internal static void Capture(string name,bool includeUI,int width=1280,int height=720)
         {
-            var canvas=includeUI?Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None).Where(c=>c.renderMode==RenderMode.ScreenSpaceOverlay).ToArray():Array.Empty<Canvas>();
-            float near=Camera.main.nearClipPlane;Camera.main.nearClipPlane=.001f;
-            foreach(var c in canvas){c.renderMode=RenderMode.ScreenSpaceCamera;c.worldCamera=Camera.main;c.planeDistance=.01f;}
-            Canvas.ForceUpdateCanvases();
+            var canvases=includeUI?Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None).Where(c=>c.renderMode==RenderMode.ScreenSpaceOverlay).ToArray():Array.Empty<Canvas>();
+            var camera=Camera.main;var previous=camera.targetTexture;float near=camera.nearClipPlane;
+            var target=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32);target.Create();
+            var scalers=canvases.Select(c=>c.GetComponent<CanvasScaler>()).ToArray();
+            var scales=canvases.Select(c=>c.scaleFactor).ToArray();
+            var planes=canvases.Select(c=>c.planeDistance).ToArray();
+            var extra=camera.GetUniversalAdditionalCameraData();bool post=extra.renderPostProcessing;
             try
             {
-                var image=Render(Camera.main,1280,720);string[] args=Environment.GetCommandLineArgs();string directory=Path.GetDirectoryName(args[Array.IndexOf(args,"--farmer-smoke-capture")+1]);
+                camera.targetTexture=target;camera.nearClipPlane=.1f;extra.renderPostProcessing=false;
+                for(int i=0;i<canvases.Length;i++)
+                {
+                    var c=canvases[i];var scaler=scalers[i];if(scaler!=null)scaler.enabled=false;
+                    c.renderMode=RenderMode.ScreenSpaceCamera;c.worldCamera=camera;c.planeDistance=1;
+                    if(scaler!=null)
+                    {
+                        var r=scaler.referenceResolution;
+                        c.scaleFactor=scaler.screenMatchMode==CanvasScaler.ScreenMatchMode.Expand?Mathf.Min(width/r.x,height/r.y):Mathf.Pow(width/r.x,1-scaler.matchWidthOrHeight)*Mathf.Pow(height/r.y,scaler.matchWidthOrHeight);
+                    }
+                }
+                foreach(var c in canvases)foreach(var t in c.GetComponentsInChildren<Text>())t.SetAllDirty();
+                Canvas.ForceUpdateCanvases();
+                foreach(var c in canvases.Where(c=>c.name=="Market Canvas"))
+                {
+                    var frame=c.transform.Find("Market") as RectTransform;var corners=new Vector3[4];frame.GetWorldCorners(corners);
+                    var bounds=corners.Select(v=>RectTransformUtility.WorldToScreenPoint(camera,v)).ToArray();
+                    Assert.That(bounds.Min(v=>v.x),Is.GreaterThanOrEqualTo(-1));Assert.That(bounds.Max(v=>v.x),Is.LessThanOrEqualTo(width+1));
+                    Assert.That(bounds.Min(v=>v.y),Is.GreaterThanOrEqualTo(-1));Assert.That(bounds.Max(v=>v.y),Is.LessThanOrEqualTo(height+1));
+                    Assert.That((bounds.Max(v=>v.x)-bounds.Min(v=>v.x))/(bounds.Max(v=>v.y)-bounds.Min(v=>v.y)),Is.EqualTo(1672f/941f).Within(.001f));
+                }
+                var image=Render(camera,width,height);string[] args=Environment.GetCommandLineArgs();string directory=Path.GetDirectoryName(args[Array.IndexOf(args,"--farmer-smoke-capture")+1]);
                 File.WriteAllBytes(Path.Combine(directory,name+".png"),image.EncodeToPNG());Object.Destroy(image);
             }
             finally
             {
-                foreach(var c in canvas){c.renderMode=RenderMode.ScreenSpaceOverlay;c.worldCamera=null;}
-                Camera.main.nearClipPlane=near;
+                camera.targetTexture=previous;camera.nearClipPlane=near;extra.renderPostProcessing=post;
+                for(int i=0;i<canvases.Length;i++)
+                {
+                    var c=canvases[i];c.renderMode=RenderMode.ScreenSpaceOverlay;c.worldCamera=null;c.planeDistance=planes[i];c.scaleFactor=scales[i];if(scalers[i]!=null)scalers[i].enabled=true;
+                }
+                target.Release();Object.Destroy(target);Canvas.ForceUpdateCanvases();
             }
         }
 

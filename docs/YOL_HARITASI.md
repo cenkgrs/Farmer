@@ -115,4 +115,4 @@ Kazma/kaya kullanıcı GLB modellerine bağlandı. Kullanıcı havuç + tekrar h
 
 0.3 devamı: pazarın F ile açılması, F/Esc/× ile kapanması ve son turp aşamasının
 %5 küçültülmesi uygulandı. [Pazar ekranı eskizi](references/market_ui_v01/README.md)
-hazır; yeni arayüz tasarımı kullanıcı onayı sonrası ayrı adımda uygulanacak.
+11 Ekim kullanıcı onayıyla uygulandı: özgün çizimler, beş kategori, adetli alım/üretim, ürün seçerek satış.

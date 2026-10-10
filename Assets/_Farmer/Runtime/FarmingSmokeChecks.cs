@@ -28,12 +28,13 @@ namespace Farmer
                 yield return Capture(screenshot, "market");
                 yield return KeyPress(keyboard, Key.B);
                 Check(game.Model.Seeds("turnip") == 1 && game.Model.Money == 50, "B buys one seed at the market.");
-                var buyFive = Object.FindObjectsByType<Button>(FindObjectsSortMode.None)
-                    .FirstOrDefault(b => b.GetComponentInChildren<Text>().text.StartsWith("5 tohum"));
+                game.GetComponent<MarketHud>().ChangeQuantity(4);
+                var buyFive = Object.FindObjectsByType<Button>(FindObjectsSortMode.None).FirstOrDefault(b => b.name=="Market purchase");
                 if (buyFive == null) { Debug.LogError("FARMER_FARM_CHECK_FAILED: market UI missing."); yield break; }
                 yield return Click(mouse, RectTransformUtility.WorldToScreenPoint(null, buyFive.transform.position
                     + (Vector3)((RectTransform)buyFive.transform).rect.center));
                 Check(game.Model.Seeds("turnip") == 6 && game.Model.Money == 0, "Market button buys five seeds through UI input.");
+                game.GetComponent<MarketHud>().ChangeQuantity(-4);
                 yield return KeyPress(keyboard, Key.B);
                 Check(game.Model.Money == 0 && game.Model.Seeds("turnip") == 6, "Unaffordable purchase is rejected.");
                 yield return KeyPress(keyboard, Key.F);

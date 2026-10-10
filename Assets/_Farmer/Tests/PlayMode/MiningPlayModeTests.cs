@@ -39,7 +39,8 @@ namespace Farmer.Tests
             Assert.That(game.BuyPickaxe(),Is.False,"Cannot buy remotely.");
             Teleport(game.Market.position+new Vector3(0,.1f,-1.8f));yield return null;
             Assert.That(game.GetComponent<MarketInteraction>().TryOpen(),Is.True);yield return null;
-            var purchase=Object.FindObjectsByType<Button>(FindObjectsSortMode.None).Single(b=>b.name=="Buy Pickaxe");
+            game.GetComponent<MarketHud>().ChooseCategory(MarketCategory.Tools);yield return null;
+            var purchase=Object.FindObjectsByType<Button>(FindObjectsSortMode.None).Single(b=>b.name=="Market purchase");
             Assert.That(purchase.interactable,Is.True);purchase.onClick.Invoke();yield return null;
             Assert.That(game.Model.OwnsPickaxe,Is.True);Assert.That(game.Model.Money,Is.EqualTo(420));
             Assert.That(purchase.interactable,Is.False);Assert.That(slot.interactable,Is.True);

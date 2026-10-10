@@ -60,6 +60,7 @@ namespace Farmer
         {
             Application.targetFrameRate=60;
             if(GetComponent<StorageInteraction>()==null)gameObject.AddComponent<StorageInteraction>();
+            if(GetComponent<MarketHud>()==null)gameObject.AddComponent<MarketHud>();
             marketInteraction=GetComponent<MarketInteraction>();
             if(marketInteraction==null)marketInteraction=gameObject.AddComponent<MarketInteraction>();
             // Capture authored scenery once; never include runtime resource/building views.
@@ -98,8 +99,8 @@ namespace Farmer
             if(MarketOpen)
             {
                 StopWatering();
-                if(k?.bKey.wasPressedThisFrame==true)Buy(1);
-                if(k?.vKey.wasPressedThisFrame==true)SellHarvest();
+                if(k?.bKey.wasPressedThisFrame==true)GetComponent<MarketHud>().PurchaseSelected();
+                if(k?.vKey.wasPressedThisFrame==true)GetComponent<MarketHud>().SellSelected();
                 if(k?.f5Key.wasPressedThisFrame==true)SaveGame();
                 return;
             }
@@ -291,10 +292,10 @@ namespace Farmer
             if(!Ready||MenuOpen||!Model.SelectCrop(id))return false;
             StopWatering();SaveGame();Changed?.Invoke();return true;
         }
-        public bool Craft(string id)
+        public bool Craft(string id,int batches=1)
         {
             if(!CanTrade)return false;
-            return Complete(Model.Craft(id,1,out var message),message);
+            return Complete(Model.Craft(id,batches,out var message),message);
         }
         public bool SellCrafted(string id)
         {
@@ -306,10 +307,11 @@ namespace Farmer
             if (!CanTrade) return false;
             bool ok = Model.BuySeeds(ActiveCrop.id, count, out var message); return Complete(ok, message);
         }
-        public bool SellHarvest()
+        public bool SellHarvest()=>SellHarvest(ActiveCrop.id);
+        public bool SellHarvest(string cropId)
         {
             if (!CanTrade) return false;
-            bool ok = Model.Sell(ActiveCrop.id, Model.Produce(ActiveCrop.id), out var message); return Complete(ok, message);
+            bool ok = Model.Sell(cropId, Model.Produce(cropId), out var message); return Complete(ok, message);
         }
         public bool Rest()
         {

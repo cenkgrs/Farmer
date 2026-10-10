@@ -289,3 +289,26 @@ Manuel takip: pazar yakınında F ile aç; WASD, Tab, alet ve kamera tekerleğin
 engellendiğini dene; B/V alış-satış yap; F veya Esc ile kapat ve aynı basışın
 kapı/sandığı tetiklemediğini kontrol et. Esc önce pazarı kapatmalı, sonraki
 Esc ana menüyü açmalı. Turpun hasada hazır aşamasını önceki görünümle karşılaştır.
+
+
+## Onaylı pazar tasarımı — 11 Ekim
+
+`Logs/market-design-playmode.xml/log`: **4/4 PlayMode** (6000.3.25f1 Mac/Metal,
+izole FarmerQA), çıkış 0. Yeni `MarketDesignPlayModeTests`, UI raycast'inin
+beklenen Button'a ulaştığını kontrol edip click handler'ını çalıştırır. Beş
+kategori, miktar sınırı ve toplu alım, satın alınmış kazma, odun paketi, yatak,
+ikinci sayfa mobilya, adetli tarif, seçili hasat/kasa satışı, başarısız işlemde
+kaynakların korunması, kaydet/yükle ve yeniden açılış doğrulanır. Önceki üç
+PlayMode testi güncel UI ile geçer. Fiziksel cihaz enjeksiyonu/standalone değildir.
+
+Canvas renderları `builds/QA/market-design-*.png`: 1672×941 referans, 1280×720,
+1920×1080, 1024×768. Gerçek UI, hedef boyutlu RenderTexture'a bağlı kamerayla
+render edilir; CanvasScaler ayarı/ölçeği, kamera hedefi/near/postprocess durumu
+sonunda geri yüklenir. Metinler ölçek değişiminden sonra yeniden oluşturulur.
+Ekran sınırı ve en-boy oranı test edilir. Referans/720p/1080p/4:3 ile beş kategori
+görsel olarak incelendi. Özgün tasarım PNG'si çalışma dokusuyla byte-eşit.
+
+Kontrol sınırlaması: 146 EditMode sonucu önceki ürün adımına aittir; bu tur
+EditMode tekrar çalışmadı. İlk tasarım turunda eski UI isimlerini arayan test
+hata verdi; isimler/akış yeni ekranla güncellendi. Eski standalone farming
+smoke yeni adet seçiciye uyarlandı, yeniden çalıştırılmadı.
