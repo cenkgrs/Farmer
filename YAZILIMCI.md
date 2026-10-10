@@ -1,6 +1,6 @@
 # Yazılımcı — proje hafızası ve devir
 
-Son güncelleme: **9 Ekim 2026 — Europe/Istanbul**.
+Son güncelleme: **10 Ekim 2026 — Europe/Istanbul**.
 
 ## Şu an nerede kaldık?
 
@@ -393,3 +393,9 @@ Kullanıcı 7 Ekim'de önce kare seçme adımını kaldırmamızı, ardından WA
 - Son yalnız zemin katman farkı sonrası `Logs/usability-paving-build.log` başarılı; `Logs/paving-delivery.log` **15/15 köy kontrolü**, exit 0/FARMER_PLAYER_SMOKE_OK. Son Linux build builds/Linux/Farmer.x86_64. `docs/screenshots/session-menu.png`, `indoor-storage.png`, `village-paving.png` incelendi. Tam ekran testi Linux Xvfb player mod değişimini doğrular; gerçek Windows paketi bu tur yenilenmedi/denenmedi. Model kuralları değişmedi, EditMode tekrar çalıştırılmadı.
 - İzole QA kayıtları kullanıldı; normal kullanıcı kaydı değiştirilmedi. Test süreçleri kapandı. Meta eşleri ve GUID benzersizliği, değişikliklerde whitespace kontrolü temiz. Unity'nin yalnız boşluk serileştirmeleri geri alındı. Kullanıcının ArtSceneSetup.cs değişikliği korunur ve commit dışında bırakılır.
 - Dal main, doğrulanan hedef origin/main. Sonraki somut iş: kullanıcının Unity'de ilk meydan/orman kümelerini tasarlaması ve yürüyüş/görüş değerlendirmesi. Otomatik harita genişletme, nehir/yükseklik sistemi ve NPC bu turun tamamlanan kapsamına dahil değil.
+
+## 10 Ekim — kullanıcı teslimi çim zemin dokusu
+
+- Kullanıcının `TCom_Ground_Grass03_2x2_2K_albedo.tif` dosyası ana dünya zemini için seçildi. Özgün 2048×2048 RGB TIFF dosyası depo dışında değiştirilmeden korunuyor; Unity çalışma varlığı yüksek kaliteli 2K JPEG olarak `Assets/_Farmer/Art/Textures/ground/ground_grass03_albedo.jpg` altında.
+- `Ground.mat` Base Map bu dokuya bağlandı. Dosya adındaki 2×2 m ölçü esas alınarak 256 m dünya tabanında 128×128 tekrar, beyaz taban rengi ve 0,08 smoothness kullanılıyor. Kaynak/dönüşüm/lisans notu `docs/art-sources/ground-grass-texture.md` içinde.
+- Bu salt görsel değişiklikte oynanış, fizik, kayıt ve sahne geometrisi değiştirilmedi. Mac Unity Editöründe import ve Scene görünümü görsel kontrolü tamamlandı; 2 m tekrar ölçeği zeminde okunuyor ve eksik/pembe materyal yok. Play modu hata vermeden açıldı. Editör logunda exception/derleme hatası bulunmadı; meta eşleri, GUID ve Git whitespace kontrolleri temiz. Oynanış mantığı değişmediğinden test paketi ve build tekrar koşulmadı. Windows/Linux player bu değişiklikten sonra yenilenmedi.
