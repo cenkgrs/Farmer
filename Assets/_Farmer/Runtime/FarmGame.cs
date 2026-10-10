@@ -43,6 +43,7 @@ namespace Farmer
         public Vector3 PlotCenter(int index, float height = .06f) { var p = Model.Plot(index); return new Vector3(p.x+.5f,height,p.z+.5f); }
         private FarmSaveStore store;
         private bool smokeSession;
+        private Bounds[] sceneryBounds = Array.Empty<Bounds>();
         public string SavePath { get; private set; }
 
         public void Configure(CropDefinition[] definitions, FarmSelection grid, Transform actor, Transform shop, Transform rest)
@@ -52,19 +53,27 @@ namespace Farmer
         {
             Application.targetFrameRate=60;
             if(GetComponent<StorageInteraction>()==null)gameObject.AddComponent<StorageInteraction>();
+            // Capture authored scenery once; never include runtime resource/building views.
+            sceneryBounds=FindObjectsByType<ValleyScenery>(FindObjectsSortMode.None)
+                .SelectMany(v=>v.GetComponentsInChildren<Renderer>()).Select(r=>r.bounds).ToArray();
             var rules = crops.Select(c => c.Rules).ToArray();
-            Model = new FarmModel(rules, selection.Layout.Width, selection.Layout.Depth, startingMoney, BuildingRules());
+            Model = new FarmModel(rules, selection.Layout.Width, selection.Layout.Depth, startingMoney, BuildingRules(), resourceBlocked: ResourceBlockedByScenery);
             string directory = Application.persistentDataPath;
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
             smokeSession = Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-smoke-capture") >= 0;
             if (smokeSession) directory = Path.Combine(Application.temporaryCachePath, "FarmerQA", Guid.NewGuid().ToString("N"));
 #endif
             SavePath = Path.Combine(directory, "farm-v1.json");
-            store = new FarmSaveStore(SavePath, snapshot => FarmModel.Restore(snapshot, rules, selection.Layout.Width, selection.Layout.Depth, BuildingRules()));
+            store = new FarmSaveStore(SavePath, snapshot => FarmModel.Restore(snapshot, rules, selection.Layout.Width, selection.Layout.Depth, BuildingRules(), ResourceBlockedByScenery));
             if(camp!=null)camp.gameObject.SetActive(false);
             HadSaveAtStartup=File.Exists(SavePath)||File.Exists(SavePath+".bak");
             LoadGame();
             gameObject.AddComponent<SessionMenu>();
+        }
+        private bool ResourceBlockedByScenery(int x,int z)
+        {
+            return sceneryBounds.Any(b=>x+.5f>b.min.x-1.6f&&x+.5f<b.max.x+1.6f
+                &&z+.5f>b.min.z-1.6f&&z+.5f<b.max.z+1.6f);
         }
         private void Update()
         {
@@ -77,6 +86,7 @@ namespace Farmer
             if (k?.digit3Key.wasPressedThisFrame == true) Equip(FarmItem.Sickle);
             if (k?.digit5Key.wasPressedThisFrame == true) Equip(FarmItem.Hoe);
             if (k?.digit6Key.wasPressedThisFrame == true) Equip(FarmItem.Axe);
+            if (k?.digit7Key.wasPressedThisFrame == true) Equip(FarmItem.Pickaxe);
             if (BuildMode) StopWatering(); else UpdateToolInput();
             if (k?.bKey.wasPressedThisFrame == true) Buy(1);
             if (k?.vKey.wasPressedThisFrame == true) SellHarvest();
@@ -95,6 +105,11 @@ namespace Farmer
             if (!Ready) return false;
             if (!NearMarket) { Feedback = "Odun almak için pazara yaklaş."; return false; }
             return Complete(Model.BuyWood(out var message), message);
+        }
+        public bool BuyPickaxe()
+        {
+            if(!Ready||!NearMarket||InventoryOpen||MenuOpen)return false;
+            return Complete(Model.BuyPickaxe(out var message),message);
         }
         public bool BuyBed()
         {
@@ -184,9 +199,9 @@ namespace Farmer
         public Transform Player => player;
         public int HoveredIndex => selection.WorldCell is Vector2Int c ? Model.IndexAt(c.x,c.y) : -1;
         public string EquippedName => Model.EquippedItem == FarmItem.Seeds ? ActiveCrop.displayName + " tohumu"
-            : Model.EquippedItem == FarmItem.WateringCan ? "Sulama kabı" : Model.EquippedItem == FarmItem.Hoe ? "Çapa" : Model.EquippedItem==FarmItem.Axe?"Balta":"Orak";
+            : Model.EquippedItem == FarmItem.WateringCan ? "Sulama kabı" : Model.EquippedItem == FarmItem.Hoe ? "Çapa" : Model.EquippedItem==FarmItem.Axe?"Balta":Model.EquippedItem==FarmItem.Pickaxe?"Kazma":"Orak";
         public string ActionLabel => !selection.WorldCell.HasValue ? "Fareyi toprağa götür" : !selection.HoveredInReach ? "Kareye yaklaş"
-            : Model.EquippedItem == FarmItem.Axe?"Ağacı hedefle · Sol tıkla kes": Model.EquippedItem == FarmItem.Hoe ? "Sol tık · Toprağı çapala" : HoveredIndex < 0 ? "Önce çapa ile toprağı hazırla (5)" : Model.EquippedItem == FarmItem.Seeds ? "Sol tık · Tohum ek" : Model.EquippedItem == FarmItem.WateringCan ? "Sol tuşu basılı tut · Sula" : "Sol tık · Hasat et";
+            : Model.EquippedItem == FarmItem.Pickaxe?"Kayayı hedefle · Sol tıkla kır": Model.EquippedItem == FarmItem.Axe?"Ağacı hedefle · Sol tıkla kes": Model.EquippedItem == FarmItem.Hoe ? "Sol tık · Toprağı çapala" : HoveredIndex < 0 ? "Önce çapa ile toprağı hazırla (5)" : Model.EquippedItem == FarmItem.Seeds ? "Sol tık · Tohum ek" : Model.EquippedItem == FarmItem.WateringCan ? "Sol tuşu basılı tut · Sula" : "Sol tık · Hasat et";
 
         public void Equip(FarmItem item)
         {
@@ -281,7 +296,7 @@ namespace Farmer
                 Ready = true;
                 SaveStatus = recovered ? "Yedek kayıt yüklendi" : loaded == null ? "Yeni çiftlik" : "Kayıt yüklendi";
                 Feedback = recovered ? "Son sağlam yedek açıldı; önceki dosya korunacak." : "5 ile çapa seç; boş toprağı hazırla. 1/2/3 ile ek, sula ve hasat et.";
-                if(!recovered&&(loaded==null||JsonUtility.FromJson<FarmSnapshot>(File.ReadAllText(SavePath)).version<7))SaveGame();
+                if(!recovered&&(loaded==null||JsonUtility.FromJson<FarmSnapshot>(File.ReadAllText(SavePath)).version<FarmModel.SaveVersion))SaveGame();
                 Changed?.Invoke(); return true;
             }
             catch (Exception e) when (e is IOException || e is UnauthorizedAccessException || e is ArgumentException)

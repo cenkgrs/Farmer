@@ -36,13 +36,15 @@ namespace Farmer
     public sealed partial class FarmModel
     {
         public const int ChestSlots=16;
-        public string[] BagItems()=>new[]{"tool:watering","tool:sickle","tool:hoe","tool:axe","wood"}
+        public string[] BagItems()=>new[]{"tool:watering","tool:sickle","tool:hoe","tool:axe","tool:pickaxe","wood","stone"}
             .Concat(crops.Keys.Select(c=>"seed:"+c)).Concat(crops.Keys.Select(c=>"crop:"+c))
             .Concat(Building.FurnitureRules.Select(r=>"furniture:"+r.Id)).ToArray();
         public int BagCount(string id)
         {
             if(id==null)return 0;
             if(id=="wood")return Building.Wood;
+            if(id=="stone")return Stone;
+            if(id=="tool:pickaxe")return OwnsPickaxe?1:0;
             if(id=="tool:watering"||id=="tool:sickle"||id=="tool:hoe"||id=="tool:axe")return 1;
             if(id.StartsWith("seed:",StringComparison.Ordinal))return Seeds(id.Substring(5));
             if(id.StartsWith("crop:",StringComparison.Ordinal))return Produce(id.Substring(5));
@@ -54,6 +56,7 @@ namespace Farmer
         {
             long total=(long)BagCount(id)+delta;if(total<0||total>StackLimit)return false;
             if(id=="wood")return Building.ChangeWood(delta);
+            if(id=="stone"){Stone=(int)total;return true;}
             if(id.StartsWith("furniture:",StringComparison.Ordinal))return Building.ChangeFurniture(id.Substring(10),delta);
             var dict=id.StartsWith("seed:",StringComparison.Ordinal)?seeds:produce;
             dict[id.Substring(5)]=(int)total;return true;

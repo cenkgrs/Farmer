@@ -18,6 +18,7 @@ MonoBehaviour:
   salePrice: 18
   wateredDays: 3
   harvestYield: 1
+  visualScale: 0.8
   growthStages:
   - {fileID: 3785909346164271507, guid: 731b1eafb6b98993a921c3a0693ae6c1, type: 3}
   - {fileID: 3192556274213767008, guid: c9be9db6e0b18efd09177cf8f362e055, type: 3}

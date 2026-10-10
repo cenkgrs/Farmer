@@ -116,12 +116,12 @@ namespace Farmer
             if(id.StartsWith("furniture:"))return game.BuildPieces.First(p=>p.id==id.Substring(10)).displayName;
             if(id.StartsWith("seed:"))return game.Definition(id.Substring(5)).displayName+" tohumu";
             if(id.StartsWith("crop:"))return game.Definition(id.Substring(5)).displayName;
-            return id=="wood"?"Odun":id=="tool:watering"?"Sulama kabı":id=="tool:sickle"?"Orak":id=="tool:hoe"?"Çapa":"Balta";
+            return id=="stone"?"Taş":id=="tool:pickaxe"?"Kazma":id=="wood"?"Odun":id=="tool:watering"?"Sulama kabı":id=="tool:sickle"?"Orak":id=="tool:hoe"?"Çapa":"Balta";
         }
         public static Sprite Icon(string id)
         {
             if(id.StartsWith("furniture:"))return ConstructionArtwork.Get(id.Substring(10));
-            return InventoryIcon.Artwork(id=="wood"?6:id.StartsWith("seed:")?0:id.StartsWith("crop:")?5:id=="tool:watering"?1:id=="tool:sickle"?2:id=="tool:hoe"?3:8);
+            return InventoryIcon.Artwork(id=="stone"?10:id=="tool:pickaxe"?9:id=="wood"?6:id.StartsWith("seed:")?0:id.StartsWith("crop:")?5:id=="tool:watering"?1:id=="tool:sickle"?2:id=="tool:hoe"?3:8);
         }
         public void Transfer(string id,bool fromChest,int amount)
         {

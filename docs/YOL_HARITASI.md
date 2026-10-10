@@ -1,6 +1,6 @@
 # Sürüm planı ve kabul ölçütleri
 
-Tarihler/tahmini geliştirme süreleri henüz yok. Her sürüm oynanabilir bir adım olmalı. 0.1 çekirdek prototipi Linux üzerinde doğrulandı; 0.2 serbest blok/yatak yerleşimi, çapa ve 10 dakikalık gece–gündüz adımı hazır, sürümün tamamı henüz bitmedi. Görseller geçici, Windows doğrulaması ayrı açık iş.
+Tarihler/tahmini geliştirme süreleri henüz yok. Her sürüm oynanabilir bir adım olmalı. 0.1 çekirdeği doğrulandı. Kullanıcı 10 Ekim 2026'da 0.2 son kontrollerini tamam kabul edip 0.3'e geçiş istedi. 0.3 kaynak/kazma adımı başladı; ürün çeşitleri ve tarifler henüz açık. Windows doğrulaması ayrı takip ediliyor.
 
 ## 0.1 — Çekirdek prototip
 
@@ -33,22 +33,10 @@ Kabul:
 
 ## 0.2 — İlk evim
 
-Kaynak elde etme, kare/hacim/kenar yerleşimi, temel ahşap yapı seti, yatak ve sandık, kapı geçişi, çatı/duvar gizleme. Basit masa, sandalye ve lamba.
-
-Kabul:
-
-- [ ] Kaynaklar harcanarak tek katlı, içine girilebilir bir ev kurulabilir.
-- [x] Ahşap bloklar yan yana/üst üste yerleşir; geçersiz çakışmalar önlenir.
-- [ ] Önizleme, döndürme, yükseklik seçimi, taşıma ve sökme çalışır.
-- [x] Ev içinde karakter ve yerleştirilen eşya görülebilir. (8 Ekim: ince duvar, blok ev ve çatı saydamlığı.)
-- [ ] Yatakla günü bitirme ve sandık depolaması çalışır; sökme/taşıma eşya çoğaltmaz veya kaybetmez.
-- [ ] Yerleştirilen yapılar ve depolama kayıt/yüklemede korunur.
-
-7 Ekim güncel parça: ilk 6×5 inşa kısıtı kaldırıldı. Boş dünya zemini üzerinde blok/yatak yerleştirme, üç blok yüksekliği, önizleme/döndürme/yükseklik/sökme, odun maliyeti/iadesi ve pazardan odun var. Yeni tarlalar çapa ile hazırlanıyor; eski kayıtlar korunarak v3'e taşınıyor. 8 Ekim adımı: ahşap döşeme, kenara oturan ince duvar, açılır kapı ve döşeme üstünde yatakla ilk oda. Yatak uyutuyor, sandık/depolama henüz yok. 8 Ekim devamında ayrı çatı parçası, M ile tutup taşıma, 50 parayla yataksız başlangıç ve 100 paraya yatak satın alma eklendi. İnşa barı sekiz yuva ve ImageGen ikonları kullanır. Diğer mobilyalar/depolama henüz yapılmadığından birleşik ölçütler açık tutuldu.
-
-Kullanıcı kararı: aynı inşa ve tarla kuralları gelecekte çiftlik dışındaki düşman bölgelerinde de kullanılacak. Bölgeye özel inşa sınırı yoktur; düşman güvenliği henüz uygulanmadı.
-
-Yaşanabilir ikinci kat bu sürüme dahil değildir.
+**10 Ekim kullanıcı kabulüyle tamam.** Kaynak toplama, serbest inşa, kapı/çatı ve
+iç görünürlük, yatak, satın alınan mobilyalar, çanta/sandık, taşıma/sökme ve
+kayıt/yükleme mevcut. Önceki teknik doğrulamalar ve platform sınırları
+`YAZILIMCI.md` içindedir. Yaşanabilir ikinci kat bu sürüme dahil değildir.
 
 ## 0.3 — Çalışan çiftlik
 
@@ -104,3 +92,16 @@ Sıradaki somut adım: kullanıcı ev/taşıma/yatak sürümünü oynadıktan so
 9 Ekim sekiz model tesliminden sonra ilk köy/yol kesiti uygulandı: 256 m taban, yaklaşık 128 m koridor, ayrı pazar, 3 cephe/kuyu/çevre modelleri. Tam vadi hedefi 384 m olarak duruyor; su/köprü yerleşimi, yeni dekoru kaynak sistemine bağlama ve esnaf/NPC sonraki işler. Kaynak/geometri doğrulaması ArtSource/valley_v01, oyun testi sonuçları YAZILIMCI.md içinde.
 
 9 Ekim kullanıcı geri bildirimi: ev içi sandık hedefleme, hızlı zoom, sürekli yönergelerin kaldırılması, taş köy zemini, Devam Et/menü/tam ekran bu tur kapsamına alındı. Harita dizilimini kullanıcı Unity'de mevcut modellerle yapacak; otomatik genişletme/doldurma şu an sıradaki iş değil. Rehber: UNITY_HARITA_DUZENLEME.md. Sonraki somut adım kullanıcının ilk köy düzenini beraber değerlendirmek; çok yükseklikli arazi ve su sistemini hazır saymamak.
+
+
+## 10 Ekim — 0.3 için kullanıcının seçtiği ilk adım
+
+- Turpun dört büyüme aşamasını %20 küçültme.
+- Kesilebilir ağaç hedefini 168'e çıkarma; mevcut kaynak durumlarını koruma.
+- 48 kırılabilir kaya hedefi; pazardan satın alınan kazma, başlangıçta kazma yok.
+- Taş toplama, çanta/sandık aktarımı ve v8 kalıcı kayıt; ilk geçişte `.pre-v8` yedeği.
+- Kazma/kaya model eskizlerini kullanıcıya verme; gelen modelleri doğrulayıp bağlama.
+
+Yeni ürünler, tekrar hasat ve işleme tarifleri 0.3'ün sonraki parçalarıdır.
+Taş kullanımı henüz seçilmedi. Eski tarihli “sıradaki” notlar tarihsel kayıttır;
+güncel öncelik bu bölüm ve YAZILIMCI.md'nin son kaydıdır.

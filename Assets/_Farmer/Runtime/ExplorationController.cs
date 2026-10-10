@@ -62,8 +62,8 @@ namespace Farmer
             }
             if(target==null&&game.Selection.WorldCell is Vector2Int cell)target=observed.Nodes.FirstOrDefault(n=>n.x==cell.x&&n.z==cell.y&&!n.collected);
             if(target==null)return false;
-            string label=target.kind==ResourceKind.Tree?"Ağaç":target.kind==ResourceKind.Chest?"Keşif sandığı":"Yabani tohum bitkisi";
-            Hint=label+" · "+(target.collected?"Toplandı":!InReach(target)?"Biraz yaklaş":target.kind==ResourceKind.Tree?$"Balta (6) · Sol tık · {target.hits}/3":target.kind==ResourceKind.WildPlant?"Orak (3) · Sol tıkla tohum topla":"Sol tıkla aç");
+            string label=target.kind==ResourceKind.Stone?"Taş":target.kind==ResourceKind.Tree?"Ağaç":target.kind==ResourceKind.Chest?"Keşif sandığı":"Yabani tohum bitkisi";
+            Hint=label+" · "+(target.collected?"Toplandı":!InReach(target)?"Biraz yaklaş":target.kind==ResourceKind.Stone?$"Kazma (7) · Sol tık · {target.hits}/3":target.kind==ResourceKind.Tree?$"Balta (6) · Sol tık · {target.hits}/3":target.kind==ResourceKind.WildPlant?"Orak (3) · Sol tıkla tohum topla":"Sol tıkla aç");
             return true;
         }
         public bool InReach(ResourceRecord node)

@@ -20,7 +20,7 @@ namespace Farmer
                 foreach(var d in devices)InputSystem.DisableDevice(d);game.Camp.gameObject.SetActive(false);
                 Load(game,new FarmModel(new[]{game.ActiveCrop.Rules},buildCatalog:game.BuildPieces.Select(d=>d.Rules),worldSeed:732).Snapshot());yield return null;follow.enabled=true;
                 Check(game.Model.Money==50&&game.Model.ItemCount(FarmItem.Axe,game.ActiveCrop.id)==1,"Fresh world starts with 50 coins and a permanent axe.");
-                Check(Object.FindObjectsByType<ResourceView>(FindObjectsSortMode.None).Length==41,"New world presents 24 trees, 12 wild plants and five chests.");
+                Check(Object.FindObjectsByType<ResourceView>(FindObjectsSortMode.None).Length==game.Model.Exploration.Nodes.Count(),"Every saved resource has a world view.");
                 var tree=game.Model.Exploration.Nodes.First(n=>n.kind==ResourceKind.Tree);Teleport(cc,tree);yield return new WaitForSecondsRealtime(2f);
                 Check(Vector3.Distance(cameraPosition,camera.transform.position)>5&&Quaternion.Angle(rotation,camera.transform.rotation)<.01f,"Camera follows exploration without changing its isometric angle.");
                 Check(WorldGround.SupportsCell(tree.x,tree.z,true),"Forest cells have buildable, cultivable ground.");

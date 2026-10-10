@@ -55,7 +55,7 @@ namespace Farmer.Tests
         [Test] public void LegacyV6PreservesWorldAndCorruptStorageIsRejected()
         {
             var old=Fresh().Snapshot();old.version=6;old.building.furniture=null;var restored=FarmModel.Restore(old,Crops,6,6);
-            Assert.That(restored.Money,Is.EqualTo(old.money));Assert.That(restored.Snapshot().version,Is.EqualTo(7));Assert.That(restored.Exploration.Snapshot().seed,Is.EqualTo(old.exploration.seed));
+            Assert.That(restored.Money,Is.EqualTo(old.money));Assert.That(restored.Snapshot().version,Is.EqualTo(FarmModel.SaveVersion));Assert.That(restored.Exploration.Snapshot().seed,Is.EqualTo(old.exploration.seed));
             var f=Fresh();var c=Chest(f);var bad=f.Snapshot();bad.building.blocks[0].contents=new[]{new ItemStack{id="wood",count=1000}};
             Assert.Throws<ArgumentException>(()=>FarmModel.Restore(bad,Crops,6,6));bad.building.blocks[0].contents=new[]{new ItemStack{id="unknown",count=1}};Assert.Throws<ArgumentException>(()=>FarmModel.Restore(bad,Crops,6,6));
             bad=f.Snapshot();bad.building.blocks[0].instanceId=null;Assert.Throws<ArgumentException>(()=>FarmModel.Restore(bad,Crops,6,6));

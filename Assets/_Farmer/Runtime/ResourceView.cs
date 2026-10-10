@@ -6,7 +6,7 @@ namespace Farmer
         public int Id { get; private set; }
         public ResourceKind Kind { get; private set; }
         private Transform crown,lid,trunk,plant;
-        private GameObject stump;
+        private GameObject stump, rock;
         private Collider obstacle;
         private float shake;
         public void Configure(ResourceRecord record,Material[] materials)
@@ -19,6 +19,22 @@ namespace Farmer
                 stump=Instantiate(Resources.Load<GameObject>("ExplorationArt/tree_stump"),transform,false);
                 stump.name="Felled Oak Stump";
                 var box=gameObject.AddComponent<BoxCollider>();box.center=new Vector3(0,.9f,0);box.size=new Vector3(.6f,1.8f,.6f);obstacle=box;
+            }
+            else if(Kind==ResourceKind.Stone)
+            {
+                // Swap in the delivered mining model when available; reuse existing rock art meanwhile.
+                var prefab=Resources.Load<GameObject>("ExplorationArt/stone_outcrop")
+                    ?? Resources.Load<GameObject>("ValleyArt/granite_boulder");
+                rock=Instantiate(prefab,transform,false);rock.name="Mineable Stone";
+                foreach(var c in rock.GetComponentsInChildren<Collider>()){c.enabled=false;Destroy(c);}
+                var renderers=rock.GetComponentsInChildren<Renderer>();var bounds=renderers[0].bounds;
+                foreach(var r in renderers)bounds.Encapsulate(r.bounds);
+                float scale=1.2f/Mathf.Max(bounds.size.x,bounds.size.z);
+                rock.transform.localScale*=scale;
+                bounds=renderers[0].bounds;foreach(var r in renderers)bounds.Encapsulate(r.bounds);
+                rock.transform.position+=new Vector3(transform.position.x-bounds.center.x,-bounds.min.y,transform.position.z-bounds.center.z);
+                bounds=renderers[0].bounds;foreach(var r in renderers)bounds.Encapsulate(r.bounds);
+                var box=gameObject.AddComponent<BoxCollider>();box.center=transform.InverseTransformPoint(bounds.center);box.size=bounds.size;obstacle=box;
             }
             else if(Kind==ResourceKind.Chest)
             {
@@ -41,6 +57,7 @@ namespace Farmer
                 crown.gameObject.SetActive(!collected);trunk.gameObject.SetActive(!collected);stump.SetActive(collected);
                 obstacle.enabled=!collected;
             }
+            else if(Kind==ResourceKind.Stone){rock.SetActive(!collected);obstacle.enabled=!collected;}
             else if(Kind==ResourceKind.WildPlant){plant.gameObject.SetActive(!collected);obstacle.enabled=!collected;}
             else lid.localRotation=Quaternion.Euler(collected?-105:0,0,0);
         }

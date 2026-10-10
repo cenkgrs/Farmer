@@ -162,3 +162,34 @@ Oyun açılış menüsünden başlar; kayıt varsa **Devam Et**, ilk açılışt
 Dünya hedeflerine sürekli çıkan tuş/alet talimatları ve rutin işlem bildirimleri kaldırıldı. Eşya barında yalnız imleçle üzerine gelinen eşyanın kısa adı/tuşu görünür; alışveriş ve depolama arayüzü işlevleri korunur. Tutorial ayrı tasarlanacak. Tekerlek hem Linux birimlik hem 120 değerli girdilerle hızlı, kısa yumuşatmalı zoom yapar. Saydam duvar/çatı sandık hedefleme ışınını kesmez; oyuncuyla sandık arasındaki gerçek duvar ve mesafe kontrolü sürer.
 
 Köy meydanı/giriş yolunda taş döşeme. Kullanıcı geniş haritanın seyrekliğini ve konseptten uzaklığını kabul etmedi; çevre dizilimini Unity'de kendisi yapacak. Otomatik yerleşim yeniden üretilmeyecek. [Proje özelinde harita düzenleme rehberi](UNITY_HARITA_DUZENLEME.md).
+
+
+## 0.3 başlangıcı — 10 Ekim kaynak ve kazma kararı
+
+Kullanıcı 0.2 son kontrollerini ve sağ kol/yol kenarı düzeltmelerini tamam kabul
+ederek 0.3'e geçilmesini istedi. Bu adımda turpun bütün büyüme aşamaları görsel
+olarak %20 küçülür; ürünün hücresi, büyüme süresi ve verimi değişmez.
+
+Kesilebilir ağaç hedefi 24'ten 168'e çıkar; dış dünyaya 48 kırılabilir kaya
+hedeflenir. Yerleşim uygun boş alanla sınırlıdır; yollar, köy, mevcut yapı/tarla
+ve sahnede elle yerleştirilen dekorun kapladığı yerler korunur. Mevcut kaynak
+kimlikleri, sandık ödülleri ve toplanmış/kısmen işlenmiş durumlar değiştirilmez.
+Yeni kaynaklar kayıt geçişinde bir kez eklenir; yeniden açılışta çoğalmaz.
+
+**Kazma başlangıçta verilmez.** Pazardan bir kez alınır, 7 veya ikonuyla
+kuşanılır. İlk denge: 80 para, kaya başına üç ayrı vuruş, son vuruşta altı taş;
+mevcut 2,5 m erişim ve 0,55 saniyelik vuruş aralığı kullanılır. Kaya bitince
+model/collider kapanır; bu adımda yeniden doğma yoktur. Taş çantada bir yığındır
+(999 sınırı), kişisel sandığa aktarılabilir. Dolu yığında son vuruş kaynağı
+tüketmez. Kazma diğer aletler gibi kalıcıdır, sandığa bırakılamaz.
+
+Alt bar sekiz yuva kalır; turp hasat sayacının yerini kazma alır. Hasat miktarı
+Tab çantasında görünür. Kazma satın alınana kadar ikonu soluk ve seçilemezdir.
+Taşın tarif/satış kullanımına daha sonra karar verilecek; bu adım harcama tarifi,
+yeni ürün veya cevher türü eklemez. Fiyat, verim ve sayılar ilk oynanış denge
+değerleridir. Kayıt v8, ilk eski-kayıt yazımından önce `.pre-v8` yedeği.
+
+Kazma ve kaya için [model eskizleri/teslim ölçütleri](references/mining_v01/README.md)
+hazır. Teslim modelleri gelene kadar kazma geçici geometri, kırılabilir kaya
+mevcut granit modelinin küçük kopyasıdır; haritadaki büyük dekor kayaları
+kendiliğinden madencilik kaynağına dönüştürülmez.

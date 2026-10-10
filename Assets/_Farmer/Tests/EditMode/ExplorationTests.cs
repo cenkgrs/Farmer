@@ -12,9 +12,9 @@ namespace Farmer.Tests
         {
             var a=Fresh();var b=Fresh(99);Assert.That(JsonUtility.ToJson(a.Exploration.Snapshot()),Is.Not.EqualTo(JsonUtility.ToJson(b.Exploration.Snapshot())));
             Assert.That(JsonUtility.ToJson(a.Exploration.Snapshot()),Is.EqualTo(JsonUtility.ToJson(Fresh().Exploration.Snapshot())));
-            Assert.That(a.Exploration.Nodes.Count(n=>n.kind==ResourceKind.Chest),Is.EqualTo(5));Assert.That(a.Exploration.Nodes.Count(n=>n.kind==ResourceKind.Tree),Is.EqualTo(24));
+            Assert.That(a.Exploration.Nodes.Count(n=>n.kind==ResourceKind.Chest),Is.EqualTo(5));Assert.That(a.Exploration.Nodes.Count(n=>n.kind==ResourceKind.Tree),Is.EqualTo(ExplorationModel.TreeCount));
             var nodes=a.Exploration.Nodes.ToArray();
-            foreach(var n in nodes){Assert.That(Math.Max(Math.Abs(n.x),Math.Abs(n.z)),Is.InRange(12,24));Assert.That(nodes.Count(m=>m.id!=n.id&&Math.Abs(m.x-n.x)<4&&Math.Abs(m.z-n.z)<4),Is.Zero);}
+            foreach(var n in nodes){Assert.That(Math.Max(Math.Abs(n.x),Math.Abs(n.z)),Is.InRange(12,ExplorationModel.ResourceExtent));Assert.That(nodes.Count(m=>m.id!=n.id&&Math.Abs(m.x-n.x)<4&&Math.Abs(m.z-n.z)<4),Is.Zero);}
         }
         [Test] public void DefaultNewWorldsAreRandomAndAllWorkToolsAreOwnedWithoutSword()
         {

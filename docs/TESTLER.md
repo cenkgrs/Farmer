@@ -221,3 +221,34 @@ kabı/orak/çapa/baltayla yürüyüşte iki elin karaktere göre ileri–geri ha
 %80'inden küçük olmalı; alet socket'i bütün yürüyüş boyunca bileğe 12 cm'den
 fazla uzaklaşmamalı. İzole `FarmerQA` kaydı kullanılır. Sulama/savurma/yeniden
 kuşanma ve tutuş kontrolleri aynı turda devam eder.
+
+## 0.3 kazma/taş ve dünya genişletme — 10 Ekim
+
+EditMode `MiningTests`: başlangıçta kilitli kazma, tek satın alma/eksik para,
+yanlış alet, üç vuruş/tek ödül, dolu taş yığını, JSON sahiplik/ilerleme,
+sandık aktarımı, v7 kaynaklarını değiştirmeden bir kez ekleme, yapı/tarla/dekor
+engelini atlama, geçersiz kayıt ve `.pre-v8` yedeği. Diğer mevcut mantık
+testleriyle birlikte çalışır.
+
+PlayMode `Farmer.Tests.MiningPlayModeTests`: gerçek Farm sahnesinde uzak satın
+alma engeli, pazar düğmesi, kilitli/açık hızlı erişim yuvası, elde kazma,
+168 ağaç/48 kaya, kısmi vuruştan yükleme, biten kayanın renderer/collider'ının
+kapanması, çantadaki taş, tam kayıt döngüsü ve dört turp aşamasının ölçeği.
+UI düğmelerinin callback'leri ve oyun etkileşim metotları kullanılır; bu test
+fiziksel fare/klavye simülasyonu veya standalone player testi değildir.
+
+Normal kullanıcı kaydına erişmemek için test, `--farmer-smoke-capture` argümanı
+yoksa kendini atlar. Örnek (editör başka projede açıkken ayrı proje kopyasıyla):
+
+```sh
+Unity -batchmode -projectPath /path/to/isolated-project -runTests \
+  -testPlatform PlayMode -testFilter Farmer.Tests.MiningPlayModeTests \
+  -testResults /path/to/results.xml -logFile /path/to/test.log \
+  --farmer-smoke-capture /path/to/QA/mining.png
+```
+
+Grafik aygıtı açıkken sahne görüntüleri URP render isteğiyle PNG'ye yazılır;
+`-nographics` kullanılırsa görüntü alınmaz. İzole kayıt test sonunda temizlenir.
+Sonuçlar: `Logs/mining-editmode.xml` **131/131**, `Logs/mining-playmode.xml`
+**1/1 birleşik sahne testi** geçti. Mac Metal/Unity 6000.3.25f1. Windows/Linux
+build ve fiziksel girdi turu bu adımda çalıştırılmadı.

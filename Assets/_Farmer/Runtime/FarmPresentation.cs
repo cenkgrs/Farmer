@@ -25,7 +25,7 @@ namespace Farmer
         private const float WateringReleaseSeconds = 0.7f;
         private bool pouringAudio;
         private float releaseElapsed, releaseVolume;
-        private readonly GameObject[] heldItems = new GameObject[5];
+        private readonly GameObject[] heldItems = new GameObject[6];
         private readonly Material[] toolMaterials = new Material[3];
 
         public float WateringIntensity => wateringAudio != null && wateringAudio.isPlaying ? Mathf.Clamp01(wateringAudio.volume / WateringVolume) : 0;
@@ -149,6 +149,17 @@ namespace Farmer
             heldItems[3].name = "Held Hoe";
             heldItems[4] = Instantiate(Resources.Load<GameObject>("ExplorationArt/axe"), heldItemSocket, false);
             heldItems[4].name = "Held Axe";
+            var pickaxe=Resources.Load<GameObject>("ExplorationArt/pickaxe");
+            if(pickaxe!=null)heldItems[5]=Instantiate(pickaxe,heldItemSocket,false);
+            else
+            {
+                heldItems[5]=new GameObject("Held Pickaxe (temporary)");
+                heldItems[5].transform.SetParent(heldItemSocket,false);
+                Part(5,PrimitiveType.Cylinder,new Vector3(0,0,0),new Vector3(.035f,.38f,.035f),0);
+                var head=Part(5,PrimitiveType.Cube,new Vector3(0,.32f,0),new Vector3(.45f,.065f,.065f),2);
+                head.localRotation=Quaternion.Euler(0,0,-8);
+            }
+            heldItems[5].name="Held Pickaxe";
         }
         private Transform Part(int item, PrimitiveType shape, Vector3 position, Vector3 scale, int material)
         {
@@ -198,6 +209,7 @@ namespace Farmer
                 plants[i] = Instantiate(definition.growthStages[stage], transform);
                 plants[i].name = $"{plot.cropId} {i} stage {stage}";
                 plants[i].transform.position = game.PlotCenter(i);
+                plants[i].transform.localScale *= definition.visualScale;
             }
         }
     }

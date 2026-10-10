@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Farmer
 {
-    public enum FarmItem { Seeds = 0, WateringCan = 1, Sickle = 2, Hoe = 3, Axe = 4 }
+    public enum FarmItem { Seeds = 0, WateringCan = 1, Sickle = 2, Hoe = 3, Axe = 4, Pickaxe = 5 }
 
     public sealed class CropRules
     {
@@ -34,6 +34,8 @@ namespace Farmer
     [Serializable] public sealed class FarmSnapshot
     {
         public int version;
+        public bool ownsPickaxe;
+        public int stone;
         public int width;
         public int depth;
         public int day;
@@ -50,6 +52,10 @@ namespace Farmer
     // No scene, input, filesystem or clock dependencies: all transactions validate before mutating.
     public sealed partial class FarmModel
     {
+        public const int SaveVersion = 8;
+        public const int PickaxePrice = 80;
+        public bool OwnsPickaxe { get; private set; }
+        public int Stone { get; private set; }
         public const int StackLimit = 999;
         public const int MoneyLimit = 1000000000;
         public const int DayLimit = 1000000;
@@ -68,12 +74,12 @@ namespace Farmer
         public FarmItem EquippedItem { get; private set; }
         public BuildingModel Building { get; private set; }
         public ExplorationModel Exploration { get; private set; }
-        // All work tools are permanent starter items; there is no starter weapon.
+        // The pickaxe is purchased once; the original four tools remain starter items.
         public int ItemCount(FarmItem item, string cropId) => item == FarmItem.Seeds ? Seeds(cropId)
-            : item == FarmItem.WateringCan || item == FarmItem.Sickle || item == FarmItem.Hoe || item == FarmItem.Axe ? 1 : 0;
+            : item == FarmItem.Pickaxe ? (OwnsPickaxe ? 1 : 0) : item == FarmItem.WateringCan || item == FarmItem.Sickle || item == FarmItem.Hoe || item == FarmItem.Axe ? 1 : 0;
         public bool Equip(FarmItem item)
         {
-            if (item < FarmItem.Seeds || item > FarmItem.Axe) return false;
+            if (item < FarmItem.Seeds || item > FarmItem.Pickaxe || (item == FarmItem.Pickaxe && !OwnsPickaxe)) return false;
             EquippedItem = item; return true;
         }
         public bool UseEquipped(int index, string seedId, out string message)
@@ -90,7 +96,7 @@ namespace Farmer
         public int PlantedCount => plots.Count(p => !string.IsNullOrEmpty(p.cropId));
         public int ReadyCount => Enumerable.Range(0, plots.Count).Count(IsReady);
 
-        public FarmModel(IEnumerable<CropRules> catalog, int width = 6, int depth = 6, int startingMoney = 50, IEnumerable<BuildRules> buildCatalog = null, int? worldSeed = null)
+        public FarmModel(IEnumerable<CropRules> catalog, int width = 6, int depth = 6, int startingMoney = 50, IEnumerable<BuildRules> buildCatalog = null, int? worldSeed = null, Func<int,int,bool> resourceBlocked = null)
         {
             if (width < 1 || width > 100 || depth < 1 || depth > 100 || startingMoney < 0 || startingMoney > MoneyLimit)
                 throw new ArgumentOutOfRangeException(nameof(width));
@@ -99,7 +105,7 @@ namespace Farmer
             Width = width; Depth = depth; Money = startingMoney;
             Building = new BuildingModel(buildCatalog ?? BuildRules.Defaults);
             int seed=worldSeed??Guid.NewGuid().GetHashCode();
-            Exploration=ExplorationModel.Generate(seed==0?1:seed);
+            Exploration=ExplorationModel.Generate(seed==0?1:seed,resourceBlocked);
             foreach (string id in crops.Keys) { seeds[id] = 0; produce[id] = 0; }
         }
 
@@ -112,6 +118,12 @@ namespace Farmer
         public int ThirstyCount => plots.Count(p => crops.TryGetValue(p.cropId, out var c) && p.growth < c.WateredDays && !p.watered);
         private bool Valid(int index) => index >= 0 && index < plots.Count;
 
+        public bool BuyPickaxe(out string message)
+        {
+            if(OwnsPickaxe)return Fail("Zaten bir kazman var.",out message);
+            if(Money<PickaxePrice)return Fail($"Kazma için {PickaxePrice} para gerekiyor.",out message);
+            Money-=PickaxePrice;OwnsPickaxe=true;message="Kazma alındı. 7 ile kuşan.";return true;
+        }
         public bool BuyBed(out string message)
         {
             if(Money<BuildingModel.BedPrice)return Fail("Yatak için 100 para gerekiyor.",out message);
@@ -207,15 +219,15 @@ namespace Farmer
 
         public FarmSnapshot Snapshot() => new FarmSnapshot
         {
-            version = 7, width = Width, depth = Depth, day = Day, money = Money, minuteOfDay = MinuteOfDay, equippedItem = EquippedItem,
+            version = SaveVersion, ownsPickaxe = OwnsPickaxe, stone = Stone, width = Width, depth = Depth, day = Day, money = Money, minuteOfDay = MinuteOfDay, equippedItem = EquippedItem,
             seeds = seeds.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
             produce = produce.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
             plots = plots.Select(p => p.Copy()).ToArray(), building = Building.Snapshot(), exploration=Exploration.Snapshot()
         };
 
-        public static FarmModel Restore(FarmSnapshot saved, IEnumerable<CropRules> catalog, int width, int depth, IEnumerable<BuildRules> buildCatalog = null)
+        public static FarmModel Restore(FarmSnapshot saved, IEnumerable<CropRules> catalog, int width, int depth, IEnumerable<BuildRules> buildCatalog = null, Func<int,int,bool> resourceBlocked = null)
         {
-            if (saved == null || (saved.version < 1 || saved.version > 7) || saved.width != width || saved.depth != depth || saved.day < 1
+            if (saved == null || (saved.version < 1 || saved.version > SaveVersion) || saved.width != width || saved.depth != depth || saved.day < 1
                 || saved.day > DayLimit || saved.money < 0 || saved.money > MoneyLimit || saved.plots == null || (saved.version < 3 ? saved.plots.Length != width * depth : saved.plots.Length > PlotLimit))
                 throw new ArgumentException("Save header or grid is invalid or unsupported.");
             if(saved.version>=7 && (saved.building==null || saved.building.furniture==null))throw new ArgumentException("Missing furniture inventory.");
@@ -237,6 +249,12 @@ namespace Farmer
                 if (double.IsNaN(saved.minuteOfDay) || double.IsInfinity(saved.minuteOfDay) || saved.minuteOfDay < 0 || saved.minuteOfDay >= 1440)
                     throw new ArgumentException("Invalid clock.");
                 model.MinuteOfDay = saved.minuteOfDay;
+            }
+            if(saved.version>=8)
+            {
+                if(saved.stone<0||saved.stone>StackLimit)throw new ArgumentException("Invalid stone inventory.");
+                model.OwnsPickaxe=saved.ownsPickaxe;model.Stone=saved.stone;
+                if(saved.exploration==null||saved.exploration.generation!=1)throw new ArgumentException("Missing expanded resources.");
             }
             // V1 has no construction state. JsonUtility may materialize an empty nested object;
             // migrate by schema version, not by the nullness of that object.
@@ -270,9 +288,13 @@ namespace Farmer
                 bool cropAtBed=model.plots.Any(p=>p.x==-6&&(p.z==-4||p.z==-3)&&!string.IsNullOrEmpty(p.cropId));
                 if(!cropAtBed)model.Building.Place(rules.First(r=>r.IsBed).Id,-6,0,-4,0,out _);
             }
+            bool ResourceBlocked(int x,int z)=>model.plots.Any(p=>Math.Abs((long)p.x-x)<=2&&Math.Abs((long)p.z-z)<=2)
+                ||model.Building.Blocks.Any(b=>Math.Abs((long)b.x-x)<=3&&Math.Abs((long)b.z-z)<=3)
+                ||(resourceBlocked!=null&&resourceBlocked(x,z));
             model.Exploration=saved.version>=6?ExplorationModel.Restore(saved.exploration):ExplorationModel.Generate(
                 unchecked(saved.day*7919+saved.money*31+20261008)|1,
-                (x,z)=>model.IndexAt(x,z)>=0||model.Building.Blocks.Any(b=>Math.Abs((long)b.x-x)<=1&&Math.Abs((long)b.z-z)<=1));
+                ResourceBlocked);
+            if(saved.version<8)model.Exploration.Expand(ResourceBlocked);
             model.ValidateStorage(saved.version);
             return model;
         }
@@ -282,11 +304,16 @@ namespace Farmer
             var node=Exploration.Node(id);
             if(node==null||node.collected)return Fail("Buradan zaten topladın.",out message);
             var rule=ResourceRules.For(node.kind);
-            if(rule.Tool.HasValue&&EquippedItem!=rule.Tool.Value)return Fail(node.kind==ResourceKind.Tree?"Ağaç için baltayı kuşan (6).":"Yabani bitki için orağı kuşan (3).",out message);
+            if(rule.Tool.HasValue&&(EquippedItem!=rule.Tool.Value||ItemCount(rule.Tool.Value,cropId)==0))return Fail(node.kind==ResourceKind.Stone?"Taş için pazardan kazma al ve 7 ile kuşan.":node.kind==ResourceKind.Tree?"Ağaç için baltayı kuşan (6).":"Yabani bitki için orağı kuşan (3).",out message);
             bool final=node.hits+1==rule.Hits;
             if(final)
             {
                 if(node.kind==ResourceKind.Tree&&!Building.AddWood(rule.Reward))return Fail("Odun çantan dolu.",out message);
+                if(node.kind==ResourceKind.Stone)
+                {
+                    if(Stone>StackLimit-rule.Reward)return Fail("Taş yığını dolu.",out message);
+                    Stone+=rule.Reward;
+                }
                 if(node.kind==ResourceKind.WildPlant)
                 {
                     if(!seeds.ContainsKey(cropId)||seeds[cropId]>StackLimit-rule.Reward)return Fail("Tohum çantan dolu veya tohum tanımsız.",out message);
@@ -299,7 +326,7 @@ namespace Farmer
                 }
             }
             Exploration.Hit(id);
-            message=!final?$"Ağaç · {node.hits+1}/{rule.Hits} vuruş":node.kind==ResourceKind.Tree?$"+{rule.Reward} odun toplandı.":node.kind==ResourceKind.WildPlant?$"+{rule.Reward} tohum toplandı.":$"Sandıktan +{node.coins} para buldun!";
+            message=!final?$"{(node.kind==ResourceKind.Stone?"Taş":"Ağaç")} · {node.hits+1}/{rule.Hits} vuruş":node.kind==ResourceKind.Stone?$"+{rule.Reward} taş toplandı.":node.kind==ResourceKind.Tree?$"+{rule.Reward} odun toplandı.":node.kind==ResourceKind.WildPlant?$"+{rule.Reward} tohum toplandı.":$"Sandıktan +{node.coins} para buldun!";
             return true;
         }
 

@@ -28,7 +28,7 @@ namespace Farmer
         private const float HarvestDuration = .52f;
         private static readonly Vector3 RestHand = new Vector3(.4f, .98f, .32f);
         private bool HoldingAxe => game != null && game.Ready && game.Model.EquippedItem == FarmItem.Axe;
-        private bool HoldingShaftTool => game != null && game.Ready && (game.Model.EquippedItem == FarmItem.Axe || game.Model.EquippedItem == FarmItem.Hoe || game.Model.EquippedItem == FarmItem.Sickle);
+        private bool HoldingShaftTool => game != null && game.Ready && (game.Model.EquippedItem == FarmItem.Pickaxe || game.Model.EquippedItem == FarmItem.Axe || game.Model.EquippedItem == FarmItem.Hoe || game.Model.EquippedItem == FarmItem.Sickle);
         private Vector3 RestHandForItem => HoldingShaftTool ? new Vector3(.48f,.79f,.16f) : RestHand;
         private Quaternion RestRotationForItem => HoldingShaftTool ? Quaternion.Euler(85,0,-8) : Quaternion.identity;
         private static readonly int MoveSpeed = Animator.StringToHash("MoveSpeed");
@@ -133,12 +133,12 @@ namespace Farmer
             // Short anticipation, cutting arc, then recovery. Rapid successful clicks blend from the current pose.
             Vector3 raised = new Vector3(.63f, 1.09f, .28f), cut = new Vector3(-.12f, .83f, .57f);
             Quaternion raisedRotation = Quaternion.Euler(15, -35, -30), cutRotation = Quaternion.Euler(72, 30, 58);
-            if (game.Model.EquippedItem == FarmItem.Hoe || game.Model.EquippedItem == FarmItem.Axe)
+            if (game.Model.EquippedItem == FarmItem.Pickaxe || game.Model.EquippedItem == FarmItem.Hoe || game.Model.EquippedItem == FarmItem.Axe)
             {
                 raised = new Vector3(.36f,1.42f,.38f); cut = new Vector3(.32f,.83f,.58f);
                 raisedRotation = Quaternion.Euler(-65,0,0); cutRotation = Quaternion.Euler(30,0,0);
             }
-            if (HoldingAxe || game.Model.EquippedItem == FarmItem.Hoe)
+            if (HoldingAxe || game.Model.EquippedItem == FarmItem.Hoe || game.Model.EquippedItem == FarmItem.Pickaxe)
             {
                 raised = new Vector3(.43f,1.32f,.32f); cut = new Vector3(.43f,1.0f,.52f);
                 raisedRotation = Quaternion.Euler(-25,0,-12); cutRotation = Quaternion.Euler(80,0,-12);

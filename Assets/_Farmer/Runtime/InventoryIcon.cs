@@ -10,7 +10,7 @@ namespace Farmer
         {
             set { sprite=Artwork(value); preserveAspect=true; raycastTarget=false; }
         }
-        private static readonly string[] Names={"seed_pouch","watering_can","sickle","hoe","build_hammer","turnip","wood_log","wooden_inventory_frame","axe"};
+        private static readonly string[] Names={"seed_pouch","watering_can","sickle","hoe","build_hammer","turnip","wood_log","wooden_inventory_frame","axe","pickaxe","stone"};
         private static readonly Rect[] Bounds={
             new Rect(0.11244019f, 0.06698565f, 0.78947368f, 0.86044657f),
             new Rect(0.03827751f, 0.11722488f, 0.92583732f, 0.75917065f),
@@ -21,8 +21,9 @@ namespace Farmer
             new Rect(0.05661882f, 0.07256778f, 0.90829346f, 0.81020734f),
             new Rect(0.02510269f, 0.24651811f, 0.95070744f, 0.47910864f),
             new Rect(0.030303030f,0.057416268f,0.939393939f,0.870015949f),
+            new Rect(0,0,1,1), new Rect(.1f,.17f,.8f,.67f),
         };
-        private static readonly Sprite[] Cache=new Sprite[9];
+        private static readonly Sprite[] Cache=new Sprite[11];
         public static Sprite Artwork(int kind)
         {
             if(Cache[kind]!=null)return Cache[kind];

@@ -11,7 +11,7 @@ namespace Farmer
         [SerializeField] private FarmGame game;
         private Text summary,money,saveStatus,selectionStatus,feedback,campWarning,tooltipText;
         private RectTransform shop,camp,detail,tooltip,toast,buildMenu,normalBar;
-        private Button buyOne,buyFive,buyWood,sell,sleep,buildButton,buyBed,moveButton;
+        private Button buyOne,buyFive,buyWood,sell,sleep,buildButton,buyBed,moveButton,buyPickaxe;
         private Button[] buildChoices;
         private bool furnitureCategory;
         private int[] categoryIndices;
@@ -22,8 +22,8 @@ namespace Farmer
         private Text[] buildCounts;
         private bool displayedBuildMode;
         private BuildController builder;
-        private readonly Button[] slots=new Button[5];
-        private Text seedCount,produceCount,woodCount;
+        private readonly Button[] slots=new Button[6];
+        private Text seedCount,woodCount;
         private string hovered;
         private CanvasGroup visibility;
         private static Sprite rounded;
@@ -46,7 +46,7 @@ namespace Farmer
             saveStatus=Label(header,"",10,130,46,88,18,new Color(.40f,.39f,.23f));
             detail=Panel("Cell Details",root.transform,new Vector2(1,1),new Vector2(-24,-20),new Vector2(244,110),Cream);
             selectionStatus=Label(detail,"",15,14,12,216,90,Ink);
-            shop=Panel("Market",root.transform,new Vector2(0,1),new Vector2(24,-112),new Vector2(250,310),Cream);
+            shop=Panel("Market",root.transform,new Vector2(0,1),new Vector2(24,-112),new Vector2(250,354),Cream);
             Label(shop,"Tohum & malzeme",20,14,10,224,28,Ink);
             Label(shop,$"{game.ActiveCrop.displayName} · satış {game.ActiveCrop.salePrice} para",13,14,41,224,22,Ink);
             buyOne=Button(shop,$"B · 1 tohum al ({game.ActiveCrop.seedPrice})",14,72,222,36,()=>game.Buy(1));
@@ -54,6 +54,8 @@ namespace Farmer
             sell=Button(shop,"V · Ürünlerin hepsini sat",14,160,222,36,()=>game.SellHarvest());
             buyWood=Button(shop,"10 odun al (20 para)",14,204,222,36,()=>game.BuyWood());
             buyBed=Button(shop,"Yatak al (100 para)",14,248,222,36,()=>game.BuyBed());
+            buyPickaxe=Button(shop,$"Kazma al ({FarmModel.PickaxePrice} para)",14,292,222,36,()=>game.BuyPickaxe());
+            buyPickaxe.name="Buy Pickaxe";
             camp=Panel("Sleep",root.transform,new Vector2(0,1),new Vector2(24,-112),new Vector2(250,140),Cream);
             Label(camp,"Biraz dinlen",20,14,10,224,28,Ink);
             campWarning=Label(camp,"",13,14,43,224,44,Ink);
@@ -86,11 +88,11 @@ namespace Farmer
             var frame=bar.GetComponent<Image>();frame.sprite=ConstructionArtwork.Get("construction_frame");frame.type=Image.Type.Simple;
             Object.Destroy(bar.GetComponent<Outline>());
             // Display order matches the existing shortcuts, but the slots themselves show items rather than instructions.
-            int[] order={0,1,2,4,3,8,5,6};
+            int[] order={0,1,2,4,3,8,9,6};
             for(int i=0;i<order.Length;i++)
             {
                 int kind=order[i];float x=22+i*63;
-                var button=Button(bar,"",x,14,54,54,()=>{if(kind<4)game.Equip((FarmItem)kind);else if(kind==4)builder.ToggleMode();else if(kind==8)game.Equip(FarmItem.Axe);});
+                var button=Button(bar,"",x,14,54,54,()=>{if(kind<4)game.Equip((FarmItem)kind);else if(kind==4)builder.ToggleMode();else if(kind==8)game.Equip(FarmItem.Axe);else if(kind==9)game.Equip(FarmItem.Pickaxe);});
                 Object.Destroy(button.GetComponentInChildren<Text>().gameObject);
                 Object.Destroy(button.GetComponent<Outline>());
                 var iconObj=new GameObject("Item Icon",typeof(RectTransform),typeof(InventoryIcon));var rect=iconObj.GetComponent<RectTransform>();rect.SetParent(button.transform,false);rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.one;rect.offsetMin=new Vector2(6,7);rect.offsetMax=new Vector2(-6,-5);
@@ -99,8 +101,9 @@ namespace Farmer
                 if(kind<4){slots[kind]=button;button.name="Inventory Slot "+kind;}
                 if(kind==4){buildButton=button;button.name="Build Mode Button";}
                 if(kind==8){slots[4]=button;button.name="Inventory Slot 4";}
-                if(kind==0)seedCount=count;if(kind==5)produceCount=count;if(kind==6)woodCount=count;
-                string hint=kind==0?"Turp tohumu · 1\nHazır toprağa sol tıkla ek.":kind==1?"Sulama kabı · 2\nSol tuşu basılı tutarak sula.":kind==2?"Orak · 3\nOlgun ürünü sol tıkla hasat et.":kind==3?"Çapa · 5\nBoş toprağı sol tıkla hazırla.":kind==4?"İnşa · 4\nYapı kurmak için seç.":kind==5?"Turp\nHasadını pazarda satabilirsin.":kind==8?"Balta · 6\nAğaca sol tıkla odun topla.":"Odun\nAğaç keserek veya pazardan alınır.";
+                if(kind==9){slots[5]=button;button.name="Inventory Slot 5";}
+                if(kind==0)seedCount=count;if(kind==6)woodCount=count;
+                string hint=kind==9?"Kazma · 7":kind==0?"Turp tohumu · 1\nHazır toprağa sol tıkla ek.":kind==1?"Sulama kabı · 2\nSol tuşu basılı tutarak sula.":kind==2?"Orak · 3\nOlgun ürünü sol tıkla hasat et.":kind==3?"Çapa · 5\nBoş toprağı sol tıkla hazırla.":kind==4?"İnşa · 4\nYapı kurmak için seç.":kind==5?"Turp\nHasadını pazarda satabilirsin.":kind==8?"Balta · 6\nAğaca sol tıkla odun topla.":"Odun\nAğaç keserek veya pazardan alınır.";
                 AddHover(button.gameObject,hint.Split('\n')[0]);
                 button.GetComponent<Image>().color=Color.clear;
             }
@@ -138,11 +141,12 @@ namespace Farmer
             toast.anchoredPosition=new Vector2(0,game.BuildMode?214:172);
             summary.text=$"Gün {model.Day}   ·   {model.ClockText}";money.text=$"{model.Money} para";saveStatus.text=game.SaveStatus=="Kaydedildi"?"Kaydedildi":game.Ready?"":"Kayıt hatası";
             feedback.text=game.Feedback;toast.gameObject.SetActive(!game.Ready&&!game.InventoryOpen);
-            seedCount.text=model.Seeds(crop.id).ToString();produceCount.text=model.Produce(crop.id).ToString();woodCount.text=model.Building.Wood.ToString();
+            seedCount.text=model.Seeds(crop.id).ToString();woodCount.text=model.Building.Wood.ToString();
             for(int i=0;i<slots.Length;i++)
             {
                 slots[i].GetComponent<Image>().color=!game.BuildMode&&model.EquippedItem==(FarmItem)i?Gold:Color.clear;
-                slots[i].interactable=game.Ready;
+                slots[i].interactable=game.Ready&&(i!=(int)FarmItem.Pickaxe||model.OwnsPickaxe);
+                slots[i].GetComponentInChildren<InventoryIcon>().color=i==(int)FarmItem.Pickaxe&&!model.OwnsPickaxe?new Color(1,1,1,.25f):Color.white;
             }
             buildButton.GetComponent<Image>().color=game.BuildMode?Gold:Color.clear;buildButton.interactable=game.Ready;
             buildMenu.gameObject.SetActive(game.BuildMode);buildTabs.gameObject.SetActive(game.BuildMode);
@@ -157,6 +161,7 @@ namespace Farmer
             }
             moveButton.GetComponentInChildren<Text>().text=builder.MoveMode?"M · İnşaya dön":"M · Tutup taşı";
             string hint=hovered;
+            if(hint=="Kazma · 7"&&!model.OwnsPickaxe)hint="Kazma · Pazardan satın al";
             tooltip.gameObject.SetActive(!game.InventoryOpen&&hint!=null);tooltipText.text=hint??"";
             detail.gameObject.SetActive(!game.InventoryOpen&&game.BuildMode);
             selectionStatus.text=$"{builder.ActiveDefinition.displayName}\n{builder.HeightLabel} · {builder.Rotation*90}°";
@@ -168,6 +173,8 @@ namespace Farmer
             sell.interactable=game.Ready&&model.Produce(crop.id)>0;
             buyWood.interactable=game.Ready&&model.Money>=BuildingModel.WoodPackPrice&&model.Building.Wood<=BuildingModel.WoodLimit-BuildingModel.WoodPackCount;
             buyBed.interactable=game.Ready&&model.Money>=BuildingModel.BedPrice&&model.Building.Beds<BuildingModel.WoodLimit;
+            buyPickaxe.interactable=game.Ready&&!model.OwnsPickaxe&&model.Money>=FarmModel.PickaxePrice;
+            buyPickaxe.GetComponentInChildren<Text>().text=model.OwnsPickaxe?"Kazma · Satın alındı":$"Kazma al ({FarmModel.PickaxePrice} para)";
             sleep.interactable=game.Ready;campWarning.text=model.ThirstyCount>0?$"{model.ThirstyCount} bitki su bekliyor.\nUyandığında saat 06:00 olacak.":"Yatağında sabaha kadar uyu.\nUyandığında saat 06:00 olacak.";
         }
         private static Sprite Rounded()

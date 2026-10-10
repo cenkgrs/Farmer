@@ -1,0 +1,5 @@
+{
+  "name": "Farmer.Tests.PlayMode",
+  "references": ["Farmer.Runtime", "Unity.ugui", "Unity.RenderPipelines.Universal.Runtime", "Unity.RenderPipelines.Core.Runtime"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}
