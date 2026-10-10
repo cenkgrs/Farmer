@@ -51,7 +51,7 @@ Kabul:
 - [x] Çit, açılır bahçe kapısı ve taş tüketen döşenebilir yol; sökme/taşıma/kayıt.
 - [x] İlk 10–20 oyun dakikasındaki gelir/gider örneği kaydedilir ve kilitlenme açısından incelenir; bu süre tasarım denemesidir.
 
-10 Ekim: bu ölçütler ilk üç ürün (turp, havuç, domates) ve tek sebze kasası tarifiyle doğrulandı. 11 Ekimde çit/bahçe kapısı/taş yol, ardından marul/buğday/balkabağı ve hasat sepetiyle **0.3 özellik kapsamı uygulandı**. Nihai yeni bitki modelleri ve gerçek oyuncu denge değerlendirmesi açık; 0.4 otomatik başlatılmadı. İlk 10–20 dakika [denge hesabı](DENGE_03.md) gerçek oyuncu oturumu ölçümü değildir; ilk mahsul gelirinin 20 dakikayı aştığı kaydedildi.
+10 Ekim: bu ölçütler ilk üç ürün (turp, havuç, domates) ve tek sebze kasası tarifiyle doğrulandı. 11 Ekimde çit/bahçe kapısı/taş yol, ardından marul/buğday/balkabağı ve hasat sepetiyle **0.3 özellik kapsamı uygulandı**. Nihai yeni bitki modelleri ve gerçek oyuncu denge değerlendirmesi açık; 0.4, 11 Ekim kullanıcı onayıyla başlatıldı. İlk 10–20 dakika [denge hesabı](DENGE_03.md) gerçek oyuncu oturumu ölçümü değildir; ilk mahsul gelirinin 20 dakikayı aştığı kaydedildi.
 
 ## 0.4 — Ormanın ötesi
 
@@ -59,10 +59,12 @@ Orman/maden girişi, kaynaklar, iki basit mob, saldırı/kaçınma, iyileştirme
 
 Kabul:
 
-- [ ] Dışarı çıkmak kaynak/üretim hedefi sağlar; tehlike okunaklıdır.
-- [ ] Çiftliğe dönmek mümkün ve anlamlıdır; çiftlik başlangıçta güvenli kalır.
-- [ ] Düşman ve karakter çarpışmaları, hasar tekrarları ve yenilgi akışı doğrulanır.
-- [ ] Çiftçiliğe dönmek için sürekli savaş zorunlu değildir.
+- [x] Dışarı çıkmak kaynak/üretim hedefi sağlar; tehlike okunaklıdır.
+- [x] Çiftliğe dönmek mümkün ve anlamlıdır; çiftlik başlangıçta güvenli kalır.
+- [x] Düşman ve karakter çarpışmaları, hasar tekrarları ve yenilgi akışı doğrulanır.
+- [x] Çiftçiliğe dönmek için sürekli savaş zorunlu değildir.
+
+11 Ekim: iki karşılaşma, balta, kaçınma, sebzeyle/yatakta iyileşme, hafif yenilgi ve günlük kaynak ödülü uygulandı; PlayMode savaş kontrolü geçti. Geçici modeller kullanıcı onaylı. Ayrıntı: [DEMO_05.md](DEMO_05.md).
 
 ## 0.5 — İlk demo
 
@@ -75,6 +77,8 @@ Kabul:
 - [ ] Oyuncu tarım, satış, ev kurma ve keşif döngüsünü dışarıdan sözlü yardım almadan tamamlar.
 - [ ] Kamera engelleri, giriş/çıkışlar, kayıt/yükleme ve temel performans gerçek donanımda incelenir.
 - [ ] Kalan sorunlar ve oynanış geri bildirimi kaydedilir; demo tamamlanmadan yeni büyük sistem eklenmez.
+
+11 Ekim: **0.5 demo adayı** için defter/yönlendirme, ses ve görüntü ayarları, v12 kayıt ve paketleme akışı eklendi. Nihai kabul; gerçek Windows/Linux donanım denemesi, yaklaşık bir saatlik oyuncu turu ve görsel geri bildirim sonrası verilecek. Teknik sonuçlar YAZILIMCI.md sonunda.
 
 ## Demo sonrası adaylar
 

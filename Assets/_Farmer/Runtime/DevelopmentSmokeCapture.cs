@@ -56,6 +56,10 @@ namespace Farmer
             farm.GetComponent<DayNightCycle>().ClockPaused = true;
             if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-menu") >= 0)
                 yield return MenuSmokeChecks.Run(outputPath);
+            if(Array.IndexOf(Environment.GetCommandLineArgs(),"--farmer-check-demo")>=0)
+                yield return DemoSmokeChecks.Run(outputPath);
+            else
+            {
             // Legacy farming regression keeps its explicit 60-coin economy and a test-only rest point.
             var fixture=farm.Model.Snapshot();fixture.money=60;fixture.building.beds=5;
             Directory.CreateDirectory(Path.GetDirectoryName(farm.SavePath));
@@ -87,6 +91,7 @@ namespace Farmer
                 yield return ValleySmokeChecks.Run(outputPath);
             if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-storage") >= 0)
                 yield return StorageSmokeChecks.Run(outputPath);
+            }
             yield return new WaitForEndOfFrame();
             ScreenCapture.CaptureScreenshot(outputPath);
             float deadline = Time.realtimeSinceStartup + 15f;

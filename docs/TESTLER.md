@@ -312,3 +312,17 @@ Kontrol sınırlaması: 146 EditMode sonucu önceki ürün adımına aittir; bu 
 EditMode tekrar çalışmadı. İlk tasarım turunda eski UI isimlerini arayan test
 hata verdi; isimler/akış yeni ekranla güncellendi. Eski standalone farming
 smoke yeni adet seçiciye uyarlandı, yeniden çalıştırılmadı.
+
+
+## 0.4 / 0.5
+
+`CombatTests`, `DemoProgressTests` ve önceki EditMode testlerini birlikte çalıştır.
+`CombatPlayModeTests` ve `DemoPlayModeTests` gerçek Farm sahnesinde; uzak hedef,
+görüş engeli, hazırlık/hasar, cooldown, kaçınma, çarpışma, yenilgi, günlük ödül,
+kayıt ve modal arayüzü kontrol eder. PlayMode komutuna mutlaka
+`--farmer-smoke-capture <QA-png-yolu>` ekle; normal kayıt bu sayede ayrılır.
+
+`Farmer.Editor.DemoBuild.Build --farmer-demo-target mac --farmer-demo-development`
+ile üretilen native oyuncuda `--farmer-check-demo` kullanılabilir. Klavye/fare
+olayları normal girdi yoluna verilir; pencerede odak şarttır. Sentetik girdi testi
+insan oynanış değerlendirmesi değildir. Tam build/paket komutları DEMO_05.md'de.

@@ -16,7 +16,7 @@ namespace Farmer
         private void Update()
         {
             if (game == null || !game.Ready) return;
-            if (Application.isFocused && game.isActiveAndEnabled && !ClockPaused && !game.MenuOpen)
+            if (Application.isFocused && game.isActiveAndEnabled && !ClockPaused && !game.MenuOpen && !game.JournalOpen)
             {
                 int nights = game.Model.AdvanceMinutes(Time.deltaTime * 1440.0 / (Mathf.Max(1,realMinutesPerDay)*60));
                 sinceSave += Time.deltaTime;

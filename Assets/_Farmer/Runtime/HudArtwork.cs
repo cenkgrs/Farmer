@@ -18,6 +18,21 @@ namespace Farmer
             var image=coin.GetComponent<RawImage>();image.texture=Resources.Load<Texture2D>("MarketArt/approved");
             image.uvRect=new Rect(1206f/1672,(941-153f)/941,41f/1672,41f/941);image.raycastTarget=false;
         }
+        // Nine texture patches keep the inventory's wood border at a fixed thickness.
+        public static void ApplyFrame(RectTransform panel)
+        {
+            panel.GetComponent<Image>().color=Color.clear;Object.Destroy(panel.GetComponent<Outline>());
+            var sprite=ConstructionArtwork.Get("construction_frame");var source=sprite.rect;var texture=sprite.texture;
+            float[] sx={0,.041f,.958f},sw={.041f,.098f,.042f},sy={0,.35f,.84f},sh={.16f,.30f,.16f};
+            for(int row=0;row<3;row++)for(int col=0;col<3;col++)
+            {
+                var patch=new GameObject("Wood frame patch",typeof(RectTransform),typeof(RawImage));var r=(RectTransform)patch.transform;r.SetParent(panel,false);
+                r.anchorMin=new Vector2(col==2?1:0,row==2?1:0);r.anchorMax=new Vector2(col==0?0:1,row==0?0:1);
+                r.offsetMin=new Vector2(col==0?0:col==1?18:-18,row==0?0:row==1?18:-18);
+                r.offsetMax=new Vector2(col==0?18:col==1?-18:0,row==0?18:row==1?-18:0);
+                var image=patch.GetComponent<RawImage>();image.texture=texture;image.uvRect=new Rect((source.x+source.width*sx[col])/texture.width,(source.y+source.height*sy[row])/texture.height,source.width*sw[col]/texture.width,source.height*sh[row]/texture.height);image.raycastTarget=false;
+            }
+        }
         private static void Strip(RectTransform parent,string name,Texture2D texture,Rect source,float x,float width)
         {
             var o=new GameObject(name,typeof(RectTransform),typeof(RawImage));var r=(RectTransform)o.transform;r.SetParent(parent,false);

@@ -279,3 +279,20 @@ Kullanıcı üç yeni tohumu da mevcut pazar gibi ImageGen çizimleriyle istedi.
 Pazardaki kart/detay görselleri kâğıt tohum paketi illüstrasyonlarıdır; dünya
 bitkilerinin renderları bu alanlarda kullanılmaz. Tarla bitkileri geçici,
 düşük poligonlu native geometri; ileride GLB teslimiyle değiştirilebilir.
+
+
+## 11 Ekim — 0.4 savaş ve 0.5 demo adayı
+
+Kullanıcı 0.4 ve 0.5'in devamını, geçici stilize modelleri ve rutin denge kararlarını
+onayladı. İki isteğe bağlı alan eklendi: orman açıklığı/slime ve maden girişi/taş
+böceği. Balta 6 + sol tık saldırır; Space kısa kaçınma, H bir sebze ile 25 can,
+yatakta uyuma tam can verir. Başlangıçta kılıç veya kazma verilmez. Yenilince
+başlangıç yakınına dönülür; çanta korunur, paranın %10'u ve en fazla 10 para gider.
+Her alan düşman yenildikten sonra oyun günü başına 12 odun/taş verir; maden için
+satın alınmış kazma gerekir. Alanlardan uzaklaşmak savaşı sonlandırır, çiftçilik
+ve inşa için savaş zorunlu değildir. Ayrıntılı denge: [DEMO_05.md](DEMO_05.md).
+
+J çiftlik defterini açar. Tohum alma, ekim, sulama, hasat, satış, inşa ve keşif
+adımları kalıcı işaretlenir. Defterden pazar/çiftlik/keşif yönü seçilebilir; ses,
+FPS sınırı ve tam ekran ayarlanır. Defter açıkken dünya girdisi ve saat durur.
+Yeni oyuncuya ilk girişte gösterilir; mevcut oyuncu J veya menüden açar.

@@ -51,12 +51,14 @@ namespace Farmer
         public PlotRecord[] plots;
         public BuildingSnapshot building;
         public ExplorationSnapshot exploration;
+        public CombatSnapshot combat;
+        public int journey;
     }
 
     // No scene, input, filesystem or clock dependencies: all transactions validate before mutating.
     public sealed partial class FarmModel
     {
-        public const int SaveVersion = 11;
+        public const int SaveVersion = 12;
         public const int PickaxePrice = 80;
         public bool OwnsPickaxe { get; private set; }
         public int Stone { get; private set; }
@@ -144,7 +146,7 @@ namespace Farmer
             long cost = (long)c.SeedPrice * count;
             if (Money < cost) return Fail("Yeterli paran yok.", out message);
             Money -= (int)cost; seeds[id] += count;
-            message = $"{count} tohum alındı. −{cost} para."; return true;
+            Journey |= JourneyStep.Seeds; message = $"{count} tohum alındı. −{cost} para."; return true;
         }
 
         public bool BuyWood(out string message)
@@ -162,7 +164,7 @@ namespace Farmer
             if (!string.IsNullOrEmpty(plots[index].cropId)) return Fail("Bu kare zaten ekili.", out message);
             if (seeds[id] < 1) return Fail("Tohumun yok. Pazardan tohum al.", out message);
             seeds[id]--; plots[index].cropId = id; plots[index].growth = 0; plots[index].watered = false;
-            message = "Tohum ekildi. Büyümeyi başlatmak için bir kez sula."; return true;
+            Journey |= JourneyStep.Plant; message = "Tohum ekildi. Büyümeyi başlatmak için bir kez sula."; return true;
         }
 
         public bool Uproot(int index, out string message)
@@ -178,7 +180,7 @@ namespace Farmer
             if (IsReady(index)) return Fail("Bu ürün hasada hazır.", out message);
             if (plots[index].watered) return Fail("Bu bitki zaten sulandı; tekrar sulamana gerek yok.", out message);
             plots[index].watered = true;
-            message = "Sulandı. Hasada kadar yeniden sulama gerekmiyor."; return true;
+            Journey |= JourneyStep.Water; message = "Sulandı. Hasada kadar yeniden sulama gerekmiyor."; return true;
         }
 
         public bool Harvest(int index, out string message)
@@ -194,7 +196,7 @@ namespace Farmer
                 // One watering per planting remains valid for every repeat harvest.
             }
             else { plot.cropId = ""; plot.growth = 0; plot.watered = false; plot.regrowing = false; }
-            message = $"Hasat tamamlandı! +{c.Yield} ürün. Pazarda satabilirsin."; return true;
+            Journey |= JourneyStep.Harvest; message = $"Hasat tamamlandı! +{c.Yield} ürün. Pazarda satabilirsin."; return true;
         }
 
         public bool Sell(string id, int count, out string message)
@@ -203,7 +205,7 @@ namespace Farmer
             long income = (long)c.SalePrice * count;
             if (Money + income > MoneyLimit) return Fail("Para sınırına ulaştın.", out message);
             produce[id] -= count; Money += (int)income;
-            message = $"{count} ürün satıldı. +{income} para!"; return true;
+            Journey |= JourneyStep.Sale; message = $"{count} ürün satıldı. +{income} para!"; return true;
         }
 
         public int IndexAt(int x, int z) => plotIndices.TryGetValue((x, z), out int index) ? index : -1;
@@ -243,7 +245,7 @@ namespace Farmer
             version = SaveVersion, ownsPickaxe = OwnsPickaxe, stone = Stone, selectedCropId = SelectedCropId, crafted = CraftedSnapshot(), width = Width, depth = Depth, day = Day, money = Money, minuteOfDay = MinuteOfDay, equippedItem = EquippedItem,
             seeds = seeds.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
             produce = produce.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
-            plots = plots.Select(p => p.Copy()).ToArray(), building = Building.Snapshot(), exploration=Exploration.Snapshot()
+            plots = plots.Select(p => p.Copy()).ToArray(), building = Building.Snapshot(), exploration=Exploration.Snapshot(), combat=Combat.Snapshot(), journey=(int)Journey
         };
 
         public static FarmModel Restore(FarmSnapshot saved, IEnumerable<CropRules> catalog, int width, int depth, IEnumerable<BuildRules> buildCatalog = null, Func<int,int,bool> resourceBlocked = null, IEnumerable<RecipeRules> recipeCatalog = null)
@@ -323,6 +325,8 @@ namespace Farmer
                 unchecked(saved.day*7919+saved.money*31+20261008)|1,
                 ResourceBlocked);
             if(saved.version<8)model.Exploration.Expand(ResourceBlocked);
+            if(saved.version>=12){if(saved.journey<0||saved.journey>127)throw new ArgumentException("Invalid journey progress.");model.Journey=(JourneyStep)saved.journey;}
+            model.Combat = saved.version >= 12 ? CombatModel.Restore(saved.combat, saved.day) : new CombatModel();
             model.ValidateStorage(saved.version);
             return model;
         }

@@ -15,10 +15,11 @@ namespace Farmer
         public bool BuildMode { get; private set; }
         public bool InventoryOpen { get; set; }
         public bool MenuOpen { get; set; }
+        public bool JournalOpen { get; set; }
         private MarketInteraction marketInteraction;
         public bool MarketOpen => marketInteraction != null && marketInteraction.IsOpen;
         public bool MarketInputConsumed => marketInteraction != null && marketInteraction.ConsumedThisFrame;
-        public bool WorldInputBlocked => MenuOpen || InventoryOpen || MarketOpen || MarketInputConsumed;
+        public bool WorldInputBlocked => JournalOpen || MenuOpen || InventoryOpen || MarketOpen || MarketInputConsumed;
         public bool CanTrade => Ready && MarketOpen && NearMarket && !MenuOpen && !InventoryOpen;
         public bool HadSaveAtStartup { get; private set; }
         [SerializeField] private FarmSelection selection;
@@ -85,6 +86,8 @@ namespace Farmer
             HadSaveAtStartup=File.Exists(SavePath)||File.Exists(SavePath+".bak");
             LoadGame();
             gameObject.AddComponent<SessionMenu>();
+            gameObject.AddComponent<CombatController>();
+            gameObject.AddComponent<DemoHud>();
         }
         private bool ResourceBlockedByScenery(int x,int z)
         {
@@ -94,7 +97,7 @@ namespace Farmer
         private void Update()
         {
             var k = Keyboard.current;
-            if (MenuOpen || !Application.isFocused) { StopWatering(); return; }
+            if (MenuOpen || JournalOpen || !Application.isFocused) { StopWatering(); return; }
             if (k?.f9Key.wasPressedThisFrame == true) LoadGame();
             if (!Ready || InventoryOpen || MarketInputConsumed) { StopWatering(); return; }
             if(MarketOpen)
@@ -183,6 +186,9 @@ namespace Farmer
             var mouse = Mouse.current;
             if (mouse == null || !mouse.leftButton.isPressed) { StopWatering(); return; }
             selection.RefreshPointer();
+            var combat=GetComponent<CombatController>();
+            if (!selection.PointerBlocked && combat != null && combat.UsePointer(mouse.leftButton.wasPressedThisFrame))
+            { StopWatering(); return; }
             var exploration=GetComponent<ExplorationController>();
             if(exploration!=null&&exploration.RefreshPointer())
             {StopWatering();if(mouse.leftButton.wasPressedThisFrame)exploration.UseTarget();return;}
@@ -318,7 +324,14 @@ namespace Farmer
         {
             if (!Ready || WorldInputBlocked) return false;
             if (!NearCamp) { Feedback = "Uyumak için bir yatağa yaklaş."; return false; }
-            bool ok = Model.EndDay(out var message); return Complete(ok, message);
+            bool ok = Model.EndDay(out var message);
+            if(ok) Model.Combat.Heal(100);
+            return Complete(ok, message);
+        }
+        public void CombatChanged(string message, Vector3? swing = null)
+        {
+            if(swing.HasValue) ResourceUsed?.Invoke(swing.Value);
+            Complete(true, message);
         }
         private bool Complete(bool success, string message)
         {

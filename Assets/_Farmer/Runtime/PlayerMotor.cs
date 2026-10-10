@@ -13,6 +13,21 @@ namespace Farmer
         private CharacterController controller;
         private FarmGame game;
         private float verticalSpeed;
+        private float dodgeTime, dodgeCooldown, invulnerableTime;
+        private Vector3 dodgeDirection;
+        public bool Invulnerable => invulnerableTime > 0;
+        public bool IsDodging => dodgeTime > 0;
+        public bool TryDodge(Vector2 input)
+        {
+            if(viewCamera==null||dodgeCooldown>0||game!=null&&(!game.Ready||game.WorldInputBlocked||game.BuildMode))return false;
+            dodgeDirection=PlanarMovement.Direction(input,viewCamera.transform.forward,viewCamera.transform.right);
+            if(dodgeDirection.sqrMagnitude<.01f)dodgeDirection=model!=null?model.forward:transform.forward;
+            dodgeDirection.y=0;dodgeDirection.Normalize();dodgeTime=.24f;invulnerableTime=.34f;dodgeCooldown=1.2f;return true;
+        }
+        public void CancelDodge(){dodgeTime=invulnerableTime=0;}
+        public void Teleport(Vector3 position)
+        {CancelDodge();verticalSpeed=0;controller.enabled=false;transform.position=position;controller.enabled=true;Physics.SyncTransforms();}
+
 
         public float Speed => speed;
         public float PlanarSpeed { get; private set; }
@@ -34,6 +49,8 @@ namespace Farmer
                 input.y = (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed ? 1 : 0)
                     - (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed ? 1 : 0);
             }
+            if(Application.isFocused&&keyboard?.spaceKey.wasPressedThisFrame==true)TryDodge(input);
+            if(!Application.isFocused||game!=null&&game.WorldInputBlocked)CancelDodge();
             Step(input, Mathf.Min(Time.deltaTime, 0.1f));
         }
 
@@ -43,7 +60,11 @@ namespace Farmer
             Vector3 direction = PlanarMovement.Direction(input, viewCamera.transform.forward, viewCamera.transform.right);
             if (controller.isGrounded && verticalSpeed < 0f) verticalSpeed = -2f;
             verticalSpeed = Mathf.Max(verticalSpeed - 20f * deltaTime, -30f);
-            Vector3 target = transform.position + direction * speed * deltaTime;
+            float burstTime=Mathf.Min(dodgeTime,deltaTime);
+            Vector3 travel=dodgeDirection*8f*burstTime+direction*speed*(deltaTime-burstTime);
+            if(dodgeTime>0)direction=dodgeDirection;
+            dodgeTime=Mathf.Max(0,dodgeTime-deltaTime);dodgeCooldown=Mathf.Max(0,dodgeCooldown-deltaTime);invulnerableTime=Mathf.Max(0,invulnerableTime-deltaTime);
+            Vector3 target = transform.position + travel;
             Vector3 displacement = PlanarMovement.ClampToGround(target, walkableHalfExtent) - transform.position;
             displacement.y = verticalSpeed * deltaTime;
             Vector3 before = transform.position;

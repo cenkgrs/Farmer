@@ -194,3 +194,14 @@ kâğıt paket + ürün illüstrasyonu; kart ve detayda kullanılır. Kaynaklar 
 model veya teslim referansı değildir. `SeedArtImport` alfa, NPOT boyut ve
 sıkıştırmasız UI görünümünü korur. Hasat/çanta ikonları yeni prefab renderlarıdır;
 tohum kartları bunlardan bağımsız `SeedArtwork` kullanır.
+
+
+## 0.4 geçici düşman seti
+
+11 Ekimde kullanıcı sonraki fazlarda geçici stilize görselleri onayladı. Slime
+(1,2 × 0,85 × 1,05 m) ve taş böceği (gövde 1,2 × 0,85 × 1,05 m, yan bacaklar)
+çalışma zamanında yerel geometriden üretilir. Turuncu hazırlık, squash ve kısa
+vuruş parlaması mekanik okunaklılık içindir. Nihai model kalitesi iddia edilmez.
+Nihai teslimde taban merkezli pivot, +Z ön, ayrı gövde/gözler ve böcekte ayrı
+bacaklar, 1–2 malzeme ve yaklaşık 2–5 bin üçgen hedeflenir. Maden girişi 2,7 m
+ahşap çerçeve ve kayalarla geçicidir; sahneyi yeniden üretmeden değiştirilebilir.

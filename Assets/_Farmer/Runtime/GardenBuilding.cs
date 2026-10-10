@@ -16,6 +16,7 @@ namespace Farmer
         {
             if(!CanPlaceStructure(id,x,level,z,rotation,out message))return false;
             if(!Building.Place(id,x,level,z,rotation,out message,Stone))return false;
+            Journey |= JourneyStep.Build;
             int cost=Building.Rules(id).StoneCost;Stone-=cost;
             if(cost>0)message=$"Yol döşendi. −{cost} taş.";
             return true;

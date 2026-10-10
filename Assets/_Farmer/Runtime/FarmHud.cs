@@ -134,7 +134,7 @@ namespace Farmer
         private void LateUpdate(){if(summary!=null)Refresh();}
         private void Refresh()
         {
-            bool hidden=game.MenuOpen||game.MarketOpen;visibility.alpha=hidden?0:1;visibility.interactable=!hidden;visibility.blocksRaycasts=!hidden;
+            bool hidden=game.MenuOpen||game.MarketOpen||game.JournalOpen;visibility.alpha=hidden?0:1;visibility.interactable=!hidden;visibility.blocksRaycasts=!hidden;
             var model=game.Model;var crop=game.ActiveCrop;
             marketHint.gameObject.SetActive(game.Ready&&game.NearMarket&&!game.WorldInputBlocked&&!game.BuildMode&&hovered==null);
             if(displayedBuildMode!=game.BuildMode){hovered=null;displayedBuildMode=game.BuildMode;}

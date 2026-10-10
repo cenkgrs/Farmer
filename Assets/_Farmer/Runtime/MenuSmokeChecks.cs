@@ -26,6 +26,7 @@ namespace Farmer
                 Check(!Screen.fullScreen,"The fullscreen toggle returns to windowed mode.");
                 var button=Object.FindObjectsByType<Button>(FindObjectsSortMode.None).Single(b=>b.GetComponentInChildren<Text>()?.text=="Başla");
                 yield return Click(mouse,button);Check(!menu.IsOpen,"Start button enters the world.");
+                Check(game.JournalOpen,"First start opens the optional farm guide.");game.GetComponent<DemoHud>().SetOpen(false);
                 int money=game.Model.Money;game.SaveGame();game.LoadGame();
                 InputSystem.QueueStateEvent(keyboard,new KeyboardState(Key.Escape));yield return null;yield return null;
                 InputSystem.QueueStateEvent(keyboard,new KeyboardState());yield return null;yield return null;

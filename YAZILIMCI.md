@@ -4,7 +4,7 @@ Son güncelleme: **11 Ekim 2026 — Europe/Istanbul**.
 
 ## Şu an nerede kaldık?
 
-**Güncel (11 Ekim): 0.3 altı ürüne ulaştı: turp/havuç/domates + marul/buğday/balkabağı. Hasat sepeti ikinci tarif oldu; eski üç ürünün dengesi korundu. Yeni tohum kartları kullanıcının isteğiyle ImageGen çizimleri; iki satırlı tohum seçimi ve sayfalı pazar hazır. Kayıt v11, 170/170 EditMode ve 6/6 PlayMode geçti. 0.3 özellik kapsamı uygulandı; nihai bitki GLB'leri ve gerçek oyuncu denge turu açık. 0.4 başlatılmadı. Ayrıntılar dosyanın sonunda.**
+**Güncel (11 Ekim): 0.4'ün iki isteğe bağlı karşılaşması ve savaş/iyileşme/yenilgi/kaynak döngüsü uygulandı. 0.5 demo adayı için J defteri, kalıcı ilerleme, yönlendirme, ses/FPS ayarları ve paketleme araçları hazır. Kayıt v12; 186/186 EditMode, 8/8 PlayMode geçti. İlk native Mac giriş testi 8 kontrolü geçti; HUD katmanı düzeltmesinden sonraki native tekrar, temiz klon ve platform paketleri hazırlanıyor. Gerçek Windows/Linux donanım ve bir saatlik oyuncu kabulü açık. Ayrıntı dosya sonunda.**
 
 **Unity 6000.3.25f1 LTS (e1dba0a9aba4)** Linux makinesine kuruldu ve `Unity -version` ile doğrulandı. Resmi URP şablonunun kaynak dosyaları depoya alındı. 7 Ekim tarihinde aktif lisans doğrulandı; ilk paket importu, C# derlemesi ve başlangıç sahnesi üretimi başarıyla tamamlandı. Linux build ve görsel kontrol sonucu aşağıdaki doğrulama kaydında tutulur. **0.1 çekirdek prototipi Linux üzerinde tamamlandı:** hareket, kare seçimi, tohum satın alma, ekim/sulama, dört görünür büyüme aşaması, hasat/satış, gün ilerletme ve kayıt/yükleme çalışıyor. **Görsel ara aşama Linux üzerinde entegre edildi:** kullanıcının Tripo çiftçi/sulama kabı/orak/pazar modelleri ve Mixamo Idle/Walk animasyonları sahnede. Kullanıcı yeni görselleri beğendi; arkadaşına göndermek için Windows deneme paketi hazırlandı. Sulama/hasat için prosedürel alet hareketleri ve su akışı da eklendi; kullanıcının ters el tutuşu geri bildirimi düzeltilip son Linux player turunda 121 kontrol geçti. 0.2 dünya düzenleme adımı hazır: inşa alanı sınırı kaldırıldı, çapa ve yerleştirilebilir yatak eklendi, saat/gece–gündüz kullanıcı kararıyla 10 gerçek dakikalık döngüye geçti. Yeni kompakt ikon envanteri ve kaldırılan dünya etiketleri aşağıdaki güncel kayıtta açıklanır. **8 Ekim ilk oda adımı:** döşeme, ince duvar, açılıp kapanan kapı ve içeride kamera tarafındaki cephelerin saydamlaşması eklendi; kayıt v4. 8 Ekim devamındaki güncel çatı/taşıma/yatak ve sekiz yuvalı inşa barı kaydı dosyanın sonundadır; kayıt v5. 8 Ekim keşif adımı dosyanın sonundadır: balta, ağaç, yabani bitki ve dünyaya özel rastgele sandıklar; kayıt v6. Kullanıcının ilk oynanış geri bildirimi uygulandı: tıkla-seç adımı kaldırıldı, fare hedefi üzerinde eldeki eşya ile doğrudan sol tık etkileşimine geçildi. Sulama kabıyla sol tuşu basılı tutup kareler arasında gezdirilir; su sesi döngüsü eklenmiştir. Her ekimde tek sulama yeterli; hasat süresi üç gece olarak korundu. Karakter/iki alet/pazar teslim edilen modelleri kullanıyor; zemin, bitkiler, kamp ve tohum torbası hâlâ geçici. Windows x64 paketi Linux üzerinde derlendi; gerçek Windows açılış/oynanış doğrulaması açık.
 
@@ -507,3 +507,46 @@ Kullanıcı 7 Ekim'de önce kare seçme adımını kaldırmamızı, ardından WA
 - Son 1280×720 ve 1024×768 pazar/tarla renderları incelendi; `docs/screenshots/harvest-market.png`, `harvest-market-4x3.png`, `harvest-ripe.png`, `harvest-ripe-4x3.png`, `harvest-basket.png`, `harvest-bag.png`. Görsellerdeki yüksek para ve büyümüş bitkiler yalnız izole QA verisidir. Testler oyun metotları/UI callback senaryolarıdır; gerçek fare/klavye ve standalone platform turu yapılmadı, dağıtım paketleri yenilenmedi.
 - Kullanıcının başlangıçta değişmiş sahne, materyal, Mobile RP/ShaderGraph ve pazar texture-meta dosyaları korunur ve bu commit dışındadır. Dal `main`, bu tur push yapılmadı; commit kimliği Git günlüğündedir.
 - **Sıradaki somut iş:** kullanıcıyla altı ürünün gerçek oynanış dengesi ve nihai bitki modelleri; ardından 0.4 orman/maden ve basit düşman kapsamını belirlemek. Kullanıcı 0.4 uygulamasını bu tur istemedi.
+
+
+## 11 Ekim — 0.4 tamam, 0.5 demo adayı
+
+Kullanıcı 0.4 ve 0.5'in özerk devamını, geçici stilize modelleri, rutin denge
+kararlarını ve doğrulanan işlerin origin/main'e pushlanmasını onayladı.
+
+- Orman slime'ı ve taş böceği, güvenli çiftlikten ayrı iki boş zemin konumunda;
+  konum/can/yenilgi ve günlük ödül kayıtlı. Alan dışına kovalamazlar. İnşa edilen
+  doğma noktasında boş yer aranır; gizli ceset çarpışması ödül alınınca kapanır.
+- Balta 6 + sol tık, 0,6 sn bekleme ve görüş kontrolü; Space kaçınma;
+  H ile sebze (+25 can), yatakta tam iyileşme. Yenilgi %10/en çok 10 para;
+  envanter korunur, başlangıca güvenli dönüş. Başlangıç kazması/kılıcı yok.
+- Günlük 12 odun/12 taş zulası; dolu çanta ödülü tüketmez, maden için satın
+  alınan kazma gerekir. Düşman/ödül tekrarları kayıt yükleyerek çoğaltılamaz.
+- J defteri: başarılı alım/ekim/sulama/hasat/satış/inşa/keşif işlemlerini saklar;
+  pazar, çiftlik ve keşif yönleri. Ses ve 30/60/120 FPS yerel tercihlerdir.
+  Defter dünyayı/saat ilerlemesini durdurur; ilk başlangıçta açılır.
+- V12 geçişi `.pre-v12` dosyasını saklar; eski kayda sağlık ve boş keşif ilerlemesi
+  eklenir. Eski kaynaklar, çanta, binalar ve altı ürün korunur.
+- Yeni paneller mevcut envanter ahşabını kullanır. Slime/böcek/maden çerçevesi
+  geçici yerel geometridir; son harici model teslimi bekleniyor.
+- DemoBuild üç platform için StrictMode build üretir. package_demo.py platform,
+  sürüm, gerekli runtime dosyaları, CRC, manifest ve SHA-256 kontrolü yapar.
+
+Doğrulama: `Logs/demo-editmode-final.xml` **186/186**, `Logs/demo-playmode-final2.xml`
+**8/8**; sahne testleri savaş, kaçınma/duvar, güvenli yenilgi, dolu/kapalı doğma
+noktası, kayıt, defter/modal girdi, ayarlar ve 1280×720/1920×1080 görüntü içerir.
+İlk Mac development build'i başarılı; `demo-native-first.log` 8 sentetik girdi
+kontrolü ve `FARMER_PLAYER_SMOKE_OK`. Apple M2 kısa örnek: 59,0 FPS, en yavaş
+kare 32,8 ms, 536 renderer. Bu bir uzun oturum performans kabulü değildir.
+Native görüntüde bulunan HUD/defter sıralaması düzeltildi ve son PlayMode'da
+kontrol edildi. Son native ve temiz klon/paket sonuçları bir sonraki kayıtta.
+
+Sabit editör sürümünün Windows/Linux Mono modülleri resmi Unity sürüm sayfasından
+alındı; resmi release API boyutu ve integrity checksum'u eşleşti. macOS pkgutil
+imza kontrolü "invalid signature" döndürdü; yükleyici scriptleri çalıştırılmadı.
+Doğrulanan payload'lar editörün PlaybackEngines dizinine kopyalandı; sürüm yükseltilmedi.
+İndirilen kurucular ve açılmış mükerrer geçici dosyalar alan açmak için kaldırıldı.
+
+Ana Farm sahnesi yeniden üretilmedi. Kullanıcının oturum başındaki sahne, malzeme,
+MarketArt meta ve render/ShaderGraph ayar değişiklikleri korunup commit dışında bırakıldı.
+Detaylı tasarım, derleme ve açık kabul: `docs/DEMO_05.md`.

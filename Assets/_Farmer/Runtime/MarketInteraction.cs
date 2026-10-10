@@ -21,7 +21,7 @@ namespace Farmer
         }
         public void ValidateAccess()
         {
-            if(IsOpen&&(!game.Ready||!game.NearMarket||game.MenuOpen||game.InventoryOpen||!game.isActiveAndEnabled))Close();
+            if(IsOpen&&(!game.Ready||!game.NearMarket||game.MenuOpen||game.JournalOpen||game.InventoryOpen||!game.isActiveAndEnabled))Close();
         }
         public bool HandleInput(bool interact,bool escape)
         {
@@ -31,14 +31,14 @@ namespace Farmer
         }
         public bool TryOpen()
         {
-            if(!game.Ready||game.MenuOpen||game.InventoryOpen||game.BuildMode||!game.NearMarket)return false;
+            if(!game.Ready||game.MenuOpen||game.JournalOpen||game.InventoryOpen||game.BuildMode||!game.NearMarket)return false;
             IsOpen=true;game.SetBuildMode(false);game.Selection.ModalBlocked=true;
             return true;
         }
         public void Close()
         {
             IsOpen=false;
-            if(game!=null&&game.Selection!=null)game.Selection.ModalBlocked=game.MenuOpen||game.InventoryOpen;
+            if(game!=null&&game.Selection!=null)game.Selection.ModalBlocked=game.MenuOpen||game.JournalOpen||game.InventoryOpen;
         }
         private void OnDisable()=>Close();
     }
