@@ -23,7 +23,9 @@ namespace Farmer
         [SerializeField] private int startingMoney = 50;
         public FarmModel Model { get; private set; }
         public FarmSelection Selection => selection;
-        public CropDefinition ActiveCrop => crops[0];
+        public CropDefinition ActiveCrop => Model == null ? crops[0] : Definition(Model.SelectedCropId);
+        public CropDefinition[] Crops => crops;
+        public RecipeDefinition[] Recipes { get; private set; } = Array.Empty<RecipeDefinition>();
         public CropDefinition Definition(string id) => crops.First(c => c.id == id);
         public Transform Market => market;
         public Transform Camp => camp;
@@ -56,15 +58,20 @@ namespace Farmer
             // Capture authored scenery once; never include runtime resource/building views.
             sceneryBounds=FindObjectsByType<ValleyScenery>(FindObjectsSortMode.None)
                 .SelectMany(v=>v.GetComponentsInChildren<Renderer>()).Select(r=>r.bounds).ToArray();
+            // Additional definitions extend the authored scene catalog without rewriting the user's scene.
+            crops = crops.Concat(Resources.LoadAll<CropDefinition>("Crops").OrderBy(c=>c.id,StringComparer.Ordinal))
+                .GroupBy(c=>c.id).Select(g=>g.First()).ToArray();
+            Recipes = Resources.LoadAll<RecipeDefinition>("Recipes").OrderBy(r=>r.id,StringComparer.Ordinal).ToArray();
+            var recipeRules = Recipes.Select(r=>r.Rules).ToArray();
             var rules = crops.Select(c => c.Rules).ToArray();
-            Model = new FarmModel(rules, selection.Layout.Width, selection.Layout.Depth, startingMoney, BuildingRules(), resourceBlocked: ResourceBlockedByScenery);
+            Model = new FarmModel(rules, selection.Layout.Width, selection.Layout.Depth, startingMoney, BuildingRules(), resourceBlocked: ResourceBlockedByScenery, recipeCatalog: recipeRules);
             string directory = Application.persistentDataPath;
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
             smokeSession = Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-smoke-capture") >= 0;
             if (smokeSession) directory = Path.Combine(Application.temporaryCachePath, "FarmerQA", Guid.NewGuid().ToString("N"));
 #endif
             SavePath = Path.Combine(directory, "farm-v1.json");
-            store = new FarmSaveStore(SavePath, snapshot => FarmModel.Restore(snapshot, rules, selection.Layout.Width, selection.Layout.Depth, BuildingRules(), ResourceBlockedByScenery));
+            store = new FarmSaveStore(SavePath, snapshot => FarmModel.Restore(snapshot, rules, selection.Layout.Width, selection.Layout.Depth, BuildingRules(), ResourceBlockedByScenery, recipeRules));
             if(camp!=null)camp.gameObject.SetActive(false);
             HadSaveAtStartup=File.Exists(SavePath)||File.Exists(SavePath+".bak");
             LoadGame();
@@ -87,7 +94,11 @@ namespace Farmer
             if (k?.digit5Key.wasPressedThisFrame == true) Equip(FarmItem.Hoe);
             if (k?.digit6Key.wasPressedThisFrame == true) Equip(FarmItem.Axe);
             if (k?.digit7Key.wasPressedThisFrame == true) Equip(FarmItem.Pickaxe);
-            if (BuildMode) StopWatering(); else UpdateToolInput();
+            if (BuildMode) StopWatering(); else
+            {
+                UpdateToolInput();
+                if (Model.EquippedItem == FarmItem.Hoe && Mouse.current?.rightButton.wasPressedThisFrame == true) UprootHovered();
+            }
             if (k?.bKey.wasPressedThisFrame == true) Buy(1);
             if (k?.vKey.wasPressedThisFrame == true) SellHarvest();
             if (k?.nKey.wasPressedThisFrame == true) Rest();
@@ -212,6 +223,16 @@ namespace Farmer
             SaveGame(); Changed?.Invoke();
         }
 
+        public bool UprootHovered()
+        {
+            if(!Ready||MenuOpen||InventoryOpen||BuildMode||!Application.isFocused)return false;
+            selection.RefreshPointer();int index=HoveredIndex;
+            if(index<0||!selection.HoveredInReach||selection.PointerBlocked)return false;
+            var plot=Model.Plot(index);
+            if(WorldGround.Obstructed(plot.x,plot.z,player))return false;
+            bool ok=Complete(Model.Uproot(index,out var message),message);
+            if(ok)Hoed?.Invoke(PlotCenter(index));return ok;
+        }
         public bool UseHovered()
         {
             if (!Ready || MenuOpen || BuildMode || !Application.isFocused) return false;
@@ -249,9 +270,24 @@ namespace Farmer
             var node=Model.Exploration.Node(id);if(node==null)return false;
             var target=new Vector3(node.x+.5f,player.position.y,node.z+.5f);
             if((target-player.position).sqrMagnitude>6.25f||GetComponent<ExplorationController>()?.InReach(node)==false)return false;
-            bool ok=Complete(Model.Gather(id,ActiveCrop.id,out var message),message);
+            bool ok=Complete(Model.Gather(id,crops[0].id,out var message),message);
             if(ok&&node.kind!=ResourceKind.Chest)ResourceUsed?.Invoke(target+Vector3.up*.6f);
             return ok;
+        }
+        public bool SelectCrop(string id)
+        {
+            if(!Ready||MenuOpen||!Model.SelectCrop(id))return false;
+            StopWatering();SaveGame();Changed?.Invoke();return true;
+        }
+        public bool Craft(string id)
+        {
+            if(!Ready||!NearMarket||InventoryOpen||MenuOpen)return false;
+            return Complete(Model.Craft(id,1,out var message),message);
+        }
+        public bool SellCrafted(string id)
+        {
+            if(!Ready||!NearMarket||InventoryOpen||MenuOpen)return false;
+            return Complete(Model.SellCrafted(id,Model.BagCount("crafted:"+id),out var message),message);
         }
         public bool Buy(int count)
         {

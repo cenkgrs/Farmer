@@ -11,6 +11,7 @@ namespace Farmer
     {
         private FarmGame game;private GameObject overlay;private RectTransform bagPanel,chestPanel;
         private StorageSlot[] bagSlots,chestSlots;private Text notice;
+        private int bagPage;private Text pageLabel;private Button previousPage,nextPage;
         private FarmModel openedModel;public string ChestId {get;private set;}
         public string Hint {get;private set;}
         public bool IsOpen=>game!=null&&game.InventoryOpen;
@@ -27,7 +28,10 @@ namespace Farmer
             FarmHud.Label(chestPanel,"DEPOLAMA SANDIĞI",22,22,15,350,32,new Color(.25f,.16f,.08f));
             FarmHud.Button(bagPanel,"Kapat",308,15,80,28,Close);
             bagSlots=MakeSlots(bagPanel,false);chestSlots=MakeSlots(chestPanel,true);
-            notice=FarmHud.Label(bagPanel,"",12,18,394,372,56,new Color(.25f,.16f,.08f));
+            previousPage=FarmHud.Button(bagPanel,"‹",18,390,40,25,()=>{bagPage=Math.Max(0,bagPage-1);Refresh();});
+            nextPage=FarmHud.Button(bagPanel,"›",350,390,40,25,()=>{bagPage++;Refresh();});
+            pageLabel=FarmHud.Label(bagPanel,"",12,140,393,150,22,new Color(.25f,.16f,.08f));pageLabel.alignment=TextAnchor.MiddleCenter;
+            notice=FarmHud.Label(bagPanel,"",11,18,422,372,40,new Color(.25f,.16f,.08f));
             FarmHud.Label(chestPanel,"Tık: 1 adet · Shift+tık: tüm yığın\nSürükle-bırak: tüm yığın",12,18,394,372,56,new Color(.25f,.16f,.08f));overlay.SetActive(false);
         }
         private StorageSlot[] MakeSlots(RectTransform panel,bool chest)
@@ -98,10 +102,13 @@ namespace Farmer
         private void OnDisable(){if(game!=null)Close();}
         private void Refresh()
         {
-            var ids=game.Model.BagItems();var items=ChestId==null?Array.Empty<ItemStack>():game.Model.Building.StoredItems(ChestId);
+            var ids=game.Model.BagItems();bagPage=Mathf.Clamp(bagPage,0,(ids.Length-1)/16);
+            previousPage.interactable=bagPage>0;nextPage.interactable=(bagPage+1)*16<ids.Length;pageLabel.text=$"{bagPage+1} / {(ids.Length+15)/16}";
+            var items=ChestId==null?Array.Empty<ItemStack>():game.Model.Building.StoredItems(ChestId);
             for(int i=0;i<16;i++)
             {
-                SetSlot(bagSlots[i],i<ids.Length?ids[i]:null,i<ids.Length?game.Model.BagCount(ids[i]):0);
+                int index=bagPage*16+i;
+                SetSlot(bagSlots[i],index<ids.Length?ids[index]:null,index<ids.Length?game.Model.BagCount(ids[index]):0);
                 SetSlot(chestSlots[i],i<items.Length?items[i].id:null,i<items.Length?items[i].count:0);
             }
             notice.text=ChestId==null?"Tab / Esc · Kapat\nMobilyaları İnşa > Mobilya bölümünden yerleştir.":game.Feedback;
@@ -113,6 +120,7 @@ namespace Farmer
         }
         public string Name(string id)
         {
+            if(id.StartsWith("crafted:"))return game.Recipes.First(r=>r.id==id.Substring(8)).displayName;
             if(id.StartsWith("furniture:"))return game.BuildPieces.First(p=>p.id==id.Substring(10)).displayName;
             if(id.StartsWith("seed:"))return game.Definition(id.Substring(5)).displayName+" tohumu";
             if(id.StartsWith("crop:"))return game.Definition(id.Substring(5)).displayName;
@@ -120,6 +128,7 @@ namespace Farmer
         }
         public static Sprite Icon(string id)
         {
+            if(id.StartsWith("crafted:")||id.StartsWith("crop:"))return CropArtwork.Get(id.Substring(id.IndexOf(':')+1))??InventoryIcon.Artwork(5);
             if(id.StartsWith("furniture:"))return ConstructionArtwork.Get(id.Substring(10));
             return InventoryIcon.Artwork(id=="stone"?10:id=="tool:pickaxe"?9:id=="wood"?6:id.StartsWith("seed:")?0:id.StartsWith("crop:")?5:id=="tool:watering"?1:id=="tool:sickle"?2:id=="tool:hoe"?3:8);
         }

@@ -142,3 +142,5 @@ Balta tutuşunda yalnızca socket yakınlığı doğal el pozu için yeterli de�
 
 
 10 Ekim 0.3 madencilik: [kazma ve kırılabilir kaya eskizleri, ölçüler ve model promptları](references/mining_v01/README.md). Kazma 0,80 m, kaya 1,2×0,8×0,9 m; GLB/FBX+dokular. Kaynak dosyası geldikten sonra ölçü, doku, taban ve tutuş kontrol edilir. Yeni ağaç modeli gerekmiyor; mevcut meşe/kütük kullanılır. Yeni kazma/taş envanter ikonları yerleşik ImageGen ile şeffaf üretildi; promptlar `art-sources/mining-icons.json` içinde.
+
+10 Ekim kazma/kaya teslimi entegre edildi: [kaynak, hash, ölçüler ve dönüşüm](../ArtSource/mining_v01/README.md). Yeni motor/import paketi kurulmadı; native mesh/prefab kullanılıyor. Havuç/domates geçici dört aşamalı geometri, sebze kasası geçici ikon modeli; `CropExpansionSetup.Apply` bu assetleri üretir, sahneyi değiştirmez. Nihai bitki GLB'leri teslim edilmedi.

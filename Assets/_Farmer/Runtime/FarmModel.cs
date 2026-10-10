@@ -13,12 +13,13 @@ namespace Farmer
         public int SalePrice { get; }
         public int WateredDays { get; }
         public int Yield { get; }
-        public CropRules(string id, int seedPrice, int salePrice, int wateredDays, int yield)
+        public int RegrowDays { get; }
+        public CropRules(string id, int seedPrice, int salePrice, int wateredDays, int yield, int regrowDays = 0)
         {
             if (string.IsNullOrWhiteSpace(id) || seedPrice < 1 || salePrice < 1 || seedPrice > 100000 || salePrice > 100000
-                || wateredDays < 3 || wateredDays > 100 || yield < 1 || yield > FarmModel.StackLimit)
+                || wateredDays < 3 || wateredDays > 100 || yield < 1 || yield > FarmModel.StackLimit || regrowDays < 0 || regrowDays > wateredDays)
                 throw new ArgumentException("Invalid crop rules.");
-            Id = id; SeedPrice = seedPrice; SalePrice = salePrice; WateredDays = wateredDays; Yield = yield;
+            Id = id; SeedPrice = seedPrice; SalePrice = salePrice; WateredDays = wateredDays; Yield = yield; RegrowDays = regrowDays;
         }
     }
 
@@ -29,13 +30,16 @@ namespace Farmer
         public string cropId = "";
         public int growth;
         public bool watered;
-        public PlotRecord Copy() => new PlotRecord { x = x, z = z, cropId = cropId, growth = growth, watered = watered };
+        public bool regrowing;
+        public PlotRecord Copy() => new PlotRecord { x = x, z = z, cropId = cropId, growth = growth, watered = watered, regrowing = regrowing };
     }
     [Serializable] public sealed class FarmSnapshot
     {
         public int version;
         public bool ownsPickaxe;
         public int stone;
+        public string selectedCropId;
+        public ItemStack[] crafted;
         public int width;
         public int depth;
         public int day;
@@ -52,10 +56,12 @@ namespace Farmer
     // No scene, input, filesystem or clock dependencies: all transactions validate before mutating.
     public sealed partial class FarmModel
     {
-        public const int SaveVersion = 8;
+        public const int SaveVersion = 9;
         public const int PickaxePrice = 80;
         public bool OwnsPickaxe { get; private set; }
         public int Stone { get; private set; }
+        public string SelectedCropId { get; private set; }
+        public bool SelectCrop(string id) { if (id == null || !crops.ContainsKey(id)) return false; SelectedCropId = id; return true; }
         public const int StackLimit = 999;
         public const int MoneyLimit = 1000000000;
         public const int DayLimit = 1000000;
@@ -96,7 +102,7 @@ namespace Farmer
         public int PlantedCount => plots.Count(p => !string.IsNullOrEmpty(p.cropId));
         public int ReadyCount => Enumerable.Range(0, plots.Count).Count(IsReady);
 
-        public FarmModel(IEnumerable<CropRules> catalog, int width = 6, int depth = 6, int startingMoney = 50, IEnumerable<BuildRules> buildCatalog = null, int? worldSeed = null, Func<int,int,bool> resourceBlocked = null)
+        public FarmModel(IEnumerable<CropRules> catalog, int width = 6, int depth = 6, int startingMoney = 50, IEnumerable<BuildRules> buildCatalog = null, int? worldSeed = null, Func<int,int,bool> resourceBlocked = null, IEnumerable<RecipeRules> recipeCatalog = null)
         {
             if (width < 1 || width > 100 || depth < 1 || depth > 100 || startingMoney < 0 || startingMoney > MoneyLimit)
                 throw new ArgumentOutOfRangeException(nameof(width));
@@ -107,6 +113,7 @@ namespace Farmer
             int seed=worldSeed??Guid.NewGuid().GetHashCode();
             Exploration=ExplorationModel.Generate(seed==0?1:seed,resourceBlocked);
             foreach (string id in crops.Keys) { seeds[id] = 0; produce[id] = 0; }
+            SelectedCropId = crops.Keys.First(); InitializeRecipes(recipeCatalog);
         }
 
         public int Seeds(string id) => seeds.TryGetValue(id, out int count) ? count : 0;
@@ -114,7 +121,7 @@ namespace Farmer
         public PlotRecord Plot(int index) => plots[index].Copy();
         public bool IsReady(int index) => Valid(index) && crops.TryGetValue(plots[index].cropId, out var crop) && plots[index].growth >= crop.WateredDays;
         public int Stage(int index) => string.IsNullOrEmpty(plots[index].cropId) ? -1
-            : Math.Min(3, plots[index].growth * 3 / crops[plots[index].cropId].WateredDays);
+            : Math.Max(plots[index].regrowing ? 2 : 0, Math.Min(3, plots[index].growth * 3 / crops[plots[index].cropId].WateredDays));
         public int ThirstyCount => plots.Count(p => crops.TryGetValue(p.cropId, out var c) && p.growth < c.WateredDays && !p.watered);
         private bool Valid(int index) => index >= 0 && index < plots.Count;
 
@@ -158,6 +165,13 @@ namespace Farmer
             message = "Tohum ekildi. Büyümeyi başlatmak için bir kez sula."; return true;
         }
 
+        public bool Uproot(int index, out string message)
+        {
+            if (EquippedItem != FarmItem.Hoe || !Valid(index) || string.IsNullOrEmpty(plots[index].cropId))
+                return Fail("Bitkiyi kaldırmak için çapayı kuşan.", out message);
+            var plot = plots[index]; plot.cropId = ""; plot.growth = 0; plot.watered = false; plot.regrowing = false;
+            message = "Bitki kaldırıldı; toprak yeniden ekilebilir."; return true;
+        }
         public bool Water(int index, out string message)
         {
             if (!Valid(index) || string.IsNullOrEmpty(plots[index].cropId)) return Fail("Önce tohum ek.", out message);
@@ -172,7 +186,14 @@ namespace Farmer
             if (!IsReady(index)) return Fail("Ürün henüz hasada hazır değil.", out message);
             var c = crops[plots[index].cropId];
             if (produce[c.Id] + c.Yield > StackLimit) return Fail("Ürün çantası dolu. Önce pazarda satış yap.", out message);
-            produce[c.Id] += c.Yield; plots[index].cropId = ""; plots[index].growth = 0; plots[index].watered = false;
+            produce[c.Id] += c.Yield;
+            var plot = plots[index];
+            if (c.RegrowDays > 0)
+            {
+                plot.growth = c.WateredDays - c.RegrowDays; plot.regrowing = true;
+                // One watering per planting remains valid for every repeat harvest.
+            }
+            else { plot.cropId = ""; plot.growth = 0; plot.watered = false; plot.regrowing = false; }
             message = $"Hasat tamamlandı! +{c.Yield} ürün. Pazarda satabilirsin."; return true;
         }
 
@@ -219,20 +240,20 @@ namespace Farmer
 
         public FarmSnapshot Snapshot() => new FarmSnapshot
         {
-            version = SaveVersion, ownsPickaxe = OwnsPickaxe, stone = Stone, width = Width, depth = Depth, day = Day, money = Money, minuteOfDay = MinuteOfDay, equippedItem = EquippedItem,
+            version = SaveVersion, ownsPickaxe = OwnsPickaxe, stone = Stone, selectedCropId = SelectedCropId, crafted = CraftedSnapshot(), width = Width, depth = Depth, day = Day, money = Money, minuteOfDay = MinuteOfDay, equippedItem = EquippedItem,
             seeds = seeds.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
             produce = produce.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
             plots = plots.Select(p => p.Copy()).ToArray(), building = Building.Snapshot(), exploration=Exploration.Snapshot()
         };
 
-        public static FarmModel Restore(FarmSnapshot saved, IEnumerable<CropRules> catalog, int width, int depth, IEnumerable<BuildRules> buildCatalog = null, Func<int,int,bool> resourceBlocked = null)
+        public static FarmModel Restore(FarmSnapshot saved, IEnumerable<CropRules> catalog, int width, int depth, IEnumerable<BuildRules> buildCatalog = null, Func<int,int,bool> resourceBlocked = null, IEnumerable<RecipeRules> recipeCatalog = null)
         {
             if (saved == null || (saved.version < 1 || saved.version > SaveVersion) || saved.width != width || saved.depth != depth || saved.day < 1
                 || saved.day > DayLimit || saved.money < 0 || saved.money > MoneyLimit || saved.plots == null || (saved.version < 3 ? saved.plots.Length != width * depth : saved.plots.Length > PlotLimit))
                 throw new ArgumentException("Save header or grid is invalid or unsupported.");
             if(saved.version>=7 && (saved.building==null || saved.building.furniture==null))throw new ArgumentException("Missing furniture inventory.");
             var rules = (buildCatalog ?? BuildRules.Defaults).ToArray();
-            var model = new FarmModel(catalog, width, depth, saved.money, rules) { Day = saved.day };
+            var model = new FarmModel(catalog, width, depth, saved.money, rules, recipeCatalog: recipeCatalog) { Day = saved.day };
             if (saved.version >= 2)
             {
                 var building = saved.building;
@@ -256,6 +277,11 @@ namespace Farmer
                 model.OwnsPickaxe=saved.ownsPickaxe;model.Stone=saved.stone;
                 if(saved.exploration==null||saved.exploration.generation!=1)throw new ArgumentException("Missing expanded resources.");
             }
+            if (saved.version >= 9)
+            {
+                if (!model.SelectCrop(saved.selectedCropId)) throw new ArgumentException("Invalid selected crop.");
+                model.RestoreCrafted(saved.crafted);
+            }
             // V1 has no construction state. JsonUtility may materialize an empty nested object;
             // migrate by schema version, not by the nullness of that object.
             if (!model.Equip(saved.equippedItem)) throw new ArgumentException("Unknown equipped item.");
@@ -271,13 +297,15 @@ namespace Farmer
                     throw new ArgumentException("Invalid or duplicate soil coordinate.");
                 if (string.IsNullOrEmpty(copy.cropId))
                 {
-                    if (copy.growth != 0 || copy.watered) throw new ArgumentException("Empty plot has crop state.");
+                    if (copy.growth != 0 || copy.watered || copy.regrowing) throw new ArgumentException("Empty plot has crop state.");
                     copy.cropId = "";
                 }
                 else
                 {
                     if (!model.crops.TryGetValue(copy.cropId, out var crop) || copy.growth > crop.WateredDays || model.Building.Occupied(copy.x, 0, copy.z))
                         throw new ArgumentException("Unknown crop, invalid growth or crop inside a building.");
+                    if (copy.regrowing && (saved.version < 9 || crop.RegrowDays == 0 || copy.growth < crop.WateredDays - crop.RegrowDays || !copy.watered))
+                        throw new ArgumentException("Invalid regrowth state.");
                     copy.watered = copy.watered || copy.growth > 0;
                 }
                 model.plotIndices.Add((copy.x,copy.z), model.plots.Count); model.plots.Add(copy);

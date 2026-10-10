@@ -100,14 +100,14 @@ namespace Farmer.Tests
             var s=Fresh().Snapshot();s.equippedItem=FarmItem.Pickaxe;Assert.Throws<ArgumentException>(()=>Restore(s));
             s=Fresh().Snapshot();s.exploration.generation=2;Assert.Throws<ArgumentException>(()=>Restore(s));
         }
-        [Test] public void UpgradeKeepsOriginalV7FileBeforeWritingV8()
+        [Test] public void UpgradeKeepsOriginalV7FileBeforeWritingCurrentVersion()
         {
             string directory=Path.Combine(Path.GetTempPath(),"FarmerQA-Mining-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(directory);
             string path=Path.Combine(directory,"farm.json"),old=JsonUtility.ToJson(Legacy());File.WriteAllText(path,old);
             try
             {
                 var store=new FarmSaveStore(path,Restore);var f=store.Load(out _);store.Save(f.Snapshot());store.Save(f.Snapshot());
-                Assert.That(File.ReadAllText(path+".pre-v8"),Is.EqualTo(old));Assert.That(Json(store.Load(out _)),Is.EqualTo(Json(f)));
+                Assert.That(File.ReadAllText(path+".pre-v"+FarmModel.SaveVersion),Is.EqualTo(old));Assert.That(Json(store.Load(out _)),Is.EqualTo(Json(f)));
             }
             finally {Directory.Delete(directory,true);}
         }

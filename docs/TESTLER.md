@@ -252,3 +252,17 @@ Grafik aygıtı açıkken sahne görüntüleri URP render isteğiyle PNG'ye yaz�
 Sonuçlar: `Logs/mining-editmode.xml` **131/131**, `Logs/mining-playmode.xml`
 **1/1 birleşik sahne testi** geçti. Mac Metal/Unity 6000.3.25f1. Windows/Linux
 build ve fiziksel girdi turu bu adımda çalıştırılmadı.
+
+## 0.3 ürün genişletmesi ve teslim modelleri — 10 Ekim
+
+Sabit 6000.3.25f1 editörle, `Assets/Packages/ProjectSettings` kopyalanmış ayrı geçici projede çalıştırıldı. Ana kullanıcının kayıt dosyası veya sahne yerleşimi üzerinde test yapılmadı.
+
+- `CropExpansionTests`: tür seçimi, farklı büyüme süreleri, susuz büyümeme, tekrar hasat/çift hasat engeli, tam ürün yığını, çapa ile bitkiyi kaldırma, atomik tarif girdileri/çıktısı, kapasite/para sınırı, sandık ve JSON turu, v8→v9 yedekli geçiş. Mevcut tarım/inşa/madencilik testleriyle **146/146 EditMode** (`Logs/crop-expansion-editmode.xml/log`).
+- **2/2 PlayMode geçti** (`Logs/crop-expansion-playmode.xml/log`): aşağıdaki iki sahne testi, çıkış 0.
+- `CropExpansionPlayModeTests`: gerçek Farm sahnesinde pazar/ürün seçim düğmeleri, tohum alımı, 12 bitki aşaması, tekrar büyüme, kasa düğmesi, çantanın iki sayfası, kayıt sonrası seçim/kasa ve satış. Çanta/arayüz ekranları gerçek Canvas'lar geçici olarak QA kamerasına bağlanarak render edilir. Test, normal kayıt yerine `--farmer-smoke-capture` ile FarmerQA kullanmak zorundadır.
+- `MiningPlayModeTests`: gerçek teslim mesh üçgenleri, sapın socket'ten geçmesi, kayanın zemin teması ve önceki satın alma/kırma/kayıt davranışları.
+- Bunlar programatik oyun metotları ve UI callback testleridir; fiziksel fare/klavye veya yeni standalone dağıtım paketi testi değildir. Odaksız batch editörde FarmerAnimator'ın odak koruması nedeniyle aksiyon salınımı değerlendirilmez.
+
+PlayMode çağrısı: `-batchmode -projectPath <izole-qa-projesi> -runTests -testPlatform PlayMode -testResults <xml> -logFile <log> --farmer-smoke-capture <qa-png>`; grafik gerekir, `-nographics` verilmez. EditMode için aynı projenin `-testPlatform EditMode -nographics` çağrısı kullanılır. İzole projede `Farmer.Editor.MiningArtSetup.Apply` ve `CropExpansionSetup.Apply` assetleri tekrar üretebilir; kaynak sahne setup'ını çalıştırmak gerekmez.
+
+Yeni ürün ikonları testin `GenerateIcons` yardımcısıyla kendi geçici geometrilerinden, 256 px şeffaf PNG olarak render edilir. `Resources/CropIcons` varlıkları/metaları depoda hazır; diğer bilgisayarda tekrar üretim şart değildir.

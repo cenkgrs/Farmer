@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 932c993bb1fc95ae39930499e4b041e1, type: 3}
+  m_Name: carrot
+  m_EditorClassIdentifier: Farmer.Runtime::Farmer.CropDefinition
+  id: carrot
+  displayName: "Havu\xE7"
+  seedPrice: 14
+  salePrice: 27
+  wateredDays: 4
+  harvestYield: 1
+  regrowDays: 0
+  visualScale: 1
+  growthStages:
+  - {fileID: 7912788282404878997, guid: b25c2b13ff6c74a3cb5497292279a506, type: 3}
+  - {fileID: 1012063312331650357, guid: 125bff6c09b66413684664492854de1d, type: 3}
+  - {fileID: 4142593820726281363, guid: 43d69eba4a8f449229912f3328b20114, type: 3}
+  - {fileID: 4874577462520465017, guid: 51d75f74e3bd04528a67b1cbd2643fcd, type: 3}

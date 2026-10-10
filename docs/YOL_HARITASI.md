@@ -1,6 +1,6 @@
 # Sürüm planı ve kabul ölçütleri
 
-Tarihler/tahmini geliştirme süreleri henüz yok. Her sürüm oynanabilir bir adım olmalı. 0.1 çekirdeği doğrulandı. Kullanıcı 10 Ekim 2026'da 0.2 son kontrollerini tamam kabul edip 0.3'e geçiş istedi. 0.3 kaynak/kazma adımı başladı; ürün çeşitleri ve tarifler henüz açık. Windows doğrulaması ayrı takip ediliyor.
+Tarihler/tahmini geliştirme süreleri henüz yok. Her sürüm oynanabilir bir adım olmalı. 0.1 çekirdeği doğrulandı. Kullanıcı 10 Ekim 2026'da 0.2 son kontrollerini tamam kabul edip 0.3'e geçiş istedi. 0.3 kaynak/kazma ve ilk üç ürün/tekrar hasat/sebze kasası adımı uygulandı; altı ürün hedefi ve çit/bahçe kapısı/yollar açık. Windows doğrulaması ayrı takip ediliyor.
 
 ## 0.1 — Çekirdek prototip
 
@@ -44,10 +44,12 @@ Altı ürün, tekrar hasat, pazar çeşitliliği, basit işleme/tarifler, çit/b
 
 Kabul:
 
-- [ ] Ürünler kullanım ve büyüme davranışıyla farklılaşır; yeni ürün veri tanımıyla eklenebilir.
-- [ ] Ürün satılabilir veya en az bir anlamlı üretim tarifinde tüketilebilir.
-- [ ] Girdi/çıktı miktarları, yetersiz malzeme ve envanter kapasitesi tutarlıdır.
-- [ ] İlk 10–20 oyun dakikasındaki gelir/gider örneği kaydedilir ve kilitlenme açısından incelenir; bu süre tasarım denemesidir.
+- [x] Ürünler kullanım ve büyüme davranışıyla farklılaşır; yeni ürün veri tanımıyla eklenebilir.
+- [x] Ürün satılabilir veya en az bir anlamlı üretim tarifinde tüketilebilir.
+- [x] Girdi/çıktı miktarları, yetersiz malzeme ve envanter kapasitesi tutarlıdır.
+- [x] İlk 10–20 oyun dakikasındaki gelir/gider örneği kaydedilir ve kilitlenme açısından incelenir; bu süre tasarım denemesidir.
+
+10 Ekim: bu ölçütler ilk üç ürün (turp, havuç, domates) ve tek sebze kasası tarifiyle doğrulandı. **0.3 tamamlanmadı:** kalan üç ürün ve çit/bahçe kapısı/yollar açıktır. İlk 10–20 dakika [denge hesabı](DENGE_03.md) gerçek oyuncu oturumu ölçümü değildir; ilk mahsul gelirinin 20 dakikayı aştığı kaydedildi.
 
 ## 0.4 — Ormanın ötesi
 
@@ -105,3 +107,7 @@ Sıradaki somut adım: kullanıcı ev/taşıma/yatak sürümünü oynadıktan so
 Yeni ürünler, tekrar hasat ve işleme tarifleri 0.3'ün sonraki parçalarıdır.
 Taş kullanımı henüz seçilmedi. Eski tarihli “sıradaki” notlar tarihsel kayıttır;
 güncel öncelik bu bölüm ve YAZILIMCI.md'nin son kaydıdır.
+
+## 10 Ekim — model teslimi ve ürün genişletmesi
+
+Kazma/kaya kullanıcı GLB modellerine bağlandı. Kullanıcı havuç + tekrar hasat veren domates ve sebze kasası seçti. Ürün seçimi, pazar fiyatları, veri tanımlı tarif, çanta sayfaları ve v9 kayıt geçişi uygulandı. Yeni bitkiler geçici geometridir. Taş tarifi eklenmedi. Güncel değerler DENGE_03.md; kontroller YAZILIMCI.md son kaydındadır.

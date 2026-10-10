@@ -13,6 +13,9 @@ namespace Farmer
         private RectTransform shop,camp,detail,tooltip,toast,buildMenu,normalBar;
         private Button buyOne,buyFive,buyWood,sell,sleep,buildButton,buyBed,moveButton,buyPickaxe;
         private Button[] buildChoices;
+        private RectTransform seedPicker,processing;
+        private Button[] cropChoices,craftButtons,craftedSellButtons;
+        private Text marketCrop;
         private bool furnitureCategory;
         private int[] categoryIndices;
         private Image[] buildIcons;
@@ -48,7 +51,7 @@ namespace Farmer
             selectionStatus=Label(detail,"",15,14,12,216,90,Ink);
             shop=Panel("Market",root.transform,new Vector2(0,1),new Vector2(24,-112),new Vector2(250,354),Cream);
             Label(shop,"Tohum & malzeme",20,14,10,224,28,Ink);
-            Label(shop,$"{game.ActiveCrop.displayName} · satış {game.ActiveCrop.salePrice} para",13,14,41,224,22,Ink);
+            marketCrop=Label(shop,"",13,14,41,224,22,Ink);
             buyOne=Button(shop,$"B · 1 tohum al ({game.ActiveCrop.seedPrice})",14,72,222,36,()=>game.Buy(1));
             buyFive=Button(shop,$"5 tohum al ({game.ActiveCrop.seedPrice*5})",14,116,222,36,()=>game.Buy(5));
             sell=Button(shop,"V · Ürünlerin hepsini sat",14,160,222,36,()=>game.SellHarvest());
@@ -56,6 +59,19 @@ namespace Farmer
             buyBed=Button(shop,"Yatak al (100 para)",14,248,222,36,()=>game.BuyBed());
             buyPickaxe=Button(shop,$"Kazma al ({FarmModel.PickaxePrice} para)",14,292,222,36,()=>game.BuyPickaxe());
             buyPickaxe.name="Buy Pickaxe";
+            processing=Panel("Processing Market",root.transform,new Vector2(0,1),new Vector2(546,-112),new Vector2(290,48+game.Recipes.Length*166),Cream);
+            Label(processing,"Ürün hazırlama",20,14,10,262,28,Ink);
+            craftButtons=new Button[game.Recipes.Length];craftedSellButtons=new Button[game.Recipes.Length];
+            for(int i=0;i<game.Recipes.Length;i++)
+            {
+                var recipe=game.Recipes[i];float y=48+i*166;
+                string ingredients=string.Join(" + ",recipe.ingredients.Select(item=>$"{item.count} {game.GetComponent<StorageInteraction>().Name(item.id)}"));
+                Label(processing,recipe.displayName+"\n"+ingredients,13,14,y,262,48,Ink);
+                craftButtons[i]=Button(processing,$"{recipe.outputCount} {recipe.displayName} hazırla",14,y+54,262,36,()=>game.Craft(recipe.id));
+                craftButtons[i].name="Craft "+recipe.id;
+                craftedSellButtons[i]=Button(processing,$"Hepsini sat ({recipe.salePrice}/adet)",14,y+98,262,36,()=>game.SellCrafted(recipe.id));
+                craftedSellButtons[i].name="Sell "+recipe.id;
+            }
             camp=Panel("Sleep",root.transform,new Vector2(0,1),new Vector2(24,-112),new Vector2(250,140),Cream);
             Label(camp,"Biraz dinlen",20,14,10,224,28,Ink);
             campWarning=Label(camp,"",13,14,43,224,44,Ink);
@@ -107,11 +123,18 @@ namespace Farmer
                 AddHover(button.gameObject,hint.Split('\n')[0]);
                 button.GetComponent<Image>().color=Color.clear;
             }
+            seedPicker=Panel("Seed selection",root.transform,new Vector2(.5f,0),new Vector2(0,108),new Vector2(game.Crops.Length*120+12,36),Cream);
+            cropChoices=new Button[game.Crops.Length];
+            for(int i=0;i<game.Crops.Length;i++)
+            {
+                var crop=game.Crops[i];cropChoices[i]=Button(seedPicker,crop.displayName,6+i*120,4,114,28,()=>game.SelectCrop(crop.id));
+                cropChoices[i].name="Select crop "+crop.id;
+            }
             tooltip=Panel("Item Tooltip",root.transform,new Vector2(.5f,0),new Vector2(0,106),new Vector2(440,56),Cream);
             tooltipText=Label(tooltip,"",14,12,8,416,44,Ink);tooltipText.alignment=TextAnchor.MiddleCenter;
             toast=Panel("Feedback Toast",root.transform,new Vector2(.5f,0),new Vector2(0,172),new Vector2(570,36),new Color(.20f,.24f,.17f,.92f));
             feedback=Label(toast,"",13,10,7,550,25,Cream);feedback.alignment=TextAnchor.MiddleCenter;
-            game.Selection.SetHudPanels(new[]{header,detail,shop,camp,bar,tooltip,toast,buildMenu,buildTabs,shopFurniture,(RectTransform)moveButton.transform});Refresh();
+            game.Selection.SetHudPanels(new[]{header,detail,shop,camp,bar,tooltip,toast,buildMenu,buildTabs,shopFurniture,seedPicker,processing,(RectTransform)moveButton.transform});Refresh();
         }
         private void SetCategory(bool furniture)
         {
@@ -137,7 +160,15 @@ namespace Farmer
             var model=game.Model;var crop=game.ActiveCrop;
             if(displayedBuildMode!=game.BuildMode){hovered=null;displayedBuildMode=game.BuildMode;}
             normalBar.gameObject.SetActive(!game.BuildMode&&!game.InventoryOpen);
-            tooltip.anchoredPosition=new Vector2(0,game.BuildMode?148:106);
+            bool chooseSeeds=!game.BuildMode&&!game.InventoryOpen&&(model.EquippedItem==FarmItem.Seeds||game.NearMarket);
+            seedPicker.gameObject.SetActive(chooseSeeds);
+            for(int i=0;i<cropChoices.Length;i++)
+            {
+                var definition=game.Crops[i];cropChoices[i].GetComponentInChildren<Text>().text=$"{definition.displayName} · {model.Seeds(definition.id)}";
+                cropChoices[i].GetComponent<Image>().color=definition==crop?new Color(.97f,.78f,.39f):new Color(.78f,.66f,.43f);
+                cropChoices[i].interactable=game.Ready;
+            }
+            tooltip.anchoredPosition=new Vector2(0,game.BuildMode||chooseSeeds?148:106);
             toast.anchoredPosition=new Vector2(0,game.BuildMode?214:172);
             summary.text=$"Gün {model.Day}   ·   {model.ClockText}";money.text=$"{model.Money} para";saveStatus.text=game.SaveStatus=="Kaydedildi"?"Kaydedildi":game.Ready?"":"Kayıt hatası";
             feedback.text=game.Feedback;toast.gameObject.SetActive(!game.Ready&&!game.InventoryOpen);
@@ -161,10 +192,22 @@ namespace Farmer
             }
             moveButton.GetComponentInChildren<Text>().text=builder.MoveMode?"M · İnşaya dön":"M · Tutup taşı";
             string hint=hovered;
+            if(hint=="Çapa · 5")hint="Çapa · 5 · Sağ tık: bitkiyi kaldır";
+            if(hint=="Turp tohumu · 1")hint=crop.displayName+" tohumu · 1";
             if(hint=="Kazma · 7"&&!model.OwnsPickaxe)hint="Kazma · Pazardan satın al";
             tooltip.gameObject.SetActive(!game.InventoryOpen&&hint!=null);tooltipText.text=hint??"";
             detail.gameObject.SetActive(!game.InventoryOpen&&game.BuildMode);
             selectionStatus.text=$"{builder.ActiveDefinition.displayName}\n{builder.HeightLabel} · {builder.Rotation*90}°";
+            processing.gameObject.SetActive(game.NearMarket&&!game.InventoryOpen);
+            for(int i=0;i<game.Recipes.Length;i++)
+            {
+                var recipe=game.Recipes[i];craftButtons[i].interactable=game.Ready&&model.CanCraft(recipe.id);
+                craftedSellButtons[i].interactable=game.Ready&&model.BagCount("crafted:"+recipe.id)>0;
+            }
+            marketCrop.text=$"{crop.displayName} · {crop.wateredDays} gün"+(crop.regrowDays>0?$" / tekrar {crop.regrowDays} gün":"")+$" · {crop.salePrice} para";
+            buyOne.GetComponentInChildren<Text>().text=$"B · 1 tohum al ({crop.seedPrice})";
+            buyFive.GetComponentInChildren<Text>().text=$"5 tohum al ({crop.seedPrice*5})";
+            sell.GetComponentInChildren<Text>().text=$"V · {crop.displayName} hasadını sat";
             shop.gameObject.SetActive(game.NearMarket&&!game.InventoryOpen);shopFurniture.gameObject.SetActive(game.NearMarket&&!game.InventoryOpen);
             for(int i=0;i<furnitureBuy.Length;i++)furnitureBuy[i].interactable=game.Ready&&model.Money>=furnitureSale[i].price&&model.Building.FurnitureCount(furnitureSale[i].id)<BuildingModel.WoodLimit;
             camp.gameObject.SetActive(game.NearCamp&&!game.NearMarket&&!game.InventoryOpen);

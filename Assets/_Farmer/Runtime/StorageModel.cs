@@ -38,10 +38,11 @@ namespace Farmer
         public const int ChestSlots=16;
         public string[] BagItems()=>new[]{"tool:watering","tool:sickle","tool:hoe","tool:axe","tool:pickaxe","wood","stone"}
             .Concat(crops.Keys.Select(c=>"seed:"+c)).Concat(crops.Keys.Select(c=>"crop:"+c))
-            .Concat(Building.FurnitureRules.Select(r=>"furniture:"+r.Id)).ToArray();
+            .Concat(recipes.Keys.Select(id=>"crafted:"+id)).Concat(Building.FurnitureRules.Select(r=>"furniture:"+r.Id)).ToArray();
         public int BagCount(string id)
         {
             if(id==null)return 0;
+            if(id.StartsWith("crafted:",StringComparison.Ordinal))return crafted.TryGetValue(id.Substring(8),out var amount)?amount:0;
             if(id=="wood")return Building.Wood;
             if(id=="stone")return Stone;
             if(id=="tool:pickaxe")return OwnsPickaxe?1:0;
@@ -55,6 +56,7 @@ namespace Farmer
         private bool ChangeBag(string id,int delta)
         {
             long total=(long)BagCount(id)+delta;if(total<0||total>StackLimit)return false;
+            if(id.StartsWith("crafted:",StringComparison.Ordinal)){crafted[id.Substring(8)]=(int)total;return true;}
             if(id=="wood")return Building.ChangeWood(delta);
             if(id=="stone"){Stone=(int)total;return true;}
             if(id.StartsWith("furniture:",StringComparison.Ordinal))return Building.ChangeFurniture(id.Substring(10),delta);

@@ -11,8 +11,9 @@ namespace Farmer
         [Min(1)] public int salePrice = 18;
         [Min(3)] public int wateredDays = 3;
         [Min(1)] public int harvestYield = 1;
+        [Min(0)] public int regrowDays;
         [Range(.1f,2f)] public float visualScale = 1f;
         public GameObject[] growthStages = new GameObject[4];
-        public CropRules Rules => new CropRules(id, seedPrice, salePrice, wateredDays, harvestYield);
+        public CropRules Rules => new CropRules(id, seedPrice, salePrice, wateredDays, harvestYield, regrowDays);
     }
 }

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 932c993bb1fc95ae39930499e4b041e1, type: 3}
+  m_Name: tomato
+  m_EditorClassIdentifier: Farmer.Runtime::Farmer.CropDefinition
+  id: tomato
+  displayName: Domates
+  seedPrice: 24
+  salePrice: 12
+  wateredDays: 5
+  harvestYield: 2
+  regrowDays: 2
+  visualScale: 1
+  growthStages:
+  - {fileID: 430870518078293838, guid: cda5a5247662b4e10a58dd308ea3bfa5, type: 3}
+  - {fileID: 4614700430980233580, guid: de2b6fc14de0e41eab3c3a0abca65ee6, type: 3}
+  - {fileID: 4353581771920561703, guid: eca3703c9fec6487d840ebea92b822d0, type: 3}
+  - {fileID: 1934864468779236266, guid: 25cbfc3f3ef474678a23cd25fd65c6cd, type: 3}

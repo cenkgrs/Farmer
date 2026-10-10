@@ -193,3 +193,15 @@ Kazma ve kaya için [model eskizleri/teslim ölçütleri](references/mining_v01/
 hazır. Teslim modelleri gelene kadar kazma geçici geometri, kırılabilir kaya
 mevcut granit modelinin küçük kopyasıdır; haritadaki büyük dekor kayaları
 kendiliğinden madencilik kaynağına dönüştürülmez.
+
+## 0.3 ürün seçimi ve sebze kasası — 10 Ekim
+
+Kullanıcı havuç, tekrar hasat veren domates ve sebze kasasıyla devam edilmesini seçti. Turp korunur; tohum kuşanıldığında veya pazara yaklaşınca alt sekizli barın üstünde ürün seçimi görünür. Seçilen tür ekimde, B ile alımda ve V ile hasat satışında kullanılır, kayda girer. Yabani bitkiler eskisi gibi turp tohumu verir; seçimi değiştirerek pahalı tohum kazanılmaz.
+
+Havuç: tohum 14, dört gece, bir ürün, satış 27. Domates: tohum 24, ilk beş gece, iki ürün, birim satış 12; hasattan sonra iki gecede tekrar iki ürün. Tek ekimlik sulama tekrar hasatta sürer. Turp/havuç hasadı toprağı boşaltır, domates bitkisi yerinde kalır. Çapa kuşanıp sağ tık, hedefteki bitkiyi ürün/tohum iadesi olmadan kaldırır; hazırlanmış toprak korunur. Erişim, UI ve engel kontrolleri geçerlidir.
+
+Pazarda bir turp, bir havuç, iki domates ve iki odunla bir sebze kasası hazırlanır. Kasa 90 para eder; depolanabilir fakat yerleştirilebilir mobilya değildir. Üretim yalnız çantadaki malzemeleri tüketir; sandıktan uzaktan çekmez. Yetersiz girdi veya dolu çıktı yığınında hiçbir eşya tüketilmez. Tarif RecipeDefinition, ürünler CropDefinition verilerinden gelir. Bu ilk tarif yeni tezgâh gerektirmez.
+
+Çanta 16 gözlük sayfalar halinde tüm eşya türlerini gösterir; kişisel sandığın kapasitesi 16 farklı yığın olarak kalır. Kayıt v9 seçili ürünü, tekrar büyüme durumunu ve işlenmiş ürünleri saklar; ilk eski kayıt yazımında `.pre-v9` yedeği alınır. Yeni ürün/alet sahiplikleri eski kayda ücretsiz eklenmez.
+
+Havuç/domates dört aşamalı geçici geometri ve bu geometrilerin render edilmiş ikonlarını kullanır. Kazma/kaya kullanıcının teslim modelleridir. Taşın kullanım tarifi ve kalan üç ürün henüz seçilmedi. İlk denge hesabı: [DENGE_03.md](DENGE_03.md).
