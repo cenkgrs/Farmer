@@ -45,7 +45,11 @@ namespace Farmer.Tests
             slot.onClick.Invoke();yield return null;
             Assert.That(game.Model.EquippedItem,Is.EqualTo(FarmItem.Pickaxe));
             var driver=game.Player.GetComponentInChildren<FarmerAnimator>();
-            Assert.That(driver.ToolSocket.Find("Held Pickaxe").gameObject.activeInHierarchy,Is.True);
+            var held=driver.ToolSocket.Find("Held Pickaxe");
+            Assert.That(held.gameObject.activeInHierarchy,Is.True);
+            var mesh=held.GetComponentInChildren<MeshFilter>();Assert.That(mesh,Is.Not.Null);
+            Assert.That(mesh.sharedMesh.triangles.Length/3,Is.EqualTo(6029));
+            Assert.That(mesh.sharedMesh.vertices.Min(v=>held.InverseTransformPoint(mesh.transform.TransformPoint(v)).magnitude),Is.LessThan(.05f),"Delivered shaft passes through grip.");
             var rock=game.Model.Exploration.Nodes.Where(n=>n.kind==ResourceKind.Stone).OrderBy(n=>n.x*n.x+n.z*n.z).First();
             var point=new Vector3(rock.x+.5f,0,rock.z+.5f);
             Teleport(point+new Vector3(0,.1f,-1.6f));yield return null;
@@ -53,8 +57,10 @@ namespace Farmer.Tests
             Frame(point+Vector3.up*.65f,3.1f);yield return new WaitForSeconds(.4f);
             var view=Object.FindObjectsByType<ResourceView>(FindObjectsSortMode.None).Single(v=>v.Id==rock.id);
             Assert.That(view.GetComponent<Collider>().enabled,Is.True);
+            Assert.That(view.GetComponentInChildren<MeshFilter>().sharedMesh.triangles.Length/3,Is.EqualTo(5002));
+            Assert.That(view.GetComponentInChildren<Renderer>().bounds.min.y,Is.EqualTo(0).Within(.02f));
             Capture("mining-before");
-            Assert.That(game.Gather(rock.id),Is.True);yield return null;
+            Assert.That(game.Gather(rock.id),Is.True);yield return new WaitForSeconds(.15f);Capture("mining-after-hit");
             Assert.That(game.SaveGame(),Is.True);Assert.That(game.LoadGame(),Is.True);yield return null;
             Assert.That(game.Model.Exploration.Node(rock.id).hits,Is.EqualTo(1));
             Assert.That(game.Gather(rock.id),Is.True);yield return null;
