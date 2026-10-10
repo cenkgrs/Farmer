@@ -35,6 +35,10 @@ namespace Farmer.Editor
         }
         internal static GameObject CreateOrUpdateMainRoad(Transform root,Vector3[] points,float width,Material material)
         {
+            material.shader=Shader.Find("Farmer/Soft Road");
+            material.renderQueue=2990;material.SetOverrideTag("RenderType","Transparent");
+            material.SetFloat("_RoadWidth",width);material.SetFloat("_RoadLength",0);material.SetFloat("_EdgeWidth",.55f);
+            EditorUtility.SetDirty(material);
             const string meshFolder="Assets/_Farmer/Art/Meshes";
             if(!AssetDatabase.IsValidFolder(meshFolder))AssetDatabase.CreateFolder("Assets/_Farmer/Art","Meshes");
             const string meshPath=meshFolder+"/main_road.asset";

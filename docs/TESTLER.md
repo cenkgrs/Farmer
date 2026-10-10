@@ -212,3 +212,12 @@ Son doğrulama: 15/15 ilgili EditMode (`roof-auto-final-tests.xml`), 66/66 playe
 Gerçek player: `python3 tools/art/run_player_checks.py --name furniture-regression --checks controls house roof storage --xvfb builds/Tools/xvfb/runtime/usr/bin/Xvfb`; çıkış 0 ve `FARMER_PLAYER_SMOKE_OK`.
 Satın alma, Yapı/Mobilya sekmeleri, yerleştirme, Tab çantası, F sandığı, tekli/Shift-tüm yığın ve sürükle-bırak aktarımı, dışarı bırakmada iptal, kayıt/yükleme, dolu sandığı M ile taşıma, uzak erişimin reddi ve gece lambası doğrulandı.
 Sandık kapak/oturma animasyonları yok; Windows doğrulanmadı. Görseller: `screenshots/furniture-storage.png`, `furniture-day.png`, `furniture-night.png`.
+
+## 10 Ekim — alet taşırken kol salınımı
+
+`--farmer-check-tool-animation` mevcut alet hareketlerine ek olarak sulama
+kabı/orak/çapa/baltayla yürüyüşte iki elin karaktere göre ileri–geri hareketini
+1,2 saniye boyunca örnekler. Sağ el yayı 3,5 cm'den büyük ve serbest sol elin
+%80'inden küçük olmalı; alet socket'i bütün yürüyüş boyunca bileğe 12 cm'den
+fazla uzaklaşmamalı. İzole `FarmerQA` kaydı kullanılır. Sulama/savurma/yeniden
+kuşanma ve tutuş kontrolleri aynı turda devam eder.

@@ -14,6 +14,8 @@ namespace Farmer
             properties??=new MaterialPropertyBlock();renderer.GetPropertyBlock(properties);
             var s=transform.lossyScale;
             properties.SetVector("_BaseMap_ST",new Vector4(Mathf.Abs(s.x)/3f,Mathf.Abs(s.z)/3f,0,0));
+            properties.SetFloat("_RoadWidth", Mathf.Abs(s.x));
+            properties.SetFloat("_RoadLength", Mathf.Abs(s.z));
             renderer.SetPropertyBlock(properties);
         }
     }

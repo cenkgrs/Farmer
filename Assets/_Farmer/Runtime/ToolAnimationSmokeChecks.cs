@@ -35,6 +35,35 @@ namespace Farmer
                 File.WriteAllText(game.SavePath, JsonUtility.ToJson(fixture)); game.LoadGame();
                 cc.enabled = false; game.Player.position = new Vector3(-1.5f, .1f, -3.7f); cc.enabled = true;
                 motor.Visual.rotation = Quaternion.identity; Physics.SyncTransforms();
+                foreach (var item in new[] { FarmItem.WateringCan, FarmItem.Sickle, FarmItem.Hoe, FarmItem.Axe })
+                {
+                    game.Equip(item);
+                    cc.enabled = false; game.Player.position = new Vector3(-1.5f, .1f, -3.7f); cc.enabled = true;
+                    InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.D));
+                    yield return new WaitForSecondsRealtime(.35f);
+                    float rightMin = float.MaxValue, rightMax = float.MinValue;
+                    float leftMin = float.MaxValue, leftMax = float.MinValue, palmGap = 0;
+                    float until = Time.realtimeSinceStartup + 1.2f;
+                    while (Time.realtimeSinceStartup < until)
+                    {
+                        yield return new WaitForEndOfFrame();
+                        var right = animator.GetBoneTransform(HumanBodyBones.RightHand);
+                        var left = animator.GetBoneTransform(HumanBodyBones.LeftHand);
+                        float r = motor.Visual.InverseTransformPoint(right.position).z;
+                        float l = motor.Visual.InverseTransformPoint(left.position).z;
+                        rightMin = Mathf.Min(rightMin, r); rightMax = Mathf.Max(rightMax, r);
+                        leftMin = Mathf.Min(leftMin, l); leftMax = Mathf.Max(leftMax, l);
+                        palmGap = Mathf.Max(palmGap, Vector3.Distance(driver.ToolSocket.position, right.position));
+                    }
+                    float rightArc = rightMax-rightMin, leftArc = leftMax-leftMin;
+                    Check(rightArc > .035f && rightArc < leftArc * .8f,
+                        $"{item} carrying arm swings less than the free arm (right={rightArc:F3}m, left={leftArc:F3}m).");
+                    Check(palmGap < .12f, $"{item} stays in the palm throughout walking ({palmGap:F3}m).");
+                    InputSystem.QueueStateEvent(keyboard, new KeyboardState());
+                    yield return new WaitForSecondsRealtime(.6f);
+                }
+                cc.enabled = false; game.Player.position = new Vector3(-1.5f, .1f, -3.7f); cc.enabled = true;
+                motor.Visual.rotation = Quaternion.identity; Physics.SyncTransforms();
                 game.Equip(FarmItem.WateringCan);
                 yield return new WaitForSecondsRealtime(.8f);
                 var fingerBase = animator.GetBoneTransform(HumanBodyBones.RightIndexProximal);

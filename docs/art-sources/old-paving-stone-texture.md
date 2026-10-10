@@ -13,3 +13,14 @@
 - Lisans/kaynak mağaza bilgisi kullanıcı tesliminde bulunmadığından ayrıca doğrulanmadı. Dağıtım öncesinde kullanım hakkı kaydı tamamlanmalı.
 
 Özgün TIFF dosyası dönüştürme sırasında değiştirilmedi veya silinmedi.
+
+## 10 Ekim — yol/çim sınırı
+
+`Farmer/Soft Road` URP gölgelendiricisi ana yol ve köy meydanı kenarında yaklaşık
+0,55 m boyunca taş dokusunun opaklığını azaltır. Dünya konumundan üretilen küçük
+kenar düzensizlikleri düz cetvel çizgisini kırar; alttaki gerçek çim görünür.
+Yeni çim kopyası veya ayrı doku üretilmez. Yolun merkezindeki taş dokusu, UV
+tekrarı ve geometrisi korunur. Ana yolun başlangıcı da yumuşar; köyün içine giren
+ucu devam eder. Meydanda dört kenar yumuşar. `PavingTiling`, yeniden ölçeklenen
+meydanın geçiş genişliğini dünya metreleriyle korur. Malzeme gündüz/gece ışığı,
+gölge ve sis alır; kendi gölgesini üretmez. Oynanış collider'ları değişmez.

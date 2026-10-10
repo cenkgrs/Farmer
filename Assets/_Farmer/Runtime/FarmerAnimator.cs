@@ -181,9 +181,19 @@ namespace Farmer
                 handRotationCaptured = true;
             }
             float actionWeight = Mathf.Max(pourWeight, HarvestActive ? Mathf.Sin(Mathf.PI * harvestTime / HarvestDuration) : 0);
+            // Follow the actual gait, with a smaller arc for the hand carrying a tool.
+            // Feet are unaffected by arm IK, so this cannot feed last frame's solved pose back in.
+            var leftFoot = animator.GetBoneTransform(HumanBodyBones.LeftFoot);
+            var rightFoot = animator.GetBoneTransform(HumanBodyBones.RightFoot);
+            float carryWeight = animator.GetFloat(MoveSpeed) * (1 - Mathf.SmoothStep(0, 1, pourWeight));
+            if (HarvestActive) carryWeight = 0;
+            float stride = Mathf.Clamp(visual.InverseTransformVector(leftFoot.position - rightFoot.position).z, -.65f, .65f);
+            float sway = stride * carryWeight;
+            var carryOffset = new Vector3(0, Mathf.Abs(sway) * .025f, sway * .18f);
+            toolRotation *= Quaternion.Euler(sway * 9f, 0, 0);
             animator.SetIKPositionWeight(AvatarIKGoal.RightHand, gripWeight);
             animator.SetIKRotationWeight(AvatarIKGoal.RightHand, gripWeight);
-            animator.SetIKPosition(AvatarIKGoal.RightHand, visual.TransformPoint(handOffset));
+            animator.SetIKPosition(AvatarIKGoal.RightHand, visual.TransformPoint(handOffset + carryOffset));
             Vector3 palmDirection = game.Model.EquippedItem == FarmItem.WateringCan ? Vector3.down : Vector3.left;
             Quaternion gripRotation = Quaternion.LookRotation(Vector3.forward, palmDirection) * handGripBasis;
             animator.SetIKRotation(AvatarIKGoal.RightHand, visual.rotation * toolRotation * gripRotation * (HoldingShaftTool ? handToIkGoal : Quaternion.identity));
