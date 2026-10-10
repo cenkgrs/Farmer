@@ -16,7 +16,7 @@ namespace Farmer
         private RectTransform seedPicker;
         private Button[] cropChoices;
         private RectTransform marketHint;
-        private bool furnitureCategory;
+        private int buildCategory;
         private int[] categoryIndices;
         private Image[] buildIcons;
         private RectTransform buildTabs;
@@ -42,14 +42,17 @@ namespace Farmer
                 var events=new GameObject("Farm UI Input",typeof(EventSystem),typeof(InputSystemUIInputModule));events.transform.SetParent(transform,false);
                 events.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();
             }
-            var header=Panel("Clock and Wallet",root.transform,new Vector2(0,1),new Vector2(24,-20),new Vector2(224,76),Cream);
-            summary=Label(header,"",20,14,9,196,26,Ink);money=Label(header,"",15,14,41,126,24,Ink);
-            saveStatus=Label(header,"",10,130,46,88,18,new Color(.40f,.39f,.23f));
+            var header=Panel("Clock and Wallet",root.transform,new Vector2(0,1),new Vector2(24,-20),new Vector2(280,116),Cream);
+            HudArtwork.ApplyHeader(header);
+            summary=Label(header,"",20,32,26,216,27,Ink);money=Label(header,"",23,68,60,180,30,Ink);
+            summary.font=money.font=Resources.Load<Font>("MarketArt/LiberationSerif-Bold");
+            summary.resizeTextForBestFit=true;summary.resizeTextMinSize=14;summary.resizeTextMaxSize=20;
+            saveStatus=Label(header,"",10,32,88,216,14,new Color(.40f,.39f,.23f));
             detail=Panel("Cell Details",root.transform,new Vector2(1,1),new Vector2(-24,-20),new Vector2(244,110),Cream);
             selectionStatus=Label(detail,"",15,14,12,216,90,Ink);
             marketHint=Panel("Market interaction hint",root.transform,new Vector2(.5f,0),new Vector2(0,157),new Vector2(190,32),Cream);
             Label(marketHint,"F · Pazarı aç",14,8,5,174,24,Ink).alignment=TextAnchor.MiddleCenter;
-            camp=Panel("Sleep",root.transform,new Vector2(0,1),new Vector2(24,-112),new Vector2(250,140),Cream);
+            camp=Panel("Sleep",root.transform,new Vector2(0,1),new Vector2(24,-146),new Vector2(250,140),Cream);
             Label(camp,"Biraz dinlen",20,14,10,224,28,Ink);
             campWarning=Label(camp,"",13,14,43,224,44,Ink);
             sleep=Button(camp,"N · Sabaha kadar uyu",14,91,222,35,()=>game.Rest());
@@ -67,10 +70,11 @@ namespace Farmer
                 buildIcons[i]=obj.GetComponent<Image>();buildIcons[i].preserveAspect=true;buildIcons[i].raycastTarget=false;
                 buildCounts[i]=Label(button.transform,"",12,28,37,23,17,Ink);buildCounts[i].alignment=TextAnchor.MiddleRight;
             }
-            buildTabs=Panel("Build categories",root.transform,new Vector2(.5f,0),new Vector2(0,108),new Vector2(250,34),Cream);
-            Button(buildTabs,"Yapı",6,3,110,28,()=>{SetCategory(false);builder.SelectPiece(categoryIndices[0]);});
-            Button(buildTabs,"Mobilya",128,3,110,28,()=>{SetCategory(true);builder.SelectPiece(categoryIndices[0]);});
-            SetCategory(false);
+            buildTabs=Panel("Build categories",root.transform,new Vector2(.5f,0),new Vector2(0,108),new Vector2(370,34),Cream);
+            Button(buildTabs,"Yapı",6,3,110,28,()=>{SetCategory(0);builder.SelectPiece(categoryIndices[0]);});
+            Button(buildTabs,"Mobilya",128,3,110,28,()=>{SetCategory(1);builder.SelectPiece(categoryIndices[0]);});
+            Button(buildTabs,"Bahçe",250,3,110,28,()=>{SetCategory(2);builder.SelectPiece(categoryIndices[0]);});
+            SetCategory(0);
             moveButton=Button(buildMenu,"M · Tutup taşı",551,28,150,28,()=>builder.ToggleMoveMode());
             var bar=Panel("Inventory Bar",root.transform,new Vector2(.5f,0),new Vector2(0,20),new Vector2(541,85),Wood);
             normalBar=bar;
@@ -109,10 +113,11 @@ namespace Farmer
             feedback=Label(toast,"",13,10,7,550,25,Cream);feedback.alignment=TextAnchor.MiddleCenter;
             game.Selection.SetHudPanels(new[]{header,detail,camp,bar,tooltip,toast,buildMenu,buildTabs,seedPicker,marketHint,(RectTransform)moveButton.transform});Refresh();
         }
-        private void SetCategory(bool furniture)
+        private static int Category(BuildDefinition piece)=>piece.isOutdoor?2:piece.IsFurniture?1:0;
+        private void SetCategory(int category)
         {
-            furnitureCategory=furniture;
-            categoryIndices=Enumerable.Range(0,game.BuildPieces.Length).Where(i=>game.BuildPieces[i].IsFurniture==furniture).ToArray();
+            buildCategory=category;
+            categoryIndices=Enumerable.Range(0,game.BuildPieces.Length).Where(i=>Category(game.BuildPieces[i])==category).ToArray();
             for(int i=0;i<8;i++)
             {
                 bool filled=i<categoryIndices.Length;buildChoices[i].interactable=filled;
@@ -144,7 +149,7 @@ namespace Farmer
             }
             tooltip.anchoredPosition=new Vector2(0,game.BuildMode||chooseSeeds?148:106);
             toast.anchoredPosition=new Vector2(0,game.BuildMode?214:172);
-            summary.text=$"Gün {model.Day}   ·   {model.ClockText}";money.text=$"{model.Money} para";saveStatus.text=game.SaveStatus=="Kaydedildi"?"Kaydedildi":game.Ready?"":"Kayıt hatası";
+            summary.text=$"Gün {model.Day}   ·   {model.ClockText}";money.text=model.Money.ToString();saveStatus.text=game.SaveStatus=="Kaydedildi"?"Kaydedildi":game.Ready?"":"Kayıt hatası";
             feedback.text=game.Feedback;toast.gameObject.SetActive(!game.Ready&&!game.InventoryOpen);
             seedCount.text=model.Seeds(crop.id).ToString();woodCount.text=model.Building.Wood.ToString();
             for(int i=0;i<slots.Length;i++)
@@ -155,12 +160,12 @@ namespace Farmer
             }
             buildButton.GetComponent<Image>().color=game.BuildMode?Gold:Color.clear;buildButton.interactable=game.Ready;
             buildMenu.gameObject.SetActive(game.BuildMode);buildTabs.gameObject.SetActive(game.BuildMode);
-            if(builder.ActiveDefinition.IsFurniture!=furnitureCategory)SetCategory(builder.ActiveDefinition.IsFurniture);
+            if(Category(builder.ActiveDefinition)!=buildCategory)SetCategory(Category(builder.ActiveDefinition));
             for(int i=0;i<buildChoices.Length;i++)
             {
                 if(i>=categoryIndices.Length){buildCounts[i].text="";buildChoices[i].interactable=false;continue;}
                 var piece=game.BuildPieces[categoryIndices[i]];
-                buildCounts[i].text=(piece.IsFurniture?model.Building.FurnitureCount(piece.id):model.Building.Wood/Mathf.Max(1,piece.woodCost)).ToString();
+                buildCounts[i].text=(piece.IsFurniture?model.Building.FurnitureCount(piece.id):Mathf.Min(piece.woodCost>0?model.Building.Wood/piece.woodCost:999,piece.stoneCost>0?model.Stone/piece.stoneCost:999)).ToString();
                 buildChoices[i].GetComponent<Image>().color=!builder.MoveMode&&builder.ActiveDefinition==piece?Gold:Color.clear;
                 buildChoices[i].interactable=game.Ready;
             }
@@ -171,7 +176,9 @@ namespace Farmer
             if(hint=="Kazma · 7"&&!model.OwnsPickaxe)hint="Kazma · Pazardan satın al";
             tooltip.gameObject.SetActive(!game.InventoryOpen&&hint!=null);tooltipText.text=hint??"";
             detail.gameObject.SetActive(!game.InventoryOpen&&game.BuildMode);
-            selectionStatus.text=$"{builder.ActiveDefinition.displayName}\n{builder.HeightLabel} · {builder.Rotation*90}°";
+            var active=builder.ActiveDefinition;
+            string cost=active.IsFurniture?"":$"\n{(active.woodCost>0?active.woodCost+" odun":"")}{(active.woodCost>0&&active.stoneCost>0?" + ":"")}{(active.stoneCost>0?active.stoneCost+" taş":"")}";
+            selectionStatus.text=$"{active.displayName}\n{builder.HeightLabel} · {builder.Rotation*90}°{cost}";
             camp.gameObject.SetActive(game.NearCamp&&!game.MarketOpen&&!game.InventoryOpen);
             sleep.interactable=game.Ready;campWarning.text=model.ThirstyCount>0?$"{model.ThirstyCount} bitki su bekliyor.\nUyandığında saat 06:00 olacak.":"Yatağında sabaha kadar uyu.\nUyandığında saat 06:00 olacak.";
         }

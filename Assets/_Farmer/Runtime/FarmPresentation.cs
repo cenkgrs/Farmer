@@ -172,6 +172,8 @@ namespace Farmer
         }
         private void Refresh()
         {
+            // Scene teardown can disable construction after the player and tool socket have gone.
+            if (!isActiveAndEnabled || heldItemSocket == null) return;
             for (int i = 0; i < heldItems.Length; i++)
                 heldItems[i].SetActive(!game.BuildMode && game.Model.EquippedItem == (FarmItem)i && game.Model.ItemCount((FarmItem)i, game.ActiveCrop.id) > 0);
             if (observedModel != game.Model)

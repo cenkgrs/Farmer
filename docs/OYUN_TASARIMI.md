@@ -231,3 +231,23 @@ tüm çanta miktarını uygular. Satış için seçilen tür ekilecek ürün se�
 Yetersiz para/malzeme veya dolu yığında düğme pasiftir ve işlem kaynak tüketmez.
 Açılış seçili tohum türünü getirir; yeni açılışta adet 1'e döner. F/Esc/× ve
 modal dünya engelleri korunur. Sabit resimli köy arka planı eskizden gelir.
+
+
+## 11 Ekim — bahçe yapıları ve HUD
+
+Kullanıcının seçtiği 0.3 devamı çit, bahçe kapısı ve döşenebilir yoldur. İnşa
+çubuğu Yapı/Mobilya/Bahçe kategorilerine ayrılır, her biri sekiz göz kullanır.
+Çit 2 odun, bahçe kapısı 3 odun, bir kare taş yol 2 taş tüketir. Malzeme
+maliyeti veri tanımındadır; yetersiz kaynak işlem yapmaz. Sağ tık sökme tam
+malzemeyi iade eder; çanta sınırı aşılacaksa sökmez. M ile taşıma ücretsizdir.
+
+Çit/kapı kare kenarına, yol zemin katmanına yerleşir. Yol ekili bitkiyle,
+ahşap döşemeyle veya hacim yapısıyla çakışamaz; yol varken ekim/çapa ve hacim
+inşası engellenir. Çit bitkili hücrenin kenarına kurulabilir. Dış mekân
+parçaları ev/oda veya çatı desteği sayılmaz ve saydamlaşmaz. F bahçe kapısını
+açar/kapatır; kapı hareketi ve açılma alanı engel kontrolü mevcut ev kapısıyla
+aynı sistemi kullanır. Taş miktarı, parçalar ve kapı durumu v10 kaydında kalır.
+
+Sol üst saat/cüzdan, envanterin ahşap çerçevesi ve pazarın para simgesiyle
+aynı görsel dili kullanır. Kullanıcının padding geri bildirimiyle metin ve
+simge içeri alındı, panel 280×116 olarak genişletildi.

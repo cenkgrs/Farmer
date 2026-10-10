@@ -69,6 +69,7 @@ namespace Farmer
             // Additional definitions extend the authored scene catalog without rewriting the user's scene.
             crops = crops.Concat(Resources.LoadAll<CropDefinition>("Crops").OrderBy(c=>c.id,StringComparer.Ordinal))
                 .GroupBy(c=>c.id).Select(g=>g.First()).ToArray();
+            buildPieces=buildPieces.Concat(Resources.LoadAll<BuildDefinition>("GardenPieces").OrderBy(b=>b.id,StringComparer.Ordinal)).GroupBy(b=>b.id).Select(g=>g.First()).ToArray();
             Recipes = Resources.LoadAll<RecipeDefinition>("Recipes").OrderBy(r=>r.id,StringComparer.Ordinal).ToArray();
             var recipeRules = Recipes.Select(r=>r.Rules).ToArray();
             var rules = crops.Select(c => c.Rules).ToArray();
@@ -158,7 +159,7 @@ namespace Farmer
         public bool PlaceBlock(string id, int x, int level, int z, int rotation)
         {
             if (!Ready || !BuildMode) return false;
-            return Complete(Model.Building.Place(id, x, level, z, rotation, out var message), message);
+            return Complete(Model.PlaceStructure(id, x, level, z, rotation, out var message), message);
         }
         public bool RemoveBlock(int x, int level, int z)
         {
@@ -168,7 +169,7 @@ namespace Farmer
         public bool RemoveBlock(BlockRecord record)
         {
             if(!Ready||!BuildMode)return false;
-            return Complete(Model.Building.Remove(record,out var message),message);
+            return Complete(Model.RemoveStructure(record,out var message),message);
         }
         public bool ToggleDoor(BlockRecord record)
         {

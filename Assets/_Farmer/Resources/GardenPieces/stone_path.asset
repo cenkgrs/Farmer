@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9d0f4be4c6f481395603218bf233f00, type: 3}
+  m_Name: stone_path
+  m_EditorClassIdentifier: Farmer.Runtime::Farmer.BuildDefinition
+  id: stone_path
+  displayName: "Ta\u015F yol"
+  woodCost: 0
+  stoneCost: 2
+  isOutdoor: 1
+  prefab: {fileID: 7607599687041406203, guid: 879668f1bbfc94b448fd33b3bbdf578a, type: 3}
+  isBed: 0
+  price: 0
+  footprintLength: 1
+  placement: 1
+  isDoor: 0

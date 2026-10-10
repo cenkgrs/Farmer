@@ -82,7 +82,7 @@ namespace Farmer.Tests
             try
             {
                 var store=new FarmSaveStore(path,Restore);var f=store.Load(out _);Assert.That(f.SelectedCropId,Is.EqualTo("turnip"));Assert.That(f.Seeds("turnip"),Is.EqualTo(1));Assert.That(f.Seeds("carrot"),Is.Zero);
-                Assert.That(f.Plot(0).watered,Is.True);store.Save(f.Snapshot());Assert.That(File.ReadAllText(path+".pre-v9"),Is.EqualTo(text));
+                Assert.That(f.Plot(0).watered,Is.True);store.Save(f.Snapshot());Assert.That(File.ReadAllText(path+".pre-v"+FarmModel.SaveVersion),Is.EqualTo(text));
                 Assert.That(Json(store.Load(out _)),Is.EqualTo(Json(f)));
             }
             finally{Directory.Delete(Path.GetDirectoryName(path),true);}

@@ -56,7 +56,7 @@ namespace Farmer
     // No scene, input, filesystem or clock dependencies: all transactions validate before mutating.
     public sealed partial class FarmModel
     {
-        public const int SaveVersion = 9;
+        public const int SaveVersion = 10;
         public const int PickaxePrice = 80;
         public bool OwnsPickaxe { get; private set; }
         public int Stone { get; private set; }

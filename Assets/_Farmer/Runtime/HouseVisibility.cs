@@ -29,6 +29,7 @@ namespace Farmer
                 observed=model;revision=model.Revision;floors.Clear();edges.Clear();solidCells.Clear();
                 foreach(var b in model.Blocks)
                 {
+                    if(model.Rules(b.pieceId).IsOutdoor)continue;
                     var kind=model.Rules(b.pieceId).Placement;
                     if(kind==BuildPlacement.Solid&&!model.Rules(b.pieceId).IsFurniture)solidCells.Add(new Vector2Int(b.x,b.z));
                     if(kind==BuildPlacement.Floor)floors.Add(new Vector2Int(b.x,b.z));

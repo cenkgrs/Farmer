@@ -89,7 +89,7 @@ namespace Farmer.Tests
         {var c=game.Player.GetComponent<CharacterController>();c.enabled=false;game.Player.position=point;c.enabled=true;Physics.SyncTransforms();}
         internal static void Frame(Vector3 point,float size)
         {Camera.main.transform.position=point+new Vector3(8,7,9);Camera.main.transform.LookAt(point);Camera.main.orthographicSize=size;}
-        private static Texture2D Render(Camera camera,int sizeX,int sizeY)
+        internal static Texture2D Render(Camera camera,int sizeX,int sizeY)
         {
             var target=new RenderTexture(sizeX,sizeY,24,RenderTextureFormat.ARGB32);target.Create();var previous=RenderTexture.active;
             var image=new Texture2D(sizeX,sizeY,TextureFormat.RGBA32,false);

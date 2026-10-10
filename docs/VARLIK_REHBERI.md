@@ -149,3 +149,14 @@ Balta tutuşunda yalnızca socket yakınlığı doğal el pozu için yeterli de�
 [Pazar arayüz eskizi v01](references/market_ui_v01/README.md): yerleşik ImageGen
 ile mevcut oyun ve onaylı çiftlik konsepti referans alınarak üretildi. Prompt
 aynı klasörde. Kullanıcı 11 Ekimde onayladı; [çalışma dokuları, canlı metin fontları ve aktarım kaydı](art-sources/market_ui_v01/README.md) hazır.
+
+
+11 Ekim bahçe parçaları: `GardenSetup.Apply` native Unity prefab/veri üretir,
+sahneye yazmaz. Çit/kapı 1 m kenar modülü, yaklaşık 1 m yükseklik; kök hücre
+merkezinde, kenar local Z=+0,5, zemin local Y=−0,5. Kapı `Hinge` çocuğu
+local (−0,40, −0,43, +0,50), açılma Y=−90°. Taş yol 0,96×0,96 m, dokuz
+pahlı taş; taş mesh'i 24 üçgen (modül 216 üçgen), yüzey yaklaşık 5 cm.
+Görsel geometri ve bağımsız kutu collider'ları ayrı tutulur. Malzemeler
+sıcak mat ahşap/koyu metal/üç doğal taş rengi. İkonlar bu prefabların 256 px
+şeffaf renderlarıdır. Bunlar harici GLB teslimi değildir; ileride GLB ile
+birebir değiştirilirken bu ölçü, kök ve menteşe sözleşmesi korunmalıdır.

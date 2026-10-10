@@ -19,7 +19,7 @@ namespace Farmer
         private BuildingModel dragModel;
         public bool MoveMode { get; private set; }
         public bool IsDragging=>dragged!=null;
-        public string HeightLabel=>ActiveDefinition.placement==BuildPlacement.Roof?$"Çatı {BuildingModel.RoofHeight(level):0.0} m · Otomatik":$"Yükseklik {level+1}/{BuildingModel.Levels}";
+        public string HeightLabel=>ActiveDefinition.isOutdoor?"Zemin":ActiveDefinition.placement==BuildPlacement.Roof?$"Çatı {BuildingModel.RoofHeight(level):0.0} m · Otomatik":$"Yükseklik {level+1}/{BuildingModel.Levels}";
         private BuildingModel displayedModel;
         private int displayedRevision = -1;
         private int level, rotation, pieceIndex;
@@ -154,7 +154,7 @@ namespace Farmer
             Vector3 center = Position(ActiveDefinition,x,level,z);
             preview.transform.SetPositionAndRotation(center, Quaternion.Euler(0, rotation * 90, 0));
             string reason;
-            bool valid = dragged!=null?game.Model.Building.CanMove(dragged,x,level,z,rotation,out reason):game.Model.Building.CanPlace(ActiveDefinition.id, x, level, z, rotation, out reason);
+            bool valid = dragged!=null?game.Model.Building.CanMove(dragged,x,level,z,rotation,out reason):game.Model.CanPlaceStructure(ActiveDefinition.id, x, level, z, rotation, out reason);
             if (!InReach(center)) { valid = false; reason = "Yerleştirmek için yaklaş."; }
             else if (valid)
             {
@@ -162,7 +162,7 @@ namespace Farmer
                 {
                     if (!WorldGround.SupportsCell(cell.x,cell.z,false)) { valid=false; reason="Düz ve sağlam zemin gerekiyor."; break; }
                     int soilIndex = game.Model.IndexAt(cell.x,cell.z);
-                    if (ActiveDefinition.placement!=BuildPlacement.Roof && soilIndex >= 0 && !string.IsNullOrEmpty(game.Model.Plot(soilIndex).cropId)) { valid=false; reason="Önce buradaki ürünü hasat et."; break; }
+                    if (ActiveDefinition.placement!=BuildPlacement.Roof && !(ActiveDefinition.isOutdoor&&ActiveDefinition.placement==BuildPlacement.Edge) && soilIndex >= 0 && !string.IsNullOrEmpty(game.Model.Plot(soilIndex).cropId)) { valid=false; reason="Önce buradaki ürünü hasat et."; break; }
 
                 }
             }
@@ -244,7 +244,7 @@ namespace Farmer
                 obj.name = $"Built {b.pieceId} {b.x},{b.level},{b.z}";
                 obj.AddComponent<PlacedBlockView>().Record = b;
                 if(definition.isDoor)obj.AddComponent<DoorView>().Configure(game,b);
-                if(!definition.IsFurniture&&definition.placement!=BuildPlacement.Floor)obj.AddComponent<OccludingWall>();
+                if(!definition.IsFurniture&&!definition.isOutdoor&&definition.placement!=BuildPlacement.Floor)obj.AddComponent<OccludingWall>();
                 placed.Add(obj);
             }
             Physics.SyncTransforms();
