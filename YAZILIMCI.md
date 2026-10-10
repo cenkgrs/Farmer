@@ -550,3 +550,20 @@ Doğrulanan payload'lar editörün PlaybackEngines dizinine kopyalandı; sürüm
 Ana Farm sahnesi yeniden üretilmedi. Kullanıcının oturum başındaki sahne, malzeme,
 MarketArt meta ve render/ShaderGraph ayar değişiklikleri korunup commit dışında bırakıldı.
 Detaylı tasarım, derleme ve açık kabul: `docs/DEMO_05.md`.
+
+
+### Son native doğrulama ve temiz klon
+
+`demo-mac-final-build.log`: Mac development build başarılı. `demo-native-final.log`:
+8/8 gerçek Input System olay yolu kontrolü, `FARMER_PLAYER_SMOKE_OK`; J/Esc,
+6+fare saldırısı, Space kaçınma ve kayıt/yükleme. Apple M2 kısa örnek 59,0 FPS,
+en uzun kare 33,0 ms. Native defter görüntüsünde eski HUD artık gizli.
+Yönlendirme kutusunun tek satırı için 64 px yükseklik ve 22 px iç boşluk verildi;
+ahşap kenar metnin üstünden geçmez.
+
+`93dcd88` temiz yerel klonu Library olmadan açıldı; paketler kilit dosyasından
+import edildi, `demo-clean-editmode.xml` 186/186 geçti. Unity importu 7 dosyada
+render/texture meta serileştirme farkı üretti; kaynak/paket sürümü değişmedi.
+İlk temiz klon PlayMode denemesi testlere ulaşmadan asset garbage collector'da
+bekledi (main thread `GarbageCollectSharedAssets`, örnek `demo-clean-playmode.sample.txt`).
+Yalnızca o izole batch süreci durduruldu; yeniden deneme ve paketler takip ediliyor.

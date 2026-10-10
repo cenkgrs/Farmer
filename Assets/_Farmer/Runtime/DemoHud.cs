@@ -26,8 +26,8 @@ namespace Farmer
             canvas.GetComponent<Canvas>().renderMode=RenderMode.ScreenSpaceOverlay;canvas.GetComponent<Canvas>().overrideSorting=true;canvas.GetComponent<Canvas>().sortingOrder=110;
             var scale=canvas.GetComponent<CanvasScaler>();scale.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scale.referenceResolution=new Vector2(1280,720);scale.matchWidthOrHeight=.5f;
             var help=FarmHud.Button(canvas.transform,"J · Çiftlik defteri",24,0,174,34,()=>SetOpen(true));var hr=help.GetComponent<RectTransform>();hr.anchorMin=hr.anchorMax=hr.pivot=new Vector2(0,0);hr.anchoredPosition=new Vector2(24,20);hint=help.gameObject;
-            var nav=FarmHud.Panel("Destination",canvas.transform,new Vector2(1,1),new Vector2(-24,-20),new Vector2(250,50),new Color(.94f,.86f,.69f));HudArtwork.ApplyFrame(nav);nav.GetComponent<Image>().raycastTarget=false;
-            navigation=FarmHud.Label(nav,"",14,12,8,226,38,new Color(.28f,.21f,.13f));navigation.transform.parent.gameObject.SetActive(false);
+            var nav=FarmHud.Panel("Destination",canvas.transform,new Vector2(1,1),new Vector2(-24,-20),new Vector2(250,64),new Color(.94f,.86f,.69f));HudArtwork.ApplyFrame(nav);nav.GetComponent<Image>().raycastTarget=false;
+            navigation=FarmHud.Label(nav,"",14,22,22,206,24,new Color(.28f,.21f,.13f));navigation.transform.parent.gameObject.SetActive(false);
             var dim=FarmHud.Panel("Journal backdrop",canvas.transform,Vector2.one*.5f,Vector2.zero,new Vector2(4000,4000),new Color(.05f,.08f,.05f,.65f));overlay=dim.gameObject;
             var card=FarmHud.Panel("Farm journal",dim,Vector2.one*.5f,Vector2.zero,new Vector2(930,610),new Color(.94f,.87f,.72f));
             HudArtwork.ApplyFrame(card);
