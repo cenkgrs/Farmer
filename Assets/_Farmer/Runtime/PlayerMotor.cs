@@ -15,6 +15,8 @@ namespace Farmer
         private float verticalSpeed;
         private float dodgeTime, dodgeCooldown, invulnerableTime;
         private Vector3 dodgeDirection;
+        public Bounds? WorldBounds {get;set;}
+        public float CombatFreeze {get;set;}
         public bool Invulnerable => invulnerableTime > 0;
         public bool IsDodging => dodgeTime > 0;
         public bool TryDodge(Vector2 input)
@@ -26,7 +28,7 @@ namespace Farmer
         }
         public void CancelDodge(){dodgeTime=invulnerableTime=0;}
         public void Teleport(Vector3 position)
-        {CancelDodge();verticalSpeed=0;controller.enabled=false;transform.position=position;controller.enabled=true;Physics.SyncTransforms();}
+        {CancelDodge();CombatFreeze=0;verticalSpeed=0;controller.enabled=false;transform.position=position;controller.enabled=true;Physics.SyncTransforms();}
 
 
         public float Speed => speed;
@@ -57,6 +59,7 @@ namespace Farmer
         public void Step(Vector2 input, float deltaTime)
         {
             if (viewCamera == null || deltaTime <= 0f) return;
+            if(CombatFreeze>0){CombatFreeze=Mathf.Max(0,CombatFreeze-deltaTime);PlanarSpeed=0;return;}
             Vector3 direction = PlanarMovement.Direction(input, viewCamera.transform.forward, viewCamera.transform.right);
             if (controller.isGrounded && verticalSpeed < 0f) verticalSpeed = -2f;
             verticalSpeed = Mathf.Max(verticalSpeed - 20f * deltaTime, -30f);
@@ -65,7 +68,9 @@ namespace Farmer
             if(dodgeTime>0)direction=dodgeDirection;
             dodgeTime=Mathf.Max(0,dodgeTime-deltaTime);dodgeCooldown=Mathf.Max(0,dodgeCooldown-deltaTime);invulnerableTime=Mathf.Max(0,invulnerableTime-deltaTime);
             Vector3 target = transform.position + travel;
-            Vector3 displacement = PlanarMovement.ClampToGround(target, walkableHalfExtent) - transform.position;
+            Vector3 clamped=PlanarMovement.ClampToGround(target, walkableHalfExtent);
+            if(WorldBounds.HasValue){var bounds=WorldBounds.Value;clamped=target;clamped.x=Mathf.Clamp(target.x,bounds.min.x+.7f,bounds.max.x-.7f);clamped.z=Mathf.Clamp(target.z,bounds.min.z+.7f,bounds.max.z-.7f);}
+            Vector3 displacement = clamped - transform.position;
             displacement.y = verticalSpeed * deltaTime;
             Vector3 before = transform.position;
             controller.Move(displacement);

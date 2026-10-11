@@ -37,6 +37,9 @@ namespace Farmer
                 InputSystem.QueueStateEvent(mouse,new MouseState{position=point});yield return null;yield return null;
                 InputSystem.QueueStateEvent(mouse,new MouseState{position=point,buttons=1});yield return null;yield return null;
                 InputSystem.QueueStateEvent(mouse,new MouseState{position=point});yield return null;
+                yield return new WaitForSeconds(.1f);
+                yield return Capture(screenshot,"axe-swing");
+                yield return Capture(screenshot,"impact");
                 Check(game.Model.Combat.Enemy(0).health==20,"6 and mouse click execute the real axe input path.");
                 Vector3 before=game.Player.position;
                 InputSystem.QueueStateEvent(keyboard,new KeyboardState(Key.Space,Key.W));yield return new WaitForSecondsRealtime(.14f);
@@ -44,6 +47,11 @@ namespace Farmer
                 InputSystem.QueueStateEvent(keyboard,new KeyboardState());yield return new WaitForSecondsRealtime(.3f);
                 yield return Capture(screenshot,"combat");
                 Check(game.SaveGame()&&game.LoadGame()&&game.Model.Combat.Enemy(0).health==20,"Native player saves and reloads combat progress.");
+                slime=combat.View(0);motor.Teleport(slime.Home+Vector3.left*1.7f);
+                int wood=game.Model.Building.Wood;
+                yield return new WaitForSeconds(.7f);combat.TryAttack(0);yield return new WaitForSeconds(.7f);combat.TryAttack(0);
+                yield return new WaitForSeconds(.25f);yield return Capture(screenshot,"reward");
+                Check(combat.Claimed(0)&&game.Model.Building.Wood==wood+12,"Defeating the slime adds the visible wood reward without another click.");
                 motor.Teleport(combat.Sanctuary);game.GetComponent<DemoHud>().Track(0);
                 camera.transform.position=combat.Sanctuary+new Vector3(8,7,9);camera.transform.LookAt(combat.Sanctuary);camera.orthographicSize=7;
                 int frames=0;float total=0,max=0;float end=Time.realtimeSinceStartup+3;

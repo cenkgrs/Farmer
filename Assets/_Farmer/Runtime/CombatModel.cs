@@ -36,7 +36,7 @@ namespace Farmer
         public EnemyRecord Enemy(int id)=>enemies[id].Copy();
         public void Locate(int id,int x,int z)
         {
-            if(Math.Abs((long)x)>110||Math.Abs((long)z)>110||x*x+z*z<24*24)throw new ArgumentException("Unsafe enemy home.");
+            if(Math.Abs((long)x)>110||Math.Abs((long)z)>110||x*x+z*z<16*16)throw new ArgumentException("Unsafe enemy home.");
             enemies[id].located=true;enemies[id].x=x;enemies[id].z=z;
         }
         public bool Strike(int id,int day)
@@ -66,7 +66,7 @@ namespace Farmer
                 var e=s.enemies[i];
                 if(e==null||e.health<0||e.health>EnemyRules.Catalog[i].Health||e.defeatedDay<0||e.defeatedDay>day||e.rewardDay<0||e.rewardDay>e.defeatedDay
                     ||(e.health==0&&e.defeatedDay==0)||(!e.located&&(e.health!=EnemyRules.Catalog[i].Health||e.defeatedDay!=0||e.rewardDay!=0)))throw new ArgumentException("Invalid enemy state.");
-                if(e.located&&(Math.Abs((long)e.x)>110||Math.Abs((long)e.z)>110||(long)e.x*e.x+(long)e.z*e.z<24*24))throw new ArgumentException("Invalid enemy home.");
+                if(e.located&&(Math.Abs((long)e.x)>110||Math.Abs((long)e.z)>110||(long)e.x*e.x+(long)e.z*e.z<16*16))throw new ArgumentException("Invalid enemy home.");
             }
             return new CombatModel{Health=s.health,enemies=s.enemies.Select(e=>e.Copy()).ToArray()};
         }

@@ -16,7 +16,8 @@ namespace Farmer
         private Quaternion[] closedFingers, axeFingers;
         private float gripWeight, pourWeight, harvestTime = HarvestDuration;
         private Vector3 actionTarget, handOffset, harvestStart, pourTargetVelocity;
-        private bool wasPouring;
+        private bool wasPouring, combatSwing;
+        public void BeginCombatSwing(Vector3 target){OnHoe(target);combatSwing=true;}
         public Vector3 VisualActionTarget=>actionTarget;
         private Quaternion toolRotation = Quaternion.identity, harvestStartRotation, handGripBasis;
         private bool handRotationCaptured;
@@ -86,7 +87,7 @@ namespace Farmer
         }
         private void ResetAction()
         {
-            wasPouring=false;pourTargetVelocity=Vector3.zero;
+            combatSwing=false;wasPouring=false;pourTargetVelocity=Vector3.zero;
             pourWeight = 0; harvestTime = HarvestDuration;
             handOffset = RestHandForItem; toolRotation = RestRotationForItem;
             stream?.Hide();
@@ -102,7 +103,7 @@ namespace Farmer
         private void OnHoe(Vector3 target)
         {
             if (!isActiveAndEnabled || !Application.isFocused) return;
-            harvestStart = handOffset; harvestStartRotation = toolRotation; harvestTime = 0; actionTarget = target;
+            combatSwing=false;harvestStart = handOffset; harvestStartRotation = toolRotation; harvestTime = 0; actionTarget = target;
         }
         private void Update()
         {
@@ -121,7 +122,7 @@ namespace Farmer
             }
             wasPouring=pouring;
             pourWeight = Mathf.MoveTowards(pourWeight, pouring ? 1 : 0, Time.deltaTime / (pouring ? .18f : .7f));
-            harvestTime = Mathf.Min(HarvestDuration, harvestTime + Time.deltaTime);
+            if(motor.CombatFreeze<=0)harvestTime = Mathf.Min(HarvestDuration, harvestTime + Time.deltaTime);
             float pour = Mathf.SmoothStep(0, 1, pourWeight);
             handOffset = Vector3.Lerp(RestHandForItem, new Vector3(.32f, 1.14f, .57f), pour);
             toolRotation = HoldingShaftTool ? RestRotationForItem : Quaternion.Euler(48f * pour, 0, -6f * pour);
@@ -142,6 +143,11 @@ namespace Farmer
             {
                 raised = new Vector3(.43f,1.32f,.32f); cut = new Vector3(.43f,1.0f,.52f);
                 raisedRotation = Quaternion.Euler(-25,0,-12); cutRotation = Quaternion.Euler(80,0,-12);
+            }
+            if(combatSwing)
+            {
+                raised=new Vector3(.64f,1.45f,.08f);cut=new Vector3(-.18f,1.02f,.66f);
+                raisedRotation=Quaternion.Euler(-55,-50,-35);cutRotation=Quaternion.Euler(65,55,45);
             }
             if (harvestTime < .1f)
             {
@@ -205,6 +211,12 @@ namespace Farmer
         private void LateUpdate()
         {
             if (toolSocket == null || motor == null) return;
+            if(combatSwing&&HarvestActive)
+            {
+                float twist=harvestTime<.1f?Mathf.Lerp(0,-18,harvestTime/.1f):harvestTime<.28f?Mathf.Lerp(-18,22,(harvestTime-.1f)/.18f):Mathf.Lerp(22,0,(harvestTime-.28f)/.24f);
+                var chest=animator.GetBoneTransform(HumanBodyBones.Chest);
+                if(chest!=null)chest.localRotation*=Quaternion.Euler(Mathf.Sin(harvestTime/HarvestDuration*Mathf.PI)*5,twist,0);
+            }
             for (int i = 0; i < fingers.Length; i++)
                 fingers[i].localRotation = Quaternion.Slerp(fingers[i].localRotation, (HoldingShaftTool ? axeFingers : closedFingers)[i], gripWeight);
             var hand = animator.GetBoneTransform(HumanBodyBones.RightHand);

@@ -296,3 +296,29 @@ J çiftlik defterini açar. Tohum alma, ekim, sulama, hasat, satış, inşa ve k
 adımları kalıcı işaretlenir. Defterden pazar/çiftlik/keşif yönü seçilebilir; ses,
 FPS sınırı ve tam ekran ayarlanır. Defter açıkken dünya girdisi ve saat durur.
 Yeni oyuncuya ilk girişte gösterilir; mevcut oyuncu J veya menüden açar.
+
+
+## 12 Ekim — savaş hissi ve kompakt dünya düzeltmesi
+
+Kullanıcı önceki savaş sunumunu kabul etmedi. Savaşın sayısal olarak çalışması
+oynanabilirlik kabulü sayılmıyor. Balta artık 0,2 saniyelik hazırlık sonrasında
+hasar verir; o anda mesafe, engel, alet ve kaçınma yeniden denetlenir. Yakın
+düşmana tıklamada ekran ölçeğine bağlı tolerans vardır. Savurma izi, darbe
+parçacıkları, hasar sayısı, düşmanın sarsılması/geriye esnemesi ve 65 ms yerel
+vuruş duraksaması birlikte kullanılır. Oyuncu canı sürekli, düşman canı başının
+üstünde görünür. Düşmanın hazırlık halkası ve hamle animasyonu saldırıyı belirtir.
+Kamera önündeki ağaçlar oyuncu/düşmanı örttüğünde saydamlaşır; çarpışma korunur.
+
+Slime yenildiğinde 12 odun otomatik çantaya girer. Böcek 12 taş verir; satın
+alınmış kazma gerekir, ödül için o anda kuşanılması gerekmez. Çanta doluysa
+veya kazma yoksa kaynak yerde kalır, açıklaması görünür; kazmayla/aletle tekrar
+tıklanabilir. Günlük tek ödül ve kayıt kuralları korunur.
+
+Karşılaşmalar dünya orijini yerine sahnedeki gerçek oyuncu başlangıcından
+yaklaşık 17–34 m mesafede uygun boş zemine yerleşir. Köy yolu kısalır; uzaktaki
+dekor ve kaynaklar merkezde yoğunlaşır. Başlangıç zemin hedefi 116×116 m'dir;
+eski kaydın yapı, tarla ve kaynakları dışarıda kalacaksa zemin bunları kapsar.
+Kaynakların kimliği, kalan vuruşları, sandık ödülleri ve toplanma durumu korunur;
+uzak konumlar yeni düzende bir kez yakına alınır. Kullanıcının sahne dosyası
+yeniden üretilmez; düzenleme çalışma anında uygulanır. Bu düzen önceki büyük
+vadi önerisinin yerine geçer.

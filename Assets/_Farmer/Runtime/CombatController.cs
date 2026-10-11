@@ -13,7 +13,10 @@ namespace Farmer
         private PlayerMotor motor;
         private Vector3 sanctuary;
         private readonly EnemyView[] views=new EnemyView[2];
-        private float attackCooldown, grace=1.2f;
+        private float attackCooldown, grace=1.2f, impactDelay, hitStop;
+        private int pendingTarget=-1;
+        private Image healthFill;
+        public bool ImpactPaused => hitStop>0;
         private Text status;
         private CombatAudio sound;
         public void Warn()=>sound?.Warning();
@@ -28,30 +31,33 @@ namespace Farmer
             var canvas=new GameObject("Combat HUD",typeof(Canvas),typeof(CanvasScaler));canvas.transform.SetParent(transform,false);
             canvas.GetComponent<Canvas>().renderMode=RenderMode.ScreenSpaceOverlay;canvas.GetComponent<Canvas>().overrideSorting=true;canvas.GetComponent<Canvas>().sortingOrder=2;
             var scale=canvas.GetComponent<CanvasScaler>();scale.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scale.referenceResolution=new Vector2(1280,720);scale.matchWidthOrHeight=.5f;
-            var panel=FarmHud.Panel("Health and expedition",canvas.transform,new Vector2(.5f,1),new Vector2(0,-20),new Vector2(460,100),new Color(.94f,.87f,.71f,.97f));
+            var panel=FarmHud.Panel("Health and expedition",canvas.transform,new Vector2(.5f,1),new Vector2(0,-20),new Vector2(460,120),new Color(.94f,.87f,.71f,.97f));
             HudArtwork.ApplyFrame(panel);
             panel.GetComponent<Image>().raycastTarget=false;hud=panel.gameObject;
             status=FarmHud.Label(panel,"",15,24,20,412,70,new Color(.25f,.20f,.12f));
+            var bar=FarmHud.Panel("Player health background",panel,new Vector2(0,1),new Vector2(24,-96),new Vector2(412,12),new Color(.24f,.13f,.12f));
+            healthFill=FarmHud.Panel("Player health",bar,new Vector2(0,1),Vector2.zero,new Vector2(412,12),new Color(.78f,.23f,.22f)).GetComponent<Image>();
+            bar.GetComponent<Image>().raycastTarget=false;healthFill.raycastTarget=false;
             Synchronize();
         }
         private void Synchronize()
         {
             if(game==null||!game.Ready)return;
             if(observed==game.Model)return;
-            observed=game.Model;attackCooldown=0;grace=1.2f;
+            observed=game.Model;attackCooldown=0;grace=1.2f;pendingTarget=-1;hitStop=0;
             for(int i=0;i<views.Length;i++)
             {
                 if(views[i]!=null){views[i].gameObject.SetActive(false);Destroy(views[i].gameObject);views[i]=null;}
                 var e=game.Model.Combat.Enemy(i);
-                if(!e.located)
+                if(!e.located || PlanarDistance(new Vector3(e.x,0,e.z),sanctuary)>34)
                 {
                     // Deterministic scan checks authored scenery and runtime construction/resources.
                     bool found=false;
-                    for(int ring=0;ring<12&&!found;ring++)for(int a=0;a<8&&!found;a++)
+                    for(int ring=0;ring<6&&!found;ring++)for(int a=0;a<8&&!found;a++)
                     {
-                        int x=(i==0?28:48)+(a%4)*3, z=(i==0?-22:-42)-ring*3-(a/4);
+                        int x=Mathf.RoundToInt(sanctuary.x)+(i==0?18:-18)+(a%4)*2, z=Mathf.RoundToInt(sanctuary.z)-12-ring*2-(a/4);
                         var point=new Vector3(x+.5f,0,z+.5f);
-                        if(Vector3.Distance(point,sanctuary)<26||!WorldGround.SupportsCell(x,z,false)||!Clear(point,2.3f))continue;
+                        if(Mathf.Abs(x)>110||Mathf.Abs(z)>110||Vector3.Distance(point,sanctuary)<17 || PlanarDistance(point,sanctuary)>34 || new Vector2(x,z).magnitude<16||!WorldGround.SupportsCell(x,z,false)||!Clear(point,2.3f))continue;
                         game.Model.Combat.Locate(i,x,z);found=true;
                     }
                     e=game.Model.Combat.Enemy(i);
@@ -60,6 +66,7 @@ namespace Farmer
                 var root=new GameObject(EnemyRules.Catalog[i].Name);root.transform.SetParent(transform,false);
                 views[i]=root.AddComponent<EnemyView>();views[i].Configure(this,i,new Vector3(e.x+.5f,0,e.z+.5f));
             }
+            CombatOccluder.Attach(this,game);
             game.SaveGame();
         }
         public Vector3? SpawnPoint(Vector3 home,EnemyView ignore)
@@ -87,15 +94,23 @@ namespace Farmer
         {
             var closest=views.Where(v=>v!=null).OrderBy(v=>PlanarDistance(v.Home,game.Player.position)).FirstOrDefault();
             bool near=closest!=null&&PlanarDistance(closest.Home,game.Player.position)<11;
-            hud.SetActive(CanAct&&(near||game.Model.Combat.Health<100||game.Model.EquippedItem==FarmItem.Axe));
+            hud.SetActive(game.Ready&&!game.WorldInputBlocked);
+            healthFill.rectTransform.sizeDelta=new Vector2(412f*game.Model.Combat.Health/100f,12);
             string target=closest==null?"":$"{EnemyRules.Catalog[closest.Id].Area} · {Mathf.RoundToInt(PlanarDistance(closest.Home,game.Player.position))} m";
-            if(near)target=game.Model.Combat.Enemy(closest.Id).health>0?$"{EnemyRules.Catalog[closest.Id].Name} · {game.Model.Combat.Enemy(closest.Id).health} can · {(closest.WindingUp?"SALDIRI HAZIRLIĞI!":"6: Balta / sol tık")}":"Zulaya yaklaş · Orman: 6 / Maden: 7 + tık";
+            if(near)target=game.Model.Combat.Enemy(closest.Id).health>0?$"{EnemyRules.Catalog[closest.Id].Name} · {game.Model.Combat.Enemy(closest.Id).health} can · {(closest.WindingUp?"SALDIRI HAZIRLIĞI!":"6: Balta / sol tık")}":(Claimed(closest.Id)?(closest.Id==0?"+12 ODUN çantana eklendi · Yarın yenilenir":"+12 TAŞ çantana eklendi · Yarın yenilenir"):closest.Id==0?"Yerde 12 odun · Yaklaş ve tıkla":"Yerde 12 taş · Kazma (7) ile al");
             status.text=$"CAN  {game.Model.Combat.Health} / 100\n{target}\nSpace: kaçın   ·   H: sebze ye (+25)";
         }
         public void Simulate(float dt,bool focused=true)
         {
             Synchronize();if(game==null||!game.Ready||dt<=0)return;
-            if(!CanAct||!focused){sound.Silence();grace=1.2f;foreach(var v in views)if(v!=null)v.CancelAttack();return;}
+            if(!CanAct||!focused){sound.Silence();pendingTarget=-1;hitStop=0;grace=1.2f;foreach(var v in views)if(v!=null)v.CancelAttack();return;}
+            if(hitStop>0){hitStop=Mathf.Max(0,hitStop-dt);return;}
+            if(pendingTarget>=0)
+            {
+                impactDelay-=dt;
+                if(game.Model.EquippedItem!=FarmItem.Axe||motor.IsDodging)pendingTarget=-1;
+                else if(impactDelay<=0){int id=pendingTarget;pendingTarget=-1;ResolveStrike(id);}
+            }
             attackCooldown=Mathf.Max(0,attackCooldown-dt);grace=Mathf.Max(0,grace-dt);
             if(game.Model.Combat.RefreshDay(game.Model.Day))game.CombatChanged("Yeni gün: dışarıdaki kaynak zulaları yenilendi.");
             foreach(var v in views)if(v!=null)v.Simulate(dt,game.Player.position,grace<=0);
@@ -103,15 +118,30 @@ namespace Farmer
         public bool UsePointer(bool pressed)
         {
             if(!CanAct||Camera.main==null||Mouse.current==null)return false;
-            if(!Physics.Raycast(Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue()),out var hit,300,~0,QueryTriggerInteraction.Ignore))return false;
-            var enemy=hit.collider.GetComponentInParent<EnemyView>();if(enemy==null)return false;
+            var ray=Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+            EnemyView enemy=null;
+            if(Physics.Raycast(ray,out var hit,300,~0,QueryTriggerInteraction.Ignore))enemy=hit.collider.GetComponentInParent<EnemyView>();
+            if(enemy==null && game.Model.EquippedItem==FarmItem.Axe)
+            {
+                // Screen-space assistance scales with zoom; walls still block the actual strike.
+                float radius=Mathf.Clamp(Screen.height*.09f,48,110),best=radius;
+                foreach(var candidate in views)
+                {
+                    if(candidate==null||Health(candidate.Id)<=0||PlanarDistance(candidate.transform.position,game.Player.position)>3.1f)continue;
+                    var screen=Camera.main.WorldToScreenPoint(candidate.transform.position+Vector3.up*.5f);
+                    float d=Vector2.Distance(Mouse.current.position.ReadValue(),screen);
+                    if(screen.z>0&&d<best&&Visible(candidate.transform.position,candidate)){enemy=candidate;best=d;}
+                }
+            }
+            if(enemy==null)return false;
             if(pressed)TryAttack(enemy.Id);return true;
         }
+
         public bool TryAttack(int id)
         {
             Synchronize();if(!CanAct||id<0||id>=views.Length||views[id]==null)return false;
             var v=views[id];
-            if(PlanarDistance(v.transform.position,game.Player.position)>2.6f||!Visible(v.transform.position,v))
+            if(PlanarDistance(v.transform.position,game.Player.position)>3.1f||!Visible(v.transform.position,v))
             {game.ShowBuildFeedback("Hedefe yaklaş; arada engel olmamalı.");return false;}
             if(game.Model.Combat.Enemy(id).health==0)
             {
@@ -121,9 +151,28 @@ namespace Farmer
             }
             if(game.Model.EquippedItem!=FarmItem.Axe){game.ShowBuildFeedback("Saldırmak için baltayı kuşan (6).");return false;}
             if(attackCooldown>0||motor.IsDodging)return false;
-            attackCooldown=.6f;sound.Strike();game.Model.Combat.Strike(id,game.Model.Day);v.Flash();
-            game.CombatChanged(game.Model.Combat.Enemy(id).health==0?"Açıklık güvenli. Kaynak zulasını almak için tekrar tıkla.":"Balta · 15 hasar",v.transform.position+Vector3.up*.6f);
+            attackCooldown=.6f;pendingTarget=id;impactDelay=.2f;
+            CombatFeedback.Slash(game.Player,v.transform.position);
+            game.Player.GetComponentInChildren<FarmerAnimator>()?.BeginCombatSwing(v.transform.position+Vector3.up*.6f);
+            motor.FacingTarget=v.transform.position;
             return true;
+        }
+        private void ResolveStrike(int id)
+        {
+            var v=views[id];
+            if(v==null||Health(id)<=0||PlanarDistance(v.transform.position,game.Player.position)>3.2f||!Visible(v.transform.position,v))return;
+            int damage=Mathf.Min(15,Health(id));
+            sound.Strike();game.Model.Combat.Strike(id,game.Model.Day);v.Flash();
+            hitStop=.065f;motor.CombatFreeze=.065f;
+            CombatFeedback.Burst(v.transform.position+Vector3.up*.6f,damage.ToString(),new Color(1,.82f,.28f));
+            string message="Balta · "+damage+" hasar";
+            if(Health(id)==0)
+            {
+                if(game.Model.ClaimExpedition(id,out var reward))
+                {message=reward;CombatFeedback.Burst(v.transform.position+Vector3.up*2.2f,id==0?"+12 ODUN":"+12 TAŞ",new Color(.55f,1,.45f));}
+                else message="Düşman yenildi · "+reward;
+            }
+            game.CombatChanged(message);
         }
         public bool Visible(Vector3 target,EnemyView view)
         {
@@ -134,7 +183,8 @@ namespace Farmer
         public void HitPlayer(int id)
         {
             if(!CanAct||grace>0||motor.Invulnerable||views[id]==null||!Visible(views[id].transform.position,views[id]))return;
-            sound.Hurt();
+            sound.Hurt();motor.CombatFreeze=.065f;hitStop=.065f;
+            CombatFeedback.Burst(game.Player.position+Vector3.up*1.3f,"−"+EnemyRules.Catalog[id].Damage,new Color(1,.25f,.18f));
             if(game.Model.Combat.Damage(EnemyRules.Catalog[id].Damage))
             {
                 int loss=game.Model.RecoverFromDefeat();motor.Teleport(SafeReturn());grace=2;

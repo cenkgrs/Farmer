@@ -79,9 +79,9 @@ namespace Farmer
             if(state==0)state=1;
             int Next(int max){state^=state<<13;state^=state>>17;state^=state<<5;return (int)(state%(uint)max);}
             var cells=new List<(int x,int z)>();
-            for(int x=-ResourceExtent;x<=ResourceExtent;x+=6)
-                for(int z=-ResourceExtent;z<=ResourceExtent;z+=6)
-                    if(Math.Max(Math.Abs(x),Math.Abs(z))>=32&&!Reserved(x,z)
+            for(int x=-54;x<=54;x+=4)
+                for(int z=-54;z<=54;z+=4)
+                    if(Math.Max(Math.Abs(x),Math.Abs(z))>=28&&!Reserved(x,z)
                         &&(blocked==null||!blocked(x,z))
                         &&!nodes.Values.Any(n=>Math.Abs(n.x-x)<4&&Math.Abs(n.z-z)<4))cells.Add((x,z));
             for(int i=cells.Count-1;i>0;i--){int j=Next(i+1);var c=cells[i];cells[i]=cells[j];cells[j]=c;}
@@ -97,11 +97,26 @@ namespace Farmer
             }
             generation=1;Revision++;return this;
         }
+        public void Compact(Func<int,int,bool> blocked=null,int centerX=0,int centerZ=0)
+        {
+            // Preserve identities, loot, depletion and partial hits; move only the distant expansion.
+            foreach(var node in nodes.Values.OrderBy(n=>n.id))
+            {
+                if(Math.Max(Math.Abs(node.x-centerX),Math.Abs(node.z-centerZ))<=44)continue;
+                bool moved=false;
+                for(int x=centerX-44;x<=centerX+44&&!moved;x+=4)for(int z=centerZ-44;z<=centerZ+44&&!moved;z+=4)
+                {
+                    if(Math.Abs(x)>108||Math.Abs(z)>108||Math.Max(Math.Abs(x),Math.Abs(z))<11||Math.Max(Math.Abs(x-centerX),Math.Abs(z-centerZ))<12||Reserved(x,z)||(blocked!=null&&blocked(x,z))
+                        ||nodes.Values.Any(n=>n.id!=node.id&&Math.Abs(n.x-x)<4&&Math.Abs(n.z-z)<4))continue;
+                    node.x=x;node.z=z;Revision++;moved=true;
+                }
+            }
+        }
         private static bool Reserved(int x,int z)
         {
             // Keep the village and the curved main-road corridor open.
-            if(x>=-78&&x<=-30&&z>=80&&z<=122)return true;
-            var route=new[]{(-5,8),(-12,32),(-30,48),(-34,68),(-55,86),(-55,96)};
+            if(x>=-40&&x<=-8&&z>=20&&z<=52)return true;
+            var route=new[]{(-5,8),(-7,18),(-13,25),(-24,36)};
             for(int i=1;i<route.Length;i++)
             {
                 var a=route[i-1];var b=route[i];double dx=b.Item1-a.Item1,dz=b.Item2-a.Item2;

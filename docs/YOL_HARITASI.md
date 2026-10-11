@@ -122,3 +122,11 @@ Kazma/kaya kullanıcı GLB modellerine bağlandı. Kullanıcı havuç + tekrar h
 0.3 devamı: pazarın F ile açılması, F/Esc/× ile kapanması ve son turp aşamasının
 %5 küçültülmesi uygulandı. [Pazar ekranı eskizi](references/market_ui_v01/README.md)
 11 Ekim kullanıcı onayıyla uygulandı: özgün çizimler, beş kategori, adetli alım/üretim, ürün seçerek satış.
+
+
+## 12 Ekim — kullanıcı savaş geri bildirimi
+
+0.4'ün önceki “tamam” kaydı mekanik kapsamı anlatır; kullanıcı savaş hissini
+kabul etmedi. Öncelik: saldırı zamanlaması/animasyonu, okunaklı can ve vuruş
+geri bildirimi, açık ödül ve daha küçük/dolu dünya. Bu düzeltmeden sonra
+kullanıcının oynanış değerlendirmesi alınmalı; test başarısı görsel kabul değildir.

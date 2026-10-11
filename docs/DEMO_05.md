@@ -114,3 +114,13 @@ ve Linux donanımında bu paketler henüz açılmadı; native giriş testi Mac't
 
 Bu kabul noktaları geçmeden 0.5'e nihai demo onayı verilmez. Uygulama ve paketleme
 sonuçlarının güncel kanıtları YAZILIMCI.md'nin son kaydındadır.
+
+
+### 12 Ekim savaş düzeltmesi
+
+Kaynak kodundaki yeni savaş: 0,2 s temas gecikmesi, 65 ms hit-stop, savurma izi,
+hasar sayıları, düşman/oyuncu can barı, hazırlık halkası ve sarsılma. Slime ödülü
+otomatik 12 odun; böcek ödülü kazma sahipliğinde otomatik 12 taş. Alınamayan
+kaynak görünür kalır. Keşif noktaları gerçek çiftlik başlangıcına yaklaştırıldı.
+Önceki Windows/Linux ZIP'leri bu değişiklikleri içermez; yeniden paketlenmeden
+bu yeni sürümün paketi olarak paylaşılmamalı.

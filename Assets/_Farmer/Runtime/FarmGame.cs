@@ -53,6 +53,7 @@ namespace Farmer
         private bool smokeSession;
         private Bounds[] sceneryBounds = Array.Empty<Bounds>();
         public string SavePath { get; private set; }
+        private Vector3 initialFarmPosition;
 
         public void Configure(CropDefinition[] definitions, FarmSelection grid, Transform actor, Transform shop, Transform rest)
         { crops = definitions; selection = grid; player = actor; market = shop; camp = rest; }
@@ -60,6 +61,8 @@ namespace Farmer
         private void Awake()
         {
             Application.targetFrameRate=60;
+            initialFarmPosition=player.position;
+            CompactWorld.Apply(market,initialFarmPosition);
             if(GetComponent<StorageInteraction>()==null)gameObject.AddComponent<StorageInteraction>();
             if(GetComponent<MarketHud>()==null)gameObject.AddComponent<MarketHud>();
             marketInteraction=GetComponent<MarketInteraction>();
@@ -356,6 +359,10 @@ namespace Farmer
             {
                 var loaded = store.Load(out bool recovered);
                 if (loaded != null) Model = loaded;
+                Model.Exploration.Compact((x,z)=>ResourceBlockedByScenery(x,z)
+                    ||Model.IndexAt(x,z)>=0||Model.Building.Blocks.Any(b=>Math.Abs(b.x-x)<4&&Math.Abs(b.z-z)<4),
+                    Mathf.RoundToInt(initialFarmPosition.x),Mathf.RoundToInt(initialFarmPosition.z));
+                CompactWorld.FitGround(this,initialFarmPosition);
                 Ready = true;
                 SaveStatus = recovered ? "Yedek kayıt yüklendi" : loaded == null ? "Yeni çiftlik" : "Kayıt yüklendi";
                 Feedback = recovered ? "Son sağlam yedek açıldı; önceki dosya korunacak." : "5 ile çapa seç; boş toprağı hazırla. 1/2/3 ile ek, sula ve hasat et.";

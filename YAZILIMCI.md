@@ -1,10 +1,10 @@
 # Yazılımcı — proje hafızası ve devir
 
-Son güncelleme: **11 Ekim 2026 — Europe/Istanbul**.
+Son güncelleme: **12 Ekim 2026 — Europe/Istanbul**.
 
 ## Şu an nerede kaldık?
 
-**Güncel (11 Ekim): 0.4 özellikleri tamam. 0.5 demo adayı: J defteri, yönlendirme, ayarlar, v12 kayıt ve Windows/Linux release ZIP'leri hazır. Yerel sahnede ve temiz klonda 186/186 EditMode, 8/8 PlayMode; native Mac'te 8 demo + 8 menü/giriş kontrolü geçti. Paketlerin kaynak commit'i f9c8804. Gerçek Windows/Linux donanım ve yaklaşık bir saatlik oyuncu kabulü hâlâ açık; 0.5 nihai kabul verilmedi. Ayrıntı dosya sonunda.**
+**Güncel (12 Ekim): Kullanıcı 0.4 savaş hissini kabul etmedi; can barları, temas anına bağlı saldırı, hedefleme toleransı, darbe/ölüm tepkileri, efektler, otomatik ve açık ödül ile kompakt dünya düzeltildi. 188 EditMode ve 8 PlayMode geçti; native macOS'ta 9 davranış kontrolü geçti. Son ödül etiketi görsel düzeltmesi ve devir bilgisi dosya sonunda. Eski Windows/Linux ZIP'leri bu düzeltmeyi içermez. Kullanıcı oynanış kabulü hâlâ açık.**
 
 **Unity 6000.3.25f1 LTS (e1dba0a9aba4)** Linux makinesine kuruldu ve `Unity -version` ile doğrulandı. Resmi URP şablonunun kaynak dosyaları depoya alındı. 7 Ekim tarihinde aktif lisans doğrulandı; ilk paket importu, C# derlemesi ve başlangıç sahnesi üretimi başarıyla tamamlandı. Linux build ve görsel kontrol sonucu aşağıdaki doğrulama kaydında tutulur. **0.1 çekirdek prototipi Linux üzerinde tamamlandı:** hareket, kare seçimi, tohum satın alma, ekim/sulama, dört görünür büyüme aşaması, hasat/satış, gün ilerletme ve kayıt/yükleme çalışıyor. **Görsel ara aşama Linux üzerinde entegre edildi:** kullanıcının Tripo çiftçi/sulama kabı/orak/pazar modelleri ve Mixamo Idle/Walk animasyonları sahnede. Kullanıcı yeni görselleri beğendi; arkadaşına göndermek için Windows deneme paketi hazırlandı. Sulama/hasat için prosedürel alet hareketleri ve su akışı da eklendi; kullanıcının ters el tutuşu geri bildirimi düzeltilip son Linux player turunda 121 kontrol geçti. 0.2 dünya düzenleme adımı hazır: inşa alanı sınırı kaldırıldı, çapa ve yerleştirilebilir yatak eklendi, saat/gece–gündüz kullanıcı kararıyla 10 gerçek dakikalık döngüye geçti. Yeni kompakt ikon envanteri ve kaldırılan dünya etiketleri aşağıdaki güncel kayıtta açıklanır. **8 Ekim ilk oda adımı:** döşeme, ince duvar, açılıp kapanan kapı ve içeride kamera tarafındaki cephelerin saydamlaşması eklendi; kayıt v4. 8 Ekim devamındaki güncel çatı/taşıma/yatak ve sekiz yuvalı inşa barı kaydı dosyanın sonundadır; kayıt v5. 8 Ekim keşif adımı dosyanın sonundadır: balta, ağaç, yabani bitki ve dünyaya özel rastgele sandıklar; kayıt v6. Kullanıcının ilk oynanış geri bildirimi uygulandı: tıkla-seç adımı kaldırıldı, fare hedefi üzerinde eldeki eşya ile doğrudan sol tık etkileşimine geçildi. Sulama kabıyla sol tuşu basılı tutup kareler arasında gezdirilir; su sesi döngüsü eklenmiştir. Her ekimde tek sulama yeterli; hasat süresi üç gece olarak korundu. Karakter/iki alet/pazar teslim edilen modelleri kullanıyor; zemin, bitkiler, kamp ve tohum torbası hâlâ geçici. Windows x64 paketi Linux üzerinde derlendi; gerçek Windows açılış/oynanış doğrulaması açık.
 
@@ -612,3 +612,49 @@ Temiz klonun üretilen önbellekleri ve geçici klon disk alanı için kaldırı
 Doğrulanmış Windows/Linux ZIP'leri, SHA-256 dosyaları, XML/loglar ve ekran görüntüleri
 ana çalışma alanında korundu. Kullanıcıya ait başlangıçtaki kirli dosyalar hâlâ
 commit dışında; onları bu işin parçası sayıp topluca stage etme.
+
+
+## 12 Ekim — savaş okunaklılığı ve kompakt dünya
+
+Kullanıcı önceki savaş sunumunu oynanabilir bulmadı; önceki “0.4 tamam” ifadesi
+görsel/oynanış kabulü sayılmıyor. Balta hasarı 0,2 s temas anında tekrar mesafe,
+engel, alet ve kaçınma kontrolüyle verilir. Yakın hedeflerde 48–110 px ekran
+toleransı vardır. Savurma, gövde dönüşü, kesme izi, hasar sayısı, 65 ms yerel
+duraksama, düşman sarsılması/geri esnemesi ve kısa ölüm animasyonu eklendi.
+Düşmanın saldırı hazırlığında turuncu halka, ardından hamle vardır. Oyuncu
+canı sürekli, düşman canı baş üstünde görünür. Kamera önündeki ağaçlar saydamlaşır.
+
+Slime 12 odunu otomatik verir; böceğin 12 taşı için kazma sahipliği gerekir.
+Alınamayan ödül görünür kaynak olarak kalır. Bildirimde miktar ve çantaya
+eklendiği açıkça belirtilir; günlük tek alma/kayıt kuralları korunur.
+
+Sahnedeki oyuncu grubunun taşınmış olduğu görüldü: düşmanların orijine göre
+sabit konumu çok uzak kalıyordu. Karşılaşmalar artık gerçek başlangıcın
+17–34 m çevresinde uygun boş zemine yerleşir. Köy yolu ve uzak dekor sıkıştırıldı.
+Kaynaklar 44 m yarı genişlikte yoğunlaşır; kimlik, ödül ve ilerleme korunur.
+Zemin hedefi 116×116 m; eski yapı/tarla/kaynakları korumak için gerektiğinde
+genişler. Kullanıcının Farm.unity dosyasına yazılmadı; çalışma anı düzenidir.
+
+Doğrulama:
+- `Logs/combat-rework-edit.xml`: 188/188.
+- `Logs/combat-rework-final-play.xml`: 8/8 (kullanıcının mevcut sahnesinin izole kopyası).
+- `Logs/combat-accepted.log`: 9/9 davranış kontrolü ve `FARMER_PLAYER_SMOKE_OK`.
+- Native ilk denemede build'de ayıklanan Unlit shader hatası bulundu, projede
+  kullanılan Lit shader ile düzeltildi. Son native logunda exception yok.
+- Native performans örneği pencere odağı değiştiği için geçersiz; FPS başarısı
+  olarak raporlanmamalı. Uzun süreli performans kabulü açık.
+- Gerçek native ekran görüntülerinde savurma, 35→20 can, hasar sayısı, ağaç
+  saydamlığı ve 24→36 odun artışı görüldü. Ödül metni can etiketiyle örtüştüğü
+  için daha yukarı alındı ve kalıcı etiket miktarı içerecek şekilde düzeltildi.
+
+Yerel macOS QA uygulaması `<geçici QA projesi>/builds/Demo/mac/Farmer.app`;
+yayın paketi değildir. Windows/Linux release ZIP'leri önceki f9c8804 sürümüdür,
+yeni savaş düzeltmesini içermez. Sonraki somut iş: kullanıcının güncel Unity
+Play oturumunda savaş hissini değerlendirmesi; kabul sonrası release paketleri
+yenilenmeli. Önceden değişmiş sahne/malzeme/ayar ve görsel meta dosyaları
+commit dışında korunur.
+
+Son ödül etiketi native uygulamada tekrar görüldü: `+12 ODUN`,
+`+12 ODUN · ÇANTADA` ve envanterde 24→36. Son native tur 9/9 geçti;
+`docs/screenshots/combat-impact.png` ve `combat-reward.png` bu kontrolden.
+Değişiklikler `main` dalında ayrı commit ile `origin/main` hedefine gönderilir.

@@ -33,6 +33,17 @@ namespace Farmer.Tests
             f.BuyPickaxe(out _);var s=f.Snapshot();s.stone=999;f=Restore(s);Assert.That(f.ClaimExpedition(1,out _),Is.False);Assert.That(f.Combat.CanClaim(1,1),Is.True);
             s=f.Snapshot();s.stone=980;f=Restore(s);Assert.That(f.ClaimExpedition(1,out _),Is.True);Assert.That(f.Stone,Is.EqualTo(992));
         }
+        [Test] public void CompactResourcesPreserveLootAndProgressAcrossReload()
+        {
+            var snapshot=Fresh().Snapshot();
+            var n=Array.Find(snapshot.exploration.nodes,r=>r.kind==ResourceKind.Tree);n.x=100;n.z=-100;n.hits=2;
+            var farm=Restore(snapshot);farm.Exploration.Compact();var moved=farm.Exploration.Node(n.id);
+            Assert.That(Math.Max(Math.Abs(moved.x),Math.Abs(moved.z)),Is.LessThanOrEqualTo(54));
+            Assert.That(moved.hits,Is.EqualTo(2));
+            Assert.That(JsonUtility.ToJson(Restore(farm.Snapshot()).Exploration.Node(n.id)),Is.EqualTo(JsonUtility.ToJson(moved)));
+        }
+        [Test] public void CompactEnemyHomeSurvivesReload()
+        {var f=Fresh();f.Combat.Locate(0,14,-14);Assert.That(Restore(f.Snapshot()).Combat.Enemy(0).x,Is.EqualTo(14));}
         [Test] public void LargeHealingAmountCannotOverflow()
         {var f=Fresh();f.Combat.Damage(90);f.Combat.Heal(int.MaxValue);Assert.That(f.Combat.Health,Is.EqualTo(100));}
         [Test] public void NoFoodDoesNotChangeHealth()
