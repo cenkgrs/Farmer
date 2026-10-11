@@ -602,12 +602,11 @@ Paketler Git'e alınmaz; kaynak, doküman ve iki kanıt görüntüsü sürümlen
 ### Git devir durumu
 
 Uygulama `93dcd88`, yön kutusu boşluğu `f9c8804`, dal `main`.
-Push denemeleri Homebrew ve sistem Git'in `git-credential-osxkeychain get`
-aşamasında kullanıcı anahtarlık erişimini bekledi; tamamlanmış push sonucu yok.
-Bilgisayar kullanım aracı SecurityAgent erişimini güvenlik nedeniyle reddetti;
-anahtarlık/global Git izinleri değiştirilmedi. Kullanıcıya sistem onayı soruldu.
-Son devir commit'i de dahil `git status --short --branch` ile ahead durumuna bakıp
-`origin/main` push'unu tamamlamak gerekir; remote URL değiştirilmedi.
+Kullanıcı macOS anahtarlık erişimini onayladıktan sonra push tamamlandı.
+11 Ekim'de uzak `refs/heads/main`, `git ls-remote` ile `771ccc0` olarak
+doğrulandı; yerel `main` ve `origin/main` aynı commit'te. Remote URL ve
+anahtarlık/global Git izinleri değiştirilmedi. Bu doğrulama notu ayrıca
+commit edilip aynı dala gönderilir.
 
 Temiz klonun üretilen önbellekleri ve geçici klon disk alanı için kaldırıldı.
 Doğrulanmış Windows/Linux ZIP'leri, SHA-256 dosyaları, XML/loglar ve ekran görüntüleri
