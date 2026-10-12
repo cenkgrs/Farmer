@@ -24,6 +24,11 @@ namespace Farmer.Tests
             game.GetComponent<SessionMenu>().SetOpen(false);game.GetComponent<DayNightCycle>().ClockPaused=true;
             var market=game.GetComponent<MarketInteraction>();var bag=game.GetComponent<StorageInteraction>();
             Assert.That(market.TryOpen(),Is.False,"Cannot open remotely.");
+            var stall=game.Market.GetComponent<BoxCollider>();Assert.That(stall.enabled&&!stall.isTrigger,Is.True);
+            var approach=stall.bounds.center+Vector3.forward*(stall.bounds.extents.z+2.5f);approach.y=.1f;
+            Teleport(approach);Assert.That(game.NearMarket,Is.True,"Interact works 2.5 metres outside the stall body.");
+            game.Player.GetComponent<CharacterController>().Move(Vector3.back*6);Physics.SyncTransforms();
+            Assert.That(game.Player.position.z,Is.GreaterThan(stall.bounds.max.z),"The player cannot walk inside the stall.");
             var s=game.Model.Snapshot();s.money=500;File.WriteAllText(game.SavePath,JsonUtility.ToJson(s));game.LoadGame();
             Teleport(game.Market.position+new Vector3(0,.1f,-1.8f));yield return null;
             CropExpansionPlayModeTests.Frame(game.Market.position,5);yield return null;

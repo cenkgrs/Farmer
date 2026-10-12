@@ -38,7 +38,7 @@ namespace Farmer
         public string Feedback { get; private set; } = "Pazardan tohum alarak başlayabilirsin.";
         public string SaveStatus { get; private set; } = "Yeni çiftlik";
         public bool Ready { get; private set; }
-        public bool NearMarket => Near(market);
+        public bool NearMarket => marketInteraction!=null&&marketInteraction.InReach;
         public bool NearCamp => Bed.IsNear(player.position); // Compatibility name; proximity is to a real bed.
         public bool WateringActive { get; private set; }
         public event Action<bool> WateringChanged;

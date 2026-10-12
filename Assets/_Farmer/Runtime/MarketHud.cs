@@ -23,7 +23,9 @@ namespace Farmer
         private readonly List<GameObject> saleHighlights=new List<GameObject>();
         private string[] saleIds;
         private Button purchase,sell,minus,plus;
-        private Text wallet,quantityText,owned,total,description,status,saleSummary;
+        private Text wallet,quantityText,owned,total,description,status,saleSummary,purchaseLabel;
+        private GameObject ownedPurchaseSurface;
+        private readonly List<Text> ownedBadges=new List<Text>();
         private bool wasOpen;
         private int page,selectedSale;
         private float statusUntil;
@@ -114,7 +116,7 @@ namespace Farmer
         }
         private void BuildCatalog()
         {
-            Clear(catalog);cards.Clear();cardHighlights.Clear();
+            Clear(catalog);cards.Clear();cardHighlights.Clear();ownedBadges.Clear();
             Patch(catalog,new Rect(412,193,737,394));
             int start=page*3;
             for(int slot=0;slot<3;slot++)
@@ -143,12 +145,17 @@ namespace Farmer
                 }
                 var highlight=Rect(catalog,"Selected "+offer.Id,r);Border(highlight,new Rect(0,0,r.width,r.height),true);cardHighlights.Add(highlight.gameObject);
                 var button=Hit(catalog,"Market offer "+offer.Id,r,()=>SelectOffer(offer.Id));cards.Add(button);
+                if(offer.Kind==MarketOfferKind.Pickaxe)
+                {
+                    Patch(catalog,new Rect(r.x+30,501,r.width-60,48));
+                    var badge=Label(catalog,"Tool ownership badge",new Rect(r.x+30,501,r.width-60,48),29,true);ownedBadges.Add(badge);
+                }
             }
             if(visible.Length>3)
             {
-                var p=Label(catalog,"Catalog page",new Rect(702,565,150,24),18,false);p.text=$"{page+1} / {(visible.Length+2)/3}";
-                TextButton(catalog,"Previous market page","‹",new Rect(441,562,50,25),()=>ChangePage(-1));
-                TextButton(catalog,"Next market page","›",new Rect(1061,562,50,25),()=>ChangePage(1));
+                var p=Label(catalog,"Catalog page",new Rect(702,557,150,30),23,false);p.text=$"{page+1} / {(visible.Length+2)/3}";
+                TextButton(catalog,"Previous market page","‹",new Rect(426,548,70,44),()=>ChangePage(-1));
+                TextButton(catalog,"Next market page","›",new Rect(1064,548,70,44),()=>ChangePage(1));
             }
         }
         public void ChangePage(int delta)
@@ -192,6 +199,9 @@ namespace Farmer
                 Raw(details,"Craft button surface",clean,new Rect(1186,692,271,78),new Rect(1186,692,271,78));
                 var t=Label(details,"Craft button text",new Rect(1196,705,250,49),36,true);t.text="Üret";t.color=new Color(1,.95f,.8f);
             }
+            ownedPurchaseSurface=Rect(details,"Owned tool button",new Rect(1186,692,271,78)).gameObject;
+            Raw(ownedPurchaseSurface.transform,"Owned button artwork",clean,new Rect(1186,692,271,78),new Rect(0,0,271,78));
+            purchaseLabel=Label(ownedPurchaseSurface.transform,"Owned tool label",new Rect(0,0,271,78),36,true);purchaseLabel.text="Alındı";purchaseLabel.color=new Color(1,.95f,.8f);
             purchase.transform.SetAsLastSibling();
             disabledPurchase=DisabledOverlay(details,"Purchase disabled",new Rect(1186,692,271,78));
             disabledMinus=DisabledOverlay(details,"Minus disabled",new Rect(1198,567,62,59));
@@ -270,12 +280,15 @@ namespace Farmer
         {
             if(wallet==null||Selected==null)return;
             wallet.text=game.Model.Money.ToString();wallet.resizeTextForBestFit=true;wallet.resizeTextMinSize=19;wallet.resizeTextMaxSize=32;
-            quantityText.text=Quantity.ToString();owned.text=Selected.Kind==MarketOfferKind.Pickaxe&&game.Model.OwnsPickaxe?"Satın alındı":"Çantanda: "+Selected.Count(game.Model);
+            bool toolOwned=Selected.Kind==MarketOfferKind.Pickaxe&&game.Model.OwnsPickaxe;
+            ownedPurchaseSurface.SetActive(toolOwned);
+            foreach(var badge in ownedBadges)badge.text=game.Model.OwnsPickaxe?"Alındı":FarmModel.PickaxePrice.ToString();
+            quantityText.text=Quantity.ToString();owned.text=Selected.Kind==MarketOfferKind.Pickaxe&&game.Model.OwnsPickaxe?"Alındı · Bir tane yeterli":"Çantanda: "+Selected.Count(game.Model);
             total.text=Selected.Kind==MarketOfferKind.Recipe?$"Üretim: {Selected.Recipe.outputCount*Quantity}":$"{Selected.Price*Quantity}";
-            description.text=Description(Selected);
+            description.text=toolOwned?"Kalıcı alet · Tek kez alınır.\n7 ile kuşanıp kayaları kır.":Description(Selected);
             minus.interactable=Selected.HasQuantity&&Quantity>1;plus.interactable=Selected.HasQuantity&&Quantity<FarmModel.StackLimit;
             disabledMinus.SetActive(!minus.interactable);disabledPlus.SetActive(!plus.interactable);
-            purchase.interactable=game.CanTrade&&Selected.CanPurchase(game.Model,Quantity);disabledPurchase.SetActive(!purchase.interactable);
+            purchase.interactable=game.CanTrade&&Selected.CanPurchase(game.Model,Quantity);disabledPurchase.SetActive(!purchase.interactable&&!toolOwned);
             for(int n=0;n<cards.Count;n++)cardHighlights[n].SetActive(visible[page*3+n]==Selected);
             for(int n=0;n<saleCounts.Count;n++)
             {
@@ -325,7 +338,15 @@ namespace Farmer
             image.color=new Color(.22f,.17f,.075f,.25f);image.raycastTarget=false;return dim.gameObject;
         }
         private void TextButton(Transform p,string name,string text,Rect r,UnityEngine.Events.UnityAction action)
-        {var label=Label(p,name+" text",r,22,true);label.verticalOverflow=VerticalWrapMode.Overflow;label.text=text;Hit(p,name,r,action);}
+        {
+            // Keep the artwork compact while allowing a forgiving click target.
+            float side=Mathf.Min(30,r.height);
+            var visual=new Rect(r.center.x-side/2,r.center.y-side/2,side,side);
+            Raw(p,name+" surface",clean,new Rect(1198,567,62,59),visual);
+            var label=Label(p,name+" text",visual,26,true);
+            label.verticalOverflow=VerticalWrapMode.Overflow;label.text=text;
+            Hit(p,name,r,action);
+        }
         private static RectTransform Rect(Transform parent,string name,Rect rect)
         {
             var r=new GameObject(name,typeof(RectTransform)).GetComponent<RectTransform>();r.SetParent(parent,false);r.anchorMin=r.anchorMax=r.pivot=new Vector2(0,1);r.anchoredPosition=new Vector2(rect.x,-rect.y);r.sizeDelta=rect.size;return r;

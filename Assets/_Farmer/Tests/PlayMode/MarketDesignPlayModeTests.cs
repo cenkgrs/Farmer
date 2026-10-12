@@ -36,6 +36,11 @@ namespace Farmer.Tests
             CropExpansionPlayModeTests.Capture("market-design-720p",true,1280,720);
             CropExpansionPlayModeTests.Capture("market-design-4x3",true,1024,768);
             CropExpansionPlayModeTests.Capture("market-design-wide",true,1920,1080);
+            Click("Next market page");yield return null;
+            Assert.That(ui.Selected.Id,Is.EqualTo("lettuce"));
+            Assert.That(Object.FindObjectsByType<Button>(FindObjectsSortMode.None).Any(b=>b.name=="Market offer pumpkin"),Is.True);
+            CropExpansionPlayModeTests.Capture("market-seed-page-two",true);
+            Click("Previous market page");yield return null;Click("Market offer tomato");yield return null;
             // UI event routing, including raycasts, proves the art doesn't swallow clicks.
             Click("Market quantity plus");Click("Market quantity plus");Assert.That(ui.Quantity,Is.EqualTo(3));
             Click("Market purchase");Assert.That(game.Model.Seeds("tomato"),Is.EqualTo(7));Assert.That(game.Model.Money,Is.EqualTo(236));
@@ -43,6 +48,8 @@ namespace Farmer.Tests
             Assert.That(game.Model.Money,Is.EqualTo(236));ui.ChangeQuantity(-9999);Assert.That(ui.Quantity,Is.EqualTo(1));
             Click("Market category Aletler");yield return null;Assert.That(ui.Selected.Id,Is.EqualTo("pickaxe"));
             ui.ChangeQuantity(10);Assert.That(ui.Quantity,Is.EqualTo(1));Click("Market purchase");Assert.That(game.Model.OwnsPickaxe,Is.True);Assert.That(ui.PurchaseSelected(),Is.False);
+            Assert.That(Object.FindObjectsByType<Text>(FindObjectsSortMode.None).Single(t=>t.name=="Owned tool label").text,Is.EqualTo("Alındı"));
+            Assert.That(Object.FindObjectsByType<Button>(FindObjectsSortMode.None).Single(b=>b.name=="Market purchase").interactable,Is.False);
             CropExpansionPlayModeTests.Capture("market-design-tools",true);
             Click("Market category Malzemeler");yield return null;int wood=game.Model.Building.Wood;Click("Market purchase");Assert.That(game.Model.Building.Wood,Is.EqualTo(wood+10));
             CropExpansionPlayModeTests.Capture("market-design-materials",true);

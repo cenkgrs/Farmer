@@ -97,7 +97,7 @@ namespace Farmer
             hud.SetActive(game.Ready&&!game.WorldInputBlocked);
             healthFill.rectTransform.sizeDelta=new Vector2(412f*game.Model.Combat.Health/100f,12);
             string target=closest==null?"":$"{EnemyRules.Catalog[closest.Id].Area} · {Mathf.RoundToInt(PlanarDistance(closest.Home,game.Player.position))} m";
-            if(near)target=game.Model.Combat.Enemy(closest.Id).health>0?$"{EnemyRules.Catalog[closest.Id].Name} · {game.Model.Combat.Enemy(closest.Id).health} can · {(closest.WindingUp?"SALDIRI HAZIRLIĞI!":"6: Balta / sol tık")}":(Claimed(closest.Id)?(closest.Id==0?"+12 ODUN çantana eklendi · Yarın yenilenir":"+12 TAŞ çantana eklendi · Yarın yenilenir"):closest.Id==0?"Yerde 12 odun · Yaklaş ve tıkla":"Yerde 12 taş · Kazma (7) ile al");
+            if(near)target=game.Model.Combat.Enemy(closest.Id).health>0?$"{EnemyRules.Catalog[closest.Id].Name} · {game.Model.Combat.Enemy(closest.Id).health} can · {(closest.WindingUp?"SALDIRI HAZIRLIĞI!":"6: Balta / sol tık")}":(Claimed(closest.Id)?"Bölge temizlendi · Yarın yenilenir":closest.Id==0?"Yerde 12 odun · Yaklaş ve tıkla":"Yerde 12 taş · Kazma (7) ile al");
             status.text=$"CAN  {game.Model.Combat.Health} / 100\n{target}\nSpace: kaçın   ·   H: sebze ye (+25)";
         }
         public void Simulate(float dt,bool focused=true)

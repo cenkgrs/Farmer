@@ -31,7 +31,7 @@ namespace Farmer
             if(healthRoot==null||Camera.main==null)return;
             healthRoot.rotation=Camera.main.transform.rotation;
             int hp=combat.Health(Id);
-            healthRoot.gameObject.SetActive(Vector3.Distance(Camera.main.transform.position,transform.position)<45);
+            healthRoot.gameObject.SetActive((hp>0||!combat.Claimed(Id))&&Vector3.Distance(Camera.main.transform.position,transform.position)<45);
             healthFill.rectTransform.sizeDelta=new Vector2(156f*hp/EnemyRules.Catalog[Id].Health,12);
             healthFill.color=WindingUp?new Color(1,.55f,.12f):new Color(.85f,.22f,.18f);
             healthText.text=hp>0?$"{EnemyRules.Catalog[Id].Name}  {hp}/{EnemyRules.Catalog[Id].Health}":combat.Claimed(Id)?(Id==0?"+12 ODUN · ÇANTADA":"+12 TAŞ · ÇANTADA"):Id==0?"12 ODUN · TIKLA":"12 TAŞ · KAZMA (7)";

@@ -322,3 +322,7 @@ Kaynakların kimliği, kalan vuruşları, sandık ödülleri ve toplanma durumu 
 uzak konumlar yeni düzende bir kez yakına alınır. Kullanıcının sahne dosyası
 yeniden üretilmez; düzenleme çalışma anında uygulanır. Bu düzen önceki büyük
 vadi önerisinin yerine geçer.
+
+### 12 Ekim pazar ve ödül geri bildirimi
+
+Pazarın görünür tezgâhına uyan katı çarpışma gövdesi vardır; F etkileşimi tezgâh kenarından 3,2 birime kadar açılır. Katalog sayfaları mevcut pazar dokusundan küçük ok düğmeleriyle değişir; görünür düğmeden geniş tıklama alanı kullanılır. Kalıcı kazma kartı ve satın alma düğmesi edinildikten sonra **Alındı** gösterir; tekrar satın alınamaz. Mobilyalar tekrar satın alınabilir. Düşman ödülü çantaya aktarılınca dünya etiketi kapanır; kısa ödül bildirimi korunur.
