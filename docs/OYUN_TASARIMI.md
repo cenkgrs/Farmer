@@ -353,3 +353,8 @@ Oyuncu canı sol üstte para altında kalp simgesi ve `85/100` biçiminde göste
 Pazarcı **Hüseyin**, orta yaşlı erkek köy esnafıdır. Tezgâh yanında durur; yakındaki F veya karaktere sol tık önce portreli konuşmayı açar. Son replikte **Ürünlere bakalım** ile pazara, **Görüşürüz** veya Esc ile dünyaya dönülür. İleride görev seçenekleri bu konuşma girişine eklenebilir; görev sistemi henüz yok. Kullanıcının teslim ettiği erkek FBX modeli `ExplorationArt/huseyin` prefabına bağlandı; Defne kopyası yerini bu modele bıraktı. Görsel tasarım `references/huseyin_v01` içindeki ImageGen referansıdır. Konuşmada Hüseyin ve oyuncu portreleri sırayla gösterilir. Hüseyin portresi `VillageArt/huseyin.png` içindedir.
 
 Sol üst HUD'nin iç boşluğu 10 referans piksel artırıldı; içerik boyutu korunarak çerçeve genişletildi. Geyik, teslim edilen tek mesh üzerinde yerel dört bacak/sekiz eklem ve gövde kemiğiyle skinlenir. İki eklemli bacak çözümü, hızla değişen yürüyüş/kaçış temposu ve duruşa yumuşak dönüş kullanılır; model/doku değiştirilmez. Hareket bacaklara gerçek vertex deformasyonu olarak uygulanır.
+
+
+### 13 Ekim — sade tarla geri bildirimi ve ekran oranları
+
+Ekim, sulama, çapalama, bitki kaldırma ve hasat başarılarında açıklama şeridi gösterilmez. Hasadın kısa ürün kazanımı, işlem hataları ve kayıt sorunları görünür kalır. Konuşma kompozisyonu ekranın iki boyutuna da sığacak şekilde ölçeklenir ve alt ortada hizalanır; karartma ekranın tamamını kaplar.

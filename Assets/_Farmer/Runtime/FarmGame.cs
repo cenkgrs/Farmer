@@ -265,7 +265,7 @@ namespace Farmer
             if(index<0||!selection.HoveredInReach||selection.PointerBlocked)return false;
             var plot=Model.Plot(index);
             if(WorldGround.Obstructed(plot.x,plot.z,player))return false;
-            bool ok=Complete(Model.Uproot(index,out var message),message);
+            bool ok=Complete(Model.Uproot(index,out var message),message,quietSuccess:true);
             if(ok)Hoed?.Invoke(PlotCenter(index));return ok;
         }
         public bool UseHovered()
@@ -281,7 +281,7 @@ namespace Farmer
             {
                 if (!WorldGround.SupportsCell(cell.x,cell.y,true) || WorldGround.Obstructed(cell.x,cell.y,player))
                 { Feedback = "Burada çapa kullanmak için boş toprak gerekiyor."; return false; }
-                bool tilled = Complete(Model.Till(cell.x,cell.y,out var reason),reason);
+                bool tilled = Complete(Model.Till(cell.x,cell.y,out var reason),reason,quietSuccess:true);
                 if (tilled) Hoed?.Invoke(new Vector3(cell.x+.5f,.06f,cell.y+.5f));
                 return tilled;
             }
@@ -290,7 +290,7 @@ namespace Farmer
             var plot = Model.Plot(index);
             bool harvesting = Model.EquippedItem == FarmItem.Sickle;
             bool ok = Model.UseEquipped(index, ActiveCrop.id, out string message);
-            Complete(ok, message);
+            Complete(ok, message,quietSuccess:true);
             if (ok && harvesting)
             {
                 var definition = Definition(plot.cropId);
@@ -348,9 +348,9 @@ namespace Farmer
             if(swing.HasValue) ResourceUsed?.Invoke(swing.Value);
             Complete(true, message);
         }
-        private bool Complete(bool success, string message)
+        private bool Complete(bool success, string message, bool quietSuccess=false)
         {
-            Feedback = message;
+            Feedback = success&&quietSuccess?"":message;
             if (success) { SaveGame(); Changed?.Invoke(); }
             return success;
         }

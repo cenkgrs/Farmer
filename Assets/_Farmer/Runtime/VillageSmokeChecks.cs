@@ -43,7 +43,20 @@ namespace Farmer
             Debug.Log("FARMER_VILLAGE_NATIVE_OK: dialogue portraits, wildlife and weapon market rendered.");
         }
         private static void Frame(Vector3 p,float zoom){var c=Camera.main;c.orthographicSize=zoom;c.transform.position=p+new Vector3(-8,10,-8);c.transform.LookAt(p);}
-        private static IEnumerator Capture(string output,string suffix){yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(Path.GetDirectoryName(output),Path.GetFileNameWithoutExtension(output)+suffix+".png"));yield return new WaitForSecondsRealtime(.2f);}
+        private static IEnumerator Capture(string output,string suffix){yield return new WaitForEndOfFrame();
+            var overlay=GameObject.Find("Dialogue overlay");
+            if(overlay!=null)
+            {
+                foreach(var name in new[]{"Speaker portrait","Dialogue parchment","Dialogue close","Dialogue words","Merchant choices"})
+                {
+                    var element=overlay.GetComponentsInChildren<RectTransform>().FirstOrDefault(t=>t.name==name);
+                    if(element==null||!element.gameObject.activeInHierarchy)continue;
+                    var corners=new Vector3[4];element.GetWorldCorners(corners);
+                    if(corners.Any(p=>p.x<-.5f||p.y<-.5f||p.x>Screen.width+.5f||p.y>Screen.height+.5f))
+                        Debug.LogError($"Dialogue layout clipped: {name} at {Screen.width}x{Screen.height}");
+                }
+            }
+            ScreenCapture.CaptureScreenshot(Path.Combine(Path.GetDirectoryName(output),Path.GetFileNameWithoutExtension(output)+suffix+".png"));yield return new WaitForSecondsRealtime(.2f);}
 #endif
     }
 }
