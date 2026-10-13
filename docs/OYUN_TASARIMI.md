@@ -358,3 +358,7 @@ Sol üst HUD'nin iç boşluğu 10 referans piksel artırıldı; içerik boyutu k
 ### 13 Ekim — sade tarla geri bildirimi ve ekran oranları
 
 Ekim, sulama, çapalama, bitki kaldırma ve hasat başarılarında açıklama şeridi gösterilmez. Hasadın kısa ürün kazanımı, işlem hataları ve kayıt sorunları görünür kalır. Konuşma kompozisyonu ekranın iki boyutuna da sığacak şekilde ölçeklenir ve alt ortada hizalanır; karartma ekranın tamamını kaplar.
+
+### 13 Ekim — gündüz ve gece müziği
+
+Kullanıcının Sunny Farm Morning Loops parçası 06.00–19.00, Moonlit Farm Hush parçası 19.00–06.00 aralığında çalar. Altı saniyelik ses geçişi uyku ve kayıt yüklemeyle saat atlamalarında da uygulanır. Müzik 2D/stereo ve düşük ses seviyesinde döngüdedir. Menü/konuşma açılması parçayı yeniden başlatmaz; uygulama odağı kaybolunca müzik duraklar.

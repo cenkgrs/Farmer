@@ -209,3 +209,11 @@ ahşap çerçeve ve kayalarla geçicidir; sahneyi yeniden üretmeden değiştiri
 ## 13 Ekim — NPC ve canlı modelleri
 
 [Model eskizleri, ayrı yönler ve üretim gereksinimleri](references/creature_models_v01/README.md). Defne/geyik ön–arka–sağ–sol PNG olarak hazır. [Teslim edilen tavşan/slime/kaya yengeci/geyik/Defne incelemesi](../ArtSource/creatures_v01/README.md). Teslimler rig/animasyon içermiyor; temel gövde hareketleriyle bağlandı. Eklemli animasyon kalitesi ayrıca tamamlanacak.
+
+## 13 Ekim — kullanıcı müzik teslimi
+
+Yinso.ai üzerinden kullanıcı tarafından üretilip teslim edilen parçalar:
+- `Resources/Music/day_farm.mp3`: Sunny Farm Morning Loops, 182,832 sn.
+- `Resources/Music/night_farm.mp3`: Moonlit Farm Hush, 198,024 sn.
+
+İki dosya da 48 kHz stereo MP3; teslim edilen ses değiştirilmeden kopyalandı. Unity importu stereo Vorbis/Streaming, kalite 0,8. AudioSource döngüsü kullanılır; parçaların müzikal döngü birleşimi ayrıca kulakla değerlendirilmelidir.
