@@ -1,0 +1,12 @@
+{
+  "source": "rustic+craftsman+3d+model.zip",
+  "sha256": "f5b24090ff04eb5b400750c84fc4e3ea912e6604aa977241d26f712319dc76ec",
+  "files": [
+    "tripo_convert_88cfc7c4-d4c1-408f-a775-3a096e7faae1.fbx",
+    "tripo_convert_88cfc7c4-d4c1-408f-a775-3a096e7faae1.fbm/Color.jpg",
+    "tripo_convert_88cfc7c4-d4c1-408f-a775-3a096e7faae1.fbm/rustic_craftsman_3d_model_roughness.JPEG",
+    "tripo_convert_88cfc7c4-d4c1-408f-a775-3a096e7faae1.fbm/Normal.png",
+    "tripo_convert_88cfc7c4-d4c1-408f-a775-3a096e7faae1.fbm/rustic_craftsman_3d_model_metallic.JPEG"
+  ],
+  "texture_resolution": 1024
+}

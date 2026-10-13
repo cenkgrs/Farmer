@@ -95,6 +95,7 @@ namespace Farmer
             gameObject.AddComponent<DemoHud>();
             gameObject.AddComponent<VillageInteraction>();
             gameObject.AddComponent<WildlifeController>();
+            gameObject.AddComponent<BowCombat>();
         }
         private bool ResourceBlockedByScenery(int x,int z)
         {
@@ -197,6 +198,8 @@ namespace Farmer
             var mouse = Mouse.current;
             if (mouse == null || !mouse.leftButton.isPressed) { StopWatering(); return; }
             selection.RefreshPointer();
+            if(Model.EquippedItem==FarmItem.Bow)
+            {StopWatering();if(!selection.PointerBlocked&&mouse.leftButton.wasPressedThisFrame)GetComponent<BowCombat>().FireRay(Camera.main.ScreenPointToRay(mouse.position.ReadValue()));return;}
             var wildlife=GetComponent<WildlifeController>();
             if(!selection.PointerBlocked&&wildlife!=null&&wildlife.UsePointer(mouse.leftButton.wasPressedThisFrame)){StopWatering();return;}
             var combat=GetComponent<CombatController>();

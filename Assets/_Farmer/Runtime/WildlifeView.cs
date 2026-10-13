@@ -5,6 +5,7 @@ namespace Farmer
 {
     public sealed class WildlifeView:MonoBehaviour
     {
+        private DeerLocomotion gait;
         private WildlifeController owner;private CharacterController body;private Transform art;private Transform[] legs;private Vector3 home,destination;
         private Transform healthRoot;private Image healthFill;private float time,decision,stun,death;private int oldHealth;
         public int Id {get;private set;}
@@ -13,6 +14,7 @@ namespace Farmer
         {
             owner=source;Id=id;home=transform.position;destination=home;oldHealth=owner.Model.Animal(id).health;
             art=VillageArtwork.Animal(WildlifeRules.Deer(id)).transform;art.SetParent(transform,false);legs=art.GetComponentsInChildren<Transform>().Where(t=>t.name.StartsWith("Leg")).ToArray();
+            if(WildlifeRules.Deer(id))gait=art.gameObject.AddComponent<DeerLocomotion>();
             body=gameObject.AddComponent<CharacterController>();body.radius=WildlifeRules.Deer(id)?.35f:.25f;body.height=WildlifeRules.Deer(id)?1.45f:.65f;body.center=Vector3.up*(body.height/2+.05f);body.stepOffset=.15f;body.skinWidth=.025f;
             var health=new GameObject("Animal health",typeof(Canvas));health.transform.SetParent(transform,false);healthRoot=health.transform;healthRoot.localPosition=Vector3.up*(WildlifeRules.Deer(id)?2.25f:1.45f);healthRoot.localScale=Vector3.one*.01f;health.GetComponent<Canvas>().renderMode=RenderMode.WorldSpace;
             var back=FarmHud.Panel("Animal health background",healthRoot,Vector2.one*.5f,Vector2.zero,new Vector2(92,12),new Color(.13f,.1f,.06f,.9f));back.GetComponent<Image>().raycastTarget=false;
@@ -20,7 +22,7 @@ namespace Farmer
             healthRoot.gameObject.SetActive(false);
             if(oldHealth==0&&owner.Model.Animal(id).claimed){death=2;art.gameObject.SetActive(false);body.enabled=false;}
         }
-        public void Revive(){if(owner.Model.Animal(Id).health<=0)return;body.enabled=false;transform.position=home;body.enabled=true;art.gameObject.SetActive(true);art.localRotation=Quaternion.identity;death=0;healthRoot.gameObject.SetActive(false);oldHealth=owner.Model.Animal(Id).health;}
+        public void Revive(){if(owner.Model.Animal(Id).health<=0)return;body.enabled=false;transform.position=home;body.enabled=true;art.gameObject.SetActive(true);art.localRotation=Quaternion.identity;death=0;gait?.ResetPose();healthRoot.gameObject.SetActive(false);oldHealth=owner.Model.Animal(Id).health;}
         public void Hit(){stun=.38f;Mood=WildlifeMood.Flee;art.localRotation=Quaternion.Euler(0,0,14);}
         public void Simulate(float dt,Vector3 player)
         {
@@ -47,6 +49,7 @@ namespace Farmer
                 if(decision<=0){decision=3.5f+Id*.2f;float a1=time*.73f+Id*2.4f;destination=home+new Vector3(Mathf.Cos(a1),0,Mathf.Sin(a1))*4;}
                 if(CombatController.PlanarDistance(transform.position,destination)>.5f){direction=destination-transform.position;speed=.85f;}
             }
+            var previousPosition=transform.position;
             direction.y=0;
             if(speed>0&&direction.sqrMagnitude>.01f)
             {
@@ -61,6 +64,7 @@ namespace Farmer
                 if(moved){art.localPosition=Vector3.up*(Mathf.Abs(Mathf.Sin(time*speed*5))*(WildlifeRules.Deer(Id)?.045f:.12f));for(int l=0;l<legs.Length;l++)legs[l].localRotation=Quaternion.Euler(Mathf.Sin(time*speed*6+l*Mathf.PI)*23,0,0);}
             }
             else {art.localPosition=Vector3.up*(Mathf.Sin(time*2)*.012f);foreach(var leg in legs)leg.localRotation=Quaternion.identity;}
+            gait?.Step(CombatController.PlanarDistance(previousPosition,transform.position)/Mathf.Max(dt,.001f),dt);
             oldHealth=a.health;
         }
         private void Face(Vector3 d,float dt){d.y=0;if(d.sqrMagnitude>.01f)transform.rotation=Quaternion.Slerp(transform.rotation,Quaternion.LookRotation(d),dt*9);}

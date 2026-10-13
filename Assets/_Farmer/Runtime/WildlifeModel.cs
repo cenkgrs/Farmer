@@ -47,10 +47,11 @@ namespace Farmer
         public WildlifeRecord Animal(int id)=>animals[id].Copy();
         public void LocateAnimal(int id,int x,int z)
         {if(id<0||id>=animals.Length||Math.Abs((long)x)>110||Math.Abs((long)z)>110)throw new ArgumentException("Invalid animal home.");animals[id].located=true;animals[id].x=x;animals[id].z=z;}
-        public bool StrikeAnimal(int id)
+        public bool StrikeAnimal(int id)=>StrikeAnimal(id,EquippedItem);
+        public bool StrikeAnimal(int id,FarmItem weapon)
         {
-            if(id<0||id>=animals.Length||!HuntingWeapon(EquippedItem)||ItemCount(EquippedItem,SelectedCropId)==0||animals[id].health<=0)return false;
-            if(EquippedItem==FarmItem.Axe)animals[id].roughKill=true;
+            if(id<0||id>=animals.Length||!HuntingWeapon(weapon)||ItemCount(weapon,SelectedCropId)==0||animals[id].health<=0)return false;
+            if(weapon==FarmItem.Axe)animals[id].roughKill=true;
             animals[id].health=Math.Max(0,animals[id].health-15);
             if(animals[id].health==0)animals[id].huntedDay=Day;
             return true;

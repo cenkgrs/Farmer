@@ -49,7 +49,9 @@ namespace Farmer
         private void Start()
         {
             if(game.Market==null||stallBody==null)return;
-            var vendor=VillageArtwork.Guide();vendor.name="Huseyin (temporary Defne model)";Vendor=vendor.transform;Vendor.SetParent(transform,false);
+            var prefab=Resources.Load<GameObject>("ExplorationArt/huseyin");
+            var vendor=prefab!=null?Instantiate(prefab):VillageArtwork.Guide();vendor.name="Huseyin";
+            if(vendor.GetComponent<Collider>()==null){var body=vendor.AddComponent<CapsuleCollider>();body.height=1.7f;body.radius=.3f;body.center=Vector3.up*.85f;}Vendor=vendor.transform;Vendor.SetParent(transform,false);
             Vendor.position=game.Market.TransformPoint(new Vector3(-stallBody.size.x*.5f-.5f,0,0));
             Vendor.rotation=Quaternion.LookRotation(-game.Market.forward);
         }
@@ -66,13 +68,16 @@ namespace Farmer
         }
         public bool HandleInput(bool interact,bool escape)
         {
+            if(game.VillageInputConsumed)return false;
             if(IsOpen&&(interact||escape)){Close();consumedFrame=Time.frameCount;return true;}
-            if(interact&&TryOpen()){consumedFrame=Time.frameCount;return true;}
+            if(interact&&GetComponent<VillageInteraction>().TryTalkMerchant()){consumedFrame=Time.frameCount;return true;}
             return false;
         }
-        public bool TryOpen()
+        public bool TryOpen()=>OpenProducts(false);
+        internal bool TryOpenAfterConversation()=>OpenProducts(true);
+        private bool OpenProducts(bool fromConversation)
         {
-            if(!game.Ready||game.ConversationOpen||game.VillageInputConsumed||game.MenuOpen||game.JournalOpen||game.InventoryOpen||game.BuildMode||!game.NearMarket)return false;
+            if(!game.Ready||game.ConversationOpen||(!fromConversation&&game.VillageInputConsumed)||game.MenuOpen||game.JournalOpen||game.InventoryOpen||game.BuildMode||!game.NearMarket)return false;
             IsOpen=true;game.SetBuildMode(false);game.Selection.ModalBlocked=true;
             return true;
         }

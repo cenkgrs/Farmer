@@ -139,11 +139,17 @@ namespace Farmer
         {
             var v=views[id];
             if(v==null||Health(id)<=0||PlanarDistance(v.transform.position,game.Player.position)>3.2f||!Visible(v.transform.position,v))return;
-            int damage=Mathf.Min(15,Health(id));
+            ApplyDamage(id,"Balta",true);
+        }
+        public void ArrowHit(int id)
+        {if(id>=0&&id<views.Length&&views[id]!=null&&Health(id)>0)ApplyDamage(id,"Ok",false);}
+        private void ApplyDamage(int id,string weapon,bool melee)
+        {
+            var v=views[id];int damage=Mathf.Min(15,Health(id));
             sound.Strike();game.Model.Combat.Strike(id,game.Model.Day);v.Flash();
-            hitStop=.065f;motor.CombatFreeze=.065f;
+            if(melee){hitStop=.065f;motor.CombatFreeze=.065f;}
             CombatFeedback.Burst(v.transform.position+Vector3.up*.6f,damage.ToString(),new Color(1,.82f,.28f));
-            string message="Balta · "+damage+" hasar";
+            string message=weapon+" · "+damage+" hasar";
             if(Health(id)==0)
             {
                 if(game.Model.ClaimExpedition(id,out var reward))

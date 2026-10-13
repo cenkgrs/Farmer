@@ -11,13 +11,16 @@ namespace Farmer
         private GameObject dialogue,context;private Transform guide;
         private Image portrait;private Text speaker,words,advance,hint;
         private int line,consumed=-1;private float reveal;
+        private bool merchant;private GameObject merchantChoices;
+        private string[] ActiveLines=>merchant?MerchantLines:Lines;
         private BlockRecord stove;private float cookRemaining;private FarmModel cookingModel;
         public bool IsOpen=>dialogue!=null&&dialogue.activeSelf;
         public bool ConsumedThisFrame=>consumed==Time.frameCount;
         public Transform Guide=>guide;
         public bool Cooking=>cookRemaining>0;
         public int Line=>line;
-        public string Speaker=>line%2==0?"Defne":"Sen";
+        public string Speaker=>line%2==0?(merchant?"Hüseyin":"Defne"):"Sen";
+        public static readonly string[] MerchantLines={"Hoş geldin! Ben Hüseyin. Tohumdan alete, çiftliğe ne lazımsa burada bulursun.","Selam Hüseyin abi. Tezgâhında neler var, bir bakalım.","Buyur! Ürünler burada. Hasadını da getir; alışverişimizi yaparız."};
         public static readonly string[] Lines={
             "Hoş geldin! Ben Defne. Köyün çevresinde tavşanlar ve geyikler dolaşıyor. Seni fark ettiklerinde durup izlerler; fazla yaklaşırsan kaçarlar.",
             "Demek dikkatli yaklaşmam gerekiyor. Avladığım hayvanlardan ne elde edebilirim?",
@@ -46,7 +49,10 @@ namespace Farmer
             var next=Box(dialogue.transform,"Dialogue next",new Rect(425,480,810,190),Color.clear).gameObject.AddComponent<Button>();next.onClick.AddListener(Advance);
             var close=Box(dialogue.transform,"Dialogue close",new Rect(1125,32,110,42),new Color(.18f,.12f,.06f,.75f)).gameObject.AddComponent<Button>();close.onClick.AddListener(Close);
             var closeText=Label(close.transform,"Close text",new Rect(0,0,110,42),18);closeText.text="Esc · Kapat";closeText.color=new Color(1,.93f,.76f);
-            dialogue.SetActive(false);
+            merchantChoices=Box(dialogue.transform,"Merchant choices",new Rect(650,617,545,42),Color.clear).gameObject;
+            var trade=FarmHud.Button(merchantChoices.transform,"Ürünlere bakalım",0,0,315,38,OpenMerchantProducts);HudArtwork.ApplyFrame((RectTransform)trade.transform,6);trade.GetComponentInChildren<Text>().transform.SetAsLastSibling();
+            var leave=FarmHud.Button(merchantChoices.transform,"Görüşürüz",330,0,200,38,Close);HudArtwork.ApplyFrame((RectTransform)leave.transform,6);leave.GetComponentInChildren<Text>().transform.SetAsLastSibling();
+            merchantChoices.SetActive(false);dialogue.SetActive(false);
             context=Box(canvas.transform,"Village interaction hint",new Rect(480,0,320,64),new Color(.92f,.82f,.61f,.98f)).gameObject;
             var hintRect=context.GetComponent<RectTransform>();hintRect.anchorMin=hintRect.anchorMax=new Vector2(.5f,0);hintRect.pivot=new Vector2(.5f,0);hintRect.anchoredPosition=new Vector2(0,208);
             HudArtwork.ApplyFrame(hintRect);hint=Label(context.transform,"Village hint",new Rect(20,14,280,36),17);context.SetActive(false);
@@ -64,7 +70,7 @@ namespace Farmer
             {
                 context.SetActive(false);
                 if(openedModel!=game.Model||game.MenuOpen||game.InventoryOpen||game.JournalOpen){Close();return;}
-                reveal=Mathf.Min(Lines[line].Length,reveal+Time.unscaledDeltaTime*48);words.text=Lines[line].Substring(0,(int)reveal);
+                reveal=Mathf.Min(ActiveLines[line].Length,reveal+Time.unscaledDeltaTime*48);words.text=ActiveLines[line].Substring(0,(int)reveal);UpdateChoices();
                 if(!Application.isFocused)return;
                 var k=Keyboard.current;
                 if(k?.escapeKey.wasPressedThisFrame==true)Close();
@@ -72,6 +78,9 @@ namespace Farmer
                 return;
             }
             if(game.WorldInputBlocked||game.BuildMode){context.SetActive(false);return;}
+            if(Application.isFocused && Mouse.current?.leftButton.wasPressedThisFrame==true&&Camera.main!=null
+                &&!(UnityEngine.EventSystems.EventSystem.current?.IsPointerOverGameObject()??false)
+                &&TryTalkFromRay(Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue())))return;
             if(Application.isFocused && TickCooking(Time.deltaTime))return;
             bool talk=CanTalk();stove=game.Model.Building.Blocks.Where(b=>b.pieceId=="home_stove"&&NearStove(b)).OrderBy(b=>Vector3.Distance(game.Player.position,new Vector3(b.x+.5f,b.level,b.z+.5f))).FirstOrDefault();
             context.SetActive(talk||stove!=null);
@@ -94,15 +103,37 @@ namespace Farmer
         public bool TryTalk()
         {
             if(game==null||!game.Ready||game.WorldInputBlocked||game.BuildMode||!CanTalk())return false;
-            consumed=Time.frameCount;openedModel=game.Model;line=0;dialogue.SetActive(true);game.Selection.ModalBlocked=true;RefreshLine();return true;
+            merchant=false;consumed=Time.frameCount;openedModel=game.Model;line=0;dialogue.SetActive(true);game.Selection.ModalBlocked=true;RefreshLine();return true;
+        }
+        public bool TryTalkMerchant()
+        {
+            var market=GetComponent<MarketInteraction>();
+            if(game==null||!game.Ready||game.WorldInputBlocked||game.BuildMode||market.Vendor==null||!game.NearMarket)return false;
+            merchant=true;consumed=Time.frameCount;openedModel=game.Model;line=0;dialogue.SetActive(true);game.Selection.ModalBlocked=true;RefreshLine();return true;
+        }
+        public bool TryTalkFromRay(Ray ray)
+        {
+            var vendor=GetComponent<MarketInteraction>().Vendor;
+            return vendor!=null&&Physics.Raycast(ray,out var hit,200,~0,QueryTriggerInteraction.Ignore)&&hit.transform.IsChildOf(vendor)&&TryTalkMerchant();
         }
         public void Advance()
         {
             if(!IsOpen)return;consumed=Time.frameCount;
-            if(reveal<Lines[line].Length){reveal=Lines[line].Length;words.text=Lines[line];return;}
-            if(++line>=Lines.Length){line=Lines.Length-1;Close();return;}RefreshLine();
+            if(reveal<ActiveLines[line].Length){reveal=ActiveLines[line].Length;words.text=ActiveLines[line];UpdateChoices();return;}
+            if(line==ActiveLines.Length-1){if(merchant)OpenMerchantProducts();else Close();return;}
+            line++;RefreshLine();
         }
-        private void RefreshLine(){reveal=0;words.text="";speaker.text=Speaker;portrait.sprite=VillageArtwork.Icon(line%2==0?"defne":"farmer");advance.text=line==Lines.Length-1?"F / Space · Bitir":"F / Space · Devam  ›";}
+        private void UpdateChoices()
+        {
+            bool choose=merchant&&line==ActiveLines.Length-1&&reveal>=ActiveLines[line].Length;
+            merchantChoices.SetActive(choose);advance.gameObject.SetActive(!choose);
+        }
+        public void OpenMerchantProducts()
+        {
+            if(!IsOpen||!merchant||line!=ActiveLines.Length-1||reveal<ActiveLines[line].Length)return;
+            Close();GetComponent<MarketInteraction>().TryOpenAfterConversation();
+        }
+        private void RefreshLine(){reveal=0;words.text="";speaker.text=Speaker;portrait.sprite=VillageArtwork.Icon(line%2==0?(merchant?"huseyin":"defne"):"farmer");advance.text=line==ActiveLines.Length-1?"F / Space · Bitir":"F / Space · Devam  ›";UpdateChoices();}
         public void Close(){if(dialogue==null)return;dialogue.SetActive(false);consumed=Time.frameCount;if(game!=null)game.Selection.ModalBlocked=game.MenuOpen||game.InventoryOpen||game.MarketOpen||game.JournalOpen;}
         public bool NearStove(BlockRecord b)
         {

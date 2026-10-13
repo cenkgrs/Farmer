@@ -44,18 +44,18 @@ namespace Farmer
                 var events=new GameObject("Farm UI Input",typeof(EventSystem),typeof(InputSystemUIInputModule));events.transform.SetParent(transform,false);
                 events.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();
             }
-            var header=Panel("Clock and Wallet",root.transform,new Vector2(0,1),new Vector2(24,-20),new Vector2(280,150),Cream);
+            var header=Panel("Clock and Wallet",root.transform,new Vector2(0,1),new Vector2(24,-20),new Vector2(300,170),Cream);
             HudArtwork.ApplyHeader(header);
-            summary=Label(header,"",20,32,26,216,27,Ink);money=Label(header,"",23,68,60,180,30,Ink);
+            summary=Label(header,"",20,42,36,216,27,Ink);money=Label(header,"",23,78,70,180,30,Ink);
             summary.font=money.font=Resources.Load<Font>("MarketArt/LiberationSerif-Bold");
             summary.resizeTextForBestFit=true;summary.resizeTextMinSize=14;summary.resizeTextMaxSize=20;
-            health=Label(header,"",22,68,96,180,30,Ink);health.gameObject.name="Player health text";
-            var heart=new GameObject("Health heart",typeof(RectTransform),typeof(Image));var heartRect=(RectTransform)heart.transform;heartRect.SetParent(header,false);heartRect.anchorMin=heartRect.anchorMax=heartRect.pivot=new Vector2(0,1);heartRect.anchoredPosition=new Vector2(23,-87);heartRect.sizeDelta=new Vector2(48,48);var heartImage=heart.GetComponent<Image>();heartImage.sprite=VillageArtwork.Icon("heart");heartImage.preserveAspect=true;heartImage.raycastTarget=false;
-            saveStatus=Label(header,"",10,32,126,216,14,new Color(.40f,.39f,.23f));
+            health=Label(header,"",22,78,106,180,30,Ink);health.gameObject.name="Player health text";
+            var heart=new GameObject("Health heart",typeof(RectTransform),typeof(Image));var heartRect=(RectTransform)heart.transform;heartRect.SetParent(header,false);heartRect.anchorMin=heartRect.anchorMax=heartRect.pivot=new Vector2(0,1);heartRect.anchoredPosition=new Vector2(33,-97);heartRect.sizeDelta=new Vector2(48,48);var heartImage=heart.GetComponent<Image>();heartImage.sprite=VillageArtwork.Icon("heart");heartImage.preserveAspect=true;heartImage.raycastTarget=false;
+            saveStatus=Label(header,"",10,42,136,216,14,new Color(.40f,.39f,.23f));
             detail=Panel("Cell Details",root.transform,new Vector2(1,1),new Vector2(-24,-20),new Vector2(244,110),Cream);
             selectionStatus=Label(detail,"",15,14,12,216,90,Ink);
             marketHint=Panel("Market interaction hint",root.transform,new Vector2(.5f,0),new Vector2(0,208),new Vector2(190,32),Cream);
-            Label(marketHint,"F · Hüseyin — Pazar",14,8,5,174,24,Ink).alignment=TextAnchor.MiddleCenter;
+            Label(marketHint,"F · Hüseyin ile konuş",14,8,5,174,24,Ink).alignment=TextAnchor.MiddleCenter;
             camp=Panel("Sleep",root.transform,new Vector2(0,1),new Vector2(24,-146),new Vector2(250,140),Cream);
             Label(camp,"Biraz dinlen",20,14,10,224,28,Ink);
             campWarning=Label(camp,"",13,14,43,224,44,Ink);

@@ -52,18 +52,33 @@ namespace Farmer.Tests
             var animal=wildlife.View(0);Assert.That(animal,Is.Not.Null);
             motor.Teleport(animal.transform.position+Vector3.forward*8);Physics.SyncTransforms();wildlife.Simulate(.01f);Assert.That(animal.Mood,Is.EqualTo(WildlifeMood.Watch));
             Assert.That(animal.transform.Find("Animal health").gameObject.activeSelf,Is.False,"Unhurt animals have no overhead UI.");
-            var deer=wildlife.View(4);motor.Teleport(deer.transform.position+Vector3.forward*7);game.Model.Equip(FarmItem.Axe);Assert.That(game.Model.StrikeAnimal(4),Is.True);wildlife.Simulate(.01f);
+            var deer=wildlife.View(4);
+            var gait=deer.GetComponentInChildren<DeerLocomotion>();Assert.That(gait,Is.Not.Null);Assert.That(gait.Skin.bones.Length,Is.EqualTo(9));
+            gait.ResetPose();var rest=new Mesh();var step=new Mesh();gait.Skin.BakeMesh(rest);gait.Step(.85f,.2f);gait.Skin.BakeMesh(step);
+            var rv=rest.vertices;var sv=step.vertices;
+            Assert.That(Enumerable.Range(0,rv.Length).Where(i=>rv[i].y<.25f).Max(i=>Vector3.Distance(rv[i],sv[i])),Is.GreaterThan(.03f),"Leg geometry must actually move.");
+            Assert.That(Enumerable.Range(0,rv.Length).Where(i=>rv[i].y>1.2f).Max(i=>Vector3.Distance(rv[i],sv[i])),Is.LessThan(.001f),"Head remains stable.");
+            for(int i=0;i<20;i++)gait.Step(0,.1f);Assert.That(gait.MotionBlend,Is.Zero);gait.Skin.BakeMesh(step);var stopped=step.vertices;Assert.That(Enumerable.Range(0,rv.Length).Max(i=>Vector3.Distance(stopped[i],rv[i])),Is.LessThan(.00001f));Object.Destroy(rest);Object.Destroy(step);
+            motor.Teleport(deer.transform.position+Vector3.forward*7);game.Model.Equip(FarmItem.Axe);Assert.That(game.Model.StrikeAnimal(4),Is.True);wildlife.Simulate(.01f);
             Assert.That(deer.transform.Find("Animal health").gameObject.activeSelf,Is.True,"First damage reveals health.");Assert.That(deer.GetComponentsInChildren<UnityEngine.UI.Text>(true),Is.Empty,"No animal status text.");
             motor.Teleport(animal.transform.position+Vector3.forward*3);Physics.SyncTransforms();wildlife.Simulate(.01f);Assert.That(animal.Mood,Is.EqualTo(WildlifeMood.Flee));
             Assert.That(game.Model.BuyHuntingTool("bow",out _),Is.False,"Starts without enough money for bow");
             var s=game.Model.Snapshot();s.money=1000;File.WriteAllText(game.SavePath,JsonUtility.ToJson(s));Assert.That(game.LoadGame(),Is.True);yield return null;
-            wildlife.Simulate(.01f);animal=wildlife.View(0);game.Model.BuyHuntingTool("bow",out _);game.Equip(FarmItem.Bow);
+            wildlife.Simulate(.01f);yield return new WaitForFixedUpdate();animal=wildlife.View(0);game.Model.BuyHuntingTool("bow",out _);game.Equip(FarmItem.Bow);
             // Choose an unobstructed firing direction around the animal.
             bool fired=false;
-            for(int i=0;i<8&&!fired;i++){motor.Teleport(animal.transform.position+Quaternion.Euler(0,i*45,0)*Vector3.forward*6);Physics.SyncTransforms();fired=wildlife.TryAttack(0);}
+            for(int i=0;i<16&&!fired;i++)
+            {
+                motor.Teleport(animal.transform.position+Quaternion.Euler(0,i*22.5f,0)*Vector3.forward*6);Physics.SyncTransforms();
+                var origin=game.Player.position+Vector3.up*.5f;var delta=animal.transform.position+Vector3.up*.5f-origin;
+                bool obstacle=Physics.OverlapSphere(origin,HuntingArrow.Radius,~0,QueryTriggerInteraction.Ignore).Any(c=>!c.transform.IsChildOf(game.Player))
+                    ||Physics.SphereCastAll(origin,HuntingArrow.Radius,delta.normalized,delta.magnitude,~0,QueryTriggerInteraction.Ignore).Any(h=>!h.transform.IsChildOf(game.Player)&&!h.transform.IsChildOf(animal.transform));
+                if(!obstacle)fired=wildlife.TryAttack(0);
+            }
             Assert.That(fired,Is.True);Assert.That(game.Model.Animal(0).health,Is.EqualTo(15));
-            for(int i=0;i<10;i++)wildlife.Simulate(.1f);
-            Assert.That(game.Model.Animal(0).health,Is.Zero);Assert.That(game.Model.BagCount("hunt:raw_meat"),Is.EqualTo(2));Assert.That(game.Model.BagCount("hunt:hide"),Is.EqualTo(1));
+            var arrow=Object.FindFirstObjectByType<HuntingArrow>();Assert.That(arrow,Is.Not.Null);arrow.enabled=false;
+            for(int i=0;i<10&&!arrow.Finished;i++)arrow.Simulate(.1f);
+            Assert.That(game.Model.Animal(0).health,Is.Zero,$"Arrow hit={arrow.HitCollider?.name}, travelled={arrow.Travelled}, position={arrow.transform.position}, animal={animal.transform.position}, blocked={game.WorldInputBlocked}");Assert.That(game.Model.BagCount("hunt:raw_meat"),Is.EqualTo(2));Assert.That(game.Model.BagCount("hunt:hide"),Is.EqualTo(1));
             CropExpansionPlayModeTests.Frame(animal.transform.position,5);yield return null;CropExpansionPlayModeTests.Capture("village-hunting",true);
             var point=wildlife.FindSpace(game.Player.position+Vector3.right*5);Assert.That(point.HasValue,Is.True);int x=Mathf.FloorToInt(point.Value.x),z=Mathf.FloorToInt(point.Value.z);
             Assert.That(game.Model.BuyFurniture("home_stove",out _),Is.True);Assert.That(game.Model.Building.Place("home_stove",x,0,z,0,out _),Is.True);game.CombatChanged("Ocak kuruldu.");yield return null;

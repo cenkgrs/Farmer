@@ -37,7 +37,13 @@ namespace Farmer.Tests
             var panel=game.transform.Find("Market Canvas/Market");Assert.That(panel.gameObject.activeInHierarchy,Is.False);
             Assert.That(game.Buy(1),Is.False);Assert.That(game.BuyPickaxe(),Is.False);Assert.That(game.BuyWood(),Is.False);Assert.That(game.BuyBed(),Is.False);Assert.That(game.BuyFurniture("home_chair"),Is.False);
             Assert.That(game.Model.Money,Is.EqualTo(500));
-            Assert.That(market.HandleInput(true,false),Is.True);Assert.That(game.MarketOpen,Is.True);Assert.That(game.WorldInputBlocked,Is.True);
+            Assert.That(market.HandleInput(true,false),Is.True);Assert.That(game.MarketOpen,Is.False);Assert.That(game.WorldInputBlocked,Is.True);
+            var dialogue=game.GetComponent<VillageInteraction>();Assert.That(dialogue.Speaker,Is.EqualTo("Hüseyin"));
+            Assert.That(GameObject.Find("Speaker portrait").GetComponent<Image>().sprite.texture,Is.SameAs(Resources.Load<Texture2D>("VillageArt/huseyin")));
+            Assert.That(game.Buy(1),Is.False,"Trading waits until products are chosen.");
+            for(int i=0;i<5;i++)dialogue.Advance();Assert.That(GameObject.Find("Merchant choices"),Is.Not.Null);
+            dialogue.OpenMerchantProducts();Assert.That(game.MarketOpen,Is.True);Assert.That(dialogue.IsOpen,Is.False);
+            Assert.That(market.HandleInput(true,false),Is.False,"Opening products cannot close them on the same F press.");
             Assert.That(game.Selection.ModalBlocked,Is.True);Assert.That(market.ConsumedThisFrame,Is.True);
             yield return null;
             Assert.That(panel.gameObject.activeInHierarchy,Is.True);Assert.That(game.Buy(1),Is.True);Assert.That(game.Model.Money,Is.EqualTo(490));
@@ -48,7 +54,7 @@ namespace Farmer.Tests
             Assert.That(market.HandleInput(false,true),Is.True);Assert.That(game.MarketOpen,Is.False);Assert.That(game.MenuOpen,Is.False);Assert.That(market.ConsumedThisFrame,Is.True);
             bag.Open(null);Assert.That(game.InventoryOpen,Is.False,"The closing interaction cannot also open storage.");
             yield return null;Assert.That(game.WorldInputBlocked,Is.False);Assert.That(game.Selection.ModalBlocked,Is.False);
-            Assert.That(market.HandleInput(true,false),Is.True);yield return null;
+            Assert.That(market.TryOpen(),Is.True);yield return null;
             Assert.That(market.HandleInput(true,false),Is.True);Assert.That(game.MarketOpen,Is.False);yield return null;
             Assert.That(market.TryOpen(),Is.True);yield return null;
             Object.FindObjectsByType<Button>(FindObjectsSortMode.None).Single(b=>b.name=="Close Market").onClick.Invoke();
@@ -61,6 +67,10 @@ namespace Farmer.Tests
             game.GetComponent<SessionMenu>().SetOpen(false);
             bag.Open(null);Assert.That(market.TryOpen(),Is.False);bag.Close();
             game.SetBuildMode(true);Assert.That(market.TryOpen(),Is.False);game.SetBuildMode(false);
+            yield return null;var vendor=market.Vendor;Teleport(vendor.position-vendor.forward*1.4f);yield return null;
+            var origin=vendor.position-vendor.forward*1.3f+Vector3.up*.9f;
+            Assert.That(dialogue.TryTalkFromRay(new Ray(origin,vendor.forward)),Is.True);Assert.That(dialogue.Speaker,Is.EqualTo("Hüseyin"));dialogue.Close();yield return null;
+            Assert.That(game.MarketOpen,Is.False,"Cancelling the greeting does not open products.");
             Debug.Log("FARMER_MARKET_INTERACTION_OK: explicit F, close F/Esc/button, input isolation, proximity, transactions, load and menu transitions.");
         }
         private void Teleport(Vector3 p){var c=game.Player.GetComponent<CharacterController>();c.enabled=false;game.Player.position=p;c.enabled=true;Physics.SyncTransforms();}

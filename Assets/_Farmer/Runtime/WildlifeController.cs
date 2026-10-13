@@ -7,7 +7,7 @@ namespace Farmer
     {
         private FarmGame game;private FarmModel observed;private PlayerMotor motor;private CombatAudio sound;
         private WildlifeView[] views=new WildlifeView[WildlifeRules.Count];
-        private float cooldown,delay;private bool released;private int pending=-1;
+        private float cooldown,delay;private int pending=-1;
         private Vector3 home;private FarmItem pendingWeapon;
         private float Reach=>Model.EquippedItem==FarmItem.Bow?12:3.4f;
         public WildlifeView View(int id)=>views[id];
@@ -47,8 +47,7 @@ namespace Farmer
             {
                 delay-=dt;
                 if(Model.EquippedItem!=pendingWeapon||motor.IsDodging)pending=-1;
-                else if(delay<=0){if(pendingWeapon==FarmItem.Bow&&!released){released=true;delay=HuntingArrow.Fly(game.Player.position+Vector3.up,views[pending].transform);}
-                    else{int id=pending;pending=-1;Impact(id);}}
+                else if(delay<=0){int id=pending;pending=-1;Impact(id);}
             }
             foreach(var v in views)if(v!=null)v.Simulate(dt,game.Player.position);
         }
@@ -70,17 +69,23 @@ namespace Farmer
         public bool TryAttack(int id)
         {
             if(!CanAct||id<0||id>=views.Length||views[id]==null)return false;
-            var v=views[id];if(CombatController.PlanarDistance(v.transform.position,game.Player.position)>Reach||!Visible(v)){game.ShowBuildFeedback("Avına yaklaş; arada engel olmamalı.");return false;}
+            var v=views[id];if(Model.EquippedItem==FarmItem.Bow&&Model.Animal(id).health>0)return game.GetComponent<BowCombat>().FireDirection(v.transform.position-game.Player.position);
+            if(CombatController.PlanarDistance(v.transform.position,game.Player.position)>Reach||!Visible(v)){game.ShowBuildFeedback("Avına yaklaş; arada engel olmamalı.");return false;}
             if(Model.Animal(id).health==0){bool ok=Model.ClaimAnimal(id,out var m);game.CombatChanged(m);return ok;}
             if(!FarmModel.HuntingWeapon(Model.EquippedItem)){game.ShowBuildFeedback("Avlanmak için balta (6), yay (8) veya hançer (9) kuşan.");return false;}
             if(cooldown>0||motor.IsDodging)return false;
-            cooldown=Model.EquippedItem==FarmItem.Bow?.8f:.6f;pending=id;pendingWeapon=Model.EquippedItem;released=false;delay=.2f;
-            if(pendingWeapon!=FarmItem.Bow)CombatFeedback.Slash(game.Player,v.transform.position);game.Player.GetComponentInChildren<FarmerAnimator>()?.BeginCombatSwing(v.transform.position+Vector3.up*.5f);motor.FacingTarget=v.transform.position;return true;
+            cooldown=Model.EquippedItem==FarmItem.Bow?.8f:.6f;pending=id;pendingWeapon=Model.EquippedItem;delay=.2f;
+            CombatFeedback.Slash(game.Player,v.transform.position);game.Player.GetComponentInChildren<FarmerAnimator>()?.BeginCombatSwing(v.transform.position+Vector3.up*.5f);motor.FacingTarget=v.transform.position;return true;
         }
         private void Impact(int id)
         {
             var v=views[id];if(v==null||!Visible(v)||CombatController.PlanarDistance(v.transform.position,game.Player.position)>Reach+.5f)return;
-            int before=Model.Animal(id).health;if(!Model.StrikeAnimal(id))return;
+            ApplyDamage(id,pendingWeapon);
+        }
+        public void ArrowHit(int id)=>ApplyDamage(id,FarmItem.Bow);
+        private void ApplyDamage(int id,FarmItem weapon)
+        {
+            var v=views[id];int before=Model.Animal(id).health;if(v==null||!Model.StrikeAnimal(id,weapon))return;
             v.Hit();sound?.Strike();motor.CombatFreeze=.065f;
             CombatFeedback.Burst(v.transform.position+Vector3.up,"−"+Mathf.Min(15,before),new Color(1,.8f,.25f));
             string message="Av · 15 hasar";

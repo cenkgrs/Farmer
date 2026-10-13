@@ -32,7 +32,14 @@ namespace Farmer
             yield return null;
             game.ShowBuildFeedback("");Frame(game.Market.position,5);motor.Teleport(game.Market.position-Vector3.forward*2);game.Model.Combat.Damage(15);combat.RefreshHud();
             yield return Capture(output,"-huseyin-hud");
+            yield return null;village.TryTalkMerchant();village.Advance();yield return Capture(output,"-huseyin-dialogue");
+            for(int i=0;i<4;i++)village.Advance();yield return Capture(output,"-huseyin-choices");village.OpenMerchantProducts();yield return Capture(output,"-huseyin-products");game.GetComponent<MarketInteraction>().Close();yield return null;
             game.GetComponent<StorageInteraction>().Open(null);yield return null;yield return Capture(output,"-bag");game.GetComponent<StorageInteraction>().Close();
+            var preview=VillageArtwork.Animal(true);preview.transform.position=new Vector3(1000,0,1000);var gait=preview.AddComponent<DeerLocomotion>();
+            var camera=Camera.main;camera.transform.position=preview.transform.position+new Vector3(3,1,1);camera.transform.LookAt(preview.transform.position+Vector3.up*.9f);camera.orthographicSize=1.4f;
+            foreach(var canvas in Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None))canvas.gameObject.SetActive(false);
+            gait.Step(.85f,.16f);yield return Capture(output,"-deer-step-a");gait.Step(.85f,.25f);yield return Capture(output,"-deer-step-b");
+            Object.Destroy(preview);
             Debug.Log("FARMER_VILLAGE_NATIVE_OK: dialogue portraits, wildlife and weapon market rendered.");
         }
         private static void Frame(Vector3 p,float zoom){var c=Camera.main;c.orthographicSize=zoom;c.transform.position=p+new Vector3(-8,10,-8);c.transform.LookAt(p);}
