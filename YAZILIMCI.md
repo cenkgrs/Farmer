@@ -4,7 +4,7 @@ Son güncelleme: **13 Ekim 2026 — Europe/Istanbul**.
 
 ## Şu an nerede kaldık?
 
-**Güncel (13 Ekim): Kullanıcının gündüz/gece MP3 parçaları oyuna eklendi. 06.00/19.00 saatlerinde altı saniyelik geçiş, odak kaybında duraklama. Müzik PlayMode testi ve macOS build başarılı; ayrıntılar dosya sonunda.**
+**Güncel (13 Ekim): Oyuncuya çim/toprak, taş ve ahşap ayak sesleri eklendi. Yürüme/Shift koşu ritmi gerçek mesafeyi takip eder. Zemin ve ritim PlayMode testi başarılı. Ayrıntılar dosya sonunda.**
 
 **Unity 6000.3.25f1 LTS (e1dba0a9aba4)** Linux makinesine kuruldu ve `Unity -version` ile doğrulandı. Resmi URP şablonunun kaynak dosyaları depoya alındı. 7 Ekim tarihinde aktif lisans doğrulandı; ilk paket importu, C# derlemesi ve başlangıç sahnesi üretimi başarıyla tamamlandı. Linux build ve görsel kontrol sonucu aşağıdaki doğrulama kaydında tutulur. **0.1 çekirdek prototipi Linux üzerinde tamamlandı:** hareket, kare seçimi, tohum satın alma, ekim/sulama, dört görünür büyüme aşaması, hasat/satış, gün ilerletme ve kayıt/yükleme çalışıyor. **Görsel ara aşama Linux üzerinde entegre edildi:** kullanıcının Tripo çiftçi/sulama kabı/orak/pazar modelleri ve Mixamo Idle/Walk animasyonları sahnede. Kullanıcı yeni görselleri beğendi; arkadaşına göndermek için Windows deneme paketi hazırlandı. Sulama/hasat için prosedürel alet hareketleri ve su akışı da eklendi; kullanıcının ters el tutuşu geri bildirimi düzeltilip son Linux player turunda 121 kontrol geçti. 0.2 dünya düzenleme adımı hazır: inşa alanı sınırı kaldırıldı, çapa ve yerleştirilebilir yatak eklendi, saat/gece–gündüz kullanıcı kararıyla 10 gerçek dakikalık döngüye geçti. Yeni kompakt ikon envanteri ve kaldırılan dünya etiketleri aşağıdaki güncel kayıtta açıklanır. **8 Ekim ilk oda adımı:** döşeme, ince duvar, açılıp kapanan kapı ve içeride kamera tarafındaki cephelerin saydamlaşması eklendi; kayıt v4. 8 Ekim devamındaki güncel çatı/taşıma/yatak ve sekiz yuvalı inşa barı kaydı dosyanın sonundadır; kayıt v5. 8 Ekim keşif adımı dosyanın sonundadır: balta, ağaç, yabani bitki ve dünyaya özel rastgele sandıklar; kayıt v6. Kullanıcının ilk oynanış geri bildirimi uygulandı: tıkla-seç adımı kaldırıldı, fare hedefi üzerinde eldeki eşya ile doğrudan sol tık etkileşimine geçildi. Sulama kabıyla sol tuşu basılı tutup kareler arasında gezdirilir; su sesi döngüsü eklenmiştir. Her ekimde tek sulama yeterli; hasat süresi üç gece olarak korundu. Karakter/iki alet/pazar teslim edilen modelleri kullanıyor; zemin, bitkiler, kamp ve tohum torbası hâlâ geçici. Windows x64 paketi Linux üzerinde derlendi; gerçek Windows açılış/oynanış doğrulaması açık.
 
@@ -752,3 +752,16 @@ Sonraki somut iş: kullanıcının yeni yürüyüş/serbest nişan hissini değe
 - FarmMusicPlayModeTests başarılı (1/1): import/süre/streaming, saat sınırları, karşılıklı ses geçişi, geçiş ortasında tersine dönme ve disable kontrolü. Logs/music-play.xml.
 - macOS build başarılı: Logs/music-build.log. Windows/Linux bu tur derlenmedi. Müzikal loop birleşimi ve öznel ses dengesi kullanıcının dinleme değerlendirmesine açık.
 - Native player kontrolü exit 0 / FARMER_PLAYER_SMOKE_OK: Logs/music-native.log. Yerel builds/MacQA/Farmer.app güncellendi; oyuncu kaydı QA için kullanılmadı.
+
+
+## 13 Ekim — hareket/ayak sesleri
+
+- PlayerFootsteps oyuncuya runtime eklenir; sahne yeniden üretilmedi. Çim/toprak, taş ve ahşap için beşer Kenney CC0 kaydı Resources/Footsteps altında metalarıyla sürümlenir. Kaynak/lisans docs/audio-sources altında.
+- Gerçek hareket birikimi: yürüyüşte 1,65 m, koşuda 2 m başına adım. Koşu daha hızlı yürüdüğünden adım sıklığı artar. Ufak perde/seviye varyasyonu, tekrar etmeyen klip seçimi.
+- Fiziksel üst yüzey ve oyuncu döşemeleri öncelikli; collider olmayan dekoratif köy meydanı/ana yol geometrisi de taş sesi verir. Hazırlanmış toprak çim grubunu kullanır.
+- Menü, odak kaybı, havada olma, dodge/hitstop, hareketsizlik ve büyük teleportta adım birikimi sıfırlanır. Duvara karşı sıfır gerçek hareket ses üretmez.
+- FootstepPlayModeTests 1/1 geçti: 15 asset importu, üç yüzey, boşta/havada/modal/teleport sessizliği ve koşunun daha sık adımı. Logs/footsteps-play.xml.
+- Sonraki iş: kullanıcının müzikle birlikte ses seviyesini ve adım hissini dinleyerek değerlendirmesi. NPC/hayvan adımları henüz eklenmedi.
+- macOS build başarılı (`Logs/footsteps-build.log`), normal native açılış exit 0 / FARMER_PLAYER_SMOKE_OK (`Logs/footsteps-launch.log`). Yerel MacQA güncellendi. Seslerin öznel dinleme değerlendirmesi kullanıcıya açık; Windows/Linux derlenmedi.
+- Eski ControlsSmokeChecks tam geçmedi: yeni pakette sandık, dünya sınırı ve iki fare hedefleme kontrolü; önceki müzik paketinde sandık ve iki fare hedefleme kontrolü yine başarısız (`footsteps-baseline2.log`). Bu senaryo eski sabit harita koordinatlarını kullanır; dünya sınırı farkının nedeni ayrıca incelenmeli. Hareket regresyon paketi geçti denmiyor.
+- İlk baseline girişimi disk doluluğunda QA kayıt yazarken durdu; yalnızca yeniden üretilebilir izole Library/Bee temizlenip yeniden denendi. Normal kayıtlar kullanılmadı.

@@ -97,6 +97,7 @@ namespace Farmer
             gameObject.AddComponent<WildlifeController>();
             gameObject.AddComponent<BowCombat>();
             gameObject.AddComponent<FarmMusic>();
+            if(player.GetComponent<PlayerFootsteps>()==null)player.gameObject.AddComponent<PlayerFootsteps>();
         }
         private bool ResourceBlockedByScenery(int x,int z)
         {

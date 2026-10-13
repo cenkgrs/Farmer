@@ -217,3 +217,7 @@ Yinso.ai üzerinden kullanıcı tarafından üretilip teslim edilen parçalar:
 - `Resources/Music/night_farm.mp3`: Moonlit Farm Hush, 198,024 sn.
 
 İki dosya da 48 kHz stereo MP3; teslim edilen ses değiştirilmeden kopyalandı. Unity importu stereo Vorbis/Streaming, kalite 0,8. AudioSource döngüsü kullanılır; parçaların müzikal döngü birleşimi ayrıca kulakla değerlendirilmelidir.
+
+## 13 Ekim — ayak sesi kayıtları
+
+Kenney Impact Sounds 1.0 paketinden 15 CC0 OGG: çim, taş (concrete) ve ahşap grupları. `Resources/Footsteps` içinde beşer kayıt; kaynak ve lisans `docs/audio-sources/footsteps.md` içinde. Sentez ses kullanılmadı. Mono PCM import; kısa klipler bellekte hazırdır.

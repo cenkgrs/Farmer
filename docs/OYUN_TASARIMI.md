@@ -362,3 +362,7 @@ Ekim, sulama, çapalama, bitki kaldırma ve hasat başarılarında açıklama ş
 ### 13 Ekim — gündüz ve gece müziği
 
 Kullanıcının Sunny Farm Morning Loops parçası 06.00–19.00, Moonlit Farm Hush parçası 19.00–06.00 aralığında çalar. Altı saniyelik ses geçişi uyku ve kayıt yüklemeyle saat atlamalarında da uygulanır. Müzik 2D/stereo ve düşük ses seviyesinde döngüdedir. Menü/konuşma açılması parçayı yeniden başlatmaz; uygulama odağı kaybolunca müzik duraklar.
+
+### 13 Ekim — oyuncu ayak sesleri
+
+Yürüme ve Shift koşusunda gerçek yatay hareket mesafesi adımları tetikler. Çim/toprak, taş yol ve ahşap yapılarda farklı kayıtlar; her grupta beş varyasyon, küçük perde farkı ve art arda aynı kaydı engelleme vardır. Koşu daha sık ve biraz daha güçlüdür. Hareketsizlik, engelde durma, havada kalma, kaçınma, vuruş donması, modal ekranlar ve odak kaybında yeni adım üretilmez. Teleport mesafesi adım sayılmaz. NPC/hayvan adımları bu adımın kapsamında değildir.
