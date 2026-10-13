@@ -1,6 +1,6 @@
 # Yazılımcı — proje hafızası ve devir
 
-Son güncelleme: **12 Ekim 2026 — Europe/Istanbul**.
+Son güncelleme: **13 Ekim 2026 — Europe/Istanbul**.
 
 ## Şu an nerede kaldık?
 
@@ -668,3 +668,9 @@ Değişiklikler `main` dalında ayrı commit ile `origin/main` hedefine gönderi
 - Kullanıcının normal kaydı uygulama kapandıktan sonra yedeklendi; yalnızca iki düşmanın can/yenilenme/ödül durumu sıfırlandı. Gün 38, para 621, oyuncu canı 100 ve bütün savaş dışı kayıt alanları korundu. Kayıt yanındaki `before-enemy-reset-20261012T081733Z` yedeği Git dışındadır.
 - Doğrulama: son `market-final-play.xml` **8/8 geçti**. Öncesindeki izole kayıt argümanı eksik deneme testleri atladı; başarı sayılmadı. `market-seed-page-two.png` ve `market-design-tools.png` incelendi. Kapsamdaki kaynaklarda diff whitespace kontrolü temiz; kullanıcının sahne/malzeme/ayar değişiklikleri korunuyor.
 - Native macOS geliştirme paketi `FARMER_DEMO_BUILD_OK` ile tamamlandı; güncel uygulama normal kayıtla açıldı ve Gün 38 ana menüsü ekranda doğrulandı. Sonraki somut iş: kullanıcının pazar erişimi, küçük sayfa okları ve yeniden canlanan düşmanları oynaması. Windows/Linux yeniden paketlenmedi.
+
+## 13 Ekim — yerel sahnenin diğer bilgisayara aktarılması
+
+Kullanıcı diğer PC’de pull sonrası haritanın farklı olduğunu bildirdi ve bütün sahne değişikliklerinin gönderilmesini istedi. Önceki turlarda kullanıcı değişikliği olarak commit dışında korunan 32 dosya bu teslim kapsamına alındı: Farm.unity yerleşimi, 24 malzeme, URP ayarı, beş görsel import meta dosyası ve ShaderGraph ayarı. Artık yerel sahne düzenlemesi de Git üzerinden taşınır. Oyun kayıtları bilgisayara özeldir ve bu teslimin parçası değildir.
+
+Kontrol: fetch sonrası main/origin/main ayrışması yoktu. 32 dosyanın tamamı önceki 8/8 PlayMode testini ve başarılı macOS build’ini alan QA kopyasıyla bayt düzeyinde aynı. Yeni GUID referansları izlenen assetlerde ve sabit URP paketinde çözüldü. Bu aktarım için testler yeniden çalıştırılmadı; mevcut doğrulanan içerik gönderiliyor. Unity’nin serileştirdiği boşluklar dahil dosyalar aynen korundu. Hedef origin/main; sonraki adım diğer PC’de pull edip Farm sahnesini yeniden açarak yerleşimi kontrol etmek.
