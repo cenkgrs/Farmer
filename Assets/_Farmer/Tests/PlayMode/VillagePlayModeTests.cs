@@ -23,6 +23,13 @@ namespace Farmer.Tests
             var wildlife=game.GetComponent<WildlifeController>();wildlife.enabled=false;var village=game.GetComponent<VillageInteraction>();
             var motor=game.Player.GetComponent<PlayerMotor>();motor.enabled=false;
             var guide=village.Guide;Assert.That(guide,Is.Not.Null);
+            Assert.That(game.GetComponent<MarketInteraction>().Vendor,Is.Not.Null);
+            Assert.That(GameObject.Find("Combat HUD"),Is.Null);
+            game.Model.Combat.Damage(15);game.GetComponent<CombatController>().RefreshHud();
+            Assert.That(GameObject.Find("Player health text").GetComponent<UnityEngine.UI.Text>().text,Is.EqualTo("85/100"));
+            game.Model.Combat.Heal(15);
+            game.Equip(FarmItem.Sickle);Assert.That(game.Feedback,Is.Empty);
+
             // Sprint uses the same collision controller, returns to walking and respects modal input.
             var previousBounds=motor.WorldBounds;var previousRotation=Camera.main.transform.rotation;
             var ground=GameObject.CreatePrimitive(PrimitiveType.Cube);ground.transform.position=new Vector3(80,-.25f,-80);ground.transform.localScale=new Vector3(20,.5f,20);

@@ -15,12 +15,9 @@ namespace Farmer
         private readonly EnemyView[] views=new EnemyView[2];
         private float attackCooldown, grace=1.2f, impactDelay, hitStop;
         private int pendingTarget=-1;
-        private Image healthFill;
         public bool ImpactPaused => hitStop>0;
-        private Text status;
         private CombatAudio sound;
         public void Warn()=>sound?.Warning();
-        private GameObject hud;
         public Vector3 Sanctuary=>sanctuary;
         public EnemyView View(int id)=>views[id];
         public bool CanAct=>game!=null&&game.Ready&&!game.WorldInputBlocked&&!game.BuildMode;
@@ -28,16 +25,6 @@ namespace Farmer
         {
             sound=gameObject.AddComponent<CombatAudio>();
             game=GetComponent<FarmGame>();motor=game.Player.GetComponent<PlayerMotor>();sanctuary=game.Player.position;
-            var canvas=new GameObject("Combat HUD",typeof(Canvas),typeof(CanvasScaler));canvas.transform.SetParent(transform,false);
-            canvas.GetComponent<Canvas>().renderMode=RenderMode.ScreenSpaceOverlay;canvas.GetComponent<Canvas>().overrideSorting=true;canvas.GetComponent<Canvas>().sortingOrder=2;
-            var scale=canvas.GetComponent<CanvasScaler>();scale.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scale.referenceResolution=new Vector2(1280,720);scale.matchWidthOrHeight=.5f;
-            var panel=FarmHud.Panel("Health and expedition",canvas.transform,new Vector2(.5f,1),new Vector2(0,-20),new Vector2(460,120),new Color(.94f,.87f,.71f,.97f));
-            HudArtwork.ApplyFrame(panel);
-            panel.GetComponent<Image>().raycastTarget=false;hud=panel.gameObject;
-            status=FarmHud.Label(panel,"",15,24,20,412,70,new Color(.25f,.20f,.12f));
-            var bar=FarmHud.Panel("Player health background",panel,new Vector2(0,1),new Vector2(24,-96),new Vector2(412,12),new Color(.24f,.13f,.12f));
-            healthFill=FarmHud.Panel("Player health",bar,new Vector2(0,1),Vector2.zero,new Vector2(412,12),new Color(.78f,.23f,.22f)).GetComponent<Image>();
-            bar.GetComponent<Image>().raycastTarget=false;healthFill.raycastTarget=false;
             Synchronize();
         }
         private void Synchronize()
@@ -90,16 +77,7 @@ namespace Farmer
             {if(game.Model.EatHarvest(out string message))game.CombatChanged(message);else game.ShowBuildFeedback(message);}
             RefreshHud();
         }
-        public void RefreshHud()
-        {
-            var closest=views.Where(v=>v!=null).OrderBy(v=>PlanarDistance(v.Home,game.Player.position)).FirstOrDefault();
-            bool near=closest!=null&&PlanarDistance(closest.Home,game.Player.position)<11;
-            hud.SetActive(game.Ready&&!game.WorldInputBlocked);
-            healthFill.rectTransform.sizeDelta=new Vector2(412f*game.Model.Combat.Health/100f,12);
-            string target=closest==null?"":$"{EnemyRules.Catalog[closest.Id].Area} · {Mathf.RoundToInt(PlanarDistance(closest.Home,game.Player.position))} m";
-            if(near)target=game.Model.Combat.Enemy(closest.Id).health>0?$"{EnemyRules.Catalog[closest.Id].Name} · {game.Model.Combat.Enemy(closest.Id).health} can · {(closest.WindingUp?"SALDIRI HAZIRLIĞI!":"6: Balta / sol tık")}":(Claimed(closest.Id)?"Bölge temizlendi · Yarın yenilenir":closest.Id==0?"Yerde 12 odun · Yaklaş ve tıkla":"Yerde 12 taş · Kazma (7) ile al");
-            status.text=$"CAN  {game.Model.Combat.Health} / 100\n{target}\nSpace: kaçın   ·   H: yemek ye";
-        }
+        public void RefreshHud()=>GetComponent<FarmHud>()?.RefreshHealth();
         public void Simulate(float dt,bool focused=true)
         {
             Synchronize();if(game==null||!game.Ready||dt<=0)return;

@@ -65,7 +65,7 @@ namespace Farmer.Tests
             Assert.That(GameObject.Find("Harvest icon crafted:harvest_basket").GetComponent<Image>().sprite,Is.Not.Null);
             CropExpansionPlayModeTests.Capture("harvest-basket",true);
             game.GetComponent<MarketInteraction>().Close();yield return null;var storage=game.GetComponent<StorageInteraction>();storage.Open(null);yield return null;
-            Find("›").onClick.Invoke();yield return null;Assert.That(Object.FindObjectsByType<StorageSlot>(FindObjectsSortMode.None).Any(slot=>slot.ItemId=="crafted:harvest_basket"&&slot.Count==1),Is.True);CropExpansionPlayModeTests.Capture("harvest-bag",true);storage.Close();yield return null;
+            Assert.That(Object.FindObjectsByType<StorageSlot>(FindObjectsSortMode.None).Any(slot=>slot.ItemId=="crafted:harvest_basket"&&slot.Count==1),Is.True);CropExpansionPlayModeTests.Capture("harvest-bag",true);storage.Close();yield return null;
             game.SaveGame();Assert.That(game.LoadGame(),Is.True);yield return null;Assert.That(game.ActiveCrop.id,Is.EqualTo("pumpkin"));Assert.That(game.Model.BagCount("crafted:harvest_basket"),Is.EqualTo(1));
             game.GetComponent<MarketInteraction>().TryOpen();yield return null;ui.BuildSalePage(1);yield return null;Find("Market sell item crafted:harvest_basket").onClick.Invoke();int money=game.Model.Money;Assert.That(ui.SellSelected(),Is.True);Assert.That(game.Model.Money,Is.EqualTo(money+145));Assert.That(game.Model.SelectedCropId,Is.EqualTo("pumpkin"));
             ui.BuildSalePage(0);yield return null;Assert.That(Find("Market sell").interactable,Is.False,"Page changes cannot leave an off-page sale selected.");

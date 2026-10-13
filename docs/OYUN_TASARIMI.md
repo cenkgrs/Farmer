@@ -345,3 +345,9 @@ Ocak pazarda Mobilyalar bölümünde 100 para. İnşa > Mobilya ile kurulur, ta�
 ### 13 Ekim — sunum düzeltmesi ve koşu
 
 Sol/sağ Shift basılıyken hareket hızı 1,65 katına çıkar; bırakınca yürüyüşe döner. Dayanıklılık tüketimi yok. Çarpışma, harita sınırı, darbe duraksaması ve modal pencere engeli korunur. Ayrı koşu klibi henüz teslim edilmedi; mevcut yürüyüş klibinin temposu artar. Hayvanlarda ad/durum yazısı yok; yalnızca canı azalmış yaşayan hayvanda küçük can barı görünür. Ölüm ve günlük yenilenmede kapanır. Portreler özgün en-boy oranıyla ve daha kısa alanda çizilir; Defne/ocak F ipucu envanterin üstüne sabitlenir.
+
+### 13 Ekim — sade HUD, çanta ve Hüseyin
+
+Oyuncu canı sol üstte para altında kalp simgesi ve `85/100` biçiminde gösterilir; üst orta savaş paneli kaldırıldı. Alet seçildi bildirimleri ve açılışta temel kontrol öğütleri kaldırıldı; işlem/ödül/hata geri bildirimi korunur. Çanta ve sandık ahşap-altın/parşömen görselini kullanır. Çantada sadece adedi pozitif olan eşyalar görünür; 16'dan fazla sahip olunan eşya varsa sayfalama açılır.
+
+Pazarcı **Hüseyin**, orta yaşlı erkek köy esnafıdır. Tezgâh yanında durur; yakındaki F etkileşimi pazarı açar. Kullanıcı kararıyla şimdilik Defne'nin 3D modeli kullanılır; erkek karakterin nihai görünümü `references/huseyin_v01` içindeki ImageGen referansıdır. Yeni bir konuşma ağacı bu adımda eklenmedi.

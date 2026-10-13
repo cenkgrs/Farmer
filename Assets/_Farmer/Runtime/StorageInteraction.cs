@@ -22,29 +22,35 @@ namespace Farmer
             canvas.GetComponent<Canvas>().renderMode=RenderMode.ScreenSpaceOverlay;canvas.GetComponent<Canvas>().overrideSorting=true;canvas.GetComponent<Canvas>().sortingOrder=50;
             var scaler=canvas.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1280,720);scaler.matchWidthOrHeight=.5f;
             var dim=FarmHud.Panel("Inventory Overlay",canvas.transform,new Vector2(.5f,.5f),Vector2.zero,new Vector2(4000,4000),new Color(0,0,0,.35f));overlay=dim.gameObject;
-            bagPanel=FarmHud.Panel("Bag Panel",dim,new Vector2(.5f,.5f),new Vector2(-215,0),new Vector2(408,464),new Color(.92f,.81f,.60f));
-            chestPanel=FarmHud.Panel("Chest Panel",dim,new Vector2(.5f,.5f),new Vector2(215,0),new Vector2(408,464),new Color(.92f,.81f,.60f));
-            FarmHud.Label(bagPanel,"ÇANTAM",22,22,15,250,32,new Color(.25f,.16f,.08f));
-            FarmHud.Label(chestPanel,"DEPOLAMA SANDIĞI",22,22,15,350,32,new Color(.25f,.16f,.08f));
-            FarmHud.Button(bagPanel,"Kapat",308,15,80,28,Close);
+            bagPanel=FarmHud.Panel("Bag Panel",dim,new Vector2(.5f,.5f),new Vector2(-260,0),new Vector2(500,570),new Color(.92f,.81f,.60f));
+            chestPanel=FarmHud.Panel("Chest Panel",dim,new Vector2(.5f,.5f),new Vector2(260,0),new Vector2(500,570),new Color(.92f,.81f,.60f));
+            StylePanel(bagPanel);StylePanel(chestPanel);
+            var title=FarmHud.Label(bagPanel,"ÇANTAM",25,55,51,330,36,new Color(.25f,.16f,.08f));title.fontStyle=FontStyle.Bold;title.font=Resources.Load<Font>("MarketArt/LiberationSerif-Bold");title.alignment=TextAnchor.MiddleCenter;
+            FarmHud.Label(chestPanel,"DEPOLAMA SANDIĞI",21,55,51,385,36,new Color(.25f,.16f,.08f));
+            StyledButton(bagPanel,"×",413,50,36,36,Close);
             bagSlots=MakeSlots(bagPanel,false);chestSlots=MakeSlots(chestPanel,true);
-            previousPage=FarmHud.Button(bagPanel,"‹",18,390,40,25,()=>{bagPage=Math.Max(0,bagPage-1);Refresh();});
-            nextPage=FarmHud.Button(bagPanel,"›",350,390,40,25,()=>{bagPage++;Refresh();});
-            pageLabel=FarmHud.Label(bagPanel,"",12,140,393,150,22,new Color(.25f,.16f,.08f));pageLabel.alignment=TextAnchor.MiddleCenter;
-            notice=FarmHud.Label(bagPanel,"",11,18,422,372,40,new Color(.25f,.16f,.08f));
-            FarmHud.Label(chestPanel,"Tık: 1 adet · Shift+tık: tüm yığın\nSürükle-bırak: tüm yığın",12,18,394,372,56,new Color(.25f,.16f,.08f));overlay.SetActive(false);
+            previousPage=StyledButton(bagPanel,"‹",48,490,42,34,()=>{bagPage=Math.Max(0,bagPage-1);Refresh();});
+            nextPage=StyledButton(bagPanel,"›",410,490,42,34,()=>{bagPage++;Refresh();});
+            pageLabel=FarmHud.Label(bagPanel,"",14,175,495,150,24,new Color(.25f,.16f,.08f));pageLabel.alignment=TextAnchor.MiddleCenter;
+            notice=FarmHud.Label(bagPanel,"",11,48,461,404,23,new Color(.25f,.16f,.08f));
+            FarmHud.Label(chestPanel,"Tık: 1 adet · Shift+tık: tüm yığın",11,48,494,404,30,new Color(.25f,.16f,.08f));overlay.SetActive(false);
         }
+        private static void StylePanel(RectTransform panel)
+        {var image=panel.GetComponent<Image>();image.sprite=VillageArtwork.Icon("bag_panel");image.type=Image.Type.Simple;image.color=Color.white;Destroy(panel.GetComponent<Outline>());}
+        private static Button StyledButton(Transform parent,string label,float x,float y,float w,float h,UnityEngine.Events.UnityAction action)
+        {var b=FarmHud.Button(parent,label,x,y,w,h,action);HudArtwork.ApplyFrame((RectTransform)b.transform,6);b.GetComponentInChildren<Text>().transform.SetAsLastSibling();return b;}
         private StorageSlot[] MakeSlots(RectTransform panel,bool chest)
         {
             var result=new StorageSlot[16];
             for(int i=0;i<16;i++)
             {
-                var rect=FarmHud.Panel((chest?"Chest":"Bag")+" Item "+i,panel,new Vector2(0,1),new Vector2(18+(i%4)*94,-60-(i/4)*81),new Vector2(88,75),new Color(.98f,.90f,.73f));
+                var rect=FarmHud.Panel((chest?"Chest":"Bag")+" Item "+i,panel,new Vector2(0,1),new Vector2(44+(i%4)*104,-105-(i/4)*86),new Vector2(96,80),new Color(.98f,.90f,.73f));
+                Destroy(rect.GetComponent<Outline>());rect.GetComponent<Image>().color=new Color(.70f,.46f,.19f,.09f);
                 var slot=rect.gameObject.AddComponent<StorageSlot>();slot.Owner=this;slot.FromChest=chest;
-                var picture=new GameObject("Item",typeof(RectTransform),typeof(Image));var r=picture.GetComponent<RectTransform>();r.SetParent(rect,false);r.anchorMin=r.anchorMax=r.pivot=new Vector2(.5f,1);r.anchoredPosition=new Vector2(0,-3);r.sizeDelta=new Vector2(50,45);
+                var picture=new GameObject("Item",typeof(RectTransform),typeof(Image));var r=picture.GetComponent<RectTransform>();r.SetParent(rect,false);r.anchorMin=r.anchorMax=r.pivot=new Vector2(.5f,1);r.anchoredPosition=new Vector2(0,-3);r.sizeDelta=new Vector2(58,51);
                 slot.Icon=picture.GetComponent<Image>();slot.Icon.preserveAspect=true;slot.Icon.raycastTarget=false;
-                slot.Name=FarmHud.Label(rect,"",10,3,49,82,23,new Color(.25f,.16f,.08f));slot.Name.alignment=TextAnchor.MiddleCenter;
-                slot.CountLabel=FarmHud.Label(rect,"",12,55,28,30,20,new Color(.25f,.16f,.08f));slot.CountLabel.alignment=TextAnchor.MiddleRight;result[i]=slot;
+                slot.Name=FarmHud.Label(rect,"",11,3,55,90,23,new Color(.25f,.16f,.08f));slot.Name.alignment=TextAnchor.MiddleCenter;
+                slot.CountLabel=FarmHud.Label(rect,"",13,61,34,30,20,new Color(.25f,.16f,.08f));slot.CountLabel.alignment=TextAnchor.MiddleRight;result[i]=slot;
             }
             return result;
         }
@@ -96,14 +102,14 @@ namespace Farmer
         {
             if(!game.Ready||game.MenuOpen||game.JournalOpen||game.MarketOpen||game.MarketInputConsumed||game.ConversationOpen||game.VillageInputConsumed||overlay==null||(id!=null&&!CanUse(id)))return;
             game.SetBuildMode(false);game.ShowBuildFeedback("");ChestId=id;openedModel=game.Model;game.InventoryOpen=true;game.Selection.ModalBlocked=true;
-            bagPanel.anchoredPosition=new Vector2(id==null?0:-215,0);chestPanel.gameObject.SetActive(id!=null);overlay.SetActive(true);Refresh();
+            bagPanel.anchoredPosition=new Vector2(id==null?0:-260,0);chestPanel.gameObject.SetActive(id!=null);overlay.SetActive(true);Refresh();
         }
         public void Close(){game.InventoryOpen=false;game.Selection.ModalBlocked=game.MenuOpen||game.JournalOpen||game.MarketOpen;ChestId=null;if(overlay!=null)overlay.SetActive(false);}
         private void OnDisable(){if(game!=null)Close();}
         private void Refresh()
         {
-            var ids=game.Model.BagItems();bagPage=Mathf.Clamp(bagPage,0,(ids.Length-1)/16);
-            previousPage.interactable=bagPage>0;nextPage.interactable=(bagPage+1)*16<ids.Length;pageLabel.text=$"{bagPage+1} / {(ids.Length+15)/16}";
+            var ids=game.Model.BagItems().Where(id=>game.Model.BagCount(id)>0).ToArray();bagPage=Mathf.Clamp(bagPage,0,Math.Max(0,(ids.Length-1)/16));
+            previousPage.interactable=bagPage>0;nextPage.interactable=(bagPage+1)*16<ids.Length;pageLabel.text=ids.Length>16?$"{bagPage+1} / {(ids.Length+15)/16}":"";previousPage.gameObject.SetActive(ids.Length>16);nextPage.gameObject.SetActive(ids.Length>16);
             var items=ChestId==null?Array.Empty<ItemStack>():game.Model.Building.StoredItems(ChestId);
             for(int i=0;i<16;i++)
             {
@@ -111,11 +117,11 @@ namespace Farmer
                 SetSlot(bagSlots[i],index<ids.Length?ids[index]:null,index<ids.Length?game.Model.BagCount(ids[index]):0);
                 SetSlot(chestSlots[i],i<items.Length?items[i].id:null,i<items.Length?items[i].count:0);
             }
-            notice.text=ChestId==null?"Tab / Esc · Kapat\nMobilyaları İnşa > Mobilya bölümünden yerleştir.":game.Feedback;
+            notice.text=ChestId==null?"":game.Feedback;
         }
         private void SetSlot(StorageSlot slot,string id,int count)
         {
-            slot.ItemId=id;slot.Count=count;slot.Icon.enabled=id!=null;slot.Icon.sprite=id==null?null:Icon(id);slot.Icon.color=count>0?Color.white:new Color(1,1,1,.25f);
+            slot.gameObject.SetActive(id!=null&&count>0);slot.ItemId=id;slot.Count=count;slot.Icon.enabled=id!=null;slot.Icon.sprite=id==null?null:Icon(id);slot.Icon.color=count>0?Color.white:new Color(1,1,1,.25f);
             slot.Name.text=id==null?"":Name(id);slot.CountLabel.text=id==null?"":id.StartsWith("tool:")?"":count.ToString();
         }
         public string Name(string id)
@@ -130,6 +136,7 @@ namespace Farmer
         }
         public static Sprite Icon(string id)
         {
+            if(id.StartsWith("seed:"))return SeedArtwork.Get(id.Substring(5))??InventoryIcon.Artwork(0);
             if(id=="tool:bow"||id=="tool:dagger")return VillageArtwork.Icon(id.Substring(5));
             if(id.StartsWith("hunt:"))return VillageArtwork.Icon(id.Substring(5));
             if(id.StartsWith("crafted:")||id.StartsWith("crop:"))return CropArtwork.Get(id.Substring(id.IndexOf(':')+1))??InventoryIcon.Artwork(5);

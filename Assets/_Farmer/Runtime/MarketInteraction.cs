@@ -45,6 +45,14 @@ namespace Farmer
             stallBody.size=new Vector3(Mathf.Max(1,bounds.size.x*.92f),1.3f,Mathf.Max(.8f,bounds.size.z*.9f));
             stallBody.isTrigger=false;stallBody.enabled=true;
         }
+        public Transform Vendor { get; private set; }
+        private void Start()
+        {
+            if(game.Market==null||stallBody==null)return;
+            var vendor=VillageArtwork.Guide();vendor.name="Huseyin (temporary Defne model)";Vendor=vendor.transform;Vendor.SetParent(transform,false);
+            Vendor.position=game.Market.TransformPoint(new Vector3(-stallBody.size.x*.5f-.5f,0,0));
+            Vendor.rotation=Quaternion.LookRotation(-game.Market.forward);
+        }
         private void Update()
         {
             ValidateAccess();

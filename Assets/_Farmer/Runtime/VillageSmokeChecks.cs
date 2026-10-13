@@ -30,6 +30,9 @@ namespace Farmer
             motor.Teleport(game.Market.position+Vector3.forward*3);yield return null;game.GetComponent<MarketInteraction>().TryOpen();yield return null;
             var market=game.GetComponent<MarketHud>();market.ChooseCategory(MarketCategory.Tools);yield return null;yield return Capture(output,"-tools");game.GetComponent<MarketInteraction>().Close();
             yield return null;
+            game.ShowBuildFeedback("");Frame(game.Market.position,5);motor.Teleport(game.Market.position-Vector3.forward*2);game.Model.Combat.Damage(15);combat.RefreshHud();
+            yield return Capture(output,"-huseyin-hud");
+            game.GetComponent<StorageInteraction>().Open(null);yield return null;yield return Capture(output,"-bag");game.GetComponent<StorageInteraction>().Close();
             Debug.Log("FARMER_VILLAGE_NATIVE_OK: dialogue portraits, wildlife and weapon market rendered.");
         }
         private static void Frame(Vector3 p,float zoom){var c=Camera.main;c.orthographicSize=zoom;c.transform.position=p+new Vector3(-8,10,-8);c.transform.LookAt(p);}

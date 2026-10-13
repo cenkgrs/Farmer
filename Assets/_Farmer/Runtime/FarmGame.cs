@@ -251,8 +251,7 @@ namespace Farmer
         {
             if (!Ready || WorldInputBlocked || !Model.Equip(item)) return;
             SetBuildMode(false);
-            Feedback = item == FarmItem.WateringCan ? "Sulama kabı: sol tuşu basılı tutarak fareyi tarlada gezdir."
-                : EquippedName + " seçildi. Fareyi yakındaki kareye götür ve sol tıkla.";
+            Feedback = "";
             SaveGame(); Changed?.Invoke();
         }
 
@@ -375,7 +374,7 @@ namespace Farmer
                 CompactWorld.FitGround(this,initialFarmPosition);
                 Ready = true;
                 SaveStatus = recovered ? "Yedek kayıt yüklendi" : loaded == null ? "Yeni çiftlik" : "Kayıt yüklendi";
-                Feedback = recovered ? "Son sağlam yedek açıldı; önceki dosya korunacak." : "5 ile çapa seç; boş toprağı hazırla. 1/2/3 ile ek, sula ve hasat et.";
+                Feedback = recovered ? "Son sağlam yedek açıldı; önceki dosya korunacak." : "";
                 if(!recovered&&(loaded==null||JsonUtility.FromJson<FarmSnapshot>(File.ReadAllText(SavePath)).version<FarmModel.SaveVersion))SaveGame();
                 Changed?.Invoke(); return true;
             }

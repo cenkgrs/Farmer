@@ -9,7 +9,7 @@ namespace Farmer
     public sealed class FarmHud : MonoBehaviour
     {
         [SerializeField] private FarmGame game;
-        private Text summary,money,saveStatus,selectionStatus,feedback,campWarning,tooltipText;
+        private Text health,summary,money,saveStatus,selectionStatus,feedback,campWarning,tooltipText;
         private RectTransform camp,detail,tooltip,toast,buildMenu,normalBar;
         private Button sleep,buildButton,moveButton;
         private Button[] buildChoices;
@@ -44,16 +44,18 @@ namespace Farmer
                 var events=new GameObject("Farm UI Input",typeof(EventSystem),typeof(InputSystemUIInputModule));events.transform.SetParent(transform,false);
                 events.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();
             }
-            var header=Panel("Clock and Wallet",root.transform,new Vector2(0,1),new Vector2(24,-20),new Vector2(280,116),Cream);
+            var header=Panel("Clock and Wallet",root.transform,new Vector2(0,1),new Vector2(24,-20),new Vector2(280,150),Cream);
             HudArtwork.ApplyHeader(header);
             summary=Label(header,"",20,32,26,216,27,Ink);money=Label(header,"",23,68,60,180,30,Ink);
             summary.font=money.font=Resources.Load<Font>("MarketArt/LiberationSerif-Bold");
             summary.resizeTextForBestFit=true;summary.resizeTextMinSize=14;summary.resizeTextMaxSize=20;
-            saveStatus=Label(header,"",10,32,88,216,14,new Color(.40f,.39f,.23f));
+            health=Label(header,"",22,68,96,180,30,Ink);health.gameObject.name="Player health text";
+            var heart=new GameObject("Health heart",typeof(RectTransform),typeof(Image));var heartRect=(RectTransform)heart.transform;heartRect.SetParent(header,false);heartRect.anchorMin=heartRect.anchorMax=heartRect.pivot=new Vector2(0,1);heartRect.anchoredPosition=new Vector2(23,-87);heartRect.sizeDelta=new Vector2(48,48);var heartImage=heart.GetComponent<Image>();heartImage.sprite=VillageArtwork.Icon("heart");heartImage.preserveAspect=true;heartImage.raycastTarget=false;
+            saveStatus=Label(header,"",10,32,126,216,14,new Color(.40f,.39f,.23f));
             detail=Panel("Cell Details",root.transform,new Vector2(1,1),new Vector2(-24,-20),new Vector2(244,110),Cream);
             selectionStatus=Label(detail,"",15,14,12,216,90,Ink);
-            marketHint=Panel("Market interaction hint",root.transform,new Vector2(.5f,0),new Vector2(0,157),new Vector2(190,32),Cream);
-            Label(marketHint,"F · Pazarı aç",14,8,5,174,24,Ink).alignment=TextAnchor.MiddleCenter;
+            marketHint=Panel("Market interaction hint",root.transform,new Vector2(.5f,0),new Vector2(0,208),new Vector2(190,32),Cream);
+            Label(marketHint,"F · Hüseyin — Pazar",14,8,5,174,24,Ink).alignment=TextAnchor.MiddleCenter;
             camp=Panel("Sleep",root.transform,new Vector2(0,1),new Vector2(24,-146),new Vector2(250,140),Cream);
             Label(camp,"Biraz dinlen",20,14,10,224,28,Ink);
             campWarning=Label(camp,"",13,14,43,224,44,Ink);
@@ -137,6 +139,7 @@ namespace Farmer
             var exit=new EventTrigger.Entry{eventID=EventTriggerType.PointerExit};exit.callback.AddListener(_=>hovered=null);events.triggers.Add(exit);
         }
         private void LateUpdate(){if(summary!=null)Refresh();}
+        public void RefreshHealth(){if(health!=null&&game?.Model!=null)health.text=$"{game.Model.Combat.Health}/100";}
         private void Refresh()
         {
             bool hidden=game.ConversationOpen||game.MenuOpen||game.MarketOpen||game.JournalOpen;visibility.alpha=hidden?0:1;visibility.interactable=!hidden;visibility.blocksRaycasts=!hidden;
@@ -155,9 +158,9 @@ namespace Farmer
             }
             tooltip.anchoredPosition=new Vector2(0,chooseSeeds?112+seedPicker.sizeDelta.y:game.BuildMode?148:106);
             toast.anchoredPosition=new Vector2(0,chooseSeeds?178+seedPicker.sizeDelta.y:game.BuildMode?214:172);
-            summary.text=$"Gün {model.Day}   ·   {model.ClockText}";money.text=model.Money.ToString();saveStatus.text=game.SaveStatus=="Kaydedildi"?"Kaydedildi":game.Ready?"":"Kayıt hatası";
+            summary.text=$"Gün {model.Day}   ·   {model.ClockText}";money.text=model.Money.ToString();saveStatus.text=game.Ready?"":"Kayıt hatası";RefreshHealth();
             if(lastFeedback!=game.Feedback){lastFeedback=game.Feedback;feedbackUntil=Time.unscaledTime+3;}
-            feedback.text=game.Feedback;toast.gameObject.SetActive((!game.Ready||Time.unscaledTime<feedbackUntil)&&!game.WorldInputBlocked);
+            feedback.text=game.Feedback;toast.gameObject.SetActive((!game.Ready||Time.unscaledTime<feedbackUntil)&&!string.IsNullOrWhiteSpace(game.Feedback)&&!game.WorldInputBlocked);
             seedCount.text=model.Seeds(crop.id).ToString();woodCount.text=model.Building.Wood.ToString();
             for(int i=0;i<slots.Length;i++)
             {

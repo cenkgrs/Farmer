@@ -73,8 +73,8 @@ namespace Farmer.Tests
             game.GetComponent<MarketInteraction>().Close();yield return null;
             var storage=game.GetComponent<StorageInteraction>();storage.Open(null);yield return null;
             Frame(game.Market.position,5);Capture("crop-bag-page1",true);
-            Assert.That(FindButton("›").interactable,Is.True);FindButton("›").onClick.Invoke();yield return null;
-            Assert.That(Object.FindObjectsByType<StorageSlot>(FindObjectsSortMode.None).Any(s=>s.ItemId=="furniture:home_lantern"),Is.True);
+            Assert.That(Object.FindObjectsByType<StorageSlot>(FindObjectsSortMode.None).All(s=>s.Count>0),Is.True,"Empty items must not be shown.");
+            Assert.That(Object.FindObjectsByType<StorageSlot>(FindObjectsSortMode.None).Any(s=>s.ItemId=="furniture:home_lantern"),Is.False);
             Assert.That(Object.FindObjectsByType<StorageSlot>(FindObjectsSortMode.None).Any(s=>s.ItemId=="crafted:vegetable_crate"&&s.Count==1),Is.True);
             Frame(game.Market.position,5);Capture("crop-bag-page2",true);storage.Close();
             game.SaveGame();Assert.That(game.LoadGame(),Is.True);yield return null;
@@ -83,6 +83,25 @@ namespace Farmer.Tests
             int money=game.Model.Money;Assert.That(game.SellCrafted("vegetable_crate"),Is.True);Assert.That(game.Model.Money,Is.EqualTo(money+90));
             game.Model.Equip(FarmItem.Hoe);Assert.That(game.Model.Uproot(tomato,out _),Is.True);Assert.That(game.Model.Stage(tomato),Is.EqualTo(-1));
             Debug.Log("FARMER_CROP_PLAYMODE_OK: selection, market, stages, regrowth, processing, pagination, persistence, sale, uproot.");
+        }
+        [UnityTest] public IEnumerator OwnedBagPaginationClampsAfterItemsAreRemoved()
+        {
+            if(!Environment.GetCommandLineArgs().Contains("--farmer-smoke-capture"))Assert.Ignore("Requires isolated QA save.");
+            yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/_Farmer/Scenes/Farm.unity",new LoadSceneParameters(LoadSceneMode.Single));yield return null;yield return null;
+            game=Object.FindFirstObjectByType<FarmGame>();game.GetComponent<SessionMenu>().SetOpen(false);game.GetComponent<DayNightCycle>().ClockPaused=true;
+            var state=game.Model.Snapshot();foreach(var item in state.seeds)item.count=1;foreach(var item in state.produce)item.count=1;
+            File.WriteAllText(game.SavePath,JsonUtility.ToJson(state));Assert.That(game.LoadGame(),Is.True);yield return null;
+            var storage=game.GetComponent<StorageInteraction>();storage.Open(null);yield return null;
+            var expected=game.Model.BagItems().Where(id=>game.Model.BagCount(id)>0).ToArray();Assert.That(expected.Length,Is.GreaterThan(16));
+            var first=Object.FindObjectsByType<StorageSlot>(FindObjectsSortMode.None).Select(slot=>slot.ItemId).ToArray();Assert.That(first,Is.EquivalentTo(expected.Take(16)));
+            FindButton("›").onClick.Invoke();yield return null;
+            Assert.That(Object.FindObjectsByType<StorageSlot>(FindObjectsSortMode.None).Select(slot=>slot.ItemId),Is.EquivalentTo(expected.Skip(16)));
+            foreach(var crop in game.Crops)Assert.That(game.Model.Sell(crop.id,1,out _),Is.True);
+            // Reopening the same page after its items disappear must return to the remaining owned items.
+            storage.Close();storage.Open(null);yield return null;
+            Assert.That(Object.FindObjectsByType<StorageSlot>(FindObjectsSortMode.None).Select(slot=>slot.ItemId),Is.EquivalentTo(game.Model.BagItems().Where(id=>game.Model.BagCount(id)>0)));
+            Assert.That(Object.FindObjectsByType<Button>(FindObjectsSortMode.None).Any(b=>b.name=="›"),Is.False);
+            Capture("inventory-owned-filter",true);storage.Close();
         }
         private static Button FindButton(string name)=>Object.FindObjectsByType<Button>(FindObjectsSortMode.None).Single(b=>b.name==name);
         private void Teleport(Vector3 point)
