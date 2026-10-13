@@ -1,0 +1,36 @@
+using System.Collections;
+using System.IO;
+using System.Linq;
+using UnityEngine;
+namespace Farmer
+{
+    public static class VillageSmokeChecks
+    {
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
+        public static IEnumerator Run(string output)
+        {
+            var game=Object.FindFirstObjectByType<FarmGame>();
+            string qaRoot=Path.GetFullPath(Path.Combine(Application.temporaryCachePath,"FarmerQA"))+Path.DirectorySeparatorChar;
+            if(!System.Environment.GetCommandLineArgs().Contains("--farmer-smoke-capture")||!Path.GetFullPath(game.SavePath).StartsWith(qaRoot,System.StringComparison.Ordinal))
+            {Debug.LogError("Village QA refuses to modify a non-isolated save.");yield break;}
+            Debug.Log("FARMER_VILLAGE_ISOLATED_SAVE: "+game.SavePath);
+            var combat=game.GetComponent<CombatController>();combat.enabled=false;
+            var wildlife=game.GetComponent<WildlifeController>();wildlife.enabled=false;var village=game.GetComponent<VillageInteraction>();
+            var motor=game.Player.GetComponent<PlayerMotor>();motor.enabled=false;
+            var state=game.Model.Snapshot();state.money=1000;state.minuteOfDay=660;File.WriteAllText(game.SavePath,JsonUtility.ToJson(state));game.LoadGame();yield return null;
+            wildlife.Simulate(.01f);motor.Teleport(village.Guide.position+Vector3.forward*2);Physics.SyncTransforms();yield return null;
+            Frame(village.Guide.position,6);if(!village.TryTalk())Debug.LogError("Native dialogue did not open.");yield return null;village.Advance();combat.RefreshHud();
+            yield return Capture(output,"-dialogue-defne");village.Advance();village.Advance();yield return Capture(output,"-dialogue-player");village.Close();yield return null;
+            var deer=wildlife.View(4);if(deer==null){Debug.LogError("No deer spawned.");yield break;}
+            motor.Teleport(deer.transform.position+Vector3.forward*7);Physics.SyncTransforms();wildlife.Simulate(.01f);Frame(deer.transform.position+Vector3.forward*2,5);combat.RefreshHud();yield return Capture(output,"-wildlife");
+            game.Model.BuyHuntingTool("bow",out _);game.Model.BuyHuntingTool("dagger",out _);game.Equip(FarmItem.Bow);game.CombatChanged("Yay ve hançer hazır.");
+            motor.Teleport(game.Market.position+Vector3.forward*3);yield return null;game.GetComponent<MarketInteraction>().TryOpen();yield return null;
+            var market=game.GetComponent<MarketHud>();market.ChooseCategory(MarketCategory.Tools);yield return null;yield return Capture(output,"-tools");game.GetComponent<MarketInteraction>().Close();
+            yield return null;
+            Debug.Log("FARMER_VILLAGE_NATIVE_OK: dialogue portraits, wildlife and weapon market rendered.");
+        }
+        private static void Frame(Vector3 p,float zoom){var c=Camera.main;c.orthographicSize=zoom;c.transform.position=p+new Vector3(-8,10,-8);c.transform.LookAt(p);}
+        private static IEnumerator Capture(string output,string suffix){yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(Path.GetDirectoryName(output),Path.GetFileNameWithoutExtension(output)+suffix+".png"));yield return new WaitForSecondsRealtime(.2f);}
+#endif
+    }
+}

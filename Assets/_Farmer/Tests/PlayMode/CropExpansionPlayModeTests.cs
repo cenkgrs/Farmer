@@ -132,7 +132,7 @@ namespace Farmer.Tests
                 for(int i=0;i<canvases.Length;i++)
                 {
                     var c=canvases[i];var scaler=scalers[i];if(scaler!=null)scaler.enabled=false;
-                    c.renderMode=RenderMode.ScreenSpaceCamera;c.worldCamera=camera;c.planeDistance=1;
+                    c.renderMode=RenderMode.ScreenSpaceCamera;c.worldCamera=camera;c.planeDistance=.11f;
                     if(scaler!=null)
                     {
                         var r=scaler.referenceResolution;

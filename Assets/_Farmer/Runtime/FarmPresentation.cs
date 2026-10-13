@@ -25,7 +25,7 @@ namespace Farmer
         private const float WateringReleaseSeconds = 0.7f;
         private bool pouringAudio;
         private float releaseElapsed, releaseVolume;
-        private readonly GameObject[] heldItems = new GameObject[6];
+        private readonly GameObject[] heldItems = new GameObject[8];
         private readonly Material[] toolMaterials = new Material[3];
 
         public float WateringIntensity => wateringAudio != null && wateringAudio.isPlaying ? Mathf.Clamp01(wateringAudio.volume / WateringVolume) : 0;
@@ -160,6 +160,8 @@ namespace Farmer
                 head.localRotation=Quaternion.Euler(0,0,-8);
             }
             heldItems[5].name="Held Pickaxe";
+            heldItems[6]=VillageArtwork.Weapon(true);heldItems[6].transform.SetParent(heldItemSocket,false);
+            heldItems[7]=VillageArtwork.Weapon(false);heldItems[7].transform.SetParent(heldItemSocket,false);
         }
         private Transform Part(int item, PrimitiveType shape, Vector3 position, Vector3 scale, int material)
         {

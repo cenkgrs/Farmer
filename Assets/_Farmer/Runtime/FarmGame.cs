@@ -19,7 +19,9 @@ namespace Farmer
         private MarketInteraction marketInteraction;
         public bool MarketOpen => marketInteraction != null && marketInteraction.IsOpen;
         public bool MarketInputConsumed => marketInteraction != null && marketInteraction.ConsumedThisFrame;
-        public bool WorldInputBlocked => JournalOpen || MenuOpen || InventoryOpen || MarketOpen || MarketInputConsumed;
+        public bool ConversationOpen=>GetComponent<VillageInteraction>()?.IsOpen??false;
+        public bool VillageInputConsumed=>GetComponent<VillageInteraction>()?.ConsumedThisFrame??false;
+        public bool WorldInputBlocked => ConversationOpen || VillageInputConsumed || JournalOpen || MenuOpen || InventoryOpen || MarketOpen || MarketInputConsumed;
         public bool CanTrade => Ready && MarketOpen && NearMarket && !MenuOpen && !InventoryOpen;
         public bool HadSaveAtStartup { get; private set; }
         [SerializeField] private FarmSelection selection;
@@ -91,6 +93,8 @@ namespace Farmer
             gameObject.AddComponent<SessionMenu>();
             gameObject.AddComponent<CombatController>();
             gameObject.AddComponent<DemoHud>();
+            gameObject.AddComponent<VillageInteraction>();
+            gameObject.AddComponent<WildlifeController>();
         }
         private bool ResourceBlockedByScenery(int x,int z)
         {
@@ -100,7 +104,7 @@ namespace Farmer
         private void Update()
         {
             var k = Keyboard.current;
-            if (MenuOpen || JournalOpen || !Application.isFocused) { StopWatering(); return; }
+            if (ConversationOpen || VillageInputConsumed || MenuOpen || JournalOpen || !Application.isFocused) { StopWatering(); return; }
             if (k?.f9Key.wasPressedThisFrame == true) LoadGame();
             if (!Ready || InventoryOpen || MarketInputConsumed) { StopWatering(); return; }
             if(MarketOpen)
@@ -117,6 +121,8 @@ namespace Farmer
             if (k?.digit5Key.wasPressedThisFrame == true) Equip(FarmItem.Hoe);
             if (k?.digit6Key.wasPressedThisFrame == true) Equip(FarmItem.Axe);
             if (k?.digit7Key.wasPressedThisFrame == true) Equip(FarmItem.Pickaxe);
+            if(k?.digit8Key.wasPressedThisFrame==true)Equip(FarmItem.Bow);
+            if(k?.digit9Key.wasPressedThisFrame==true)Equip(FarmItem.Dagger);
             if (BuildMode) StopWatering(); else
             {
                 UpdateToolInput();
@@ -137,6 +143,8 @@ namespace Farmer
             if (!CanTrade) return false;
             return Complete(Model.BuyWood(out var message), message);
         }
+        public bool BuyHuntingTool(string id)
+        {if(!CanTrade)return false;return Complete(Model.BuyHuntingTool(id,out var message),message);}
         public bool BuyPickaxe()
         {
             if(!CanTrade)return false;
@@ -189,6 +197,8 @@ namespace Farmer
             var mouse = Mouse.current;
             if (mouse == null || !mouse.leftButton.isPressed) { StopWatering(); return; }
             selection.RefreshPointer();
+            var wildlife=GetComponent<WildlifeController>();
+            if(!selection.PointerBlocked&&wildlife!=null&&wildlife.UsePointer(mouse.leftButton.wasPressedThisFrame)){StopWatering();return;}
             var combat=GetComponent<CombatController>();
             if (!selection.PointerBlocked && combat != null && combat.UsePointer(mouse.leftButton.wasPressedThisFrame))
             { StopWatering(); return; }

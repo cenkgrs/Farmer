@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Farmer
 {
-    public enum FarmItem { Seeds = 0, WateringCan = 1, Sickle = 2, Hoe = 3, Axe = 4, Pickaxe = 5 }
+    public enum FarmItem { Seeds = 0, WateringCan = 1, Sickle = 2, Hoe = 3, Axe = 4, Pickaxe = 5, Bow = 6, Dagger = 7 }
 
     public sealed class CropRules
     {
@@ -52,13 +52,14 @@ namespace Farmer
         public BuildingSnapshot building;
         public ExplorationSnapshot exploration;
         public CombatSnapshot combat;
+        public WildlifeSnapshot wildlife;
         public int journey;
     }
 
     // No scene, input, filesystem or clock dependencies: all transactions validate before mutating.
     public sealed partial class FarmModel
     {
-        public const int SaveVersion = 12;
+        public const int SaveVersion = 13;
         public const int PickaxePrice = 80;
         public bool OwnsPickaxe { get; private set; }
         public int Stone { get; private set; }
@@ -84,10 +85,10 @@ namespace Farmer
         public ExplorationModel Exploration { get; private set; }
         // The pickaxe is purchased once; the original four tools remain starter items.
         public int ItemCount(FarmItem item, string cropId) => item == FarmItem.Seeds ? Seeds(cropId)
-            : item == FarmItem.Pickaxe ? (OwnsPickaxe ? 1 : 0) : item == FarmItem.WateringCan || item == FarmItem.Sickle || item == FarmItem.Hoe || item == FarmItem.Axe ? 1 : 0;
+            : item == FarmItem.Bow ? (OwnsBow?1:0) : item == FarmItem.Dagger ? (OwnsDagger?1:0) : item == FarmItem.Pickaxe ? (OwnsPickaxe ? 1 : 0) : item == FarmItem.WateringCan || item == FarmItem.Sickle || item == FarmItem.Hoe || item == FarmItem.Axe ? 1 : 0;
         public bool Equip(FarmItem item)
         {
-            if (item < FarmItem.Seeds || item > FarmItem.Pickaxe || (item == FarmItem.Pickaxe && !OwnsPickaxe)) return false;
+            if (item < FarmItem.Seeds || item > FarmItem.Dagger || (item!=FarmItem.Seeds&&ItemCount(item,SelectedCropId)==0)) return false;
             EquippedItem = item; return true;
         }
         public bool UseEquipped(int index, string seedId, out string message)
@@ -245,7 +246,7 @@ namespace Farmer
             version = SaveVersion, ownsPickaxe = OwnsPickaxe, stone = Stone, selectedCropId = SelectedCropId, crafted = CraftedSnapshot(), width = Width, depth = Depth, day = Day, money = Money, minuteOfDay = MinuteOfDay, equippedItem = EquippedItem,
             seeds = seeds.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
             produce = produce.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
-            plots = plots.Select(p => p.Copy()).ToArray(), building = Building.Snapshot(), exploration=Exploration.Snapshot(), combat=Combat.Snapshot(), journey=(int)Journey
+            plots = plots.Select(p => p.Copy()).ToArray(), building = Building.Snapshot(), exploration=Exploration.Snapshot(), combat=Combat.Snapshot(), wildlife=WildlifeSave(), journey=(int)Journey
         };
 
         public static FarmModel Restore(FarmSnapshot saved, IEnumerable<CropRules> catalog, int width, int depth, IEnumerable<BuildRules> buildCatalog = null, Func<int,int,bool> resourceBlocked = null, IEnumerable<RecipeRules> recipeCatalog = null)
@@ -286,6 +287,7 @@ namespace Farmer
             }
             // V1 has no construction state. JsonUtility may materialize an empty nested object;
             // migrate by schema version, not by the nullness of that object.
+            if(saved.version>=13)model.RestoreWildlife(saved.wildlife);
             if (!model.Equip(saved.equippedItem)) throw new ArgumentException("Unknown equipped item.");
             model.RestoreInventory(saved.seeds, model.seeds);
             model.RestoreInventory(saved.produce, model.produce);

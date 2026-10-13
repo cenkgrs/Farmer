@@ -326,3 +326,18 @@ vadi önerisinin yerine geçer.
 ### 12 Ekim pazar ve ödül geri bildirimi
 
 Pazarın görünür tezgâhına uyan katı çarpışma gövdesi vardır; F etkileşimi tezgâh kenarından 3,2 birime kadar açılır. Katalog sayfaları mevcut pazar dokusundan küçük ok düğmeleriyle değişir; görünür düğmeden geniş tıklama alanı kullanılır. Kalıcı kazma kartı ve satın alma düğmesi edinildikten sonra **Alındı** gösterir; tekrar satın alınamaz. Mobilyalar tekrar satın alınabilir. Düşman ödülü çantaya aktarılınca dünya etiketi kapanır; kısa ödül bildirimi korunur.
+
+### 13 Ekim — konuşma, avlanma ve ocak (kullanıcı tarafından kapsam açıldı)
+
+İlk konuşulabilir kişi köyde Defne. 3,2 m mesafede, arada engel yokken F ile konuşma açılır. Solda konuşan kişinin portresi, alt ortada metin paneli görünür; NPC ve oyuncu replikleri sırayla kendi portreleriyle ilerler. F/Space/Enter veya metin alanına tıklama önce yazıyı tamamlar, sonra ilerletir; Esc kapatır. Dünya girişleri ve saat konuşma boyunca durur. İlk içerik tekrar oynatılabilir rehber konuşmasıdır; dallanan görev/ilişki sistemi içermez.
+
+Dört tavşan ve iki geyik başlangıcın çevresinde uygun zeminde doğar. 12 m içinde oyuncuyu izler; 4 m içinde kaçar; kaçış 9 m'ye kadar sürer. Çarpışmalardan ve zemin dışından kaçınır. Balta (6), pazardan 120 paraya alınan yay (8) veya 65 paraya alınan hançer (9) ile avlanır. Yay bu ilk adımda sınırsız temel ok içerir; 12 m menzili ve görünür mermisi vardır. Hançer yakın mesafede kullanılır. Her iki alet kalıcıdır ve tekrar satın alınamaz.
+
+| Av | Yay / hançer | Av sırasında en az bir balta darbesi |
+|---|---|---|
+| Tavşan | 2 çiğ et + 1 post | 1 çiğ et |
+| Geyik | 4 çiğ et + 2 post | 2 çiğ et + 1 post |
+
+Balta hasarı kaliteyi tüm karşılaşma için düşürür; son vuruşta alet değiştirerek aşılamaz. Ödül çantaya otomatik girer; kapasite yetersizse av yerinde kalır ve tekrar tıklayarak alınabilir. Post/çiğ et/pişmiş et sandığa aktarılabilir. Ödülü toplanmış avlar ertesi gün yenilenir; alınmamış ödül kaybolmaz. Av durumu ve aletler v13 kayıtta kalır; v12 ve öncesi yeni eşyalar olmadan taşınır.
+
+Ocak pazarda Mobilyalar bölümünde 100 para. İnşa > Mobilya ile kurulur, taşınabilir ve geri alınabilir. Yakınındayken F ile 2,5 saniyede 1 çiğ et + 1 odun → 1 pişmiş et. Uzaklaşma/yükleme işlemi iptal eder; tamamlanana kadar malzeme tüketilmez. H önce pişmiş et varsa onu yer (+40 can), yoksa mevcut sebze davranışına döner. Tam canda yemek harcanmaz. Post için üretim/satış bu kapsamda eklenmedi.

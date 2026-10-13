@@ -56,7 +56,9 @@ namespace Farmer
             farm.GetComponent<DayNightCycle>().ClockPaused = true;
             if (Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-check-menu") >= 0)
                 yield return MenuSmokeChecks.Run(outputPath);
-            if(Array.IndexOf(Environment.GetCommandLineArgs(),"--farmer-check-demo")>=0)
+            if(Array.IndexOf(Environment.GetCommandLineArgs(),"--farmer-check-village")>=0)
+                yield return VillageSmokeChecks.Run(outputPath);
+            else if(Array.IndexOf(Environment.GetCommandLineArgs(),"--farmer-check-demo")>=0)
                 yield return DemoSmokeChecks.Run(outputPath);
             else
             {

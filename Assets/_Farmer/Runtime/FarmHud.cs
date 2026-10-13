@@ -23,7 +23,9 @@ namespace Farmer
         private Text[] buildCounts;
         private bool displayedBuildMode;
         private BuildController builder;
-        private readonly Button[] slots=new Button[6];
+        private RectTransform weaponBar;
+        private string lastFeedback;private float feedbackUntil;
+        private readonly Button[] slots=new Button[8];
         private Text seedCount,woodCount;
         private string hovered;
         private CanvasGroup visibility;
@@ -81,11 +83,12 @@ namespace Farmer
             var frame=bar.GetComponent<Image>();frame.sprite=ConstructionArtwork.Get("construction_frame");frame.type=Image.Type.Simple;
             Object.Destroy(bar.GetComponent<Outline>());
             // Display order matches the existing shortcuts, but the slots themselves show items rather than instructions.
-            int[] order={0,1,2,4,3,8,9,6};
+            weaponBar=Panel("Hunting tools",root.transform,new Vector2(.5f,0),new Vector2(350,20),new Vector2(148,85),Cream);HudArtwork.ApplyFrame(weaponBar);
+            int[] order={0,1,2,4,3,8,9,6,11,12};
             for(int i=0;i<order.Length;i++)
             {
-                int kind=order[i];float x=22+i*63;
-                var button=Button(bar,"",x,14,54,54,()=>{if(kind<4)game.Equip((FarmItem)kind);else if(kind==4)builder.ToggleMode();else if(kind==8)game.Equip(FarmItem.Axe);else if(kind==9)game.Equip(FarmItem.Pickaxe);});
+                int kind=order[i];float x=i<8?22+i*63:12+(i-8)*63;
+                var button=Button(i<8?bar:weaponBar,"",x,14,54,54,()=>{if(kind<4)game.Equip((FarmItem)kind);else if(kind==4)builder.ToggleMode();else if(kind==8)game.Equip(FarmItem.Axe);else if(kind==9)game.Equip(FarmItem.Pickaxe);else if(kind==11)game.Equip(FarmItem.Bow);else if(kind==12)game.Equip(FarmItem.Dagger);});
                 Object.Destroy(button.GetComponentInChildren<Text>().gameObject);
                 Object.Destroy(button.GetComponent<Outline>());
                 var iconObj=new GameObject("Item Icon",typeof(RectTransform),typeof(InventoryIcon));var rect=iconObj.GetComponent<RectTransform>();rect.SetParent(button.transform,false);rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.one;rect.offsetMin=new Vector2(6,7);rect.offsetMax=new Vector2(-6,-5);
@@ -95,8 +98,10 @@ namespace Farmer
                 if(kind==4){buildButton=button;button.name="Build Mode Button";}
                 if(kind==8){slots[4]=button;button.name="Inventory Slot 4";}
                 if(kind==9){slots[5]=button;button.name="Inventory Slot 5";}
+                if(kind==11){slots[6]=button;button.name="Inventory Slot 6";}
+                if(kind==12){slots[7]=button;button.name="Inventory Slot 7";}
                 if(kind==0)seedCount=count;if(kind==6)woodCount=count;
-                string hint=kind==9?"Kazma · 7":kind==0?"Turp tohumu · 1\nHazır toprağa sol tıkla ek.":kind==1?"Sulama kabı · 2\nSol tuşu basılı tutarak sula.":kind==2?"Orak · 3\nOlgun ürünü sol tıkla hasat et.":kind==3?"Çapa · 5\nBoş toprağı sol tıkla hazırla.":kind==4?"İnşa · 4\nYapı kurmak için seç.":kind==5?"Turp\nHasadını pazarda satabilirsin.":kind==8?"Balta · 6\nAğaca sol tıkla odun topla.":"Odun\nAğaç keserek veya pazardan alınır.";
+                string hint=kind==11?"Yay · 8":kind==12?"Hançer · 9":kind==9?"Kazma · 7":kind==0?"Turp tohumu · 1\nHazır toprağa sol tıkla ek.":kind==1?"Sulama kabı · 2\nSol tuşu basılı tutarak sula.":kind==2?"Orak · 3\nOlgun ürünü sol tıkla hasat et.":kind==3?"Çapa · 5\nBoş toprağı sol tıkla hazırla.":kind==4?"İnşa · 4\nYapı kurmak için seç.":kind==5?"Turp\nHasadını pazarda satabilirsin.":kind==8?"Balta · 6\nAğaca sol tıkla odun topla.":"Odun\nAğaç keserek veya pazardan alınır.";
                 AddHover(button.gameObject,hint.Split('\n')[0]);
                 button.GetComponent<Image>().color=Color.clear;
             }
@@ -111,7 +116,7 @@ namespace Farmer
             tooltipText=Label(tooltip,"",14,12,8,416,44,Ink);tooltipText.alignment=TextAnchor.MiddleCenter;
             toast=Panel("Feedback Toast",root.transform,new Vector2(.5f,0),new Vector2(0,172),new Vector2(570,36),new Color(.20f,.24f,.17f,.92f));
             feedback=Label(toast,"",13,10,7,550,25,Cream);feedback.alignment=TextAnchor.MiddleCenter;
-            game.Selection.SetHudPanels(new[]{header,detail,camp,bar,tooltip,toast,buildMenu,buildTabs,seedPicker,marketHint,(RectTransform)moveButton.transform});Refresh();
+            game.Selection.SetHudPanels(new[]{header,detail,camp,bar,weaponBar,tooltip,toast,buildMenu,buildTabs,seedPicker,marketHint,(RectTransform)moveButton.transform});Refresh();
         }
         private static int Category(BuildDefinition piece)=>piece.isOutdoor?2:piece.IsFurniture?1:0;
         private void SetCategory(int category)
@@ -134,11 +139,12 @@ namespace Farmer
         private void LateUpdate(){if(summary!=null)Refresh();}
         private void Refresh()
         {
-            bool hidden=game.MenuOpen||game.MarketOpen||game.JournalOpen;visibility.alpha=hidden?0:1;visibility.interactable=!hidden;visibility.blocksRaycasts=!hidden;
+            bool hidden=game.ConversationOpen||game.MenuOpen||game.MarketOpen||game.JournalOpen;visibility.alpha=hidden?0:1;visibility.interactable=!hidden;visibility.blocksRaycasts=!hidden;
             var model=game.Model;var crop=game.ActiveCrop;
             marketHint.gameObject.SetActive(game.Ready&&game.NearMarket&&!game.WorldInputBlocked&&!game.BuildMode&&hovered==null);
             if(displayedBuildMode!=game.BuildMode){hovered=null;displayedBuildMode=game.BuildMode;}
             normalBar.gameObject.SetActive(!game.BuildMode&&!game.InventoryOpen&&!game.MarketOpen);
+            weaponBar.gameObject.SetActive(normalBar.gameObject.activeSelf);
             bool chooseSeeds=!game.BuildMode&&!game.InventoryOpen&&!game.MarketOpen&&model.EquippedItem==FarmItem.Seeds;
             seedPicker.gameObject.SetActive(chooseSeeds);
             for(int i=0;i<cropChoices.Length;i++)
@@ -150,13 +156,14 @@ namespace Farmer
             tooltip.anchoredPosition=new Vector2(0,chooseSeeds?112+seedPicker.sizeDelta.y:game.BuildMode?148:106);
             toast.anchoredPosition=new Vector2(0,chooseSeeds?178+seedPicker.sizeDelta.y:game.BuildMode?214:172);
             summary.text=$"Gün {model.Day}   ·   {model.ClockText}";money.text=model.Money.ToString();saveStatus.text=game.SaveStatus=="Kaydedildi"?"Kaydedildi":game.Ready?"":"Kayıt hatası";
-            feedback.text=game.Feedback;toast.gameObject.SetActive(!game.Ready&&!game.InventoryOpen);
+            if(lastFeedback!=game.Feedback){lastFeedback=game.Feedback;feedbackUntil=Time.unscaledTime+3;}
+            feedback.text=game.Feedback;toast.gameObject.SetActive((!game.Ready||Time.unscaledTime<feedbackUntil)&&!game.WorldInputBlocked);
             seedCount.text=model.Seeds(crop.id).ToString();woodCount.text=model.Building.Wood.ToString();
             for(int i=0;i<slots.Length;i++)
             {
                 slots[i].GetComponent<Image>().color=!game.BuildMode&&model.EquippedItem==(FarmItem)i?Gold:Color.clear;
-                slots[i].interactable=game.Ready&&(i!=(int)FarmItem.Pickaxe||model.OwnsPickaxe);
-                slots[i].GetComponentInChildren<InventoryIcon>().color=i==(int)FarmItem.Pickaxe&&!model.OwnsPickaxe?new Color(1,1,1,.25f):Color.white;
+                slots[i].interactable=game.Ready&&(i==0||model.ItemCount((FarmItem)i,model.SelectedCropId)>0);
+                slots[i].GetComponentInChildren<InventoryIcon>().color=i>0&&model.ItemCount((FarmItem)i,model.SelectedCropId)==0?new Color(1,1,1,.25f):Color.white;
             }
             buildButton.GetComponent<Image>().color=game.BuildMode?Gold:Color.clear;buildButton.interactable=game.Ready;
             buildMenu.gameObject.SetActive(game.BuildMode);buildTabs.gameObject.SetActive(game.BuildMode);

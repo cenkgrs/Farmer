@@ -8,7 +8,7 @@ namespace Farmer
     {
         public int Kind
         {
-            set { sprite=Artwork(value); preserveAspect=true; raycastTarget=false; }
+            set { sprite=value>=11?VillageArtwork.Icon(value==11?"bow":"dagger"):Artwork(value); preserveAspect=true; raycastTarget=false; }
         }
         private static readonly string[] Names={"seed_pouch","watering_can","sickle","hoe","build_hammer","turnip","wood_log","wooden_inventory_frame","axe","pickaxe","stone"};
         private static readonly Rect[] Bounds={

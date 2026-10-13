@@ -130,3 +130,5 @@ Kazma/kaya kullanıcı GLB modellerine bağlandı. Kullanıcı havuç + tekrar h
 kabul etmedi. Öncelik: saldırı zamanlaması/animasyonu, okunaklı can ve vuruş
 geri bildirimi, açık ödül ve daha küçük/dolu dünya. Bu düzeltmeden sonra
 kullanıcının oynanış değerlendirmesi alınmalı; test başarısı görsel kabul değildir.
+
+13 Ekim kullanıcı demo sonrası kapsamı açıkça genişletti: portreli NPC konuşması, dolaşan/izleyen/kaçan av hayvanları, silaha bağlı et/post verimi ve pazardan alınan ocakta pişirme. İlk uygulama Defne, tavşan/geyik, yay/hançer ve ocak etrafındadır. Demo kabulündeki önceki açık maddeler kapanmış sayılmaz. Detaylar OYUN_TASARIMI ve görsel kaynakları references/dialogue_v01 içindedir.

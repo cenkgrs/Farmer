@@ -149,6 +149,8 @@ namespace Farmer
                 raised=new Vector3(.64f,1.45f,.08f);cut=new Vector3(-.18f,1.02f,.66f);
                 raisedRotation=Quaternion.Euler(-55,-50,-35);cutRotation=Quaternion.Euler(65,55,45);
             }
+            if(combatSwing&&game.Model.EquippedItem==FarmItem.Bow){raised=new Vector3(.3f,1.35f,.55f);cut=new Vector3(.3f,1.35f,.72f);raisedRotation=cutRotation=Quaternion.identity;}
+            if(combatSwing&&game.Model.EquippedItem==FarmItem.Dagger){raised=new Vector3(.4f,1.12f,.2f);cut=new Vector3(.15f,1.12f,.8f);raisedRotation=Quaternion.Euler(0,0,-15);cutRotation=Quaternion.Euler(75,0,-15);}
             if (harvestTime < .1f)
             {
                 float t = Mathf.SmoothStep(0, 1, harvestTime / .1f);

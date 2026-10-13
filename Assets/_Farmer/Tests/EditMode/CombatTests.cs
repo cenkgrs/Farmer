@@ -58,7 +58,7 @@ namespace Farmer.Tests
         {
             string dir=Path.Combine(Path.GetTempPath(),"FarmerCombat-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(dir);string path=Path.Combine(dir,"save.json");
             var old=Fresh().Snapshot();old.version=11;old.combat=null;string raw=JsonUtility.ToJson(old);File.WriteAllText(path,raw);
-            try{var store=new FarmSaveStore(path,Restore);var f=store.Load(out _);store.Save(f.Snapshot());Assert.That(File.ReadAllText(path+".pre-v12"),Is.EqualTo(raw));Assert.That(store.Load(out _).Combat.Health,Is.EqualTo(100));}finally{Directory.Delete(dir,true);}
+            try{var store=new FarmSaveStore(path,Restore);var f=store.Load(out _);store.Save(f.Snapshot());Assert.That(File.ReadAllText(path+".pre-v"+FarmModel.SaveVersion),Is.EqualTo(raw));Assert.That(store.Load(out _).Combat.Health,Is.EqualTo(100));}finally{Directory.Delete(dir,true);}
         }
     }
 }

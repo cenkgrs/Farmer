@@ -50,7 +50,7 @@ namespace Farmer
         }
         private void Update()
         {
-            Hint=null;if(game==null||!game.Ready||game.MenuOpen||game.JournalOpen||game.MarketOpen||game.MarketInputConsumed||!Application.isFocused||overlay==null)return;
+            Hint=null;if(game==null||!game.Ready||game.MenuOpen||game.JournalOpen||game.MarketOpen||game.MarketInputConsumed||game.ConversationOpen||game.VillageInputConsumed||!Application.isFocused||overlay==null)return;
             var k=Keyboard.current;
             if(k?.tabKey.wasPressedThisFrame==true){if(IsOpen)Close();else Open(null);return;}
             if(IsOpen)
@@ -94,7 +94,7 @@ namespace Farmer
         }
         public void Open(string id)
         {
-            if(!game.Ready||game.MenuOpen||game.JournalOpen||game.MarketOpen||game.MarketInputConsumed||overlay==null||(id!=null&&!CanUse(id)))return;
+            if(!game.Ready||game.MenuOpen||game.JournalOpen||game.MarketOpen||game.MarketInputConsumed||game.ConversationOpen||game.VillageInputConsumed||overlay==null||(id!=null&&!CanUse(id)))return;
             game.SetBuildMode(false);game.ShowBuildFeedback("");ChestId=id;openedModel=game.Model;game.InventoryOpen=true;game.Selection.ModalBlocked=true;
             bagPanel.anchoredPosition=new Vector2(id==null?0:-215,0);chestPanel.gameObject.SetActive(id!=null);overlay.SetActive(true);Refresh();
         }
@@ -120,6 +120,8 @@ namespace Farmer
         }
         public string Name(string id)
         {
+            if(id=="tool:bow")return "Yay · 8";if(id=="tool:dagger")return "Hançer · 9";
+            if(id.StartsWith("hunt:"))return id=="hunt:raw_meat"?"Çiğ et":id=="hunt:hide"?"Post":"Pişmiş et";
             if(id.StartsWith("crafted:"))return game.Recipes.First(r=>r.id==id.Substring(8)).displayName;
             if(id.StartsWith("furniture:"))return game.BuildPieces.First(p=>p.id==id.Substring(10)).displayName;
             if(id.StartsWith("seed:"))return game.Definition(id.Substring(5)).displayName+" tohumu";
@@ -128,6 +130,8 @@ namespace Farmer
         }
         public static Sprite Icon(string id)
         {
+            if(id=="tool:bow"||id=="tool:dagger")return VillageArtwork.Icon(id.Substring(5));
+            if(id.StartsWith("hunt:"))return VillageArtwork.Icon(id.Substring(5));
             if(id.StartsWith("crafted:")||id.StartsWith("crop:"))return CropArtwork.Get(id.Substring(id.IndexOf(':')+1))??InventoryIcon.Artwork(5);
             if(id.StartsWith("furniture:"))return ConstructionArtwork.Get(id.Substring(10));
             return InventoryIcon.Artwork(id=="stone"?10:id=="tool:pickaxe"?9:id=="wood"?6:id.StartsWith("seed:")?0:id.StartsWith("crop:")?5:id=="tool:watering"?1:id=="tool:sickle"?2:id=="tool:hoe"?3:8);

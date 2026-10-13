@@ -64,7 +64,7 @@ namespace Farmer
         }
         public bool TryOpen()
         {
-            if(!game.Ready||game.MenuOpen||game.JournalOpen||game.InventoryOpen||game.BuildMode||!game.NearMarket)return false;
+            if(!game.Ready||game.ConversationOpen||game.VillageInputConsumed||game.MenuOpen||game.JournalOpen||game.InventoryOpen||game.BuildMode||!game.NearMarket)return false;
             IsOpen=true;game.SetBuildMode(false);game.Selection.ModalBlocked=true;
             return true;
         }

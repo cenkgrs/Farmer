@@ -78,6 +78,7 @@ namespace Farmer
         {int loss=Math.Min(10,Money/10);Money-=loss;Combat.Heal(100);return loss;}
         public bool EatHarvest(out string message)
         {
+            if(BagCount("hunt:cooked_meat")>0)return EatCookedMeat(out message);
             if(Combat.Health==100)return Fail("Canın zaten dolu.",out message);
             string id=new[]{"lettuce","tomato","carrot","turnip","pumpkin"}.FirstOrDefault(c=>produce.TryGetValue(c,out int n)&&n>0);
             if(id==null)return Fail("İyileşmek için bir sebze hasat et veya yatağında uyu.",out message);

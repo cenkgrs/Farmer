@@ -1,0 +1,24 @@
+# Konuşma görselleri — 13 Ekim 2026
+
+Yerleşik **image_gen** aracıyla üretildi; CLI/API fallback ve Tripo kullanılmadı. Çıktılar gerçek alpha kanallarıyla `Assets/_Farmer/Resources/VillageArt/` içinde tutulur. Kullanıcının verdiği ekran yalnızca kompozisyon hedefidir: solda konuşan kişinin portresi, alt orta bölümde metin. Sanat yönü mevcut Farmer pazarının sıcak ahşap/krem paletidir. Metinler görsele gömülü değil; Unity arayüzünde Türkçe ve dinamik çizilir.
+
+## Kullanılan prompt seti
+
+### farmer.png
+Use case: stylized-concept. Create a production-ready transparent PNG dialogue portrait for a warm cozy hand-painted farming game. One friendly adult male farmer, waist-up three-quarter view facing slightly right, straw hat with brown band, short brown hair, blue work shirt with rolled sleeves, brown overalls, leather belt. Expressive approachable face and naturally relaxed hands. Soft beveled cartoon volumes, warm ochre and muted blue, painterly shading, clean silhouette, polished illustrated game UI quality matching golden wooden frames and cream parchment. Character occupies image height with all hat and shoulders inside margin. No background, no frame, no text, no other characters, no weapons. True transparent alpha around silhouette. This portrait will appear at the left of dialogue text.
+
+### defne.png
+Use case: stylized-concept. Production game dialogue portrait on genuine transparent background, one friendly adult village woman named Defne, waist-up three quarter view toward the right. Chestnut braided hair, muted forest-green vest over ivory linen blouse, russet leather belt, small cloth herb pouch. Welcoming confident expression, one hand resting on belt. Warm cozy hand-painted farming game, soft sculptural cartoon volumes, warm ochre highlights, painterly shading with clean readable silhouette. Polished illustrated game UI quality matching wooden gold frames and cream parchment. Entire head, shoulders and arms within margins. No text, no panel, no scenery, no opaque background or halo, no weapons. Transparent alpha outside the character. Left-side dialogue portrait, tall 2:3.
+
+### dialogue_panel.png
+Use case: ui-mockup. One production-ready BLANK dialogue text panel for a cozy painted farming game. Wide landscape 3:1 shape. Large clean cream parchment writing area framed in warm carved honey-brown oak, small rounded golden corner caps, subtle olive leaf ornaments at two corners, refined hand-painted highlights matching an illustrated rustic village market interface. A small integrated EMPTY speaker-name plaque sits above the top left edge. Main parchment interior is flat light cream with very subtle texture and occupies 80% of panel, suitable for dark readable dialogue text added in engine. Entire frame and plaque visible with margin. No lettering, no symbols, no characters, no scenery, no fake text, no watermark. Transparent alpha outside the panel silhouette. Front-on orthographic UI asset, no perspective, no drop shadow beyond a small close shadow.
+
+### bow.png
+Use case: stylized-concept. One inventory icon of a wooden hunting bow with a single arrow resting across it diagonally, for a warm cozy hand-painted farming RPG. Rich honey brown curved wood, cream bowstring, dark iron arrow tip and ivory feather fletching. Thick readable silhouette and exaggerated friendly proportions so bow is clearly recognizable at 48 pixels. Diagonal composition fills a square canvas with just 8% padding. Warm softly painted highlights, clean restrained detail, style matching painted golden wooden inventory frames. Single isolated bow-and-arrow icon, transparent background, no text, no UI frame, no scenery, no cast shadow.
+
+### dagger.png
+Use case: stylized-concept. One inventory icon of a short hunting dagger for a warm cozy hand-painted farming RPG. Broad short polished gray steel blade, warm honey brown leather wrapped grip, tiny brass crossguard and rounded brass pommel. Thick readable silhouette and friendly stylized proportions clearly recognizable at 48 pixels. Diagonal from bottom left handle to upper right blade, entire object visible, fills square canvas with 8% padding. Warm softly painted highlights, clean restrained detail, style matching painted golden wooden inventory frames. One isolated dagger icon, true transparent background, no blood, no text, no UI frame, no scenery, no cast shadow.
+
+## 3D geçici sanat
+
+Defne, tavşan, geyik, ocak ve elde tutulan av aletleri yerel prosedürel stilize modellerdir. Tavşanda sekme, geyikte bacak hareketi, başını oyuncuya çevirme, darbe/ölüm eğilmesi vardır; final rig/animasyon paketleri değildir. Ocak/et/post ikonları yerel Unity model renderlarıdır. `VillageSetup.CreateAssets` ocağın prefab/verisini ve bu üç malzeme ikonunu üretir; ImageGen portrelerini ve silah ikonlarını yeniden üretmez veya üzerine yazmaz.

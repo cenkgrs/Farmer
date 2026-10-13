@@ -25,7 +25,7 @@ namespace Farmer
         private Button purchase,sell,minus,plus;
         private Text wallet,quantityText,owned,total,description,status,saleSummary,purchaseLabel;
         private GameObject ownedPurchaseSurface;
-        private readonly List<Text> ownedBadges=new List<Text>();
+        private readonly List<(Text label,MarketOffer offer)> ownedBadges=new List<(Text,MarketOffer)>();
         private bool wasOpen;
         private int page,selectedSale;
         private float statusUntil;
@@ -145,10 +145,10 @@ namespace Farmer
                 }
                 var highlight=Rect(catalog,"Selected "+offer.Id,r);Border(highlight,new Rect(0,0,r.width,r.height),true);cardHighlights.Add(highlight.gameObject);
                 var button=Hit(catalog,"Market offer "+offer.Id,r,()=>SelectOffer(offer.Id));cards.Add(button);
-                if(offer.Kind==MarketOfferKind.Pickaxe)
+                if(offer.PermanentTool)
                 {
                     Patch(catalog,new Rect(r.x+30,501,r.width-60,48));
-                    var badge=Label(catalog,"Tool ownership badge",new Rect(r.x+30,501,r.width-60,48),29,true);ownedBadges.Add(badge);
+                    var badge=Label(catalog,"Tool ownership badge",new Rect(r.x+30,501,r.width-60,48),29,true);ownedBadges.Add((badge,offer));
                 }
             }
             if(visible.Length>3)
@@ -214,6 +214,7 @@ namespace Farmer
             if(o.Recipe!=null)return string.Join(" + ",o.Recipe.ingredients.Select(i=>$"{i.count*Quantity} {game.GetComponent<StorageInteraction>().Name(i.id)}"));
             switch(o.Kind)
             {
+                case MarketOfferKind.HuntingTool:return o.Id=="bow"?"8 ile kuşan · Temel oklar dahil\nAv için yüksek verim":"9 ile kuşan · Yakın dövüş\nAv için yüksek verim";
                 case MarketOfferKind.Pickaxe:return "Kayaları kır, taş topla.\nKalıcı alet · 7 ile kuşan";
                 case MarketOfferKind.Wood:return "İnşa ve üretim malzemesi\nBir pakette 10 odun";
                 case MarketOfferKind.Bed:return "Yerleştir, N ile sabaha uyu.\nİnşa > Mobilya";
@@ -229,7 +230,7 @@ namespace Farmer
         {
             if(Selected==null||!game.CanTrade)return false;
             bool ok=Selected.Purchase(game,Quantity);
-            Notify(ok?game.Feedback:Selected.Kind==MarketOfferKind.Pickaxe&&game.Model.OwnsPickaxe?"Kazman zaten var.":"Para, malzeme veya çanta kapasitesi yetersiz.");RefreshValues();return ok;
+            Notify(ok?game.Feedback:Selected.PermanentTool&&Selected.Count(game.Model)>0?"Kazman zaten var.":"Para, malzeme veya çanta kapasitesi yetersiz.");RefreshValues();return ok;
         }
         private void BuildSales()
         {
@@ -280,12 +281,12 @@ namespace Farmer
         {
             if(wallet==null||Selected==null)return;
             wallet.text=game.Model.Money.ToString();wallet.resizeTextForBestFit=true;wallet.resizeTextMinSize=19;wallet.resizeTextMaxSize=32;
-            bool toolOwned=Selected.Kind==MarketOfferKind.Pickaxe&&game.Model.OwnsPickaxe;
+            bool toolOwned=Selected.PermanentTool&&Selected.Count(game.Model)>0;
             ownedPurchaseSurface.SetActive(toolOwned);
-            foreach(var badge in ownedBadges)badge.text=game.Model.OwnsPickaxe?"Alındı":FarmModel.PickaxePrice.ToString();
-            quantityText.text=Quantity.ToString();owned.text=Selected.Kind==MarketOfferKind.Pickaxe&&game.Model.OwnsPickaxe?"Alındı · Bir tane yeterli":"Çantanda: "+Selected.Count(game.Model);
+            foreach(var badge in ownedBadges)badge.label.text=badge.offer.Count(game.Model)>0?"Alındı":badge.offer.Price.ToString();
+            quantityText.text=Quantity.ToString();owned.text=Selected.PermanentTool&&Selected.Count(game.Model)>0?"Alındı · Bir tane yeterli":"Çantanda: "+Selected.Count(game.Model);
             total.text=Selected.Kind==MarketOfferKind.Recipe?$"Üretim: {Selected.Recipe.outputCount*Quantity}":$"{Selected.Price*Quantity}";
-            description.text=toolOwned?"Kalıcı alet · Tek kez alınır.\n7 ile kuşanıp kayaları kır.":Description(Selected);
+            description.text=Description(Selected);
             minus.interactable=Selected.HasQuantity&&Quantity>1;plus.interactable=Selected.HasQuantity&&Quantity<FarmModel.StackLimit;
             disabledMinus.SetActive(!minus.interactable);disabledPlus.SetActive(!plus.interactable);
             purchase.interactable=game.CanTrade&&Selected.CanPurchase(game.Model,Quantity);disabledPurchase.SetActive(!purchase.interactable&&!toolOwned);
@@ -303,7 +304,7 @@ namespace Farmer
         }
         private void Icon(Transform parent,MarketOffer offer,Rect r)
         {
-            Sprite sprite=offer.Kind==MarketOfferKind.Pickaxe?InventoryIcon.Artwork(9):offer.Kind==MarketOfferKind.Wood?InventoryIcon.Artwork(6):offer.Kind==MarketOfferKind.Recipe?CropArtwork.Get(offer.Id):offer.Kind==MarketOfferKind.Seed?SeedArtwork.Get(offer.Id):ConstructionArtwork.Get(offer.Id);
+            Sprite sprite=offer.Kind==MarketOfferKind.HuntingTool?VillageArtwork.Icon(offer.Id):offer.Kind==MarketOfferKind.Pickaxe?InventoryIcon.Artwork(9):offer.Kind==MarketOfferKind.Wood?InventoryIcon.Artwork(6):offer.Kind==MarketOfferKind.Recipe?CropArtwork.Get(offer.Id):offer.Kind==MarketOfferKind.Seed?SeedArtwork.Get(offer.Id):ConstructionArtwork.Get(offer.Id);
             var img=Rect(parent,"Product icon",r).gameObject.AddComponent<Image>();img.sprite=sprite;img.preserveAspect=true;img.raycastTarget=false;
         }
         private void Patch(Transform parent,Rect r)=>Raw(parent,"Clean surface",clean,r,r);

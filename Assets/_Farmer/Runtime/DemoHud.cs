@@ -49,6 +49,7 @@ namespace Farmer
         private void Update()
         {
             if(game==null)return;
+            if(game.ConversationOpen||game.VillageInputConsumed){Refresh();return;}
             if(Application.isFocused)
             {
                 var key=Keyboard.current;

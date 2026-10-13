@@ -4,7 +4,7 @@ using System.Linq;
 namespace Farmer
 {
     public enum MarketCategory { Seeds, Tools, Materials, Furniture, Production }
-    public enum MarketOfferKind { Seed, Pickaxe, Wood, Bed, Furniture, Recipe }
+    public enum MarketOfferKind { Seed, Pickaxe, Wood, Bed, Furniture, Recipe, HuntingTool }
 
     // Catalog data and transaction limits are separate from the UI's artwork and layout.
     public sealed class MarketOffer
@@ -18,11 +18,13 @@ namespace Farmer
         public RecipeDefinition Recipe { get; }
         public MarketOffer(string id,string name,int price,MarketCategory category,MarketOfferKind kind,CropDefinition crop=null,RecipeDefinition recipe=null)
         {Id=id;Name=name;Price=price;Category=category;Kind=kind;Crop=crop;Recipe=recipe;}
+        public bool PermanentTool=>Kind==MarketOfferKind.Pickaxe||Kind==MarketOfferKind.HuntingTool;
         public bool HasQuantity => Kind==MarketOfferKind.Seed||Kind==MarketOfferKind.Recipe;
         public int Count(FarmModel model)
         {
             switch(Kind)
             {
+                case MarketOfferKind.HuntingTool:return model.BagCount("tool:"+Id);
                 case MarketOfferKind.Seed:return model.Seeds(Id);
                 case MarketOfferKind.Pickaxe:return model.OwnsPickaxe?1:0;
                 case MarketOfferKind.Wood:return model.Building.Wood;
@@ -39,6 +41,7 @@ namespace Farmer
             switch(Kind)
             {
                 case MarketOfferKind.Seed:return Count(model)<=FarmModel.StackLimit-quantity;
+                case MarketOfferKind.HuntingTool:return Count(model)==0;
                 case MarketOfferKind.Pickaxe:return !model.OwnsPickaxe;
                 case MarketOfferKind.Wood:return Count(model)<=BuildingModel.WoodLimit-BuildingModel.WoodPackCount;
                 default:return Count(model)<BuildingModel.WoodLimit;
@@ -49,6 +52,7 @@ namespace Farmer
             if(!game.CanTrade||!CanPurchase(game.Model,quantity))return false;
             switch(Kind)
             {
+                case MarketOfferKind.HuntingTool:return game.BuyHuntingTool(Id);
                 case MarketOfferKind.Seed:return game.SelectCrop(Id)&&game.Buy(quantity);
                 case MarketOfferKind.Pickaxe:return game.BuyPickaxe();
                 case MarketOfferKind.Wood:return game.BuyWood();
@@ -62,6 +66,8 @@ namespace Farmer
             var offers=new List<MarketOffer>();
             offers.AddRange(game.Crops.Select(c=>new MarketOffer(c.id,c.displayName+" tohumu",c.seedPrice,MarketCategory.Seeds,MarketOfferKind.Seed,c)));
             offers.Add(new MarketOffer("pickaxe","Kazma",FarmModel.PickaxePrice,MarketCategory.Tools,MarketOfferKind.Pickaxe));
+            offers.Add(new MarketOffer("bow","Yay",120,MarketCategory.Tools,MarketOfferKind.HuntingTool));
+            offers.Add(new MarketOffer("dagger","Hançer",65,MarketCategory.Tools,MarketOfferKind.HuntingTool));
             offers.Add(new MarketOffer("wood","10 odun",BuildingModel.WoodPackPrice,MarketCategory.Materials,MarketOfferKind.Wood));
             offers.Add(new MarketOffer("bed","Yatak",BuildingModel.BedPrice,MarketCategory.Furniture,MarketOfferKind.Bed));
             offers.AddRange(game.BuildPieces.Where(b=>b.price>0&&!b.isBed).Select(b=>new MarketOffer(b.id,b.displayName,b.price,MarketCategory.Furniture,MarketOfferKind.Furniture)));
