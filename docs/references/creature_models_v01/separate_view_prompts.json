@@ -1,0 +1,34 @@
+[
+  {
+    "id": "defne_front",
+    "prompt": "Extract ONLY the TOP LEFT figure labeled FRONT from this four-view reference sheet into a standalone high-resolution image. Preserve that exact view, direction, character identity, proportions, neutral pose, costume/anatomy, colors, and painterly style. One full-body defne only, centered with margin, entire feet and head/antlers visible. Clean uniform pale cream background. No text, no title, no other views, no decorative elements. Do not redesign, turn, mirror or change pose. This is the front view for 3D modeling."
+  },
+  {
+    "id": "defne_back",
+    "prompt": "Extract ONLY the TOP RIGHT figure labeled BACK from this four-view reference sheet into a standalone high-resolution image. Preserve that exact view, direction, character identity, proportions, neutral pose, costume/anatomy, colors, and painterly style. One full-body defne only, centered with margin, entire feet and head/antlers visible. Clean uniform pale cream background. No text, no title, no other views, no decorative elements. Do not redesign, turn, mirror or change pose. This is the back view for 3D modeling."
+  },
+  {
+    "id": "defne_right",
+    "prompt": "Extract ONLY the BOTTOM LEFT figure labeled RIGHT from this four-view reference sheet into a standalone high-resolution image. Preserve that exact view, direction, character identity, proportions, neutral pose, costume/anatomy, colors, and painterly style. One full-body defne only, centered with margin, entire feet and head/antlers visible. Clean uniform pale cream background. No text, no title, no other views, no decorative elements. Do not redesign, turn, mirror or change pose. This is the right view for 3D modeling."
+  },
+  {
+    "id": "defne_left",
+    "prompt": "Extract ONLY the BOTTOM RIGHT figure labeled LEFT from this four-view reference sheet into a standalone high-resolution image. Preserve that exact view, direction, character identity, proportions, neutral pose, costume/anatomy, colors, and painterly style. One full-body defne only, centered with margin, entire feet and head/antlers visible. Clean uniform pale cream background. No text, no title, no other views, no decorative elements. Do not redesign, turn, mirror or change pose. This is the left view for 3D modeling."
+  },
+  {
+    "id": "deer_front",
+    "prompt": "Extract ONLY the TOP LEFT figure labeled FRONT from this four-view reference sheet into a standalone high-resolution image. Preserve that exact view, direction, character identity, proportions, neutral pose, costume/anatomy, colors, and painterly style. One full-body deer only, centered with margin, entire feet and head/antlers visible. Clean uniform pale cream background. No text, no title, no other views, no decorative elements. Do not redesign, turn, mirror or change pose. This is the front view for 3D modeling."
+  },
+  {
+    "id": "deer_back",
+    "prompt": "Extract ONLY the TOP RIGHT figure labeled BACK from this four-view reference sheet into a standalone high-resolution image. Preserve that exact view, direction, character identity, proportions, neutral pose, costume/anatomy, colors, and painterly style. One full-body deer only, centered with margin, entire feet and head/antlers visible. Clean uniform pale cream background. No text, no title, no other views, no decorative elements. Do not redesign, turn, mirror or change pose. This is the back view for 3D modeling."
+  },
+  {
+    "id": "deer_right",
+    "prompt": "Extract ONLY the BOTTOM LEFT figure labeled RIGHT from this four-view reference sheet into a standalone high-resolution image. Preserve that exact view, direction, character identity, proportions, neutral pose, costume/anatomy, colors, and painterly style. One full-body deer only, centered with margin, entire feet and head/antlers visible. Clean uniform pale cream background. No text, no title, no other views, no decorative elements. Do not redesign, turn, mirror or change pose. This is the right view for 3D modeling."
+  },
+  {
+    "id": "deer_left",
+    "prompt": "Extract ONLY the BOTTOM RIGHT figure labeled LEFT from this four-view reference sheet into a standalone high-resolution image. Preserve that exact view, direction, character identity, proportions, neutral pose, costume/anatomy, colors, and painterly style. One full-body deer only, centered with margin, entire feet and head/antlers visible. Clean uniform pale cream background. No text, no title, no other views, no decorative elements. Do not redesign, turn, mirror or change pose. This is the left view for 3D modeling."
+  }
+]

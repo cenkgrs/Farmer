@@ -23,14 +23,30 @@ namespace Farmer.Tests
             var wildlife=game.GetComponent<WildlifeController>();wildlife.enabled=false;var village=game.GetComponent<VillageInteraction>();
             var motor=game.Player.GetComponent<PlayerMotor>();motor.enabled=false;
             var guide=village.Guide;Assert.That(guide,Is.Not.Null);
+            // Sprint uses the same collision controller, returns to walking and respects modal input.
+            var previousBounds=motor.WorldBounds;var previousRotation=Camera.main.transform.rotation;
+            var ground=GameObject.CreatePrimitive(PrimitiveType.Cube);ground.transform.position=new Vector3(80,-.25f,-80);ground.transform.localScale=new Vector3(20,.5f,20);
+            motor.WorldBounds=new Bounds(new Vector3(80,0,-80),new Vector3(20,10,20));Camera.main.transform.rotation=Quaternion.LookRotation(Vector3.forward);
+            motor.Teleport(new Vector3(80,.1f,-80));motor.Step(Vector2.up,.1f);float walk=game.Player.position.z+80;
+            motor.Teleport(new Vector3(80,.1f,-80));motor.Step(Vector2.up,.1f,true);float run=game.Player.position.z+80;
+            Assert.That(run/walk,Is.EqualTo(PlayerMotor.SprintMultiplier).Within(.03f));Assert.That(motor.IsSprinting,Is.True);
+            motor.Step(Vector2.up,.1f);Assert.That(motor.IsSprinting,Is.False);
+            var wall=GameObject.CreatePrimitive(PrimitiveType.Cube);wall.transform.position=new Vector3(80,1,-78);wall.transform.localScale=new Vector3(6,2,.2f);Physics.SyncTransforms();
+            for(int tick=0;tick<10;tick++)motor.Step(Vector2.up,.1f,true);Assert.That(game.Player.position.z,Is.LessThan(-78.3f));
+            Object.Destroy(wall);Object.Destroy(ground);motor.WorldBounds=previousBounds;Camera.main.transform.rotation=previousRotation;
+            foreach(string portrait in new[]{"defne","farmer"}){var texture=Resources.Load<Texture2D>("VillageArt/"+portrait);Assert.That((float)texture.width/texture.height,Is.EqualTo(2f/3).Within(.001f),"Portrait aspect must survive texture import.");}
             motor.Teleport(guide.position+Vector3.forward*2);Physics.SyncTransforms();yield return null;
             Assert.That(village.TryTalk(),Is.True);Assert.That(game.WorldInputBlocked,Is.True);Assert.That(game.GetComponent<MarketInteraction>().TryOpen(),Is.False);
+            var blockedPosition=game.Player.position;motor.Step(Vector2.up,.1f,true);Assert.That(CombatController.PlanarDistance(game.Player.position,blockedPosition),Is.LessThan(.001f));Assert.That(motor.IsSprinting,Is.False);
             Assert.That(village.Speaker,Is.EqualTo("Defne"));yield return new WaitForSeconds(.2f);village.Advance();
             game.GetComponent<CombatController>().RefreshHud();yield return null;CropExpansionPlayModeTests.Frame(guide.position,6);CropExpansionPlayModeTests.Capture("village-dialogue-defne",true);
             village.Advance();Assert.That(village.Speaker,Is.EqualTo("Sen"));village.Advance();yield return null;
             CropExpansionPlayModeTests.Capture("village-dialogue-player",true);village.Close();yield return null;Assert.That(game.WorldInputBlocked,Is.False);
             var animal=wildlife.View(0);Assert.That(animal,Is.Not.Null);
             motor.Teleport(animal.transform.position+Vector3.forward*8);Physics.SyncTransforms();wildlife.Simulate(.01f);Assert.That(animal.Mood,Is.EqualTo(WildlifeMood.Watch));
+            Assert.That(animal.transform.Find("Animal health").gameObject.activeSelf,Is.False,"Unhurt animals have no overhead UI.");
+            var deer=wildlife.View(4);motor.Teleport(deer.transform.position+Vector3.forward*7);game.Model.Equip(FarmItem.Axe);Assert.That(game.Model.StrikeAnimal(4),Is.True);wildlife.Simulate(.01f);
+            Assert.That(deer.transform.Find("Animal health").gameObject.activeSelf,Is.True,"First damage reveals health.");Assert.That(deer.GetComponentsInChildren<UnityEngine.UI.Text>(true),Is.Empty,"No animal status text.");
             motor.Teleport(animal.transform.position+Vector3.forward*3);Physics.SyncTransforms();wildlife.Simulate(.01f);Assert.That(animal.Mood,Is.EqualTo(WildlifeMood.Flee));
             Assert.That(game.Model.BuyHuntingTool("bow",out _),Is.False,"Starts without enough money for bow");
             var s=game.Model.Snapshot();s.money=1000;File.WriteAllText(game.SavePath,JsonUtility.ToJson(s));Assert.That(game.LoadGame(),Is.True);yield return null;

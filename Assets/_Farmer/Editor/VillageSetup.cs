@@ -24,7 +24,7 @@ namespace Farmer.Editor
             {var obj=id=="bow"||id=="dagger"?VillageArtwork.Weapon(id=="bow"):VillageArtwork.Food(id);Capture(obj,"Assets/_Farmer/Resources/VillageArt/"+id+".png");Object.DestroyImmediate(obj);}
             AssetDatabase.Refresh();
             foreach(var png in Directory.GetFiles("Assets/_Farmer/Resources/VillageArt","*.png").Concat(new[]{"Assets/_Farmer/Resources/ConstructionArt/home_stove.png"}))
-            {var importer=(TextureImporter)AssetImporter.GetAtPath(png);importer.textureType=TextureImporterType.Default;importer.alphaIsTransparency=true;importer.mipmapEnabled=false;importer.maxTextureSize=2048;importer.textureCompression=TextureImporterCompression.Uncompressed;importer.SaveAndReimport();}
+            {var importer=(TextureImporter)AssetImporter.GetAtPath(png);importer.textureType=TextureImporterType.Default;importer.alphaIsTransparency=true;importer.mipmapEnabled=false;importer.npotScale=TextureImporterNPOTScale.None;importer.maxTextureSize=2048;importer.textureCompression=TextureImporterCompression.Uncompressed;importer.SaveAndReimport();}
             AssetDatabase.SaveAssets();Debug.Log("FARMER_VILLAGE_ASSETS_OK");
         }
         private static void Capture(GameObject obj,string path)

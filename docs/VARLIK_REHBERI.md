@@ -205,3 +205,7 @@ vuruş parlaması mekanik okunaklılık içindir. Nihai model kalitesi iddia edi
 Nihai teslimde taban merkezli pivot, +Z ön, ayrı gövde/gözler ve böcekte ayrı
 bacaklar, 1–2 malzeme ve yaklaşık 2–5 bin üçgen hedeflenir. Maden girişi 2,7 m
 ahşap çerçeve ve kayalarla geçicidir; sahneyi yeniden üretmeden değiştirilebilir.
+
+## 13 Ekim — NPC ve canlı modelleri
+
+[Model eskizleri, ayrı yönler ve üretim gereksinimleri](references/creature_models_v01/README.md). Defne/geyik ön–arka–sağ–sol PNG olarak hazır. [Teslim edilen tavşan/slime/kaya yengeci/geyik/Defne incelemesi](../ArtSource/creatures_v01/README.md). Teslimler rig/animasyon içermiyor; temel gövde hareketleriyle bağlandı. Eklemli animasyon kalitesi ayrıca tamamlanacak.

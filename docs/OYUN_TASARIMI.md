@@ -341,3 +341,7 @@ Dört tavşan ve iki geyik başlangıcın çevresinde uygun zeminde doğar. 12 m
 Balta hasarı kaliteyi tüm karşılaşma için düşürür; son vuruşta alet değiştirerek aşılamaz. Ödül çantaya otomatik girer; kapasite yetersizse av yerinde kalır ve tekrar tıklayarak alınabilir. Post/çiğ et/pişmiş et sandığa aktarılabilir. Ödülü toplanmış avlar ertesi gün yenilenir; alınmamış ödül kaybolmaz. Av durumu ve aletler v13 kayıtta kalır; v12 ve öncesi yeni eşyalar olmadan taşınır.
 
 Ocak pazarda Mobilyalar bölümünde 100 para. İnşa > Mobilya ile kurulur, taşınabilir ve geri alınabilir. Yakınındayken F ile 2,5 saniyede 1 çiğ et + 1 odun → 1 pişmiş et. Uzaklaşma/yükleme işlemi iptal eder; tamamlanana kadar malzeme tüketilmez. H önce pişmiş et varsa onu yer (+40 can), yoksa mevcut sebze davranışına döner. Tam canda yemek harcanmaz. Post için üretim/satış bu kapsamda eklenmedi.
+
+### 13 Ekim — sunum düzeltmesi ve koşu
+
+Sol/sağ Shift basılıyken hareket hızı 1,65 katına çıkar; bırakınca yürüyüşe döner. Dayanıklılık tüketimi yok. Çarpışma, harita sınırı, darbe duraksaması ve modal pencere engeli korunur. Ayrı koşu klibi henüz teslim edilmedi; mevcut yürüyüş klibinin temposu artar. Hayvanlarda ad/durum yazısı yok; yalnızca canı azalmış yaşayan hayvanda küçük can barı görünür. Ölüm ve günlük yenilenmede kapanır. Portreler özgün en-boy oranıyla ve daha kısa alanda çizilir; Defne/ocak F ipucu envanterin üstüne sabitlenir.

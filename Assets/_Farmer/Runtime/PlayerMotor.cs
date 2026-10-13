@@ -19,6 +19,8 @@ namespace Farmer
         public float CombatFreeze {get;set;}
         public bool Invulnerable => invulnerableTime > 0;
         public bool IsDodging => dodgeTime > 0;
+        public bool IsSprinting { get; private set; }
+        public const float SprintMultiplier = 1.65f;
         public bool TryDodge(Vector2 input)
         {
             if(viewCamera==null||dodgeCooldown>0||game!=null&&(!game.Ready||game.WorldInputBlocked||game.BuildMode))return false;
@@ -53,18 +55,22 @@ namespace Farmer
             }
             if(Application.isFocused&&keyboard?.spaceKey.wasPressedThisFrame==true)TryDodge(input);
             if(!Application.isFocused||game!=null&&game.WorldInputBlocked)CancelDodge();
-            Step(input, Mathf.Min(Time.deltaTime, 0.1f));
+            Step(input, Mathf.Min(Time.deltaTime, 0.1f), Application.isFocused && keyboard != null && (keyboard.leftShiftKey.isPressed || keyboard.rightShiftKey.isPressed));
         }
 
-        public void Step(Vector2 input, float deltaTime)
+        public void Step(Vector2 input, float deltaTime, bool sprint = false)
         {
+            IsSprinting = false;
             if (viewCamera == null || deltaTime <= 0f) return;
+            if (game != null && game.WorldInputBlocked) { input = Vector2.zero; sprint = false; CancelDodge(); }
             if(CombatFreeze>0){CombatFreeze=Mathf.Max(0,CombatFreeze-deltaTime);PlanarSpeed=0;return;}
             Vector3 direction = PlanarMovement.Direction(input, viewCamera.transform.forward, viewCamera.transform.right);
             if (controller.isGrounded && verticalSpeed < 0f) verticalSpeed = -2f;
             verticalSpeed = Mathf.Max(verticalSpeed - 20f * deltaTime, -30f);
             float burstTime=Mathf.Min(dodgeTime,deltaTime);
-            Vector3 travel=dodgeDirection*8f*burstTime+direction*speed*(deltaTime-burstTime);
+            IsSprinting = sprint && direction.sqrMagnitude > .01f && dodgeTime <= 0;
+            float moveSpeed = speed * (IsSprinting ? SprintMultiplier : 1f);
+            Vector3 travel=dodgeDirection*8f*burstTime+direction*moveSpeed*(deltaTime-burstTime);
             if(dodgeTime>0)direction=dodgeDirection;
             dodgeTime=Mathf.Max(0,dodgeTime-deltaTime);dodgeCooldown=Mathf.Max(0,dodgeCooldown-deltaTime);invulnerableTime=Mathf.Max(0,invulnerableTime-deltaTime);
             Vector3 target = transform.position + travel;

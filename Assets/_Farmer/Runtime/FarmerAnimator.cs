@@ -108,6 +108,7 @@ namespace Farmer
         private void Update()
         {
             if (motor == null) return;
+            animator.speed = motor.IsSprinting && !HarvestActive && pourWeight < .01f ? 1.45f : 1f;
             animator.SetFloat(MoveSpeed, Mathf.Clamp01(motor.PlanarSpeed / motor.Speed), .12f, Time.deltaTime);
             bool ready = game != null && game.Ready && game.isActiveAndEnabled && Application.isFocused;
             bool holding = ready && !game.BuildMode && game.Model.ItemCount(game.Model.EquippedItem, game.ActiveCrop.id) > 0;

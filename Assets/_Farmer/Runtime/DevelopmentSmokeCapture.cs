@@ -27,6 +27,7 @@ namespace Farmer
                 Application.Quit(1);
                 return;
             }
+            Application.runInBackground = true; // Only opt-in QA runs; keep captures progressing when the desktop focus changes.
             var capture = new GameObject("Development Smoke Capture")
                 .AddComponent<DevelopmentSmokeCapture>();
             capture.outputPath = Path.GetFullPath(args[index + 1]);

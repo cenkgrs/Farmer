@@ -20,9 +20,12 @@ namespace Farmer
             var state=game.Model.Snapshot();state.money=1000;state.minuteOfDay=660;File.WriteAllText(game.SavePath,JsonUtility.ToJson(state));game.LoadGame();yield return null;
             wildlife.Simulate(.01f);motor.Teleport(village.Guide.position+Vector3.forward*2);Physics.SyncTransforms();yield return null;
             Frame(village.Guide.position,6);if(!village.TryTalk())Debug.LogError("Native dialogue did not open.");yield return null;village.Advance();combat.RefreshHud();
-            yield return Capture(output,"-dialogue-defne");village.Advance();village.Advance();yield return Capture(output,"-dialogue-player");village.Close();yield return null;
+            yield return Capture(output,"-dialogue-defne");village.Advance();village.Advance();yield return Capture(output,"-dialogue-player");village.Close();yield return null;yield return Capture(output,"-interaction");
+            var rabbit=wildlife.View(0);motor.Teleport(rabbit.transform.position+Vector3.forward*5);wildlife.Simulate(.01f);Frame(rabbit.transform.position,2);yield return Capture(output,"-rabbit");
+            foreach(int id in new[]{0,1}){var enemy=combat.View(id);Frame(enemy.transform.position,2);yield return Capture(output,id==0?"-slime":"-beetle");}
             var deer=wildlife.View(4);if(deer==null){Debug.LogError("No deer spawned.");yield break;}
             motor.Teleport(deer.transform.position+Vector3.forward*7);Physics.SyncTransforms();wildlife.Simulate(.01f);Frame(deer.transform.position+Vector3.forward*2,5);combat.RefreshHud();yield return Capture(output,"-wildlife");
+            game.Model.Equip(FarmItem.Axe);game.Model.StrikeAnimal(4);wildlife.Simulate(.01f);yield return Capture(output,"-wildlife-hit");
             game.Model.BuyHuntingTool("bow",out _);game.Model.BuyHuntingTool("dagger",out _);game.Equip(FarmItem.Bow);game.CombatChanged("Yay ve hançer hazır.");
             motor.Teleport(game.Market.position+Vector3.forward*3);yield return null;game.GetComponent<MarketInteraction>().TryOpen();yield return null;
             var market=game.GetComponent<MarketHud>();market.ChooseCategory(MarketCategory.Tools);yield return null;yield return Capture(output,"-tools");game.GetComponent<MarketInteraction>().Close();

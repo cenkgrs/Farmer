@@ -38,17 +38,18 @@ namespace Farmer
             canvas.GetComponent<Canvas>().renderMode=RenderMode.ScreenSpaceOverlay;canvas.GetComponent<Canvas>().sortingOrder=30;
             var scaler=canvas.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1280,720);scaler.matchWidthOrHeight=.5f;
             dialogue=Box(canvas.transform,"Dialogue overlay",new Rect(0,0,1280,720),new Color(.035f,.035f,.02f,.28f)).gameObject;
-            portrait=Picture(dialogue.transform,"Speaker portrait",new Rect(0,90,420,630),"farmer");portrait.preserveAspect=true;
+            portrait=Picture(dialogue.transform,"Speaker portrait",new Rect(10,170,370,550),"farmer");portrait.preserveAspect=true;
             Picture(dialogue.transform,"Dialogue parchment",new Rect(380,415,880,285),"dialogue_panel");
             speaker=Label(dialogue.transform,"Dialogue speaker",new Rect(445,449,235,38),25);speaker.fontStyle=FontStyle.Bold;
             words=Label(dialogue.transform,"Dialogue words",new Rect(445,514,745,113),23);words.alignment=TextAnchor.UpperLeft;words.horizontalOverflow=HorizontalWrapMode.Wrap;
-            advance=Label(dialogue.transform,"Dialogue advance",new Rect(810,635,365,32),17);advance.alignment=TextAnchor.MiddleRight;
+            advance=Label(dialogue.transform,"Dialogue advance",new Rect(810,620,365,28),17);advance.alignment=TextAnchor.MiddleRight;
             var next=Box(dialogue.transform,"Dialogue next",new Rect(425,480,810,190),Color.clear).gameObject.AddComponent<Button>();next.onClick.AddListener(Advance);
             var close=Box(dialogue.transform,"Dialogue close",new Rect(1125,32,110,42),new Color(.18f,.12f,.06f,.75f)).gameObject.AddComponent<Button>();close.onClick.AddListener(Close);
             var closeText=Label(close.transform,"Close text",new Rect(0,0,110,42),18);closeText.text="Esc · Kapat";closeText.color=new Color(1,.93f,.76f);
             dialogue.SetActive(false);
-            context=Box(canvas.transform,"Village interaction hint",new Rect(400,596,480,45),new Color(.92f,.82f,.61f,.98f)).gameObject;
-            HudArtwork.ApplyFrame(context.GetComponent<RectTransform>());hint=Label(context.transform,"Village hint",new Rect(16,5,448,35),17);context.SetActive(false);
+            context=Box(canvas.transform,"Village interaction hint",new Rect(480,0,320,64),new Color(.92f,.82f,.61f,.98f)).gameObject;
+            var hintRect=context.GetComponent<RectTransform>();hintRect.anchorMin=hintRect.anchorMax=new Vector2(.5f,0);hintRect.pivot=new Vector2(.5f,0);hintRect.anchoredPosition=new Vector2(0,208);
+            HudArtwork.ApplyFrame(hintRect);hint=Label(context.transform,"Village hint",new Rect(20,14,280,36),17);context.SetActive(false);
         }
         private Vector3 FindGround(Vector3 desired)
         {
@@ -70,12 +71,12 @@ namespace Farmer
                 else if(k?.fKey.wasPressedThisFrame==true||k?.spaceKey.wasPressedThisFrame==true||k?.enterKey.wasPressedThisFrame==true)Advance();
                 return;
             }
-            if(game.WorldInputBlocked||game.BuildMode||!Application.isFocused){context.SetActive(false);return;}
-            if(TickCooking(Time.deltaTime))return;
+            if(game.WorldInputBlocked||game.BuildMode){context.SetActive(false);return;}
+            if(Application.isFocused && TickCooking(Time.deltaTime))return;
             bool talk=CanTalk();stove=game.Model.Building.Blocks.Where(b=>b.pieceId=="home_stove"&&NearStove(b)).OrderBy(b=>Vector3.Distance(game.Player.position,new Vector3(b.x+.5f,b.level,b.z+.5f))).FirstOrDefault();
             context.SetActive(talk||stove!=null);
             if(talk)hint.text="F · Defne ile konuş";else if(stove!=null)hint.text="F · Et pişir   ·   1 çiğ et + 1 odun";
-            if(Keyboard.current?.fKey.wasPressedThisFrame==true)
+            if(Application.isFocused && Keyboard.current?.fKey.wasPressedThisFrame==true)
             {if(talk)TryTalk();else if(stove!=null){BeginCooking(stove);}}
             if(guide!=null&&CombatController.PlanarDistance(guide.position,game.Player.position)<7){var d=game.Player.position-guide.position;d.y=0;if(d.sqrMagnitude>.01f)guide.rotation=Quaternion.Slerp(guide.rotation,Quaternion.LookRotation(d),Time.deltaTime*3);}
         }

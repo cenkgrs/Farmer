@@ -42,6 +42,14 @@ namespace Farmer
             body=gameObject.AddComponent<CharacterController>();body.radius=.48f;body.height=1;body.center=new Vector3(0,.5f,0);body.stepOffset=.15f;body.slopeLimit=30;
             visual=new GameObject("Creature").transform;visual.SetParent(transform,false);
             normal=id==0?new Color(.36f,.68f,.30f):new Color(.37f,.40f,.46f);
+            var delivered=Resources.Load<GameObject>("ExplorationArt/"+(id==0?"forest_slime":"stone_beetle"));
+            if(delivered!=null)
+            {
+                var mesh=Instantiate(delivered,visual,false);shell=mesh.GetComponentInChildren<Renderer>();
+                var material=new Material(shell.sharedMaterial);shell.sharedMaterial=material;materials.Add(material);normal=material.color;
+            }
+            else
+            {
             shell=Part("Body",visual,new Vector3(0,.5f,0),new Vector3(1.2f,.85f,1.05f),normal,PrimitiveType.Sphere).GetComponent<Renderer>();
             for(int side=-1;side<=1;side+=2)
             {
@@ -50,6 +58,7 @@ namespace Farmer
                 if(id==1)for(int leg=0;leg<3;leg++)legs.Add(Part("Leg",visual,new Vector3(side*.56f,.22f,(leg-1)*.3f),new Vector3(.52f,.12f,.14f),normal*.65f,PrimitiveType.Cube).transform);
             }
             if(id==1)Part("Shell seam",visual,new Vector3(0,.91f,0),new Vector3(.035f,.03f,.6f),normal*.55f,PrimitiveType.Cube);
+            }
             cache=new GameObject("Resource cache").transform;cache.SetParent(transform,false);
             for(int i=0;i<3;i++)Part(id==0?"Timber":"Ore",cache,new Vector3((i-1)*.3f,.22f,0),id==0?new Vector3(.25f,.25f,.85f):Vector3.one*.5f,id==0?new Color(.49f,.31f,.14f):new Color(.44f,.54f,.58f),id==0?PrimitiveType.Cube:PrimitiveType.Sphere);
             cache.gameObject.SetActive(false);

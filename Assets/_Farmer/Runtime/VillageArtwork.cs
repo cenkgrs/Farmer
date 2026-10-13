@@ -22,6 +22,8 @@ namespace Farmer
         }
         public static GameObject Animal(bool deer)
         {
+            var delivered=Resources.Load<GameObject>("ExplorationArt/"+(deer?"deer":"rabbit"));
+            if(delivered!=null)return Object.Instantiate(delivered);
             var root=new GameObject(deer?"Deer artwork":"Rabbit artwork");var t=root.transform;
             var fur=Material(deer?new Color(.54f,.30f,.13f):new Color(.66f,.53f,.39f));var cream=Material(new Color(.94f,.84f,.66f));var dark=Material(new Color(.08f,.05f,.035f));
             Part(t,"Body",PrimitiveType.Sphere,new Vector3(0,deer?.9f:.38f,0),deer?new Vector3(.64f,.75f,1.2f):new Vector3(.55f,.6f,.8f),fur);
@@ -83,6 +85,7 @@ namespace Farmer
         }
         public static GameObject Guide()
         {
+            var delivered=Resources.Load<GameObject>("ExplorationArt/defne");if(delivered!=null){var npc=Object.Instantiate(delivered);var collider=npc.AddComponent<CapsuleCollider>();collider.height=1.7f;collider.radius=.3f;collider.center=Vector3.up*.85f;return npc;}
             var root=new GameObject("Defne");var cloth=Material(new Color(.23f,.32f,.12f));var skin=Material(new Color(.83f,.59f,.37f));var linen=Material(new Color(.9f,.83f,.65f));var hair=Material(new Color(.25f,.12f,.05f));
             Part(root.transform,"Skirt",PrimitiveType.Capsule,new Vector3(0,.58f,0),new Vector3(.55f,.42f,.4f),cloth);
             Part(root.transform,"Vest",PrimitiveType.Capsule,new Vector3(0,1.1f,0),new Vector3(.47f,.31f,.3f),cloth);
