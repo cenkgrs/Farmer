@@ -53,7 +53,7 @@ namespace Farmer
             if(overlay!=null)overlay.SetActive(game.MenuOpen&&!game.JournalOpen);
             if(illustration!=null)illustration.SetActive(game.MenuOpen&&!game.JournalOpen);
             if(Keyboard.current?.f11Key.wasPressedThisFrame==true)ToggleFullscreen();
-            if(Keyboard.current?.escapeKey.wasPressedThisFrame==true&&!game.ConversationOpen&&!game.VillageInputConsumed&&!game.InventoryOpen&&!game.MarketOpen&&!game.BuildMode&&!game.JournalOpen&&!(game.GetComponent<DemoHud>()?.ConsumedThisFrame??false))
+            if(Keyboard.current?.escapeKey.wasPressedThisFrame==true&&!game.QuestOpen&&!game.QuestInputConsumed&&!game.ConversationOpen&&!game.VillageInputConsumed&&!game.InventoryOpen&&!game.MarketOpen&&!game.BuildMode&&!game.JournalOpen&&!(game.GetComponent<DemoHud>()?.ConsumedThisFrame??false))
             {if(IsOpen&&started)Continue();else SetOpen(true);}
             if(screenLabel!=null)screenLabel.text="Tam Ekran: "+(Screen.fullScreen?"Açık":"Kapalı");
         }

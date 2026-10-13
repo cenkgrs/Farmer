@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a00cf2f5adb42c08e8bf3df59f41580, type: 3}
+  m_Name: defne
+  m_EditorClassIdentifier: 
+  id: defne
+  displayName: "Defne"
+  portraitId: defne
+  opensMarket: 0
+  greeting:
+  - player: 0
+    text: "Hoş geldin! Ben Defne. Köyün çevresinde tavşanlar ve geyikler dolaşıyor. Seni fark ettiklerinde durup izlerler; fazla yaklaşırsan kaçarlar."
+  - player: 1
+    text: "Demek dikkatli yaklaşmam gerekiyor. Avladığım hayvanlardan ne elde edebilirim?"
+  - player: 0
+    text: "Pazardan yay veya hançer alırsan avdan daha fazla et ve post çıkar. Balta ava zarar verir; verimi düşürür. Çantan doluysa yer açıp geri gelebilirsin."
+  - player: 1
+    text: "Etleri de öylece yiyemem sanırım. Nasıl pişireceğim?"
+  - player: 0
+    text: "Pazarın Mobilyalar bölümünden bir ocak al. İnşa menüsünden yerleştir; yanında F'ye bas. Bir çiğ et ve bir odunla yemek hazırlarsın."
+  - player: 1
+    text: "Tamamdır. Pişmiş eti H ile yiyip canımı toparlarım; postları da sandığımda saklarım."
+  - player: 0
+    text: "Aynen öyle! Pişmiş et 40 can verir. İhtiyacın kadar avlan; toplanan avların yerine ertesi gün yenileri gelir."
+  - player: 1
+    text: "Sağ ol Defne. Önce ocağımı kurayım, sonra çevreyi keşfederim."
+  quests:
+  - {fileID: 11400000, guid: 177fad904aac4c629290480492d16979, type: 2}

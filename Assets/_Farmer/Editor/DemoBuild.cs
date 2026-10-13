@@ -16,6 +16,7 @@ namespace Farmer.Editor
             var target=platform=="windows"?BuildTarget.StandaloneWindows64:platform=="linux"?BuildTarget.StandaloneLinux64:platform=="mac"?BuildTarget.StandaloneOSX:throw new ArgumentException("Use windows, linux or mac.");
             if(!BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Standalone,target))throw new InvalidOperationException("Install the matching Unity 6000.3.25f1 build support module.");
             ProjectSetup.ValidateProject();
+            QuestContentValidation.Validate();
             string folder="builds/Demo/"+platform;Directory.CreateDirectory(folder);
             string output=folder+(platform=="windows"?"/Farmer.exe":platform=="linux"?"/Farmer.x86_64":"/Farmer.app");
             bool development=args.Contains("--farmer-demo-development");

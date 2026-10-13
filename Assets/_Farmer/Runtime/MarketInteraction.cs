@@ -54,6 +54,7 @@ namespace Farmer
             if(vendor.GetComponent<Collider>()==null){var body=vendor.AddComponent<CapsuleCollider>();body.height=1.7f;body.radius=.3f;body.center=Vector3.up*.85f;}Vendor=vendor.transform;Vendor.SetParent(transform,false);
             Vendor.position=game.Market.TransformPoint(new Vector3(-stallBody.size.x*.5f-.5f,0,0));
             Vendor.rotation=Quaternion.LookRotation(-game.Market.forward);
+            vendor.AddComponent<NpcActor>().definition=System.Array.Find(game.Characters,n=>n.id=="huseyin");
         }
         private void Update()
         {

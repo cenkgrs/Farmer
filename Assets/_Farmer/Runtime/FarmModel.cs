@@ -54,12 +54,13 @@ namespace Farmer
         public CombatSnapshot combat;
         public WildlifeSnapshot wildlife;
         public int journey;
+        public QuestRecord[] quests;
     }
 
     // No scene, input, filesystem or clock dependencies: all transactions validate before mutating.
     public sealed partial class FarmModel
     {
-        public const int SaveVersion = 13;
+        public const int SaveVersion = 14;
         public const int PickaxePrice = 80;
         public bool OwnsPickaxe { get; private set; }
         public int Stone { get; private set; }
@@ -105,7 +106,7 @@ namespace Farmer
         public int PlantedCount => plots.Count(p => !string.IsNullOrEmpty(p.cropId));
         public int ReadyCount => Enumerable.Range(0, plots.Count).Count(IsReady);
 
-        public FarmModel(IEnumerable<CropRules> catalog, int width = 6, int depth = 6, int startingMoney = 50, IEnumerable<BuildRules> buildCatalog = null, int? worldSeed = null, Func<int,int,bool> resourceBlocked = null, IEnumerable<RecipeRules> recipeCatalog = null)
+        public FarmModel(IEnumerable<CropRules> catalog, int width = 6, int depth = 6, int startingMoney = 50, IEnumerable<BuildRules> buildCatalog = null, int? worldSeed = null, Func<int,int,bool> resourceBlocked = null, IEnumerable<RecipeRules> recipeCatalog = null, IEnumerable<QuestRules> questCatalog = null)
         {
             if (width < 1 || width > 100 || depth < 1 || depth > 100 || startingMoney < 0 || startingMoney > MoneyLimit)
                 throw new ArgumentOutOfRangeException(nameof(width));
@@ -117,6 +118,7 @@ namespace Farmer
             Exploration=ExplorationModel.Generate(seed==0?1:seed,resourceBlocked);
             foreach (string id in crops.Keys) { seeds[id] = 0; produce[id] = 0; }
             SelectedCropId = crops.Keys.First(); InitializeRecipes(recipeCatalog);
+            InitializeQuests(questCatalog);
         }
 
         public int Seeds(string id) => seeds.TryGetValue(id, out int count) ? count : 0;
@@ -246,17 +248,17 @@ namespace Farmer
             version = SaveVersion, ownsPickaxe = OwnsPickaxe, stone = Stone, selectedCropId = SelectedCropId, crafted = CraftedSnapshot(), width = Width, depth = Depth, day = Day, money = Money, minuteOfDay = MinuteOfDay, equippedItem = EquippedItem,
             seeds = seeds.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
             produce = produce.Select(p => new InventoryRecord { cropId = p.Key, count = p.Value }).ToArray(),
-            plots = plots.Select(p => p.Copy()).ToArray(), building = Building.Snapshot(), exploration=Exploration.Snapshot(), combat=Combat.Snapshot(), wildlife=WildlifeSave(), journey=(int)Journey
+            plots = plots.Select(p => p.Copy()).ToArray(), building = Building.Snapshot(), exploration=Exploration.Snapshot(), combat=Combat.Snapshot(), wildlife=WildlifeSave(), journey=(int)Journey, quests=QuestSave()
         };
 
-        public static FarmModel Restore(FarmSnapshot saved, IEnumerable<CropRules> catalog, int width, int depth, IEnumerable<BuildRules> buildCatalog = null, Func<int,int,bool> resourceBlocked = null, IEnumerable<RecipeRules> recipeCatalog = null)
+        public static FarmModel Restore(FarmSnapshot saved, IEnumerable<CropRules> catalog, int width, int depth, IEnumerable<BuildRules> buildCatalog = null, Func<int,int,bool> resourceBlocked = null, IEnumerable<RecipeRules> recipeCatalog = null, IEnumerable<QuestRules> questCatalog = null)
         {
             if (saved == null || (saved.version < 1 || saved.version > SaveVersion) || saved.width != width || saved.depth != depth || saved.day < 1
                 || saved.day > DayLimit || saved.money < 0 || saved.money > MoneyLimit || saved.plots == null || (saved.version < 3 ? saved.plots.Length != width * depth : saved.plots.Length > PlotLimit))
                 throw new ArgumentException("Save header or grid is invalid or unsupported.");
             if(saved.version>=7 && (saved.building==null || saved.building.furniture==null))throw new ArgumentException("Missing furniture inventory.");
             var rules = (buildCatalog ?? BuildRules.Defaults).ToArray();
-            var model = new FarmModel(catalog, width, depth, saved.money, rules, recipeCatalog: recipeCatalog) { Day = saved.day };
+            var model = new FarmModel(catalog, width, depth, saved.money, rules, recipeCatalog: recipeCatalog, questCatalog: questCatalog) { Day = saved.day };
             if (saved.version >= 2)
             {
                 var building = saved.building;
@@ -330,6 +332,7 @@ namespace Farmer
             if(saved.version>=12){if(saved.journey<0||saved.journey>127)throw new ArgumentException("Invalid journey progress.");model.Journey=(JourneyStep)saved.journey;}
             model.Combat = saved.version >= 12 ? CombatModel.Restore(saved.combat, saved.day) : new CombatModel();
             model.ValidateStorage(saved.version);
+            if(saved.version>=14)model.RestoreQuests(saved.quests);
             return model;
         }
 

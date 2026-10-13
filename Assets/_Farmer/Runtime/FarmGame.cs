@@ -16,12 +16,14 @@ namespace Farmer
         public bool InventoryOpen { get; set; }
         public bool MenuOpen { get; set; }
         public bool JournalOpen { get; set; }
+        public bool QuestOpen=>GetComponent<QuestHud>()?.IsOpen??false;
+        public bool QuestInputConsumed=>GetComponent<QuestHud>()?.ConsumedThisFrame??false;
         private MarketInteraction marketInteraction;
         public bool MarketOpen => marketInteraction != null && marketInteraction.IsOpen;
         public bool MarketInputConsumed => marketInteraction != null && marketInteraction.ConsumedThisFrame;
         public bool ConversationOpen=>GetComponent<VillageInteraction>()?.IsOpen??false;
         public bool VillageInputConsumed=>GetComponent<VillageInteraction>()?.ConsumedThisFrame??false;
-        public bool WorldInputBlocked => ConversationOpen || VillageInputConsumed || JournalOpen || MenuOpen || InventoryOpen || MarketOpen || MarketInputConsumed;
+        public bool WorldInputBlocked => QuestOpen || QuestInputConsumed || ConversationOpen || VillageInputConsumed || JournalOpen || MenuOpen || InventoryOpen || MarketOpen || MarketInputConsumed;
         public bool CanTrade => Ready && MarketOpen && NearMarket && !MenuOpen && !InventoryOpen;
         public bool HadSaveAtStartup { get; private set; }
         [SerializeField] private FarmSelection selection;
@@ -33,6 +35,7 @@ namespace Farmer
         public FarmSelection Selection => selection;
         public CropDefinition ActiveCrop => Model == null ? crops[0] : Definition(Model.SelectedCropId);
         public CropDefinition[] Crops => crops;
+        public NpcDefinition[] Characters { get; private set; } = Array.Empty<NpcDefinition>();
         public RecipeDefinition[] Recipes { get; private set; } = Array.Empty<RecipeDefinition>();
         public CropDefinition Definition(string id) => crops.First(c => c.id == id);
         public Transform Market => market;
@@ -78,21 +81,24 @@ namespace Farmer
             buildPieces=buildPieces.Concat(Resources.LoadAll<BuildDefinition>("GardenPieces").OrderBy(b=>b.id,StringComparer.Ordinal)).GroupBy(b=>b.id).Select(g=>g.First()).ToArray();
             Recipes = Resources.LoadAll<RecipeDefinition>("Recipes").OrderBy(r=>r.catalogOrder).ThenBy(r=>r.id,StringComparer.Ordinal).ToArray();
             var recipeRules = Recipes.Select(r=>r.Rules).ToArray();
+            Characters=Resources.LoadAll<NpcDefinition>("Npcs").OrderBy(n=>n.id,StringComparer.Ordinal).ToArray();
+            var questRules=QuestCatalog.Build(Characters);
             var rules = crops.Select(c => c.Rules).ToArray();
-            Model = new FarmModel(rules, selection.Layout.Width, selection.Layout.Depth, startingMoney, BuildingRules(), resourceBlocked: ResourceBlockedByScenery, recipeCatalog: recipeRules);
+            Model = new FarmModel(rules, selection.Layout.Width, selection.Layout.Depth, startingMoney, BuildingRules(), resourceBlocked: ResourceBlockedByScenery, recipeCatalog: recipeRules, questCatalog: questRules);
             string directory = Application.persistentDataPath;
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
             smokeSession = Array.IndexOf(Environment.GetCommandLineArgs(), "--farmer-smoke-capture") >= 0;
             if (smokeSession) directory = Path.Combine(Application.temporaryCachePath, "FarmerQA", Guid.NewGuid().ToString("N"));
 #endif
             SavePath = Path.Combine(directory, "farm-v1.json");
-            store = new FarmSaveStore(SavePath, snapshot => FarmModel.Restore(snapshot, rules, selection.Layout.Width, selection.Layout.Depth, BuildingRules(), ResourceBlockedByScenery, recipeRules));
+            store = new FarmSaveStore(SavePath, snapshot => FarmModel.Restore(snapshot, rules, selection.Layout.Width, selection.Layout.Depth, BuildingRules(), ResourceBlockedByScenery, recipeRules, questRules));
             if(camp!=null)camp.gameObject.SetActive(false);
             HadSaveAtStartup=File.Exists(SavePath)||File.Exists(SavePath+".bak");
             LoadGame();
             gameObject.AddComponent<SessionMenu>();
             gameObject.AddComponent<CombatController>();
             gameObject.AddComponent<DemoHud>();
+            gameObject.AddComponent<QuestHud>();
             gameObject.AddComponent<VillageInteraction>();
             gameObject.AddComponent<WildlifeController>();
             gameObject.AddComponent<BowCombat>();
@@ -107,7 +113,7 @@ namespace Farmer
         private void Update()
         {
             var k = Keyboard.current;
-            if (ConversationOpen || VillageInputConsumed || MenuOpen || JournalOpen || !Application.isFocused) { StopWatering(); return; }
+            if (QuestOpen || QuestInputConsumed || ConversationOpen || VillageInputConsumed || MenuOpen || JournalOpen || !Application.isFocused) { StopWatering(); return; }
             if (k?.f9Key.wasPressedThisFrame == true) LoadGame();
             if (!Ready || InventoryOpen || MarketInputConsumed) { StopWatering(); return; }
             if(MarketOpen)

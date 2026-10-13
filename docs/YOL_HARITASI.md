@@ -132,3 +132,5 @@ geri bildirimi, açık ödül ve daha küçük/dolu dünya. Bu düzeltmeden sonr
 kullanıcının oynanış değerlendirmesi alınmalı; test başarısı görsel kabul değildir.
 
 13 Ekim kullanıcı demo sonrası kapsamı açıkça genişletti: portreli NPC konuşması, dolaşan/izleyen/kaçan av hayvanları, silaha bağlı et/post verimi ve pazardan alınan ocakta pişirme. İlk uygulama Defne, tavşan/geyik, yay/hançer ve ocak etrafındadır. Demo kabulündeki önceki açık maddeler kapanmış sayılmaz. Detaylar OYUN_TASARIMI ve görsel kaynakları references/dialogue_v01 içindedir.
+
+13 Ekim: kullanıcı Q görev ekranı ve NPC başına düzenlenebilir görev sırası/metin/ödül istedi. İlk teslim görev sistemi, Hüseyin'in üç görevlik zinciri ve Defne'nin bağımsız örneğiyle uygulanıyor. Konuşmalar ve görevler ScriptableObject içerikleri; sonraki görevler bu içerik sisteminden yazılabilir. Öldürme/alan ziyaret etme hedef türleri bu ilk teslim adımına dahil değil.

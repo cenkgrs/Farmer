@@ -13,7 +13,7 @@ WASD / oklar: hareket. Fare tekerleği: kamerayı yakınlaştır/uzaklaştır.
 1 tohum, 2 sulama kabı, 3 orak, 4 inşa, 5 çapa, 6 balta, 7 satın alınan kazma.
 Sol tık: eldeki aletle hedef. F: yakındaki pazar / kapı / sandık.
 Tab: çanta. J: defter. Esc: menü. F11: tam ekran. F5: kaydet. F9: yükle.
-İnşada Q/ikon: parça seç; R: döndür; M: taşı; sağ tık: sök.
+İnşada E/ikon: parça seç; R: döndür; M: taşı; sağ tık: sök.
 N: yalnızca yatağa yaklaşınca uyu. Bir tam oyun günü 10 gerçek dakika.
 
 İLK ADIMLAR

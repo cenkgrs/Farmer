@@ -142,7 +142,7 @@ namespace Farmer
         public void RefreshHealth(){if(health!=null&&game?.Model!=null)health.text=$"{game.Model.Combat.Health}/100";}
         private void Refresh()
         {
-            bool hidden=game.ConversationOpen||game.MenuOpen||game.MarketOpen||game.JournalOpen;visibility.alpha=hidden?0:1;visibility.interactable=!hidden;visibility.blocksRaycasts=!hidden;
+            bool hidden=game.QuestOpen||game.ConversationOpen||game.MenuOpen||game.MarketOpen||game.JournalOpen;visibility.alpha=hidden?0:1;visibility.interactable=!hidden;visibility.blocksRaycasts=!hidden;
             var model=game.Model;var crop=game.ActiveCrop;
             marketHint.gameObject.SetActive(game.Ready&&game.NearMarket&&!game.WorldInputBlocked&&!game.BuildMode&&hovered==null);
             if(displayedBuildMode!=game.BuildMode){hovered=null;displayedBuildMode=game.BuildMode;}

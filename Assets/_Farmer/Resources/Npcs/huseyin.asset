@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a00cf2f5adb42c08e8bf3df59f41580, type: 3}
+  m_Name: huseyin
+  m_EditorClassIdentifier: 
+  id: huseyin
+  displayName: "Hüseyin"
+  portraitId: huseyin
+  opensMarket: 1
+  greeting:
+  - player: 0
+    text: "Hoş geldin! Tezgâha mı bakacaksın, yoksa köydeki işler için mi geldin?"
+  - player: 1
+    text: "Selam Hüseyin abi, seni dinliyorum."
+  - player: 0
+    text: "Buyur. Ürünlere bakabilir ya da bir iş alabilirsin."
+  quests:
+  - {fileID: 11400000, guid: 60b62483611e4aff8f89aa5d63028de2, type: 2}
+  - {fileID: 11400000, guid: 7c5c4d21765748ab90011aa92e52c1a2, type: 2}
+  - {fileID: 11400000, guid: 2436961e1e8f4455989b32bfd307e243, type: 2}

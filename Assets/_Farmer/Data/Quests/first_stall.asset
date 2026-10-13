@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53d595b5f44f4c93ac3bb5f0fd29b638, type: 3}
+  m_Name: first_stall
+  m_EditorClassIdentifier: 
+  id: first_stall
+  title: "İlk Tezgâh"
+  description: "Tezgâh için Hüseyin’e 5 turp getir."
+  requiredItems:
+  - itemId: crop:turnip
+    displayName: "Turp"
+    count: 5
+  rewardMoney: 60
+  rewardItems:
+  - itemId: seed:carrot
+    displayName: "Havuç tohumu"
+    count: 3
+  offer:
+  - player: 0
+    text: "Tezgâha taze turp lazım. Bana beş turp getirirsen 60 para ve üç havuç tohumu verebilirim."
+  - player: 1
+    text: "Elimdeki turpları da getirebilir miyim?"
+  - player: 0
+    text: "Elbette. Çantanda beş tane olması yeterli."
+  accepted:
+  - player: 0
+    text: "Anlaştık! Hazır olduğunda yine uğra."
+  - player: 1
+    text: "Tamam, siparişi hazırlayacağım."
+  inProgress:
+  - player: 0
+    text: "Sipariş henüz tamamlanmamış. Hazırlayınca tekrar konuşalım."
+  readyToDeliver:
+  - player: 0
+    text: "İstediklerim çantanda görünüyor. Şimdi teslim etmek ister misin?"
+  completed:
+  - player: 0
+    text: "Hepsi tamam. Çok teşekkürler, söz verdiğim ödül senin!"
+  - player: 1
+    text: "Rica ederim. Görüşürüz!"

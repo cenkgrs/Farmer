@@ -49,7 +49,7 @@ namespace Farmer
         private void Update()
         {
             if(game==null)return;
-            if(game.ConversationOpen||game.VillageInputConsumed){Refresh();return;}
+            if(game.QuestOpen||game.QuestInputConsumed||game.ConversationOpen||game.VillageInputConsumed){Refresh();return;}
             if(Application.isFocused)
             {
                 var key=Keyboard.current;
@@ -61,7 +61,7 @@ namespace Farmer
         public void SetOpen(bool open)
         {
             if(game==null||overlay==null)return;
-            if(open&&(!game.Ready||game.InventoryOpen||game.MarketOpen||game.BuildMode))return;
+            if(open&&(game.QuestOpen||game.QuestInputConsumed||!game.Ready||game.InventoryOpen||game.MarketOpen||game.BuildMode))return;
             game.JournalOpen=open;game.Selection.ModalBlocked=open||game.MenuOpen||game.InventoryOpen||game.MarketOpen;overlay.SetActive(open);Refresh();
         }
         public void Track(int id){if(id < -1 || id > 3)return;destination=id;Refresh();}

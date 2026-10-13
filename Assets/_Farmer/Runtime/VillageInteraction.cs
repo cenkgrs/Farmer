@@ -12,14 +12,25 @@ namespace Farmer
         private Image portrait;private Text speaker,words,advance,hint;
         private int line,consumed=-1;private float reveal;
         private bool merchant;private GameObject merchantChoices;
-        private string[] ActiveLines=>merchant?MerchantLines:Lines;
+        private DialogueLine[] questDialogue, greeting;
+        private NpcActor currentActor;
+        private NpcDefinition CurrentNpc=>currentActor?.definition;
+        private QuestDefinition offeredDefinition;
+        private Button tradeButton;
+        private bool questAccepted;
+        private bool PlayerSpeaking=>questDialogue!=null?questDialogue[line].player:greeting!=null?greeting[line].player:line%2!=0;
+        private QuestRules offeredQuest;
+        private GameObject questChoices;
+        private Button questAction;
+        private string[] ActiveLines=>questDialogue!=null?questDialogue.Select(l=>l.text).ToArray():greeting!=null?greeting.Select(l=>l.text).ToArray():(merchant?MerchantLines:Lines);
         private BlockRecord stove;private float cookRemaining;private FarmModel cookingModel;
         public bool IsOpen=>dialogue!=null&&dialogue.activeSelf;
         public bool ConsumedThisFrame=>consumed==Time.frameCount;
         public Transform Guide=>guide;
         public bool Cooking=>cookRemaining>0;
         public int Line=>line;
-        public string Speaker=>line%2==0?(merchant?"Hüseyin":"Defne"):"Sen";
+        public bool AwaitingChoice=>IsOpen&&line==ActiveLines.Length-1&&reveal>=ActiveLines[line].Length;
+        public string Speaker=>PlayerSpeaking?"Sen":CurrentNpc?.displayName??(merchant?"Hüseyin":"Defne");
         public static readonly string[] MerchantLines={"Hoş geldin! Ben Hüseyin. Tohumdan alete, çiftliğe ne lazımsa burada bulursun.","Selam Hüseyin abi. Tezgâhında neler var, bir bakalım.","Buyur! Ürünler burada. Hasadını da getir; alışverişimizi yaparız."};
         public static readonly string[] Lines={
             "Hoş geldin! Ben Defne. Köyün çevresinde tavşanlar ve geyikler dolaşıyor. Seni fark ettiklerinde durup izlerler; fazla yaklaşırsan kaçarlar.",
@@ -37,6 +48,7 @@ namespace Farmer
             var obj=VillageArtwork.Guide();obj.transform.SetParent(transform,false);
             var desired=game.Market.position+new Vector3(5,0,-3);
             obj.transform.position=FindGround(desired);guide=obj.transform;
+            obj.AddComponent<NpcActor>().definition=System.Array.Find(game.Characters,n=>n.id=="defne");
             var canvas=new GameObject("Village dialogue UI",typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));canvas.transform.SetParent(transform,false);
             canvas.GetComponent<Canvas>().renderMode=RenderMode.ScreenSpaceOverlay;canvas.GetComponent<Canvas>().sortingOrder=30;
             var scaler=canvas.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1280,720);scaler.screenMatchMode=CanvasScaler.ScreenMatchMode.Expand;
@@ -55,9 +67,14 @@ namespace Farmer
             var next=Box(dialogueRect,"Dialogue next",new Rect(425,480,810,190),Color.clear).gameObject.AddComponent<Button>();next.onClick.AddListener(Advance);
             var close=Box(dialogueRect,"Dialogue close",new Rect(1125,32,110,42),new Color(.18f,.12f,.06f,.75f)).gameObject.AddComponent<Button>();close.onClick.AddListener(Close);
             var closeText=Label(close.transform,"Close text",new Rect(0,0,110,42),18);closeText.text="Esc · Kapat";closeText.color=new Color(1,.93f,.76f);
-            merchantChoices=Box(dialogueRect,"Merchant choices",new Rect(650,617,545,42),Color.clear).gameObject;
-            var trade=FarmHud.Button(merchantChoices.transform,"Ürünlere bakalım",0,0,315,38,OpenMerchantProducts);HudArtwork.ApplyFrame((RectTransform)trade.transform,6);trade.GetComponentInChildren<Text>().transform.SetAsLastSibling();
-            var leave=FarmHud.Button(merchantChoices.transform,"Görüşürüz",330,0,200,38,Close);HudArtwork.ApplyFrame((RectTransform)leave.transform,6);leave.GetComponentInChildren<Text>().transform.SetAsLastSibling();
+            merchantChoices=Box(dialogueRect,"Merchant choices",new Rect(445,617,760,42),Color.clear).gameObject;
+            tradeButton=QuestHud.StyledButton(merchantChoices.transform,"Ürünlere bakalım",0,0,275,38,OpenMerchantProducts);
+            QuestHud.StyledButton(merchantChoices.transform,"Bir iş var mı?",290,0,245,38,OpenQuestOffer);
+            QuestHud.StyledButton(merchantChoices.transform,"Görüşürüz",550,0,200,38,Close);
+            questChoices=Box(dialogueRect,"Quest choices",new Rect(650,617,545,42),Color.clear).gameObject;
+            questAction=QuestHud.StyledButton(questChoices.transform,"Kabul et",0,0,315,38,ActOnQuest);
+            QuestHud.StyledButton(questChoices.transform,"Daha sonra",330,0,200,38,Close);
+            questChoices.SetActive(false);
             merchantChoices.SetActive(false);dialogue.SetActive(false);
             context=Box(canvas.transform,"Village interaction hint",new Rect(480,0,320,64),new Color(.92f,.82f,.61f,.98f)).gameObject;
             var hintRect=context.GetComponent<RectTransform>();hintRect.anchorMin=hintRect.anchorMax=new Vector2(.5f,0);hintRect.pivot=new Vector2(.5f,0);hintRect.anchoredPosition=new Vector2(0,208);
@@ -90,7 +107,7 @@ namespace Farmer
             if(Application.isFocused && TickCooking(Time.deltaTime))return;
             bool talk=CanTalk();stove=game.Model.Building.Blocks.Where(b=>b.pieceId=="home_stove"&&NearStove(b)).OrderBy(b=>Vector3.Distance(game.Player.position,new Vector3(b.x+.5f,b.level,b.z+.5f))).FirstOrDefault();
             context.SetActive(talk||stove!=null);
-            if(talk)hint.text="F · Defne ile konuş";else if(stove!=null)hint.text="F · Et pişir   ·   1 çiğ et + 1 odun";
+            if(talk)hint.text="F · "+NearestNpc()?.definition.displayName+" ile konuş";else if(stove!=null)hint.text="F · Et pişir   ·   1 çiğ et + 1 odun";
             if(Application.isFocused && Keyboard.current?.fKey.wasPressedThisFrame==true)
             {if(talk)TryTalk();else if(stove!=null){BeginCooking(stove);}}
             if(guide!=null&&CombatController.PlanarDistance(guide.position,game.Player.position)<7){var d=game.Player.position-guide.position;d.y=0;if(d.sqrMagnitude>.01f)guide.rotation=Quaternion.Slerp(guide.rotation,Quaternion.LookRotation(d),Time.deltaTime*3);}
@@ -103,43 +120,92 @@ namespace Farmer
             if(cookRemaining<=0){bool ok=game.Model.CookMeat(stove,out var message);game.CombatChanged(message);if(ok)CombatFeedback.Burst(new Vector3(stove.x+.5f,1.7f,stove.z+.5f),"+1 PİŞMİŞ ET",new Color(1,.8f,.3f));}
             return true;
         }
-        public bool CanTalk()=>game!=null&&guide!=null&&CombatController.PlanarDistance(game.Player.position,guide.position)<=3.2f&&ClearLine(guide.position,guide);
+        private bool InReach(NpcActor actor)=>actor!=null&&actor.definition!=null&&(actor.definition.opensMarket?game.NearMarket:
+            CombatController.PlanarDistance(game.Player.position,actor.transform.position)<=3.2f&&ClearLine(actor.transform.position,actor.transform));
+        private NpcActor NearestNpc()=>NpcActor.Active.Where(a=>a!=null&&a.definition!=null&&!a.definition.opensMarket&&InReach(a)).OrderBy(a=>Vector3.Distance(a.transform.position,game.Player.position)).FirstOrDefault();
+        public bool CanTalk()=>game!=null&&NearestNpc()!=null;
         private bool ClearLine(Vector3 p,Transform target)
         {var from=game.Player.position+Vector3.up*.9f;var to=p+Vector3.up*.9f;return !Physics.RaycastAll(from,(to-from).normalized,Vector3.Distance(from,to),~0,QueryTriggerInteraction.Ignore).Any(h=>!h.transform.IsChildOf(game.Player)&&!h.transform.IsChildOf(target));}
-        public bool TryTalk()
+        public bool TryTalk()=>TryTalkTo(NearestNpc());
+        public bool TryTalkMerchant()=>TryTalkTo(GetComponent<MarketInteraction>().Vendor?.GetComponent<NpcActor>());
+        public bool TryTalkTo(NpcActor actor)
         {
-            if(game==null||!game.Ready||game.WorldInputBlocked||game.BuildMode||!CanTalk())return false;
-            merchant=false;consumed=Time.frameCount;openedModel=game.Model;line=0;dialogue.SetActive(true);game.Selection.ModalBlocked=true;RefreshLine();return true;
-        }
-        public bool TryTalkMerchant()
-        {
-            var market=GetComponent<MarketInteraction>();
-            if(game==null||!game.Ready||game.WorldInputBlocked||game.BuildMode||market.Vendor==null||!game.NearMarket)return false;
-            merchant=true;consumed=Time.frameCount;openedModel=game.Model;line=0;dialogue.SetActive(true);game.Selection.ModalBlocked=true;RefreshLine();return true;
+            if(game==null||!game.Ready||game.WorldInputBlocked||game.BuildMode||!InReach(actor))return false;
+            currentActor=actor;greeting=Paginate(actor.definition.greeting,"Merhaba.");merchant=actor.definition.opensMarket;questDialogue=null;offeredQuest=null;offeredDefinition=null;questAccepted=false;
+            consumed=Time.frameCount;openedModel=game.Model;line=0;dialogue.SetActive(true);game.Selection.ModalBlocked=true;RefreshLine();return true;
         }
         public bool TryTalkFromRay(Ray ray)
         {
-            var vendor=GetComponent<MarketInteraction>().Vendor;
-            return vendor!=null&&Physics.Raycast(ray,out var hit,200,~0,QueryTriggerInteraction.Ignore)&&hit.transform.IsChildOf(vendor)&&TryTalkMerchant();
+            return Physics.Raycast(ray,out var hit,200,~0,QueryTriggerInteraction.Ignore)&&TryTalkTo(hit.collider.GetComponentInParent<NpcActor>());
         }
         public void Advance()
         {
             if(!IsOpen)return;consumed=Time.frameCount;
             if(reveal<ActiveLines[line].Length){reveal=ActiveLines[line].Length;words.text=ActiveLines[line];UpdateChoices();return;}
-            if(line==ActiveLines.Length-1){if(merchant)OpenMerchantProducts();else Close();return;}
+            if(questDialogue!=null&&line==ActiveLines.Length-1)return;
+            if(line==ActiveLines.Length-1){if(merchant)OpenMerchantProducts();else if(CurrentNpc?.quests.Length>0)OpenQuestOffer();else Close();return;}
             line++;RefreshLine();
         }
         private void UpdateChoices()
         {
-            bool choose=merchant&&line==ActiveLines.Length-1&&reveal>=ActiveLines[line].Length;
-            merchantChoices.SetActive(choose);advance.gameObject.SetActive(!choose);
+            bool choose=line==ActiveLines.Length-1&&reveal>=ActiveLines[line].Length;
+            merchantChoices.SetActive(choose&&questDialogue==null);tradeButton.gameObject.SetActive(merchant);questChoices.SetActive(choose&&questDialogue!=null);
+            advance.gameObject.SetActive(!choose);
+            if(questDialogue!=null)
+            {
+                var state=offeredQuest==null?QuestStatus.Completed:game.Model.QuestState(offeredQuest.Id);
+                questAction.interactable=state==QuestStatus.Available||state==QuestStatus.Active&&game.Model.QuestReady(offeredQuest.Id);
+                questAction.GetComponentInChildren<Text>().text=state==QuestStatus.Available?"Kabul et":state==QuestStatus.Completed?(questAccepted?"Görev alındı":"Tamamlandı"):game.Model.QuestReady(offeredQuest.Id)?"Ürünleri teslim et":"Ürünler eksik";
+            }
         }
         public void OpenMerchantProducts()
         {
-            if(!IsOpen||!merchant||line!=ActiveLines.Length-1||reveal<ActiveLines[line].Length)return;
+            if(!IsOpen||!merchant||questDialogue!=null||line!=ActiveLines.Length-1||reveal<ActiveLines[line].Length)return;
             Close();GetComponent<MarketInteraction>().TryOpenAfterConversation();
         }
-        private void RefreshLine(){reveal=0;words.text="";speaker.text=Speaker;portrait.sprite=VillageArtwork.Icon(line%2==0?(merchant?"huseyin":"defne"):"farmer");advance.text=line==ActiveLines.Length-1?"F / Space · Bitir":"F / Space · Devam  ›";UpdateChoices();}
+        private static DialogueLine[] Paginate(DialogueLine[] lines,string fallback)
+        {
+            var result=new System.Collections.Generic.List<DialogueLine>();
+            foreach(var entry in lines??System.Array.Empty<DialogueLine>())
+            {
+                if(entry==null||string.IsNullOrWhiteSpace(entry.text))continue;
+                string remaining=entry.text.Trim();
+                while(remaining.Length>210)
+                {
+                    int cut=remaining.LastIndexOf(' ',210);if(cut<1)cut=210;
+                    result.Add(new DialogueLine{player=entry.player,text=remaining.Substring(0,cut)});remaining=remaining.Substring(cut).TrimStart();
+                }
+                if(remaining.Length>0)result.Add(new DialogueLine{player=entry.player,text=remaining});
+            }
+            if(result.Count==0)result.Add(new DialogueLine{text=fallback});return result.ToArray();
+        }
+        private void ShowQuestLines(DialogueLine[] lines,string fallback)
+        {
+            questDialogue=Paginate(lines,fallback);
+            line=0;RefreshLine();
+        }
+        public void OpenQuestOffer()
+        {
+            if(!IsOpen||CurrentNpc==null||!InReach(currentActor))return;
+            offeredQuest=game.Model.QuestCatalog.FirstOrDefault(q=>q.NpcId==CurrentNpc.id&&game.Model.QuestState(q.Id)!=QuestStatus.Completed);
+            offeredDefinition=offeredQuest==null?null:CurrentNpc.quests.FirstOrDefault(q=>q.id==offeredQuest.Id);questAccepted=false;
+            if(offeredQuest==null){ShowQuestLines(null,"Şimdilik başka bir işim yok. Yardımın için teşekkürler!");return;}
+            bool active=game.Model.QuestState(offeredQuest.Id)==QuestStatus.Active;
+            var lines=active?(game.Model.QuestReady(offeredQuest.Id)?offeredDefinition.readyToDeliver:offeredDefinition.inProgress):offeredDefinition.offer;
+            ShowQuestLines(lines,active?"Ürünleri hazırladığında yine konuşalım.":offeredQuest.Description+"\nÖdül: "+offeredQuest.RewardText);
+        }
+        public void ActOnQuest()
+        {
+            if(!IsOpen||questDialogue==null||offeredQuest==null||!InReach(currentActor)||line!=ActiveLines.Length-1||reveal<ActiveLines[line].Length)return;
+            string message;bool accepted=game.Model.QuestState(offeredQuest.Id)==QuestStatus.Available;
+            bool ok=accepted?game.Model.AcceptQuest(offeredQuest.Id,out message):game.Model.TurnInQuest(offeredQuest.Id,out message);
+            if(!ok){ShowQuestLines(null,message);return;}
+            game.CombatChanged("");questAccepted=accepted;
+            var lines=accepted?offeredDefinition.accepted:offeredDefinition.completed;
+            offeredQuest=null;
+            ShowQuestLines(lines,accepted?"Anlaştık! Görevlerini Q ile takip edebilirsin.":message);
+        }
+        private void RefreshLine(){reveal=0;words.text="";speaker.text=Speaker;portrait.sprite=VillageArtwork.Icon(PlayerSpeaking?"farmer":CurrentNpc?.portraitId??(merchant?"huseyin":"defne"));advance.text=line==ActiveLines.Length-1?"F / Space · Bitir":"F / Space · Devam  ›";UpdateChoices();}
         public void Close(){if(dialogue==null)return;dialogue.SetActive(false);consumed=Time.frameCount;if(game!=null)game.Selection.ModalBlocked=game.MenuOpen||game.InventoryOpen||game.MarketOpen||game.JournalOpen;}
         public bool NearStove(BlockRecord b)
         {
